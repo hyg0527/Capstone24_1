@@ -36,7 +36,9 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="CUBRISM"
-            android:textSize="20sp" />
+            android:textColor="@color/blue"
+            android:fontFamily="@font/koulen"
+            android:textSize="27sp" />
 
         <EditText
             android:id="@+id/loginEmail"
@@ -45,9 +47,17 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
+            android:fontFamily="@font/kotra"
             android:hint="Email address"
+            android:drawableLeft="@drawable/email"
+            android:drawablePadding="6dp"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:textColor="@color/blue"
+            android:textColorHint="@color/blue"
             android:inputType="text"
-            android:paddingLeft="15dp"
+            android:paddingLeft="20dp"
             android:paddingRight="15dp" />
 
         <EditText
@@ -57,9 +67,17 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
-            android:hint="password"
+            android:hint="Password"
+            android:drawableLeft="@drawable/lock"
+            android:drawablePadding="6dp"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:textColor="@color/blue"
+            android:textColorHint="@color/blue"
+            android:fontFamily="@font/kotra"
             android:inputType="textPassword"
-            android:paddingLeft="15dp"
+            android:paddingLeft="16dp"
             android:paddingRight="15dp" />
 
         <android.widget.Button
@@ -67,6 +85,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:fontFamily="@font/koulen"
+            android:textSize="23sp"
+            android:textColor="@color/white"
             android:background="@drawable/button_rounded_corner"
             android:text="LOGIN" />
 
@@ -75,9 +96,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:fontFamily="@font/kotra"
             android:gravity="center"
+            android:letterSpacing="0.1"
             android:text="SIGN UP"
-            android:textColor="#f77d7d"
+            android:textColor="#F17272"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -85,8 +109,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:fontFamily="@font/kotra"
             android:gravity="center"
-            android:text="Did you forget your email?" />
+            android:text="Did you forget your email?"
+            android:textSize="12sp"
+            android:textColor="#B2B2B2"
+            android:textStyle="bold|italic" />
     </LinearLayout>
 
 </LinearLayout>
