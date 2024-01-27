@@ -26,14 +26,14 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="60dp"
             app:srcCompat="@drawable/logo" />
 
         <TextView
             android:id="@+id/loginTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
             android:text="CUBRISM"
             android:textColor="@color/blue"
@@ -84,15 +84,28 @@
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:fontFamily="@font/koulen"
             android:textSize="23sp"
             android:textColor="@color/white"
             android:background="@drawable/button_rounded_corner"
             android:text="LOGIN" />
 
+
         <TextView
             android:id="@+id/signUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:fontFamily="@font/kopubdotumbold"
+            android:text="소셜 계정으로 로그인:"
+            android:textColor="#939393"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/signUp2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -112,27 +125,10 @@
             android:fontFamily="@font/kotra"
             android:gravity="center"
             android:text="Did you forget your email?"
-            android:textSize="12sp"
             android:textColor="#B2B2B2"
+            android:textSize="12sp"
             android:textStyle="bold|italic" />
 
-        <android.widget.Button
-            android:id="@+id/googleLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button_rounded_corner_google"
-            android:text="Google로 로그인"
-            android:textStyle="bold" />
-
-        <android.widget.Button
-            android:id="@+id/kakaoLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_rounded_corner_kakao"
-            android:text="Kakao로 로그인"
-            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

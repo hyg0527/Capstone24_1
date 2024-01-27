@@ -11,6 +11,7 @@
         android:layout_height="70dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="70dp"
+        app:layout_constraintEnd_toStartOf="@+id/mypageEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/account_circle" />
@@ -22,33 +23,56 @@
         android:layout_marginStart="16dp"
         android:text="any9432@naver.com"
         android:textColor="@color/blue"
+        android:fontFamily="@font/kotra"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/profileImg"
         app:layout_constraintStart_toEndOf="@+id/profileImg"
-        app:layout_constraintTop_toBottomOf="@+id/userInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/myPageMent" />
 
     <TextView
-        android:id="@+id/userInfo"
+        android:id="@+id/myPageUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="68dp"
-        android:text="OOO님,\n큐브리즘과 한 걸음 나아가요!"
+        android:fontFamily="@font/godom"
+        android:text="OOO"
+        android:textColor="@color/blue"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/myPageMent"
         app:layout_constraintStart_toEndOf="@+id/profileImg"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circle"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="180dp"
-        android:src="@drawable/books"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/circle2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/circle1"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/myPageUser2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/godom"
+        android:text="님,"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/myPageMent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/myPageUser"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/myPageMent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/godom"
+        android:text="큐브리즘과 한 걸음 나아가요!"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/profileImg"
+        app:layout_constraintStart_toEndOf="@+id/profileImg" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circle1"
@@ -58,7 +82,7 @@
         android:src="@drawable/registeration"
         app:civ_border_color="#FFFFFF"
         app:civ_border_width="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/circle"
+        app:layout_constraintEnd_toStartOf="@+id/circle2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -68,20 +92,35 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="180dp"
+        android:src="@drawable/books"
+        app:civ_border_color="#FFFFFF"
+        app:civ_border_width="2dp"
+        app:layout_constraintEnd_toStartOf="@+id/circle3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/circle1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circle3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="180dp"
         android:src="@drawable/today"
         app:civ_border_color="#FFFFFF"
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/circle"
+        app:layout_constraintStart_toEndOf="@+id/circle2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/editInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="정보 수정"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/kopubdotumbold"
         app:layout_constraintEnd_toStartOf="@+id/studyTxt"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,10 +132,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="나의 스터디"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/kopubdotumbold"
         app:layout_constraintEnd_toStartOf="@+id/todayTxt"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/circle" />
+        app:layout_constraintStart_toEndOf="@+id/editInfo"
+        app:layout_constraintTop_toBottomOf="@+id/circle2" />
 
     <TextView
         android:id="@+id/todayTxt"
@@ -104,10 +145,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="나의 일정"
+        android:textColor="@color/blue"
+        android:fontFamily="@font/kopubdotumbold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/studyTxt"
-        app:layout_constraintTop_toBottomOf="@+id/circle2" />
+        app:layout_constraintTop_toBottomOf="@+id/circle3" />
 
     <View
         android:id="@+id/middleLine"
@@ -121,11 +164,12 @@
 
     <android.widget.Button
         android:id="@+id/logoutBtn"
-        android:layout_width="300dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:background="@drawable/button_rounded_corner_red"
         android:text="로그아웃"
+        android:fontFamily="@font/kopubdotumbold"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -148,7 +192,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/textView9"
@@ -157,8 +202,9 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text="내가 작성한 글"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/kopubdotumbold"
+                android:textColor="#555555"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView12"
@@ -166,17 +212,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
+                android:textColor="#B9B9B9"
+                android:fontFamily="@font/kopubdotumbold"
                 android:gravity="right"
                 android:text=">"
-                android:textColor="#A1A1A1"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/textView10"
@@ -185,8 +232,9 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text="참여 중인 채팅방"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="#555555"
+                android:fontFamily="@font/kopubdotumbold"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -194,11 +242,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
+                android:textColor="#B9B9B9"
+                android:fontFamily="@font/kopubdotumbold"
                 android:gravity="right"
                 android:text=">"
-                android:textColor="#A1A1A1"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -213,8 +261,9 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text="Q&amp;A 내역"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="#555555"
+                android:fontFamily="@font/kopubdotumbold"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textView14"
@@ -222,11 +271,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
+                android:textColor="#B9B9B9"
+                android:fontFamily="@font/kopubdotumbold"
                 android:gravity="right"
                 android:text=">"
-                android:textColor="#A1A1A1"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textSize="20sp" />
         </LinearLayout>
 
     </LinearLayout>

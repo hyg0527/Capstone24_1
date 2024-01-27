@@ -24,6 +24,8 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/button_rounded_corner"
         android:text="로그인"
+        android:fontFamily="@font/kopubdotumbold"
+        android:textSize="16dp"
         android:textColor="#F6F6F6"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
