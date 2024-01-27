@@ -34,10 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:fontFamily="@font/koulen"
             android:gravity="center"
             android:text="CUBRISM"
             android:textColor="@color/blue"
-            android:fontFamily="@font/koulen"
             android:textSize="27sp" />
 
         <EditText
@@ -46,19 +46,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@drawable/edittext_rounded_corner"
+            android:drawableLeft="@drawable/email"
+            android:drawablePadding="6dp"
             android:ems="10"
             android:fontFamily="@font/kotra"
             android:hint="Email address"
-            android:drawableLeft="@drawable/email"
-            android:drawablePadding="6dp"
-            android:textSize="13sp"
-            android:textStyle="bold"
+            android:inputType="text"
             android:letterSpacing="0.1"
+            android:paddingLeft="20dp"
+            android:paddingRight="15dp"
             android:textColor="@color/blue"
             android:textColorHint="@color/blue"
-            android:inputType="text"
-            android:paddingLeft="20dp"
-            android:paddingRight="15dp" />
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/loginPassword"
@@ -66,30 +66,30 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/edittext_rounded_corner"
-            android:ems="10"
-            android:hint="Password"
             android:drawableLeft="@drawable/lock"
             android:drawablePadding="6dp"
-            android:textSize="13sp"
-            android:textStyle="bold"
+            android:ems="10"
+            android:fontFamily="@font/kotra"
+            android:hint="Password"
+            android:inputType="textPassword"
             android:letterSpacing="0.1"
+            android:paddingLeft="16dp"
+            android:paddingRight="15dp"
             android:textColor="@color/blue"
             android:textColorHint="@color/blue"
-            android:fontFamily="@font/kotra"
-            android:inputType="textPassword"
-            android:paddingLeft="16dp"
-            android:paddingRight="15dp" />
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
         <android.widget.Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:fontFamily="@font/koulen"
-            android:textSize="23sp"
-            android:textColor="@color/white"
             android:background="@drawable/button_rounded_corner"
-            android:text="LOGIN" />
+            android:fontFamily="@font/koulen"
+            android:text="LOGIN"
+            android:textColor="@color/white"
+            android:textSize="23sp" />
 
 
         <TextView
@@ -97,12 +97,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:gravity="center"
             android:fontFamily="@font/kopubdotumbold"
+            android:gravity="center"
             android:text="소셜 계정으로 로그인:"
             android:textColor="#939393"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textSize="13dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+
+            <ImageView
+                android:id="@+id/googleSymbol"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginEnd="15dp"
+                app:srcCompat="@drawable/googlesymbol" />
+
+            <ImageView
+                android:id="@+id/kakaoSymbol"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginEnd="50dp"
+                app:srcCompat="@drawable/kakaosymbol" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/signUp2"

@@ -36,10 +36,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="사용자명"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="text"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <EditText
             android:id="@+id/registerEmail"
@@ -49,10 +50,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="아이디 (이메일)"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="text"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <EditText
             android:id="@+id/registerPassword"
@@ -62,10 +64,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="비밀번호"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="textPassword"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <EditText
             android:id="@+id/registerPWConfirm"
@@ -75,10 +78,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="비밀번호 확인"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="textPassword"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +96,8 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:text="본인은 만 14세 이상이고 이용약관에 동의합니다."
-                android:textStyle="bold" />
+                android:textColor="#555555"
+                android:fontFamily="@font/kopubdotumbold" />
         </LinearLayout>
 
         <android.widget.Button
@@ -101,6 +106,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_rounded_corner"
             android:text="회원가입"
+            android:fontFamily="@font/kopubdotumbold"
             android:textColor="#FFFFFF"
             android:textSize="17sp"
             android:textStyle="bold" />
