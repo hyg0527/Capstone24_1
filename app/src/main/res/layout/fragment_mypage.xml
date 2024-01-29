@@ -80,6 +80,8 @@
         android:layout_height="60dp"
         android:layout_marginTop="180dp"
         android:src="@drawable/registeration"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         app:civ_border_color="#FFFFFF"
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toStartOf="@+id/circle2"
@@ -92,6 +94,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="180dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:src="@drawable/books"
         app:civ_border_color="#FFFFFF"
         app:civ_border_width="2dp"
@@ -105,6 +109,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="180dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:src="@drawable/today"
         app:civ_border_color="#FFFFFF"
         app:civ_border_width="2dp"
@@ -168,8 +174,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:background="@drawable/button_rounded_corner_red"
-        android:text="로그아웃"
         android:fontFamily="@font/kopubdotumbold"
+        android:text="로그아웃"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -193,7 +199,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/textView9"
@@ -201,6 +209,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+
                 android:text="내가 작성한 글"
                 android:fontFamily="@font/kopubdotumbold"
                 android:textColor="#555555"
@@ -223,7 +232,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/textView10"
@@ -252,7 +263,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/textView11"

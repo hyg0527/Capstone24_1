@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_margin="20dp"
-        android:background="@android:color/transparent"
+        android:foreground="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
         app:srcCompat="@drawable/close" />
 
     <LinearLayout
@@ -117,6 +119,8 @@
                 android:layout_height="65dp"
                 android:layout_marginStart="100dp"
                 android:layout_marginEnd="15dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 app:srcCompat="@drawable/googlesymbol" />
 
             <ImageView
@@ -124,6 +128,8 @@
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:layout_marginEnd="50dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 app:srcCompat="@drawable/kakaosymbol" />
         </LinearLayout>
 

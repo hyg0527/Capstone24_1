@@ -9,7 +9,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        val backBtn = findViewById<ImageButton>(R.id.imageButton)
+        val backBtn = findViewById<ImageButton>(R.id.backBtn)
         backBtn.setOnClickListener {
             finish()
         }
