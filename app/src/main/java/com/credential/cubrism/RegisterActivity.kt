@@ -34,12 +34,12 @@ class RegisterActivity : AppCompatActivity() {
 
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_profile_pick, null)
 
-        profileImg = findViewById(R.id.profileImgChoose)
+        profileImg = findViewById(R.id.changeImage)
         bottomProfileDialog = BottomSheetDialog(this)
         bottomProfileDialog.setContentView(bottomSheetView)
 
         val backBtn = findViewById<ImageButton>(R.id.backBtn)
-        val profilePick = findViewById<ImageButton>(R.id.imageChoose)
+        val profilePick = findViewById<ImageButton>(R.id.chooseProfile)
         val galleryPick = bottomProfileDialog.findViewById<Button>(R.id.btnGallery)
         val cameraPick = bottomProfileDialog.findViewById<Button>(R.id.btnCamera)
 
