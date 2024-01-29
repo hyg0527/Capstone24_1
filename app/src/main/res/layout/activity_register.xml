@@ -47,19 +47,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/registerLogo"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImgChoose"
                 android:layout_width="102dp"
                 android:layout_height="88dp"
                 android:layout_marginTop="8dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
+                android:src="@drawable/account_circle"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/account_circle" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/imageChoose"
@@ -70,7 +68,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/registerLogo"
+                app:layout_constraintStart_toEndOf="@+id/profileImgChoose"
                 app:srcCompat="@drawable/camera_nostroke" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
