@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="3dp"
             android:layout_weight="1"
-            android:fontFamily="@font/kopubdotumbold"
+            android:fontFamily="@font/godom"
             android:gravity="center_vertical"
             android:text="회원 가입"
             android:textSize="20sp"
