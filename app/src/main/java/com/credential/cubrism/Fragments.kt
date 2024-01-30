@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +16,16 @@ import de.hdodenhof.circleimageview.CircleImageView
 class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_home, container, false)
-        val login = view.findViewById<Button>(R.id.loginButtonHome)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val login = view.findViewById<LinearLayout>(R.id.loginBtnLayout)
         login.setOnClickListener {
-            val intent = Intent(requireContext(), LoginActivity::class.java)
+            val intent = Intent(requireActivity(), LoginActivity::class.java)
             startActivity(intent)
         }
-        return view
     }
 }
 
@@ -56,28 +60,28 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
         val profileFix = view.findViewById<CircleImageView>(R.id.circle1)
 
         profileFix.setOnClickListener {
-            val fragmentTransaction = parentFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custon_fade_out)
+//            val fragmentTransaction = parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+//
+//            // ProfileFixFragment를 생성하여 추가 또는 교체
+//            val profileFixFragment = ProfileFixFragment()
+//            fragmentTransaction.replace(R.id.fragmentContainerView, profileFixFragment)
+//
+//            // 백 스택에 추가, Transaction을 커밋
+//            fragmentTransaction.addToBackStack(null)
+//            fragmentTransaction.commit()
+            val intent = Intent(requireActivity(), ProfileFixActivity::class.java)
+            startActivity(intent)
 
-            // ProfileFixFragment를 생성하여 추가 또는 교체
-            val profileFixFragment = ProfileFixFragment()
-            fragmentTransaction.replace(R.id.fragmentContainerView, profileFixFragment)
-
-            // 백 스택에 추가, Transaction을 커밋
-            //fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
         }
     }
 }
-class ProfileFixFragment : Fragment(R.layout.fragment_mypage_profile) {
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val backBtn = view.findViewById<ImageButton>(R.id.backBtnProfile)
-        backBtn.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-    }
-}
-
-
-
+//class ProfileFixFragment : Fragment(R.layout.fragment_mypage_profile) {
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        val backBtn = view.findViewById<ImageButton>(R.id.backBtnProfile)
+//        backBtn.setOnClickListener {
+//            parentFragmentManager.popBackStack()
+//        }
+//    }
+//}
