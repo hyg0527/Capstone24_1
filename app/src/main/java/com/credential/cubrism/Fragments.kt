@@ -11,6 +11,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -39,6 +41,11 @@ class MedalFragment : Fragment(R.layout.fragment_medal) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_medal, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.gridRecyclerView)
+        val floatingActionButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        floatingActionButton.setOnClickListener {  // 검색 버튼 클릭
+            val bottomSheetDialog = MyBottomSheetDialogFragment()
+            bottomSheetDialog.show(requireActivity().supportFragmentManager, bottomSheetDialog.tag)
+        }
 
         val nameList = ArrayList<String>().apply {
             for (i in 1..30) { add("item $i") }
@@ -85,3 +92,11 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
 //        }
 //    }
 //}
+class MyBottomSheetDialogFragment : BottomSheetDialogFragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.dialog_medal_search, container, false)
+    }
+}
