@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/arrow_left" />
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:foreground="@android:color/transparent"
+            app:srcCompat="@drawable/arrow_left" />
+
+        <TextView
+            android:id="@+id/txtRegister"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/godom"
+            android:gravity="center_vertical"
+            android:text="회원 가입"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,25 +42,49 @@
         android:layout_marginRight="30dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/registerLogo"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            app:srcCompat="@drawable/logo" />
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/changeImage"
+                android:layout_width="102dp"
+                android:layout_height="88dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/account_circle"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/chooseProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-30dp"
+                android:foreground="@android:color/transparent"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/changeImage"
+                app:srcCompat="@drawable/camera_nostroke" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <EditText
             android:id="@+id/registerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="사용자명"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="text"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <EditText
             android:id="@+id/registerEmail"
@@ -49,10 +94,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="아이디 (이메일)"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="text"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <EditText
             android:id="@+id/registerPassword"
@@ -62,10 +108,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="비밀번호"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="textPassword"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <EditText
             android:id="@+id/registerPWConfirm"
@@ -75,10 +122,11 @@
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="비밀번호 확인"
+            android:textSize="17dp"
+            android:fontFamily="@font/kopubdotumbold"
             android:inputType="textPassword"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textStyle="bold" />
+            android:paddingRight="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +140,8 @@
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:text="본인은 만 14세 이상이고 이용약관에 동의합니다."
-                android:textStyle="bold" />
+                android:textColor="#555555"
+                android:fontFamily="@font/kopubdotumbold" />
         </LinearLayout>
 
         <android.widget.Button
@@ -101,6 +150,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_rounded_corner"
             android:text="회원가입"
+            android:fontFamily="@font/kopubdotumbold"
             android:textColor="#FFFFFF"
             android:textSize="17sp"
             android:textStyle="bold" />
