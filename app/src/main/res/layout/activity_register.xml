@@ -45,38 +45,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/changeImage"
-                android:layout_width="102dp"
-                android:layout_height="88dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/account_circle"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/chooseProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="-30dp"
-                android:foreground="@android:color/transparent"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/changeImage"
-                app:srcCompat="@drawable/camera_nostroke" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:orientation="horizontal"/>
 
         <EditText
             android:id="@+id/registerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="60dp"
             android:background="@drawable/edittext_rounded_corner"
             android:ems="10"
             android:hint="사용자명"
@@ -99,6 +74,88 @@
             android:inputType="text"
             android:paddingLeft="15dp"
             android:paddingRight="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/emailCode"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_rounded_corner"
+                    android:ems="10"
+                    android:fontFamily="@font/kopubdotumbold"
+                    android:hint="인증 코드"
+                    android:inputType="text"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:textSize="17dp"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/chooseProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="-60dp"
+                    android:text="05:00"
+                    android:textSize="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/emailCode" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <EditText
+                android:id="@+id/emailCode2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_rounded_corner"
+                android:ems="10"
+                android:fontFamily="@font/kopubdotumbold"
+                android:hint="이메일 인증이 필요합니다."
+                android:inputType="text"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:textSize="17dp" />
+
+            <android.widget.Button
+                android:id="@+id/codeBtn"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_rounded_corner"
+                android:fontFamily="@font/kopubdotumbold"
+                android:text="인증 요청"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/isvalidCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/kopubdotumbold"
+            android:text="✓ 유효하지 않은 인증 코드입니다."
+            android:textColor="@color/red2"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/registerPassword"
@@ -131,7 +188,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <CheckBox
