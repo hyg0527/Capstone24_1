@@ -15,19 +15,19 @@
         android:text="갤러리"
         android:fontFamily="@font/kopubdotumbold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnCamera"
+        app:layout_constraintEnd_toStartOf="@+id/btnResetImage"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pickProfile" />
 
     <Button
-        android:id="@+id/btnCamera"
+        android:id="@+id/btnResetImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:text="카메라"
         android:fontFamily="@font/kopubdotumbold"
+        android:text="기본 프로필로 변경"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
