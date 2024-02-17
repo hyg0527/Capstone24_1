@@ -1,17 +1,23 @@
 package com.credential.cubrism
 
+import android.content.Context
 import android.os.Bundle
+import android.os.IBinder
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
+import android.widget.SearchView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MedalFragment : Fragment(R.layout.fragment_medal) {
@@ -30,13 +36,12 @@ class MedalFragment : Fragment(R.layout.fragment_medal) {
 
 class MedalHomeFragment : Fragment(R.layout.fragment_medal_home) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_medal_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_medal_home, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.gridRecyclerView)
         val floatingActionButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
 
         floatingActionButton.setOnClickListener {  // 검색 버튼 클릭
-            val bottomSheetDialog = MedalSearchFragment()
-            bottomSheetDialog.show(requireActivity().supportFragmentManager, bottomSheetDialog.tag)
+            showSearchFragment()
         }
 
         val nameList = ArrayList<String>().apply { // 아이템 임의로 추가(카테고리)
@@ -70,11 +75,18 @@ class MedalHomeFragment : Fragment(R.layout.fragment_medal_home) {
             .addToBackStack(null)
             .commit()
     }
+    private fun showSearchFragment() {
+        (parentFragment as MedalFragment).childFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+            .replace(R.id.medalFragmentContainerView, MedalSearchFragment())
+            .addToBackStack(null)
+            .commit()
+    }
 }
 // 카테고리 중간 리스트 fragment
 class MedalListFragment : Fragment(R.layout.fragment_medal_category) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_medal_category, container, false)
+        val view = inflater.inflate(R.layout.fragment_medal_category, container, false)
 
         val categoryTitle = view.findViewById<TextView>(R.id.txtListName)
         val receivedData = arguments?.getString("category") // 데이터 수신 (여기선 카테고리 이름)
@@ -105,6 +117,8 @@ class MedalListFragment : Fragment(R.layout.fragment_medal_category) {
         backBtn.setOnClickListener {
             (parentFragment as MedalFragment).childFragmentManager.popBackStack()
         }
+        // 뒤로가기 버튼도 동일하게 popstack
+        handleBackStack(view, parentFragment)
     }
 
     private fun showInfoFragment(itemName: String) {
@@ -123,7 +137,7 @@ class MedalListFragment : Fragment(R.layout.fragment_medal_category) {
 // 자격증 상세 정보 fragment
 class MedalInfoFragment : Fragment(R.layout.fragment_medal_info) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_medal_info, container, false)
+        val view = inflater.inflate(R.layout.fragment_medal_info, container, false)
 
         val infoTitle = view.findViewById<TextView>(R.id.txtMedalName)
         val receivedData = arguments?.getString("name")
@@ -139,21 +153,96 @@ class MedalInfoFragment : Fragment(R.layout.fragment_medal_info) {
         backBtn.setOnClickListener {
             (parentFragment as MedalFragment).childFragmentManager.popBackStack()
         }
+        handleBackStack(view, parentFragment)
     }
 }
 
 // 자격증 검색 dialogfragment
-class MedalSearchFragment : BottomSheetDialogFragment() {
+class MedalSearchFragment : Fragment(R.layout.fragment_medal_search) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_medal_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_medal_search, container, false)
+        val medalSearchView = view.findViewById<RecyclerView>(R.id.medalSearchView)
+
+        // 검색 기능 테스트 데이터 몇개 임의로 추가했음. 개수 늘리고 글자 변경해서 테스트(영어도 될거임)
+        // 왼쪽에 사진은 카테고리별 아이콘으로 넣을 예정. 현재는 한가지로 통일함.
+        val names = listOf("가마우지", "고양이", "고라니", "나무늘보", "다람쥐", "라마", "말", "바다표범", "사자", "아나콘다", "호랑이")
+        val imageRes = R.drawable.ellipse_1
+        val itemList = ArrayList<DialogItem>().apply {
+            for (name in names) {
+                add(DialogItem(name, imageRes))
+            }
+        }
+
+        val listAdapter = DialogSearchAdapter(itemList)
+        val layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+        medalSearchView.layoutManager = layoutManager
+        medalSearchView.adapter = listAdapter
+
+        val dividerItemDecoration = DividerItemDecoration(requireActivity(), layoutManager.orientation) // 구분선 추가
+        medalSearchView.addItemDecoration(dividerItemDecoration)
+
+        listAdapter.setItemClickListener(object: SearchItemClickListener { // 아이템 클릭하면 상세정보로 이동
+            override fun onItemClick(item: DialogItem) {
+                showInfoFragmentSearch(item)
+                hideKeyboard(requireContext(), view)
+            }
+        })
+
+        val searchView = view.findViewById<SearchView>(R.id.searchViewMedal) // searchView 선언
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean { // 검색어 제출시 호출(여기선 안씀)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean { // 검색어 실시간 변경 리스너
+                listAdapter.filter.filter(newText.orEmpty()) // 글자 변경시마다 리사이클러뷰 갱신
+                return true
+            }
+        })
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // dialogfragment의 높이, 길이 조절 여부 설정
-        val bottomDialogBehavior = BottomSheetBehavior.from(view.parent as View)
-        bottomDialogBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        bottomDialogBehavior.peekHeight = resources.displayMetrics.heightPixels
-        bottomDialogBehavior.isDraggable = true
+        val backBtn = view.findViewById<ImageButton>(R.id.backBtnMedalSearchInfo)
+
+        backBtn.setOnClickListener {
+            (parentFragment as MedalFragment).childFragmentManager.popBackStack()
+        }
+        handleBackStack(view, parentFragment)
+    }
+
+    private fun showInfoFragmentSearch(itemName: DialogItem) {
+        val fragment = MedalInfoFragment()
+        val bundle = Bundle()
+        bundle.putString("name", itemName.name ?: "null")
+        fragment.arguments = bundle
+
+        (parentFragment as MedalFragment).childFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+            .replace(R.id.medalFragmentContainerView, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    // 뷰에 포커스를 주고 키보드를 숨기는 함수
+    private fun hideKeyboard(context: Context, view: View) {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+}
+
+// 백스택 호출 함수 선언 (뒤로 가기)
+private fun handleBackStack(v: View, parentFragment: Fragment?) {
+    v.isFocusableInTouchMode = true
+    v.requestFocus()
+    v.setOnKeyListener { _, keyCode, event ->
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+            (parentFragment as MedalFragment).childFragmentManager.popBackStack()
+            return@setOnKeyListener true
+        }
+        false
     }
 }

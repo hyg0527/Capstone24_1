@@ -2,6 +2,7 @@ package com.credential.cubrism
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -50,5 +51,19 @@ class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
         backBtn.setOnClickListener {
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
         }
+        handleBackStack(view, parentFragment)
+    }
+}
+
+// 백스택 호출 함수 선언
+private fun handleBackStack(v: View, parentFragment: Fragment?) {
+    v.isFocusableInTouchMode = true
+    v.requestFocus()
+    v.setOnKeyListener { _, keyCode, event ->
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+            return@setOnKeyListener true
+        }
+        false
     }
 }
