@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"
+            app:srcCompat="@drawable/lightblue_photo" />
+
+        <LinearLayout
+            android:layout_width="230dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="자격증 이름"
+                android:fontFamily="@font/kopubdotumbold"
+                android:textSize="13dp"
+                android:maxLines="1"
+                android:textColor="@color/blue"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/kopubdotumbold"
+                    android:text="게시글 제목이 들어갑니다"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:text="0"
+                    android:textColor="@color/blue"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kopubdotummedium"
+                android:layout_marginTop="3dp"
+                android:maxLines="3"
+                android:text="내용이 들어가는 부분이고 최대 세 줄까지 들어가도록 만들었습니다 그 이상은 가독성이 떨어지는 것 같아요." />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="18:23"
+            android:textColor="#9E9E9E"
+            android:fontFamily="@font/kopubdotumbold"
+            android:textSize="13dp"
+            />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
