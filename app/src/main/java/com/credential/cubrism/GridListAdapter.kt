@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 
 // ItemClickListener 인터페이스 정의
 interface ItemClickListener {
-    fun onItemClick(item: String)
+    fun onItemClick(item: GridItems)
 }
+data class GridItems(val name: String? = null, val icon: Int? = null)
 
-class GridListAdapter(private val items: ArrayList<String>) : RecyclerView.Adapter<GridListAdapter.ViewHolder>() {
+class GridListAdapter(private val items: ArrayList<GridItems>) : RecyclerView.Adapter<GridListAdapter.ViewHolder>() {
     private var itemClickListener: ItemClickListener? = null    // ItemClickListener를 저장할 변수
     fun setItemClickListener(listener: ItemClickListener) {    // ItemClickListener를 설정하는 메서드
         itemClickListener = listener
@@ -22,7 +23,7 @@ class GridListAdapter(private val items: ArrayList<String>) : RecyclerView.Adapt
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val listName = v.findViewById<TextView>(R.id.listName)
-        val icon = v.findViewById<ImageView>(R.id.medalImage)
+        val icon = v.findViewById<ImageView>(R.id.icon)
         init {
             icon.setOnClickListener {
                 val position = adapterPosition
@@ -43,7 +44,12 @@ class GridListAdapter(private val items: ArrayList<String>) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.listName.text = items[position]
+        holder.listName.text = items[position].name
+
+        val currentItem = items[position]
+        currentItem.icon?.let {
+            holder.icon.setImageResource(it)
+        }
     }
 }
 

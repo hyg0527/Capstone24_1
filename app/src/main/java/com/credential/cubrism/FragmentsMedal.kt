@@ -43,9 +43,18 @@ class MedalHomeFragment : Fragment(R.layout.fragment_medal_home) {
         floatingActionButton.setOnClickListener {  // 검색 버튼 클릭
             showSearchFragment()
         }
+        // 카테고리 추가. 자격항목이 없는 것은 제외하였음.(사업관리, 금융보험, 법률소방..)
+        val categoryText = listOf("경영.회계.사무", "교육.자연.과학", "보건.의료", "사회복지.종교", "디자인.방송", "운전.운송",
+            "영업.판매", "이용.여행.스포츠", "음식서비스", "건설", "광업자원", "기계", "재료", "화학", "섬유.의복", "전기.전자", "정보통신",
+            "식품.가공", "인쇄.목재.가구.공예", "농림어업", "안전관리", "환경.에너지") // - 총 22가지
+        val nameList = ArrayList<GridItems>().apply {
+            for (i in 1..22) {
+                val icon = "icon_" + String.format("%02d", i)
+                val iconResourceID = context?.resources?.getIdentifier(icon, "drawable", context?.packageName)
+                val categoryTextName = categoryText[i - 1]
 
-        val nameList = ArrayList<String>().apply { // 아이템 임의로 추가(카테고리)
-            for (i in 1..30) { add("item $i") }
+                add(GridItems(categoryTextName, iconResourceID))
+            }
         }
         val gridListAdapter = GridListAdapter(nameList)
         recyclerView.layoutManager = GridLayoutManager(requireActivity(), 3)
@@ -55,8 +64,8 @@ class MedalHomeFragment : Fragment(R.layout.fragment_medal_home) {
         recyclerView.addItemDecoration(ItemSpaceMargin(space))
 
         gridListAdapter.setItemClickListener(object : ItemClickListener {
-            override fun onItemClick(item: String) {
-                showCategoryFragment(item)
+            override fun onItemClick(item: GridItems) {
+                showCategoryFragment(item.name ?: "")
             }
         })
 

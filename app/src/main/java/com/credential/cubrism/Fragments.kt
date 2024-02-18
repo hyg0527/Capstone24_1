@@ -27,6 +27,20 @@ class StudyFragment : Fragment(R.layout.fragment_study) {
 class CalFragment : Fragment(R.layout.fragment_cal) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 처음 화면을 fragment_cal_month 으로 설정
+        if (savedInstanceState == null) {
+            childFragmentManager.beginTransaction()
+                .replace(R.id.calFragmentContainerView, CalMonthFragment())
+                .setReorderingAllowed(true)
+                .commit()
+        }
+    }
+}
+
+class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val calendarView = view.findViewById<CalendarView>(R.id.calendarView)
         val currentDate = view.findViewById<TextView>(R.id.txtCurrentDate)
 
@@ -43,6 +57,10 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
 
         currentDate.text = todayString
     }
+}
+
+class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
+
 }
 
 class MyPageFragment : Fragment(R.layout.fragment_mypage) {
