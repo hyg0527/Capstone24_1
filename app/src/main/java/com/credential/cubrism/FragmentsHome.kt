@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
@@ -40,6 +41,15 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
                 .addToBackStack(null)
                 .commit()
         }
+
+        val qnaEnter = view.findViewById<Button>(R.id.btnQnaEnter)
+        qnaEnter.setOnClickListener {
+            (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+                .replace(R.id.homeFragmentContainerView, QnaFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 }
 
@@ -51,6 +61,14 @@ class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
         backBtn.setOnClickListener {
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
         }
+        handleBackStack(view, parentFragment)
+    }
+}
+
+class QnaFragment : Fragment(R.layout.fragment_qna) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         handleBackStack(view, parentFragment)
     }
 }
