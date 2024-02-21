@@ -54,6 +54,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 }
 
 class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
+    private var view: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val backBtn = view.findViewById<ImageButton>(R.id.backBtnNotify)
@@ -61,15 +62,36 @@ class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
         backBtn.setOnClickListener {
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
         }
+
+        this.view = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            view?.let { handleBackStack(it, parentFragment) }
+        }
     }
 }
 
 class QnaFragment : Fragment(R.layout.fragment_qna) {
+    private var view: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        this.view = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            view?.let { handleBackStack(it, parentFragment) }
+        }
     }
 }
 

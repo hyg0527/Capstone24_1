@@ -119,6 +119,7 @@ class MedalListFragment : Fragment(R.layout.fragment_medal_category) {
         return view
     }
 
+    private var sView: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val backBtn = view.findViewById<ImageButton>(R.id.backBtnMedalList)
@@ -127,7 +128,17 @@ class MedalListFragment : Fragment(R.layout.fragment_medal_category) {
             (parentFragment as MedalFragment).childFragmentManager.popBackStack()
         }
         // 뒤로가기 버튼도 동일하게 popstack
+        sView = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            sView?.let { handleBackStack(it, parentFragment) }
+        }
     }
 
     private fun showInfoFragment(itemName: String) {
@@ -145,6 +156,7 @@ class MedalListFragment : Fragment(R.layout.fragment_medal_category) {
 }
 // 자격증 상세 정보 fragment
 class MedalInfoFragment : Fragment(R.layout.fragment_medal_info) {
+    private var iView: View? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_medal_info, container, false)
 
@@ -162,7 +174,18 @@ class MedalInfoFragment : Fragment(R.layout.fragment_medal_info) {
         backBtn.setOnClickListener {
             (parentFragment as MedalFragment).childFragmentManager.popBackStack()
         }
+
+        iView = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            iView?.let { handleBackStack(it, parentFragment) }
+        }
     }
 }
 
@@ -212,6 +235,7 @@ class MedalSearchFragment : Fragment(R.layout.fragment_medal_search) {
         return view
     }
 
+    private var sView: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val backBtn = view.findViewById<ImageButton>(R.id.backBtnMedalSearchInfo)
@@ -219,8 +243,20 @@ class MedalSearchFragment : Fragment(R.layout.fragment_medal_search) {
         backBtn.setOnClickListener {
             (parentFragment as MedalFragment).childFragmentManager.popBackStack()
         }
+
+        sView = view
         handleBackStack(view, parentFragment)
     }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            sView?.let { handleBackStack(it, parentFragment) }
+        }
+    }
+
 
     private fun showInfoFragmentSearch(itemName: DialogItem) {
         val fragment = MedalInfoFragment()
