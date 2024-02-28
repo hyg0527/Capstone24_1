@@ -11,26 +11,28 @@ interface QnaClickListener {
     fun onqnaClick(item: String)
 }
 
+data class qnadata(val title: String? = null, val postimg: Int? = null,
+                   val postin: String? = null, val writingtime: String? = null)
 
-class QnaAdapter(private val items: ArrayList<String>) : RecyclerView.Adapter<QnaAdapter.QnaViewHolder>() {
+class QnaAdapter(private val items: ArrayList<qnadata>) : RecyclerView.Adapter<QnaAdapter.QnaViewHolder>() {
     private var qnaClickListener: QnaClickListener? = null
     fun setQnaClickListener(listener: QnaClickListener) {
         qnaClickListener = listener
     }
     inner class QnaViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val qnane = v.findViewById<TextView>(R.id.qnaListView)
+        val qnane = v.findViewById<TextView>(R.id.textView15)
         init {
             v.setOnClickListener {
                 val position = adapterPosition
                 val clickedInfo = items[position]
-                qnaClickListener?.onqnaClick(clickedInfo)
+                //qnaClickListener?.onqnaClick(clickedInfo)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QnaViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_photo_qna, parent, false)
+        val view = layoutInflater.inflate(R.layout.item_list_qna, parent, false)
         return QnaViewHolder(view)
     }
 
@@ -39,6 +41,6 @@ class QnaAdapter(private val items: ArrayList<String>) : RecyclerView.Adapter<Qn
     }
 
     override fun onBindViewHolder(holder: QnaViewHolder, position: Int) {
-        holder.qnane.text = items[position]
+        holder.qnane.text = items[position].title
     }
 }

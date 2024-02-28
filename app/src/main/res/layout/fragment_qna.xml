@@ -33,7 +33,7 @@
             tools:layout_editor_absoluteY="218dp" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/btnAddPost"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="5dp"
@@ -118,24 +118,16 @@
             app:srcCompat="@drawable/lightblue_line" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="0dp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/qnaTotalList"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout4"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout4" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/qnaListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
-    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton_qna"

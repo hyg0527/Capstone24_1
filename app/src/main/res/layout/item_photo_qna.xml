@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="55dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="55dp"
         android:layout_gravity="center"
         android:src="@drawable/qna_photo"
         android:text="TextView"

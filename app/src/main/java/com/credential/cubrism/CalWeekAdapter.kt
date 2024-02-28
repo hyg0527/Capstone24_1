@@ -11,7 +11,8 @@ interface DateWeekClickListener {
     fun onItemClick(item: DateWeek)
 }
 
-data class DateWeek(val date: Int? = null, val dayOfTheWeek: String? = null)
+data class DateWeek(val date: Int
+? = null, val dayOfTheWeek: String? = null)
 
 class CalWeekAdapter(private var items: ArrayList<DateWeek>) : RecyclerView.Adapter<CalWeekAdapter.WeekViewHolder>() {
     private var itemClickListener: DateWeekClickListener? = null
