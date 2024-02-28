@@ -6,8 +6,12 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -82,7 +86,16 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         super.onViewCreated(view, savedInstanceState)
 
         this.view = view
+
+        val rcv = view.findViewById<RecyclerView>(R.id.qnaListView)
+        val namelist = arrayListOf("1", "2", "3")
+        rcv.layoutManager = LinearLayoutManager(requireActivity())
+        rcv.adapter = QnaAdapter(namelist)
+
+
         handleBackStack(view, parentFragment)
+
+
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -94,6 +107,32 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         }
     }
 }
+
+class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) {
+    private var view: View? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        this.view = view
+
+
+
+        handleBackStack(view, parentFragment)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            view?.let { handleBackStack(it, parentFragment) }
+        }
+    }
+
+
+}
+
+
+
 
 // 백스택 호출 함수 선언
 private fun handleBackStack(v: View, parentFragment: Fragment?) {
