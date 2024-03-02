@@ -1,7 +1,6 @@
 package com.credential.cubrism
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,20 +14,16 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
-class StudyFragment : Fragment(R.layout.fragment_study) {
-
-}
 
 class CalFragment : Fragment(R.layout.fragment_cal) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +99,7 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
 
 class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 프래그먼트 클래스
     private lateinit var currentDate: TextView
+    private lateinit var selectedDateToAdapter: String
     private lateinit var adapter: CalMonthListAdapter
     private lateinit var calMonthViewModel: CalMonthViewModel
 
@@ -135,14 +131,37 @@ class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 �
             val selectedDate = "${year}년 ${month + 1}월 ${dayOfMonth}일"
             currentDate.text = selectedDate
 
-            val selectedDateToAdapter = "$year - ${String.format("%02d", month + 1)} - ${String.format("%02d", dayOfMonth)}"
+            selectedDateToAdapter = "$year - ${String.format("%02d", month + 1)} - ${String.format("%02d", dayOfMonth)}"
             updateViewModel(selectedDateToAdapter)
         }
+
+        adapter.setItemClickListener(object: ScheduleClickListener { // 일정 상세정보 dialog 호출
+            override fun onItemClick(item: CalMonth) {
+                val dialogFragment = CalScheduleInfoFragment()
+                val bundle = Bundle()
+                dialogFragment.setBottomSheetListener(object: CalScheduleInfoFragment.BottomSheetListener {
+                    override fun onDismissed(message: String) { // 삭제, 수정 요청시 recyclerview 항목 갱신 수행
+                        if (message.equals("delete")) {
+                            adapter.updateList(selectedDateToAdapter)
+                            Toast.makeText(requireContext(), "일정이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        else if (message.equals("modify")) {
+//                            adapter.updateList(dateFormatToAdapter)
+                            Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                })
+
+                bundle.putParcelable("scheduleInfo", item) // item의 정보를 bottomdialog로 넘기기
+                dialogFragment.arguments = bundle
+                dialogFragment.show(parentFragmentManager, "scheduleInfo")
+            }
+        })
     }
 
-    private fun updateViewModel(date: String) { // 아이템이 추가/삭제될 때마다 호출됨(실시간 데이터 변경 감지) -> db연결 후에는 서버 연결 코드로 변경 예정.
+    private fun updateViewModel(date: String) { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지) -> db연결 후에는 서버 연결 코드로 변경 예정.
         calMonthViewModel.calMonthList.observe(viewLifecycleOwner) { calMonthList ->
-
+            println("호출됨")
             adapter.clearItem() // 업데이트 전 리스트 초기화 후 항목을 모두 추가 (중복 삽입 방지)
             calMonthList.forEach { calMonth ->
                 adapter.addItem(calMonth)
@@ -342,7 +361,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val receivedDate = arguments?.getString("date")
+        val receivedDate = arguments?.getString("date") ?: ""
 
         startTime = view.findViewById(R.id.txtStartTime)
         endTime = view.findViewById(R.id.txtEndTime)
@@ -355,6 +374,10 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         endTime.setOnClickListener {
             showTimePickDialog("end")
         }
+        txtCurrentDateAdd.setOnClickListener {
+            val currentDate = txtCurrentDateAdd.text.toString()
+            showDatePickDialog(currentDate)
+        }
 
         calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
 
@@ -365,12 +388,13 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             val title = view.findViewById<EditText>(R.id.editTextAddTitle).text.toString()
             val fullTime = view.findViewById<CheckBox>(R.id.isFullCheck)
             val info = view.findViewById<EditText>(R.id.editTextTextMultiLine).text.toString()
+            val currentDate = txtCurrentDateAdd.text.toString() // 위와 변수를 중복 선언한 이유는 값을 바로 가져 와야 하기 때문(animator 실습때와 동일)
             val data: CalMonth
 
             if (fullTime.isChecked) { // 종일이 체크되어있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
-                data = CalMonth(receivedDate, title, info, "종일", fullTime.isChecked)
+                data = CalMonth(currentDate, title, info, "종일", fullTime.isChecked)
             }
-            else data = CalMonth(receivedDate, title, info, "${startTime.text} ~ ${endTime.text}", fullTime.isChecked)
+            else data = CalMonth(currentDate, title, info, "${startTime.text} ~ ${endTime.text}", fullTime.isChecked)
 
             calMonthViewModel.addDateMonth(data)
             Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
@@ -418,6 +442,51 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         dialog.show()
     }
 
+    private fun showDatePickDialog(dateString: String) { // 날짜 선택 다이얼로그 창 출력 함수
+        val builder = AlertDialog.Builder(requireActivity())
+        val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.dialog_schedule_datepick, null)
+
+        val calendar = view.findViewById<CalendarView>(R.id.calendarViewDialog)
+        selectDateOnInit(calendar, dateString) // 선택한 날짜로 미리 선택해놓도록 설정
+
+        var selectedDate = Date()
+        calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val calInstance = Calendar.getInstance()
+            calInstance.set(year, month, dayOfMonth)
+            selectedDate = calInstance.time
+        }
+
+        builder.setView(view).setTitle("날짜 선택")
+            .setPositiveButton("OK") { dialog, _ ->
+                selectDateOnChoose(selectedDate)
+                dialog.dismiss()
+            }
+            .setNegativeButton("cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun selectDateOnInit(calendar: CalendarView, dateString: String) { // 날짜 다이얼로그가 호출될때 현재 날짜를 미리 선택하도록 설정하는 함수
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = dateFormat.parse(dateString.replace(" ", "")) ?: Date()
+
+        val calInstance = Calendar.getInstance()
+        calInstance.time = date
+
+        calendar.date = calInstance.timeInMillis
+    }
+
+    private fun selectDateOnChoose(selectedDate: Date) { // 날짜를 선택하고 ok를 누를때 날짜를 textview에 넘기는 함수
+        val dateFormat = SimpleDateFormat("yyyy - MM - dd", Locale.getDefault())
+        val formattedDate = dateFormat.format(selectedDate)
+
+        txtCurrentDateAdd.text = formattedDate
+    }
+
     private fun timeValue(noon: Int, hour: Int, minute: Int): String { // dialog 선택후 textview에 출력될 테스트 반환 함수
         val isNoon: String
         if (noon == 0) isNoon = "오전"
@@ -428,15 +497,65 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         return timeText
     }
 }
+// 일정 상세 화면 다이얼로그
+class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_info) {
+    private lateinit var calMonthViewModel: CalMonthViewModel
+    private var dialogListener: BottomSheetListener? = null
 
-class MyPageFragment : Fragment(R.layout.fragment_mypage) {
+    interface BottomSheetListener {
+        fun onDismissed(message: String)
+    }
+    fun setBottomSheetListener(listener: BottomSheetListener) {
+        dialogListener = listener
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val profileFix = view.findViewById<CircleImageView>(R.id.circle1)
 
-        profileFix.setOnClickListener {
-            val intent = Intent(requireActivity(), ProfileFixActivity::class.java)
-            startActivity(intent)
+        val delete = view.findViewById<TextView>(R.id.btnSchDeleteInfo)
+        val modify = view.findViewById<TextView>(R.id.btnSchModifyInfo)
+        val item = arguments?.getParcelable<CalMonth>("scheduleInfo")
+        calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
+
+        showInfo(view, item)
+
+        delete.setOnClickListener {
+            deleteSchedule(item)
+            dismiss()
+        }
+        modify.setOnClickListener {
+            val newItem = CalMonth(item?.date,"수정제목","수정정보","수정시간",false)
+            modifySchedule(item, newItem)
+            dismiss()
+        }
+    }
+
+    private fun showInfo(v: View, item: CalMonth?) { // 일정 정보 출력 함수
+        if (item == null) return // null값 예외 처리
+        else {
+            val title = v.findViewById<TextView>(R.id.txtSchTitleInfo)
+            val period = v.findViewById<TextView>(R.id.txtSchPeriodInfo)
+            val description = v.findViewById<TextView>(R.id.txtSchDesInfo)
+
+            title.text = item.title
+            period.text = "${item.date}  ${item.time}"
+            description.text = item.info
+        }
+    }
+
+    private fun deleteSchedule(selectedItem: CalMonth?) { // 일정 삭제 함수
+        if (selectedItem == null) return
+        else {
+            calMonthViewModel.deleteDateMonth(selectedItem)
+            dialogListener?.onDismissed("delete")
+        }
+    }
+
+    private fun modifySchedule(selectedItem: CalMonth?, newItem: CalMonth) { // 일정 수정 함수
+        if (selectedItem == null) return
+        else {
+            calMonthViewModel.modifyDateMonth(selectedItem, newItem)
+            dialogListener?.onDismissed("modify")
         }
     }
 }

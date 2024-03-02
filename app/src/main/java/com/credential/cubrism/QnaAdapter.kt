@@ -6,15 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-// InfoClickListener 인터페이스 정의
 interface QnaClickListener {
-    fun onqnaClick(item: String)
+    fun onQnaClick(item: String)
 }
 
-data class qnadata(val title: String? = null, val postimg: Int? = null,
+data class QnaData(val title: String? = null, val postimg: Int? = null,
                    val postin: String? = null, val writingtime: String? = null)
 
-class QnaAdapter(private val items: ArrayList<qnadata>) : RecyclerView.Adapter<QnaAdapter.QnaViewHolder>() {
+class QnaAdapter(private val items: ArrayList<QnaData>) : RecyclerView.Adapter<QnaAdapter.QnaViewHolder>() {
     private var qnaClickListener: QnaClickListener? = null
     fun setQnaClickListener(listener: QnaClickListener) {
         qnaClickListener = listener

@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-
 class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,35 +39,27 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             startActivity(intent)
         }
         notify.setOnClickListener { // 알림 화면 출력
-            (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .replace(R.id.homeFragmentContainerView, NotifyFragment())
-                .addToBackStack(null)
-                .commit()
+            changeFragment(parentFragment, NotifyFragment())
         }
 
         val qnaEnter = view.findViewById<Button>(R.id.btnQnaEnter)
         qnaEnter.setOnClickListener {
-            (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .replace(R.id.homeFragmentContainerView, QnaFragment())
-                .addToBackStack(null)
-                .commit()
+            changeFragment(parentFragment, QnaFragment())
         }
     }
 }
-
+// 알림 화면
 class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
     private var view: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val backBtn = view.findViewById<ImageButton>(R.id.backBtnNotify)
+        this.view = view
 
+        val backBtn = view.findViewById<ImageButton>(R.id.backBtnNotify)
         backBtn.setOnClickListener {
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
         }
 
-        this.view = view
         handleBackStack(view, parentFragment)
     }
 
@@ -80,19 +71,14 @@ class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
         }
     }
 }
-
+// Qna 메인 화면
 class QnaFragment : Fragment(R.layout.fragment_qna) {
     private var view: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         this.view = view
 
-        (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.qnaTotalList, QnaTotalListFragment())
-            .addToBackStack(null)
-            .commit()
+        changeFragmentInQna(QnaTotalListFragment()) // 처음 TotalList 화면으로 초기화
 
         val btnAddPost = view.findViewById<ImageView>(R.id.btnAddPost)
         val totalBtn = view.findViewById<TextView>(R.id.textView6)
@@ -109,7 +95,6 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         totalBtn.setOnClickListener {
             changeTotalOrWhole("total")
         }
-
         wholeBtn.setOnClickListener {
             changeTotalOrWhole("whole")
         }
@@ -117,20 +102,21 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         handleBackStack(view, parentFragment)
     }
 
-    private fun changeTotalOrWhole(value: String) {
+    private fun changeTotalOrWhole(value: String) { // 리스트 표시 부분 변경 함수
         if (value.equals("total")) {
-            (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .replace(R.id.qnaTotalList, QnaTotalListFragment())
-                .commit()
+            changeFragmentInQna(QnaTotalListFragment())
         }
         else if (value.equals("whole")) {
-            (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .replace(R.id.qnaTotalList, QnaWholeListFragment())
-                .commit()
+            changeFragmentInQna(QnaWholeListFragment())
         }
         else return
+    }
+    // QnaFragment 내부 전환 함수
+    private fun changeFragmentInQna(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+            .replace(R.id.qnaTotalList, fragment)
+            .commit()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -148,14 +134,13 @@ class QnaTotalListFragment : Fragment(R.layout.fragment_qna_total_post) {
         super.onViewCreated(view, savedInstanceState)
 
         val rcv = view.findViewById<RecyclerView>(R.id.qnaListView)
-        val postList = ArrayList<qnadata>().apply {
-            add(qnadata("제목", R.drawable.qna_photo, "", ""))
+        val postList = ArrayList<QnaData>().apply {
+            add(QnaData("제목", R.drawable.qna_photo, "", ""))
         }
+
         rcv.layoutManager = LinearLayoutManager(requireActivity())
         rcv.adapter = QnaAdapter(postList)
-
     }
-
 }
 
 class QnaWholeListFragment : Fragment(R.layout.fragment_whole_qna_post) {
@@ -188,9 +173,14 @@ class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
     }
 }
 
-
-
-
+// fragment 전환 함수
+private fun changeFragment(parentFragment: Fragment?, fragment: Fragment) {
+    (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
+        .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+        .replace(R.id.homeFragmentContainerView, fragment)
+        .addToBackStack(null)
+        .commit()
+}
 
 // 백스택 호출 함수 선언
 private fun handleBackStack(v: View, parentFragment: Fragment?) {

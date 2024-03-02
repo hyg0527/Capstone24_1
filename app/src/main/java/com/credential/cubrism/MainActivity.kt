@@ -14,8 +14,8 @@ class MainActivity : AppCompatActivity() {
 
         navigationSet()
         // 아래 부분은 미 로그인 상태 에만 실행 하도록 이후에 변경 예정
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(this, LoginActivity::class.java)
+//        startActivity(intent)
     }
 
     private val bottomNavItems = listOf(
