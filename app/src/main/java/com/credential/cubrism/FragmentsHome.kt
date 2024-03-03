@@ -78,7 +78,8 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
 
-        changeFragmentInQna(QnaTotalListFragment()) // 처음 TotalList 화면으로 초기화
+        val listFragment = QnaTotalListFragment()
+        changeFragmentInQna(listFragment) // 처음 TotalList 화면으로 초기화
 
         val btnAddPost = view.findViewById<ImageView>(R.id.btnAddPost)
         val totalBtn = view.findViewById<TextView>(R.id.textView6)
@@ -91,6 +92,18 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
                 .addToBackStack(null)
                 .commit()
         }
+
+        listFragment.setViewList(object: QnaTotalListFragment.ViewQnaList {
+            override fun viewList() {
+                Toast.makeText(requireContext(), "잘 넘어오네요!", Toast.LENGTH_SHORT).show()
+                (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+                    .replace(R.id.homeFragmentContainerView, QnaViewPostFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        })
+
 
         totalBtn.setOnClickListener {
             changeTotalOrWhole("total")
@@ -130,6 +143,13 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
 }
 
 class QnaTotalListFragment : Fragment(R.layout.fragment_qna_total_post) {
+    private var listListener: ViewQnaList? = null
+    interface ViewQnaList {
+        fun viewList()
+    }
+    fun setViewList(listener: ViewQnaList) {
+        listListener = listener
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -138,13 +158,43 @@ class QnaTotalListFragment : Fragment(R.layout.fragment_qna_total_post) {
             add(QnaData("제목", R.drawable.qna_photo, "", ""))
         }
 
+        val adapter = QnaAdapter(postList)
+
         rcv.layoutManager = LinearLayoutManager(requireActivity())
-        rcv.adapter = QnaAdapter(postList)
+        rcv.adapter = adapter
+
+        adapter.setQnaClickListener(object: QnaClickListener {
+            override fun onQnaClick(item: QnaData) {
+                listListener?.viewList()
+            }
+        })
     }
 }
 
 class QnaWholeListFragment : Fragment(R.layout.fragment_whole_qna_post) {
 
+}
+
+class QnaViewPostFragment : Fragment(R.layout.fragment_qna_viewpost) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val backBtn_qnaview = view.findViewById<ImageButton>(R.id.backBtn_qnaview)
+
+        backBtn_qnaview.setOnClickListener {
+            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+        }
+        handleBackStack(view, parentFragment)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            // Fragment가 다시 화면에 나타날 때의 작업 수행
+            view?.let { handleBackStack(it, parentFragment) }
+        }
+    }
 }
 
 class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 프래그먼트
@@ -154,10 +204,20 @@ class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         this.view = view
 
         val postingBtn = view.findViewById<Button>(R.id.postingBtn)
+        val backBtnPosting = view.findViewById<ImageButton>(R.id.backBtnPosting)
+        val dropDown = view.findViewById<ImageView>(R.id.medalDropDown)
 
         postingBtn.setOnClickListener {
-            Toast.makeText(requireContext(), "질문이 등록되었습니다 어쩔", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "질문이 등록되었습니다", Toast.LENGTH_SHORT).show()
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+        }
+
+        backBtnPosting.setOnClickListener {
+            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+        }
+        dropDown.setOnClickListener {
+            // 관심 카테고리 설정 화면 나올 예정.
+            // bottomdialog or dropdown
         }
 
         handleBackStack(view, parentFragment)
