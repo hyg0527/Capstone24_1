@@ -535,8 +535,9 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
             dismiss()
         }
         modify.setOnClickListener {
-            val newItem = CalMonth("수정제목","수정시작시간", "수정끝시간", "수정정보",false)
-            modifySchedule(item, newItem)
+//            val newItem = CalMonth("수정제목","수정시작시간", "수정끝시간", "수정정보",false)
+            modifySchedule(item)
+
             dismiss()
         }
     }
@@ -564,11 +565,67 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
         }
     }
 
-    private fun modifySchedule(selectedItem: CalMonth?, newItem: CalMonth) { // 일정 수정 함수
-        if (selectedItem == null) return
+    private fun modifySchedule(item: CalMonth?) { // 일정 수정 함수
+        if (item == null) return
         else {
-            calMonthViewModel.modifyDateMonth(selectedItem, newItem)
-            dialogListener?.onDismissed("modify")
+//            calMonthViewModel.modifyDateMonth(selectedItem, newItem)
+//            dialogListener?.onDismissed("modify")
+            val fixDialog = CalScheduleModifyFragment()
+            val bundle = Bundle()
+
+            bundle.putParcelable("scheduleFix", item) // item의 정보를 bottomdialog로 넘기기
+            fixDialog.arguments = bundle
+            fixDialog.show(parentFragmentManager, "fixDialog")
         }
+    }
+}
+
+class CalScheduleModifyFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_fix) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val fix = view.findViewById<TextView>(R.id.btnAddScheduleDialogModify)
+        val cancel = view.findViewById<TextView>(R.id.btnCancelScheduleDialog)
+        val item = arguments?.getParcelable<CalMonth>("scheduleFix")
+
+        val title = view.findViewById<EditText>(R.id.editTextAddTitle)
+        val startTime = view.findViewById<TextView>(R.id.txtStartTime)
+        val endTime = view.findViewById<TextView>(R.id.txtEndTime)
+        val startDate = view.findViewById<TextView>(R.id.txtCurrentDateAdd)
+        val endDate = view.findViewById<TextView>(R.id.txtCurrentDateAddEnd)
+
+        println("startTime: " + item?.startTime + ", endTime: " + item?.endTime)
+        val (startDateTxt, startTimeTxt) = splitInfo(item?.startTime ?: "")
+        val (endDateTxt, endTimeTxt) = splitInfo(item?.endTime ?: "")
+
+        title.setText(item?.title)
+        startTime.text = startTimeTxt
+        endTime.text = endTimeTxt
+        startDate.text = startDateTxt
+        endDate.text = endDateTxt
+
+        fix.setOnClickListener {
+            dismiss()
+            Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+        cancel.setOnClickListener {
+            dismiss()
+        }
+    }
+
+    private fun splitInfo(date: String): Pair<String, String> {
+        val splitStartDate: String
+        if (date.contains("종일")) {
+            splitStartDate = "오전 00:00"
+        }
+        else {
+            splitStartDate = date.substringBeforeLast(" 오").trim()
+        }
+
+        val splitStartTime: String
+        splitStartTime = date.takeLast(8)
+        println("time: " + splitStartTime)
+
+        return Pair(splitStartDate, splitStartTime)
     }
 }
