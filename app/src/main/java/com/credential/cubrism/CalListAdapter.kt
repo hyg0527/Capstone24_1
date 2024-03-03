@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 interface ScheduleClickListener {
     fun onItemClick(item: CalMonth)
 }
 
-data class CalMonth(val date: String? = null, val title: String? = null, val info: String? = null,
-                    val time: String? = null, val isFullTime: Boolean) : Parcelable {
+data class CalMonth(val title: String? = null, val startTime: String? = null,
+                    val endTime: String? = null, val info: String? = null, val isFullTime: Boolean) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -24,10 +23,10 @@ data class CalMonth(val date: String? = null, val title: String? = null, val inf
     ) {}
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(date)
         parcel.writeString(title)
         parcel.writeString(info)
-        parcel.writeString(time)
+        parcel.writeString(startTime)
+        parcel.writeString(endTime)
         parcel.writeByte(if (isFullTime) 1 else 0)
     }
 
@@ -55,7 +54,8 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
 
     inner class CalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val title = v.findViewById<TextView>(R.id.txtCalMonthTitle)
-        val time = v.findViewById<TextView>(R.id.txtCalMonthTime)
+        val timeStart = v.findViewById<TextView>(R.id.txtCalMonthTimeStart)
+        val timeEnd = v.findViewById<TextView>(R.id.txtCalMonthTimeEnd)
         init {
             v.setOnClickListener {
                 val position = adapterPosition
@@ -78,7 +78,8 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
 
     override fun onBindViewHolder(holder: CalViewHolder, position: Int) {
         holder.title.text = items[position].title
-        holder.time.text = items[position].time
+        holder.timeStart.text = items[position].startTime
+        holder.timeEnd.text = items[position].endTime
     }
 
     fun updateList(date: String) { // 날짜에 맞는 일정만 화면에 출력하는 함수
@@ -86,8 +87,8 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
         newList.clear()
 
         for (item in items) {
-            if (item.date.equals(date))
-                newList.add(item)
+//            if (item.date.equals(date))
+//                newList.add(item)
         }
 
         items.clear()

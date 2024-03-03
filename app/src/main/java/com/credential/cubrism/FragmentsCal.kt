@@ -357,6 +357,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
     private lateinit var startTime: TextView
     private lateinit var endTime: TextView
     private lateinit var txtCurrentDateAdd: TextView
+    private lateinit var txtCurrentDateAddEnd: TextView
     private lateinit var calMonthViewModel: CalMonthViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -366,7 +367,10 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         startTime = view.findViewById(R.id.txtStartTime)
         endTime = view.findViewById(R.id.txtEndTime)
         txtCurrentDateAdd = view.findViewById(R.id.txtCurrentDateAdd)
+        txtCurrentDateAddEnd = view.findViewById(R.id.txtCurrentDateAddEnd)
+
         txtCurrentDateAdd.text = receivedDate
+        txtCurrentDateAddEnd.text = receivedDate
 
         startTime.setOnClickListener {
             showTimePickDialog("start")
@@ -376,7 +380,11 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         }
         txtCurrentDateAdd.setOnClickListener {
             val currentDate = txtCurrentDateAdd.text.toString()
-            showDatePickDialog(currentDate)
+            showDatePickDialog("start", currentDate)
+        }
+        txtCurrentDateAddEnd.setOnClickListener {
+            val currentDate = txtCurrentDateAdd.text.toString()
+            showDatePickDialog("end", currentDate)
         }
 
         calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
@@ -442,7 +450,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         dialog.show()
     }
 
-    private fun showDatePickDialog(dateString: String) { // 날짜 선택 다이얼로그 창 출력 함수
+    private fun showDatePickDialog(status: String, dateString: String) { // 날짜 선택 다이얼로그 창 출력 함수
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_schedule_datepick, null)
@@ -459,7 +467,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 
         builder.setView(view).setTitle("날짜 선택")
             .setPositiveButton("OK") { dialog, _ ->
-                selectDateOnChoose(selectedDate)
+                selectDateOnChoose(status, selectedDate)
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -480,11 +488,12 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         calendar.date = calInstance.timeInMillis
     }
 
-    private fun selectDateOnChoose(selectedDate: Date) { // 날짜를 선택하고 ok를 누를때 날짜를 textview에 넘기는 함수
+    private fun selectDateOnChoose(status: String, selectedDate: Date) { // 날짜를 선택하고 ok를 누를때 날짜를 textview에 넘기는 함수
         val dateFormat = SimpleDateFormat("yyyy - MM - dd", Locale.getDefault())
         val formattedDate = dateFormat.format(selectedDate)
 
-        txtCurrentDateAdd.text = formattedDate
+        if (status.equals("start")) txtCurrentDateAdd.text = formattedDate
+        else if (status.equals("end")) txtCurrentDateAddEnd.text = formattedDate
     }
 
     private fun timeValue(noon: Int, hour: Int, minute: Int): String { // dialog 선택후 textview에 출력될 테스트 반환 함수
@@ -524,7 +533,7 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
             dismiss()
         }
         modify.setOnClickListener {
-            val newItem = CalMonth(item?.date,"수정제목","수정정보","수정시간",false)
+            val newItem = CalMonth("수정제목","수정시작시간", "수정끝시간", "수정정보",false)
             modifySchedule(item, newItem)
             dismiss()
         }
@@ -538,7 +547,7 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
             val description = v.findViewById<TextView>(R.id.txtSchDesInfo)
 
             title.text = item.title
-            period.text = "${item.date}  ${item.time}"
+            period.text = "${item.startTime} ~\n ${item.endTime}"
             description.text = item.info
         }
     }
