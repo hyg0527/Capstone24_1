@@ -24,9 +24,9 @@ data class CalMonth(val title: String? = null, val startTime: String? = null,
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
-        parcel.writeString(info)
         parcel.writeString(startTime)
         parcel.writeString(endTime)
+        parcel.writeString(info)
         parcel.writeByte(if (isFullTime) 1 else 0)
     }
 
@@ -87,8 +87,20 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
         newList.clear()
 
         for (item in items) {
-//            if (item.date.equals(date))
-//                newList.add(item)
+            println("O")
+            val realDateStart = item.startTime?.substringBefore(" 오")?.trim() ?: ""
+            val realDateEnd = item.endTime?.substringBefore(" 오")?.trim() ?: ""
+            println("start, end: " + realDateStart + " " + realDateEnd)
+
+            val realDateStartDay = realDateStart.takeLast(2).toInt()
+            val realDateEndDay = realDateEnd.takeLast(2).toInt()
+            val dateToInt = date.takeLast(2).toInt()
+            println("startDay, endDay, dateToInt: " + realDateStartDay + " " + realDateEndDay + " " + dateToInt)
+
+            if ((realDateStartDay <= dateToInt) && (realDateEndDay >= dateToInt)) {
+                println("K")
+                newList.add(item)
+            }
         }
 
         items.clear()

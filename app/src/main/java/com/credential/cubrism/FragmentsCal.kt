@@ -383,26 +383,28 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             showDatePickDialog("start", currentDate)
         }
         txtCurrentDateAddEnd.setOnClickListener {
-            val currentDate = txtCurrentDateAdd.text.toString()
+            val currentDate = txtCurrentDateAddEnd.text.toString()
             showDatePickDialog("end", currentDate)
         }
 
         calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
 
-        val add = view.findViewById<TextView>(R.id.btnAddScheduleDialog)
+        val add = view.findViewById<TextView>(R.id.btnAddScheduleDialogModify)
         val cancel = view.findViewById<TextView>(R.id.btnCancelScheduleDialog)
 
         add.setOnClickListener {
             val title = view.findViewById<EditText>(R.id.editTextAddTitle).text.toString()
             val fullTime = view.findViewById<CheckBox>(R.id.isFullCheck)
             val info = view.findViewById<EditText>(R.id.editTextTextMultiLine).text.toString()
-            val currentDate = txtCurrentDateAdd.text.toString() // 위와 변수를 중복 선언한 이유는 값을 바로 가져 와야 하기 때문(animator 실습때와 동일)
+            val currentDateStart = txtCurrentDateAdd.text.toString() // 위와 변수를 중복 선언한 이유는 값을 바로 가져 와야 하기 때문(animator 실습때와 동일)
+            val currentDateEnd = txtCurrentDateAddEnd.text.toString()
             val data: CalMonth
 
             if (fullTime.isChecked) { // 종일이 체크되어있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
-                data = CalMonth(currentDate, title, info, "종일", fullTime.isChecked)
+                data = CalMonth(title, "종일", "종일", info, fullTime.isChecked)
             }
-            else data = CalMonth(currentDate, title, info, "${startTime.text} ~ ${endTime.text}", fullTime.isChecked)
+            else data = CalMonth(title, "${currentDateStart} ${startTime.text}",
+                "${currentDateEnd} ${endTime.text}", info, fullTime.isChecked)
 
             calMonthViewModel.addDateMonth(data)
             Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
@@ -544,10 +546,12 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
         else {
             val title = v.findViewById<TextView>(R.id.txtSchTitleInfo)
             val period = v.findViewById<TextView>(R.id.txtSchPeriodInfo)
+            val periodEnd = v.findViewById<TextView>(R.id.txtSchPeriodInfoEnd)
             val description = v.findViewById<TextView>(R.id.txtSchDesInfo)
 
             title.text = item.title
-            period.text = "${item.startTime} ~\n ${item.endTime}"
+            period.text = item.startTime
+            periodEnd.text = item.endTime
             description.text = item.info
         }
     }
