@@ -20,8 +20,8 @@
             <ImageButton
                 android:id="@+id/backBtn_qnaview"
                 android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="7dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:foreground="@android:color/transparent"
@@ -37,14 +37,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#EDF3FF"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="18dp"
                     android:orientation="vertical">
 
                     <android.widget.Button
                         android:id="@+id/button2"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="30dp"
                         android:layout_marginLeft="20dp"
 
                         android:paddingLeft="15dp"
@@ -52,7 +52,7 @@
                         android:background="@drawable/button_rounded_corner_outline_b_xt"
                         android:fontFamily="@font/kopubdotumbold"
                         android:textColor="@color/blue"
-                        android:textSize="15dp"
+                        android:textSize="13dp"
                         android:text="한식조리기능사" />
 
                     <TextView
@@ -69,19 +69,19 @@
                         android:id="@+id/textView37"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginBottom="35dp"
-                        android:textSize="17dp"
+                        android:textSize="16dp"
                         android:fontFamily="@font/kopubdotummedium"
-                        android:text="잘 모르겠어서 물어봅니다 ㅠㅠ\n게시판에 글 남기는 건 처음이에요" />
+                        android:text="잘 모르겠어서 물어봅니다 ㅠㅠ\n게시판에 글 남기는 건 처음이에요\n이 어플 정말 좋은 어플이군요" />
                 </LinearLayout>
 
                 <View
                     android:id="@+id/middleLine4"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="13dp"
                     android:background="#CBDCFF"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +91,7 @@
                     android:id="@+id/textView35"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30dp"
+                    android:textSize="25dp"
                     android:layout_marginLeft="15dp"
                     android:fontFamily="@font/luckiestguy"
                     android:textColor="@color/blue"
@@ -99,22 +99,28 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:background="#B2C3F2"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="end"
+                    android:background="@drawable/button_rounded_corner_blue2"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="20dp"
                         android:src="@drawable/profil_image" />
 
                     <TextView
                         android:id="@+id/textView33"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:text="TextView" />
+                        android:layout_marginRight="20dp"
+                        android:textSize="13dp"
+                        android:fontFamily="@font/kopubdotumbold"
+                        android:text="닉네임" />
                 </LinearLayout>
 
 
@@ -140,6 +146,13 @@
                     android:background="#CCDDFF" />
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:src="@drawable/divider" />
 
 
         </LinearLayout>
