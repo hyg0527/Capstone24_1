@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 interface QnaClickListener {
-    fun onQnaClick(item: String)
+    fun onQnaClick(item: QnaData)
 }
 
 data class QnaData(val title: String? = null, val postimg: Int? = null,
@@ -24,7 +24,7 @@ class QnaAdapter(private val items: ArrayList<QnaData>) : RecyclerView.Adapter<Q
             v.setOnClickListener {
                 val position = adapterPosition
                 val clickedInfo = items[position]
-                //qnaClickListener?.onqnaClick(clickedInfo)
+                qnaClickListener?.onQnaClick(clickedInfo)
             }
         }
     }

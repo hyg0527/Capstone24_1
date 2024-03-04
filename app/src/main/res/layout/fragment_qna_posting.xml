@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/backBtnProfile2"
+            android:id="@+id/backBtnPosting"
             android:layout_width="25dp"
             android:layout_height="26dp"
             android:layout_margin="10dp"
@@ -154,7 +154,7 @@
             android:text="정보처리기사" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/medalDropDown"
             android:layout_width="22dp"
             android:layout_height="20dp"
             android:layout_marginLeft="20dp"
