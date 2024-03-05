@@ -12,14 +12,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-//        val navController = navHostFragment.navController
-//        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-//        bottomNavigationView.setupWithNavController(navController)
-
         navigationSet()
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+        // 아래 부분은 미 로그인 상태 에만 실행 하도록 이후에 변경 예정
+//        val intent = Intent(this, LoginActivity::class.java)
+//        startActivity(intent)
     }
 
     private val bottomNavItems = listOf(
@@ -86,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (System.currentTimeMillis() > backPressedTime + 2000) {
             backPressedTime = System.currentTimeMillis()
-            Toast.makeText(this, "뒤로가기를 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "뒤로 가기를 한번 더 누르면 종료 합니다.", Toast.LENGTH_SHORT).show()
         }
         else {
             super.onBackPressed()

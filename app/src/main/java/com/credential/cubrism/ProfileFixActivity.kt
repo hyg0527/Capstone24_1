@@ -33,7 +33,7 @@ class ProfileFixActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mypage_profile)
 
-        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_profile_pick, null)
+        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_profile_pick, null)
 
         profileImg = findViewById(R.id.changeImage)
         bottomProfileDialog = BottomSheetDialog(this)
@@ -43,7 +43,7 @@ class ProfileFixActivity : AppCompatActivity() {
         val editProfile = findViewById<TextView>(R.id.editProfile)
         val profilePick = findViewById<ImageButton>(R.id.chooseProfile)
         val galleryPick = bottomProfileDialog.findViewById<Button>(R.id.btnGallery)
-        val cameraPick = bottomProfileDialog.findViewById<Button>(R.id.btnCamera)
+        val resetImage = bottomProfileDialog.findViewById<Button>(R.id.btnResetImage)
 
         backBtn.setOnClickListener { // 뒤로가기 버튼
             finish()
@@ -60,8 +60,9 @@ class ProfileFixActivity : AppCompatActivity() {
             val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
             pickImagesLauncher.launch(intent)
         }
-        cameraPick?.setOnClickListener { // 카메라 버튼 누르면 카메라앱 호출
-            Toast.makeText(this, "camera clicked!", Toast.LENGTH_SHORT).show()
+        resetImage?.setOnClickListener { // 기본 프로필로 변경 버튼
+            profileImg.setImageResource(R.drawable.profile)
+            bottomProfileDialog.dismiss()
         }
     }
 }
