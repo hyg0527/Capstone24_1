@@ -148,7 +148,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:text="오전 00:00"
+        android:text="오전 01:00"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/isFullCheck"
         app:layout_constraintTop_toBottomOf="@+id/editTextAddTitle" />
@@ -160,13 +160,13 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:text="오전 00:00"
+        android:text="오전 02:00"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/isFullCheck"
         app:layout_constraintTop_toBottomOf="@+id/txtStartTime" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/editTxtSchInfoFix"
         android:layout_width="0dp"
         android:layout_height="220dp"
         android:layout_marginStart="16dp"

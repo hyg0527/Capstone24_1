@@ -20,6 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -372,6 +375,17 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         txtCurrentDateAdd.text = receivedDate
         txtCurrentDateAddEnd.text = receivedDate
 
+        val title = view.findViewById<TextView>(R.id.txtTitleAddScheduleModify)
+        val add = view.findViewById<TextView>(R.id.btnAddScheduleDialogModify)
+        val cancel = view.findViewById<TextView>(R.id.btnCancelScheduleDialog)
+
+        if (arguments?.getParcelable<CalMonth>("scheduleFix") != null) { // 수정버튼을 호출한 경우 데이터 수정이 이루어지는 코드 작성
+            title.text = "일정 수정" // 제목을 "일정 추가" -> "일정 수정"으로 교체
+            add.text = "수정" // 버튼텍스트를 추가에서 수정으로 교체
+
+
+        }
+
         startTime.setOnClickListener {
             showTimePickDialog("start")
         }
@@ -389,19 +403,17 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 
         calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
 
-        val add = view.findViewById<TextView>(R.id.btnAddScheduleDialogModify)
-        val cancel = view.findViewById<TextView>(R.id.btnCancelScheduleDialog)
-
         add.setOnClickListener {
             val title = view.findViewById<EditText>(R.id.editTextAddTitle).text.toString()
             val fullTime = view.findViewById<CheckBox>(R.id.isFullCheck)
-            val info = view.findViewById<EditText>(R.id.editTextTextMultiLine).text.toString()
+            val info = view.findViewById<EditText>(R.id.editTxtSchInfoFix).text.toString()
             val currentDateStart = txtCurrentDateAdd.text.toString() // 위와 변수를 중복 선언한 이유는 값을 바로 가져 와야 하기 때문(animator 실습때와 동일)
             val currentDateEnd = txtCurrentDateAddEnd.text.toString()
             val data: CalMonth
 
             if (fullTime.isChecked) { // 종일이 체크되어있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
-                data = CalMonth(title, "종일", "종일", info, fullTime.isChecked)
+                data = CalMonth(title, "${currentDateStart} 종일", "${currentDateEnd} 종일",
+                    info, fullTime.isChecked)
             }
             else data = CalMonth(title, "${currentDateStart} ${startTime.text}",
                 "${currentDateEnd} ${endTime.text}", info, fullTime.isChecked)
@@ -429,18 +441,22 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         minute.minValue = 0; minute.maxValue = 59
 
         noon.displayedValues = arrayOf("오전", "오후")
-        hour.setFormatter { String.format("%02d", it)}
-        minute.setFormatter { String.format("%02d", it)}
+        hour.setFormatter { String.format("%02d", it) }
+        minute.setFormatter { String.format("%02d", it) }
 
         noon.wrapSelectorWheel = false // 오전/오후 선택 부분만 순환하지 않도록 설정
 
         builder.setView(view).setTitle("시간 선택")
             .setPositiveButton("OK") { dialog, _ ->
+                val timeValue = timeValue(noon.value, hour.value, minute.value)
+
                 if (status.equals("start")) {
-                    startTime.text = timeValue(noon.value, hour.value, minute.value)
+                    autoSetEndTime(timeValue, endTime.text.toString())
+                    startTime.text = timeValue
                 }
                 else if (status.equals("end")) {
-                    endTime.text = timeValue(noon.value, hour.value, minute.value)
+                    if (checkIfReversedTime(startTime.text.toString(), timeValue))
+                        endTime.text = timeValue
                 }
                 dialog.dismiss()
             }
@@ -494,8 +510,14 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         val dateFormat = SimpleDateFormat("yyyy - MM - dd", Locale.getDefault())
         val formattedDate = dateFormat.format(selectedDate)
 
-        if (status.equals("start")) txtCurrentDateAdd.text = formattedDate
-        else if (status.equals("end")) txtCurrentDateAddEnd.text = formattedDate
+        if (status.equals("start")) {
+            if (checkIfReversed(formattedDate, txtCurrentDateAddEnd.text.toString()))
+                txtCurrentDateAdd.text = formattedDate
+        }
+        else if (status.equals("end")) {
+            if (checkIfReversed(txtCurrentDateAdd.text.toString(), formattedDate))
+                txtCurrentDateAddEnd.text = formattedDate
+        }
     }
 
     private fun timeValue(noon: Int, hour: Int, minute: Int): String { // dialog 선택후 textview에 출력될 테스트 반환 함수
@@ -506,6 +528,92 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         val timeText = isNoon + " ${String.format("%02d", hour)}:${String.format("%02d", minute)}"
 
         return timeText
+    }
+
+    private fun checkIfReversed(start: String, end: String): Boolean { // 시작날짜와 끝날짜가 서로가 서로보다 앞서거나 뒤서면 감지하는 함수
+        val first = start.replace(" - ", "").toInt()
+        val second = end.replace(" - ", "").toInt()
+        val (startT, endT) = timeTakeLast(startTime.text.toString(), endTime.text.toString())
+
+        if (first > second || (first == second && startT > endT)) {
+            Toast.makeText(requireContext(), "날짜 설정 오류입니다.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        else return true
+    }
+
+    private fun getStartAndEndDates(): Pair<String, String> {
+        return Pair(txtCurrentDateAdd.text.toString(), txtCurrentDateAddEnd.text.toString())
+    }
+
+    private fun autoSetEndTime(start: String, end: String) { // 시작 시간이 끝 시간보다 나중으로 설정하면 자동으로 끝 시간을 시작 시간의 정확히 한 시간 뒤로 설정하는 함수
+        val (startDate, endDate) = getStartAndEndDates()
+        val (first, second) = timeTakeLast(start, end)
+        println("-- startDate: " + startDate + " endDate: " + endDate)
+
+        if (startDate.equals(endDate) && (first > second)) { // 날짜가 같고 시작시간을 더 나중으로 설정하였을 때
+            val endChange = start
+            val formatter = DateTimeFormatter.ofPattern("a hh:mm", Locale.KOREA)
+            val time = LocalTime.parse(endChange, formatter)
+
+            // 시간을 1 증가시키고 다시 문자열로 변환
+            val incrementedTime = time.plusHours(1)
+            val resultEndTime = incrementedTime.format(formatter)
+
+            endTime.text = resultEndTime
+
+            if (resultEndTime.contains("오전 12:")) { // 자동설정된 끝 시간이 오전 12시 이상 (다음날로 넘어가는 경우) 긑날짜 1일 증가.
+                val regex = Regex("(\\d{4} - \\d{2} - \\d{2})")
+                val text = txtCurrentDateAddEnd.text.toString()
+
+                val resultDateEnd = text.replace(regex) {
+                    val date = it.groupValues[1]
+
+                    // LocalDate로 파싱
+                    val parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy - MM - dd"))
+
+                    // 날짜의 일 부분을 1 증가시키고 문자열로 변환
+                    val modifiedDate = parsedDate.plusDays(1)
+                    modifiedDate.format(DateTimeFormatter.ofPattern("yyyy - MM - dd"))
+                }
+                txtCurrentDateAddEnd.text = resultDateEnd
+            }
+        }
+    }
+
+    private fun checkIfReversedTime(start: String, end: String): Boolean { // 선택한 날짜가 같은 경우 끝시간에 시작시간보다 먼저면 자동으로 설정하는 함수
+        val (startDate, endDate) = getStartAndEndDates()
+        val (first, second) = timeTakeLast(start, end)
+
+        if (startDate.equals(endDate) && (first > second)) {
+            Toast.makeText(requireContext(), "시간 설정 오류입니다.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        else return true
+    }
+
+    private fun timeTakeLast(start: String, end: String): Pair<Int, Int> { // 시간을 숫자로 변환하는 함수(시간 연산을 위해 작성)
+        var first = start.takeLast(5).replace(":", "").toInt()
+        var second = end.takeLast(5).replace(":", "").toInt()
+
+        if (start.contains("오후")) { // 오전 12시 = 00시, 오후12시 = 12시 로직 추가. 오후는 설정한 시간에서 12시간 더하도록 설정.
+            if (!start.contains("오후 12:"))
+                first += 1200
+        }
+        else if (start.contains("오전 12:")) {
+            first -= 1200
+        }
+
+        if (end.contains("오후")) {
+            if (!end.contains("오후 12:"))
+                second += 1200
+        }
+        else if (end.contains("오전 12:")) {
+            second -= 1200
+        }
+
+        println("first: " + first + "second: " + second)
+        return Pair(first, second)
     }
 }
 // 일정 상세 화면 다이얼로그
@@ -593,8 +701,8 @@ class CalScheduleModifyFragment : BottomSheetDialogFragment(R.layout.dialog_sche
         val endTime = view.findViewById<TextView>(R.id.txtEndTime)
         val startDate = view.findViewById<TextView>(R.id.txtCurrentDateAdd)
         val endDate = view.findViewById<TextView>(R.id.txtCurrentDateAddEnd)
+        val info = view.findViewById<EditText>(R.id.editTxtSchInfoFix)
 
-        println("startTime: " + item?.startTime + ", endTime: " + item?.endTime)
         val (startDateTxt, startTimeTxt) = splitInfo(item?.startTime ?: "")
         val (endDateTxt, endTimeTxt) = splitInfo(item?.endTime ?: "")
 
@@ -603,14 +711,20 @@ class CalScheduleModifyFragment : BottomSheetDialogFragment(R.layout.dialog_sche
         endTime.text = endTimeTxt
         startDate.text = startDateTxt
         endDate.text = endDateTxt
+        info.setText(item?.info)
 
         fix.setOnClickListener {
-            dismiss()
+            fixSchedule()
             Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+            dismiss()
         }
         cancel.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun fixSchedule() { // 일정 수정 함수
+
     }
 
     private fun splitInfo(date: String): Pair<String, String> {
