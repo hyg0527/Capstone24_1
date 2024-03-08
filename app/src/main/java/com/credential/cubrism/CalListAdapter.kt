@@ -112,7 +112,7 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
             realDateStart = item.startTime?.substringBefore(" 오")?.trim() ?: ""
             realDateEnd = item.endTime?.substringBefore(" 오")?.trim() ?: ""
         }
-        else { }
+        else return Triple(0,0,0)
 
         val realDateStartDay = realDateStart.replace(" - ", "").toInt()
         val realDateEndDay = realDateEnd.replace(" - ", "").toInt()

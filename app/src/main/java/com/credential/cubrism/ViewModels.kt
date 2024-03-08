@@ -34,12 +34,12 @@ class QnaListViewModel : ViewModel() {
     private val _questionList = MutableLiveData<ArrayList<QnaData>>(arrayListOf())
     val questionList: LiveData<ArrayList<QnaData>> get() = _questionList // 읽기만 가능(get)
 
-    fun addDateMonth(value: QnaData) { // 질문 추가
+    fun addQuestion(value: QnaData) { // 질문 추가
         _questionList.value?.add(value)
         _questionList.value = _questionList.value // 옵서버 에게 변경 사항을 알림
     }
 
-    fun deleteDateMonth(value: QnaData) { // 질문 삭제
+    fun deleteQuestion(value: QnaData) { // 질문 삭제
         _questionList.value?.remove(value)
         _questionList.value = _questionList.value
     }

@@ -2,15 +2,18 @@ package com.credential.cubrism
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -74,61 +77,91 @@ class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
 // Qna 메인 화면
 class QnaFragment : Fragment(R.layout.fragment_qna) {
     private var view: View? = null
+    private lateinit var qnaListViewModel: QnaListViewModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
+        val writeFragment = QnaWriteFragment()
+        val viewPostFragment = QnaViewPostFragment()
 
-        val listFragment = QnaTotalListFragment()
-        changeFragmentInQna(listFragment) // 처음 TotalList 화면으로 초기화
+        val rcv = view.findViewById<RecyclerView>(R.id.qnaListView)
+        val postList = sampleData()
+
+        qnaListViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
+        val adapter = QnaAdapter(postList)
+
+//        for (data in postList)
+//            qnaListViewModel.addQuestion(data)
+//        updateViewModel(adapter)
+
+        rcv.layoutManager = LinearLayoutManager(requireActivity())
+        rcv.adapter = adapter
 
         val btnAddPost = view.findViewById<ImageView>(R.id.btnAddPost)
         val totalBtn = view.findViewById<TextView>(R.id.textView6)
         val wholeBtn = view.findViewById<TextView>(R.id.textView7)
 
         btnAddPost.setOnClickListener {
-            (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .replace(R.id.homeFragmentContainerView, QnawriteFragment())
-                .addToBackStack(null)
-                .commit()
+            changeFragment(writeFragment)
         }
 
-        listFragment.setViewList(object: QnaTotalListFragment.ViewQnaList {
-            override fun viewList() {
-                Toast.makeText(requireContext(), "잘 넘어오네요!", Toast.LENGTH_SHORT).show()
-                (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                    .replace(R.id.homeFragmentContainerView, QnaViewPostFragment())
-                    .addToBackStack(null)
-                    .commit()
+        adapter.setQnaClickListener(object: QnaClickListener {
+            override fun onQnaClick(item: QnaData) {
+                val bundle = Bundle()
+                bundle.putParcelable("qnaInfo", item)
+                viewPostFragment.arguments = bundle
+
+                changeFragment(viewPostFragment)
             }
         })
 
-
         totalBtn.setOnClickListener {
-            changeTotalOrWhole("total")
+            changeTotalOrWhole(adapter, "total")
         }
         wholeBtn.setOnClickListener {
-            changeTotalOrWhole("whole")
+            changeTotalOrWhole(adapter, "whole")
         }
 
         handleBackStack(view, parentFragment)
     }
 
-    private fun changeTotalOrWhole(value: String) { // 리스트 표시 부분 변경 함수
-        if (value.equals("total")) {
-            changeFragmentInQna(QnaTotalListFragment())
+    private fun updateViewModel(adapter: QnaAdapter) {
+        qnaListViewModel.questionList.observe(viewLifecycleOwner) { questionList ->
+            adapter.clearItem()
+            questionList.forEach { qnaList ->
+                adapter.addItem(qnaList)
+            }
         }
-        else if (value.equals("whole")) {
-            changeFragmentInQna(QnaWholeListFragment())
+    }
+
+    private fun sampleData(): ArrayList<QnaData> {
+        return ArrayList<QnaData>().apply {
+            add(QnaData("정보처리기사", "제목1", R.drawable.qna_photo,
+                "글 1입니다.", "11:00", "안해연"))
+            add(QnaData("제빵왕기능사", "제목2", R.drawable.qna_photo,
+                "글 2입니다. 근데 이런 자격증이 있나요?\n글쎄요. 제가 만들면 있는 겁니다.\n- 익명의 사나이 -", "12:00", "황윤구"))
+        }
+    }
+
+    private fun changeTotalOrWhole(adapter: QnaAdapter, value: String) { // 전체리스트 <-> 관심분야 리스트 전환 함수
+        if (value.equals("total")) { // 전체 리스트
+            val postList = sampleData()
+            adapter.addAll(postList)
+        }
+        else if (value.equals("whole")) { // 관심분야 리스트
+            // 현재는 샘플로 정처기만 필터링하도록 설정. 나중에 관심분야를 QnaFragment 클래스에서 받아오는 로직이 필요할 것임.
+            adapter.filterList("정보처리기사")
         }
         else return
     }
-    // QnaFragment 내부 전환 함수
-    private fun changeFragmentInQna(fragment: Fragment) {
-        childFragmentManager.beginTransaction()
+
+    // HomeFragment 내부 전환 함수
+    private fun changeFragment(fragment: Fragment) {
+        (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.qnaTotalList, fragment)
+            .replace(R.id.homeFragmentContainerView, fragment)
+            .addToBackStack(null)
             .commit()
     }
 
@@ -141,49 +174,29 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         }
     }
 }
-
-class QnaTotalListFragment : Fragment(R.layout.fragment_qna_total_post) {
-    private var listListener: ViewQnaList? = null
-    interface ViewQnaList {
-        fun viewList()
-    }
-    fun setViewList(listener: ViewQnaList) {
-        listListener = listener
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val rcv = view.findViewById<RecyclerView>(R.id.qnaListView)
-        val postList = ArrayList<QnaData>().apply {
-            add(QnaData("제목", R.drawable.qna_photo, "", ""))
-        }
-
-        val adapter = QnaAdapter(postList)
-
-        rcv.layoutManager = LinearLayoutManager(requireActivity())
-        rcv.adapter = adapter
-
-        adapter.setQnaClickListener(object: QnaClickListener {
-            override fun onQnaClick(item: QnaData) {
-                listListener?.viewList()
-            }
-        })
-    }
-}
-
-class QnaWholeListFragment : Fragment(R.layout.fragment_whole_qna_post) {
-
-}
-
+// qna 글보기 fragment
 class QnaViewPostFragment : Fragment(R.layout.fragment_qna_viewpost) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val backBtn_qnaview = view.findViewById<ImageButton>(R.id.backBtn_qnaview)
-
         backBtn_qnaview.setOnClickListener {
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
         }
+
+        val receivedData = arguments?.getParcelable<QnaData>("qnaInfo")
+
+        val medalName = view.findViewById<Button>(R.id.button2)
+        val title = view.findViewById<TextView>(R.id.textView36)
+        val info = view.findViewById<TextView>(R.id.textView37)
+        val userName = view.findViewById<TextView>(R.id.textView33)
+
+        medalName.setText(receivedData?.medalName)
+        title.text = receivedData?.title
+        info.text = receivedData?.postIn
+        userName.text = receivedData?.userName
+        // 시간 필드 추가 요망
+
         handleBackStack(view, parentFragment)
     }
 
@@ -197,8 +210,10 @@ class QnaViewPostFragment : Fragment(R.layout.fragment_qna_viewpost) {
     }
 }
 
-class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 프래그먼트
+class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 프래그먼트
     private var view: View? = null
+    private lateinit var qnaViewModel: QnaListViewModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
@@ -206,8 +221,12 @@ class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         val postingBtn = view.findViewById<Button>(R.id.postingBtn)
         val backBtnPosting = view.findViewById<ImageButton>(R.id.backBtnPosting)
         val dropDown = view.findViewById<ImageView>(R.id.medalDropDown)
+        qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
 
         postingBtn.setOnClickListener {
+            val data = postData(view)
+            qnaViewModel.addQuestion(data)
+
             Toast.makeText(requireContext(), "질문이 등록되었습니다", Toast.LENGTH_SHORT).show()
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
         }
@@ -230,6 +249,14 @@ class QnawriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
             // Fragment가 다시 화면에 나타날 때의 작업 수행
             view?.let { handleBackStack(it, parentFragment) }
         }
+    }
+
+    private fun postData(v: View): QnaData { // 등록화면에서 작성한 글 정보 리턴 함수
+        val medalName = v.findViewById<Button>(R.id.button2).text.toString()
+        val title = v.findViewById<EditText>(R.id.postTitle).text.toString()
+        val postWriting = v.findViewById<EditText>(R.id.postWriting).text.toString()
+
+        return QnaData(medalName, title, R.drawable.qna_photo, postWriting, "13:00", "user123")
     }
 }
 
