@@ -13,15 +13,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"></LinearLayout>
-            </androidx.cardview.widget.CardView>
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView9"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:src="@drawable/button_rounded_corner_blue3" />
+
+                    <TextView
+                        android:id="@+id/imageView10"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:fontFamily="@font/godom"
+                        android:gravity="center"
+                        android:src="@tools:sample/avatars"
+                        android:text="정보처리기사"
+                        android:textColor="@color/blue"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
 
         <FrameLayout
@@ -29,10 +52,13 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@tools:sample/avatars" />
+                android:id="@+id/yellowpin"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/yellow_pin" />
+            />
+
+
         </FrameLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
