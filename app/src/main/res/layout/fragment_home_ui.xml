@@ -56,6 +56,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:text="로그인 하세요"
+            android:fontFamily="@font/godom"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -73,19 +74,47 @@
 
     <LinearLayout
         android:id="@+id/linearLayout4"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:background="#C8C8C8"
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/button_rounded_corner_lb2"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginBtnLayout"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/loginBtnLayout">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:background="transparent"
+                app:srcCompat="@drawable/ellipse_2" />
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/samancobold"
+                android:textSize="27dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textColor="@color/blue"
+                android:text="T O D A Y" />
+        </FrameLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnQnaEnter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="게시판임"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
