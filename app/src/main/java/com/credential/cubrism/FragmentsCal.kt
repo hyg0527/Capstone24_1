@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -181,6 +182,7 @@ class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 �
 
 class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
     private lateinit var datePickTxt: TextView
+    private lateinit var monthPickTxt: TextView
     private lateinit var txtCurrentDateWeek: TextView
     fun getCurrentDateWeek(): String {
         return txtCurrentDateWeek.text.toString()
@@ -189,11 +191,14 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         datePickTxt = view.findViewById(R.id.txtYearMonth)
+        monthPickTxt = view.findViewById(R.id.txtYearMonth2)
         txtCurrentDateWeek = view.findViewById(R.id.txtCurrentDateWeek)
 
-        val (year, month) = getYearMonth()
+        val (year, month) = getYearMonth() // 현재 날짜정보를 가져와 년월 textview에 형식에 맞게 출력
         val monthString = selectedMonthToString(month)
-        datePickTxt.text = "$monthString $year"
+        val currentMonthYear = "$monthString $year"
+        datePickTxt.text = currentMonthYear
+        monthPickTxt.text = currentMonthYear
 
         val calInstance = Calendar.getInstance() // 현재 날짜에 대한 일수, 요일 정보 추출
         val daysInMonth = calInstance.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -201,10 +206,16 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
 
         val dayOfWeekIndex = calInstance.get(Calendar.DAY_OF_WEEK)
         val weekList = showWeekCalendar(daysInMonth, dayOfWeekIndex)
-
         initToday()
 
-        val calWeekView = view.findViewById<RecyclerView>(R.id.calWeekView)
+        val monthList = showMonthCalendar(daysInMonth, dayOfWeekIndex)
+
+        val calendarRealView = view.findViewById<RecyclerView>(R.id.calendarRealView) // 월간달력 recyclerView 초기화
+        val calMonthAdapter = CalendarAdapter(monthList)
+        calendarRealView.layoutManager = GridLayoutManager(requireContext(), 7)
+        calendarRealView.adapter = calMonthAdapter
+
+        val calWeekView = view.findViewById<RecyclerView>(R.id.calWeekView) // 주간달력 recyclerView 초기화
         val calWeekAdapter = CalWeekAdapter(weekList)
         calWeekView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         calWeekView.adapter = calWeekAdapter
@@ -222,12 +233,16 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
         datePickTxt.setOnClickListener { // 연월 변경 다이얼로그 호출
             showDatePickDialog(calWeekAdapter)
         }
+        monthPickTxt.setOnClickListener {
+            showDatePickDialog(calMonthAdapter)
+        }
 
         val returnToday = view.findViewById<TextView>(R.id.txtTodayBtn)
         returnToday.setOnClickListener {  // today버튼 누르면 오늘로 돌아옴.
             initToday()
             // 연월과 달력도 같이 돌아오는 부분 추가
             datePickTxt.text = "$monthString $year"
+            monthPickTxt.text = "$monthString $year"
             val changedCalendar = showWeekCalendar(daysInMonth, dayOfWeekIndex)
             calWeekAdapter.updateCalendar(changedCalendar)
         }
@@ -240,6 +255,24 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
         val initDay = calInstance.get(Calendar.DAY_OF_MONTH)
 
         txtCurrentDateWeek.text = "${initYear}년 ${initMonth}월 ${initDay}일"
+    }
+
+    private fun showMonthCalendar(daysInMonth: Int, dayOfWeekIndex: Int): ArrayList<String> {
+        val daysList = ArrayList<String>().apply {
+            val weekOfTheDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
+            for (i in 1..7) {
+                add(weekOfTheDayList[i - 1])
+            }
+            for (i in 0..dayOfWeekIndex - 2) {
+                add(" ")
+            }
+            for (i in 1..daysInMonth) {
+                add("$i")
+            }
+        }
+
+        return daysList
     }
 
     private fun showWeekCalendar(daysInMonth: Int, dayOfWeek: Int): ArrayList<DateWeek> { // 해당 월의 달력 출력 함수
@@ -261,7 +294,7 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
         return Pair(getYear, getMonth)
     }
 
-    private fun showDatePickDialog(calWeekAdapter: CalWeekAdapter) { // numberpicker dialog 호출
+    private fun showDatePickDialog(adapter: RecyclerView.Adapter<*>) { // numberpicker dialog 호출
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_date_pick, null)
@@ -284,14 +317,22 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
                 val selectedMonth = monthPick.value
                 val month = selectedMonthToString(selectedMonth)
                 // 선택한 연, 월을 textview에 출력
-                datePickTxt.text = "$month $selectedYear"
+                val resText = "$month $selectedYear"
+                datePickTxt.text = resText
+                monthPickTxt.text = resText
                 // 선택후 달력이 바뀌는 부분 여기에 추가
                 val (m, w) = setDateWeek(selectedYear, selectedMonth)
                 val weekList = showWeekCalendar(m, w)
-                txtCurrentDateWeek.text = "${selectedYear}년 ${selectedMonth}월 1일" // 1일로 초기화(하드코딩..)
+                val monthList = showMonthCalendar(m, w)
+                txtCurrentDateWeek.text = "${selectedYear}년 ${selectedMonth}월 1일" // 1일로 초기화
 
                 // RecyclerView에 데이터 갱신
-                calWeekAdapter.updateCalendar(weekList)
+                if (adapter is CalWeekAdapter)
+                    adapter.updateCalendar(weekList)
+                else if (adapter is CalendarAdapter) {
+                    println("monthAdapter!!")
+                    adapter.updateCalendar(monthList)
+                }
 
                 dialog.dismiss()
             }
@@ -313,7 +354,6 @@ class CalWeekFragment : Fragment(R.layout.fragment_cal_week) {
         calInstance.set(Calendar.DAY_OF_MONTH, 1)
 
         val dayOfWeek = calInstance.get(Calendar.DAY_OF_WEEK) // 1일의 요일 저장
-        Toast.makeText(requireContext(), "$daysInMonth $dayOfWeek", Toast.LENGTH_SHORT).show()
 
         return Pair(daysInMonth, dayOfWeek)
     }
