@@ -11,11 +11,9 @@
         >
 
 
-
-
         <path
             android:fillColor="#EBF1FF"
-            android:pathData="M0,5 Q0,0 3,0 L32,0 L15,0 L0,24 Z" />
+            android:pathData="M0,5 Q0,0 3,0 L30,0 L16,0 L0,24 Z" />
 
 
     </group>

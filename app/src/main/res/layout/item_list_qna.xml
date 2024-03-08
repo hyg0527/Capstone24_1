@@ -6,10 +6,12 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,7 +20,7 @@
             android:id="@+id/imageView4"
             android:layout_width="105dp"
             android:layout_height="105dp"
-            android:layout_marginLeft="15dp"
+
             android:layout_marginBottom="15dp"
             app:srcCompat="@drawable/lightblue_photo" />
 
@@ -26,19 +28,17 @@
             android:layout_width="230dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp"
-
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="자격증 이름"
                 android:fontFamily="@font/kopubdotumbold"
-                android:textSize="13dp"
                 android:maxLines="1"
+                android:text="자격증 이름"
                 android:textColor="@color/blue"
-                />
+                android:textSize="13dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,8 +69,8 @@
                 android:id="@+id/textView16"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/kopubdotummedium"
                 android:layout_marginTop="3dp"
+                android:fontFamily="@font/kopubdotummedium"
                 android:maxLines="3"
                 android:text="내용이 들어가는 부분이고 최대 세 줄까지 들어가도록 만들었습니다 그 이상은 가독성이 떨어지는 것 같아요." />
         </LinearLayout>
@@ -80,11 +80,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
+            android:fontFamily="@font/kopubdotumbold"
             android:text="18:23"
             android:textColor="#9E9E9E"
-            android:fontFamily="@font/kopubdotumbold"
-            android:textSize="13dp"
-            />
+            android:textSize="14dp" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
