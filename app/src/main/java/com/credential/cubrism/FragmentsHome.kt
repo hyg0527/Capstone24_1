@@ -86,14 +86,12 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         val viewPostFragment = QnaViewPostFragment()
 
         val rcv = view.findViewById<RecyclerView>(R.id.qnaListView)
-        val postList = sampleData()
+        val postList = ArrayList<QnaData>()
 
         qnaListViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
         val adapter = QnaAdapter(postList)
 
-//        for (data in postList)
-//            qnaListViewModel.addQuestion(data)
-//        updateViewModel(adapter)
+        updateViewModel(adapter)
 
         rcv.layoutManager = LinearLayoutManager(requireActivity())
         rcv.adapter = adapter
@@ -146,8 +144,8 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
 
     private fun changeTotalOrWhole(adapter: QnaAdapter, value: String) { // 전체리스트 <-> 관심분야 리스트 전환 함수
         if (value.equals("total")) { // 전체 리스트
-            val postList = sampleData()
-            adapter.addAll(postList)
+            val data = qnaListViewModel.questionList.value
+            adapter.addAll(data!!)
         }
         else if (value.equals("whole")) { // 관심분야 리스트
             // 현재는 샘플로 정처기만 필터링하도록 설정. 나중에 관심분야를 QnaFragment 클래스에서 받아오는 로직이 필요할 것임.

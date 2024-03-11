@@ -13,7 +13,7 @@ class CalendarHyg {
     }
 
     fun initToday(): String { // 오늘 날짜로 돌아오는 함수
-        val calInstance = Calendar.getInstance()
+        val calInstance = getInstance()
         val initYear = calInstance.get(Calendar.YEAR) // 처음 뷰 생성시 오늘날짜로 초기화
         val initMonth = calInstance.get(Calendar.MONTH) + 1  // 월은 0부터 시작하므로 1+.
         val initDay = calInstance.get(Calendar.DAY_OF_MONTH)
@@ -32,7 +32,7 @@ class CalendarHyg {
                 add(DateSelect(" ", false))
             }
             for (i in 1..daysInMonth) {
-                add(DateSelect("$i", true))
+                add(DateSelect("$i", false))
             }
         }
 
@@ -116,7 +116,7 @@ class CalendarHyg {
         return Pair(returnYear, returnMonth)
     }
 
-    fun setDateWeek(year: Int, month: Int): Pair<Int, Int> { // 선택된 날짜의 일수와 요일 반환
+    private fun setDateWeek(year: Int, month: Int): Pair<Int, Int> { // 선택된 날짜의 일수와 요일 반환
         val calInstance = Calendar.getInstance()
         calInstance.set(Calendar.YEAR, year)
         calInstance.set(Calendar.MONTH, month - 1)
@@ -139,7 +139,7 @@ class CalendarHyg {
         }
     }
 
-    fun selectedMonthToInt(selectedMonth: String): Int { // 월애 해당하는 문자열을 숫자로 반환
+    private fun selectedMonthToInt(selectedMonth: String): Int { // 월애 해당하는 문자열을 숫자로 반환
         return when (selectedMonth) {
             "January" -> 1; "February" -> 2; "March" -> 3
             "April" -> 4;   "May" -> 5;     "June" -> 6
