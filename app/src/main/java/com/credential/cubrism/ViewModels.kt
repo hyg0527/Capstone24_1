@@ -34,6 +34,13 @@ class QnaListViewModel : ViewModel() {
     private val _questionList = MutableLiveData<ArrayList<QnaData>>(arrayListOf())
     val questionList: LiveData<ArrayList<QnaData>> get() = _questionList // 읽기만 가능(get)
 
+    init {
+        addQuestion(QnaData("정보처리기사", "제목1", R.drawable.qna_photo,
+            "글 1입니다.", "11:00", "안해연"))
+        addQuestion(QnaData("제빵왕기능사", "제목2", R.drawable.qna_photo,
+            "글 2입니다. 근데 이런 자격증이 있나요?\n글쎄요. 제가 만들면 있는 겁니다.\n- 익명의 사나이 -", "12:00", "황윤구"))
+    }
+
     fun addQuestion(value: QnaData) { // 질문 추가
         _questionList.value?.add(value)
         _questionList.value = _questionList.value // 옵서버 에게 변경 사항을 알림

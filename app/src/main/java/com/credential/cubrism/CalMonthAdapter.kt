@@ -7,14 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 interface DateMonthClickListener {
-    fun onItemClicked(item: String)
+    fun onItemClicked(item: DateSelect)
 }
-data class DateSelect(var date: String? = null, var isScheduled: Boolean = false)
+data class DateSelect(var date: String? = null, var isScheduled: Boolean = false, var isHighlighted: Boolean = false)
 
 class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.Adapter<CalendarAdapter.MonthViewHolder>() {
     private var itemClickListener: DateMonthClickListener? = null
+    private var isBackgroundSet = false
     fun setItemClickListener(listener: DateMonthClickListener) {
         itemClickListener = listener
     }
@@ -25,7 +29,7 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
         init {
             v.setOnClickListener {
                 val position = adapterPosition
-                val item = items[position].date ?: ""
+                val item = items[position]
                 itemClickListener?.onItemClicked(item)
             }
         }
@@ -43,19 +47,38 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
-        holder.date.text = items[position].date
+        val currentItem = items[position]
+        holder.date.text = currentItem.date
+
+        if (!isBackgroundSet && currentItem.date.equals(getCurrentDayToString())) {
+            isBackgroundSet = true
+            holder.itemView.setBackgroundResource(R.drawable.date_highlighted)
+        } else {
+            holder.itemView.setBackgroundResource(0)
+        }
+
+
         if (!items[position].isScheduled)
             holder.isScheduled.visibility = View.GONE
 
+        if (items[position].isHighlighted)
+            holder.itemView.setBackgroundResource(R.drawable.date_highlighted)
+
         if (position % 7 == 0) {
             holder.date.setTextColor(Color.RED)
-        }
-        else if (position % 7 == 6) {
+        } else if (position % 7 == 6) {
             holder.date.setTextColor(Color.BLUE)
-        }
-        else {
+        } else {
             holder.date.setTextColor(Color.BLACK)
         }
+    }
+
+    private fun getCurrentDayToString(): String {
+        val currentDate = LocalDate.now()
+        // DateTimeFormatter를 사용하여 날짜를 원하는 형식의 문자열로 변환
+        val formatter = DateTimeFormatter.ofPattern("dd")
+
+        return currentDate.format(formatter)
     }
 
     fun updateCalendar(monthList: ArrayList<DateSelect>) { // 데이터 갱신 함수
@@ -63,10 +86,19 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
         notifyDataSetChanged()
     }
 
-    fun updateScheduleDot(position: Int, isvisible: Boolean) {
-        if (position in 0 until items.size) {
-            items[position].isScheduled = isvisible
-            notifyItemChanged(position)
+    fun updateScheduleDot(selectedItem: DateSelect, isVisible: Boolean) {
+        for (item in items) {
+            item.isScheduled = false
         }
+        selectedItem.isScheduled = isVisible
+        notifyDataSetChanged()
+    }
+
+    fun highlightCurrentDate(selectedItem: DateSelect, isHighlighted: Boolean) {
+        for (item in items) {
+            item.isHighlighted = false
+        }
+        selectedItem.isHighlighted = isHighlighted
+        notifyDataSetChanged()
     }
 }

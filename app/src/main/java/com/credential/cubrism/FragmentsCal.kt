@@ -142,6 +142,7 @@ class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 �
 
         val calendarRealView = view.findViewById<RecyclerView>(R.id.calendarRealView) // 월간달력 recyclerView 초기화
         val calMonthAdapter = CalendarAdapter(monthList) // 날짜 어댑터
+
         val layoutManager = GridLayoutManager(requireContext(), 7)
         calendarRealView.layoutManager = layoutManager
         calendarRealView.adapter = calMonthAdapter
@@ -156,13 +157,17 @@ class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 �
         }
 
         calMonthAdapter.setItemClickListener(object: DateMonthClickListener {
-            override fun onItemClicked(item: String) { // week랑 코드 중복인데 나중에 함수화 요망. (2번째부터 5줄)
-                if (item.isDigitsOnly()) {
-                    val day = item
+            override fun onItemClicked(item: DateSelect) { // week랑 코드 중복인데 나중에 함수화 요망. (2번째부터 5줄)
+                if (item.date!!.isDigitsOnly()) {
+                    val day = item.date
                     val regex = Regex("\\d+일")
                     val text = currentDate.text.toString().replace(regex, "${day}일")
                     // 달력의 날짜 누르면 textview 날짜 갱신
                     currentDate.text = text
+
+                    calMonthAdapter.highlightCurrentDate(item, true)
+//                    calMonthAdapter.updateScheduleDot(item, true) // 날짜 누르면 하이라이팅 표시(임시)
+
                     val intRegex = """(\d{4})년 (\d{1,2})월 (\d{1,2})일""".toRegex()
                     intRegex.find(text)?.let {
                         val (year, month, day) = it.destructured
