@@ -200,7 +200,6 @@
                 android:text="회원 탈퇴"
                 android:textColor="@color/white"
                 android:textSize="14dp"
-
                 android:textStyle="bold" />
 
 

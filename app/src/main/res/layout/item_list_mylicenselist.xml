@@ -56,7 +56,26 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/yellow_pin" />
-            />
+
+            <ImageView
+                android:id="@+id/license_theme"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/license_theme" />
+
+            <TextView
+                android:id="@+id/studyingtxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/hcmalangbold"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:layout_marginLeft="8dp"
+                android:layout_gravity="center_horizontal"
+                android:text="STUDYING" />
 
 
         </FrameLayout>
