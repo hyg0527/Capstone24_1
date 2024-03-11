@@ -39,7 +39,6 @@
                         android:layout_height="50dp"
                         android:fontFamily="@font/godom"
                         android:gravity="center"
-                        android:src="@tools:sample/avatars"
                         android:text="정보처리기사"
                         android:textColor="@color/blue"
                         android:textSize="18dp" />

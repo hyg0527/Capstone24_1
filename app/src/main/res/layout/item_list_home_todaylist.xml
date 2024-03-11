@@ -16,9 +16,9 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
-            android:id="@+id/checkBox2"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
+            android:id="@+id/todayCheckBox"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
             android:button="@null"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
@@ -26,13 +26,13 @@
             android:background="@drawable/checkbox_todaylist" />
 
         <TextView
-            android:id="@+id/textView27"
+            android:id="@+id/todaySchedule"
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginTop="15dp"
-            android:textSize="25dp"
+            android:layout_marginTop="13dp"
+            android:textSize="20dp"
             android:lineSpacingExtra="8dp"
             android:fontFamily="@font/godom"
             android:textColor="@color/blue"

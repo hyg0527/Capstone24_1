@@ -36,6 +36,9 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         super.onViewCreated(view, savedInstanceState)
         val login = view.findViewById<LinearLayout>(R.id.loginBtnLayout)
         val notify = view.findViewById<ImageButton>(R.id.btnNotify)
+        val todoRCV = view.findViewById<RecyclerView>(R.id.todoRCV)
+        val mylicenseRCV = view.findViewById<RecyclerView>(R.id.mylicenseRCV)
+        val tdlist = TodayData()
 
         login.setOnClickListener {
             val intent = Intent(requireActivity(), LoginActivity::class.java)
@@ -49,7 +52,24 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         qnaEnter.setOnClickListener {
             changeFragment(parentFragment, QnaFragment())
         }
+
+
+        val adapter = TodoAdapter(tdlist)
+
+
+        todoRCV.layoutManager = LinearLayoutManager(requireActivity())
+        todoRCV.adapter = adapter
+
     }
+    private fun TodayData(): ArrayList<TodayData> {
+        return ArrayList<TodayData>().apply {
+            add(TodayData(false, "미팅 준비하기!!"))
+            add(TodayData(true, "수업 듣기"))
+            add(TodayData(false, "친구랑 약속"))
+        }
+    }
+
+
 }
 // 알림 화면
 class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
