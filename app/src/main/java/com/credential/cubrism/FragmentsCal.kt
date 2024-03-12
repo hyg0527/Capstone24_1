@@ -166,14 +166,21 @@ class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 �
                     currentDate.text = text
 
                     calMonthAdapter.highlightCurrentDate(item, true)
-//                    calMonthAdapter.updateScheduleDot(item, true) // 날짜 누르면 하이라이팅 표시(임시)
 
                     val intRegex = """(\d{4})년 (\d{1,2})월 (\d{1,2})일""".toRegex()
                     intRegex.find(text)?.let {
                         val (year, month, day) = it.destructured
                         val dateSelected = "${year.toInt()} - ${String.format("%02d", month.toInt())} - ${String.format("%02d", day.toInt())}"
 
-                        updateViewModel(adapter, dateSelected)
+                        val isActivated = updateViewModel(adapter, dateSelected)
+                        if (isActivated) { // 날짜에 해당하는 리스트가 하나 이상 존재한다면 점 붙이기
+//                            calMonthViewModel.updateIsScheduled(true)
+//                            calMonthViewModel.isScheduledLiveData.observe(viewLifecycleOwner) { isScheduled ->
+                                calMonthAdapter.updateScheduleDot(item, true)
+//                            }
+                        } else {
+                            calMonthAdapter.updateScheduleDot(item, false)
+                        }
                     }
                 }
             }
@@ -209,14 +216,17 @@ class CalMonthFragment : Fragment(R.layout.fragment_cal_month) {    // 월간 �
         dialog.show()
     }
 
-    private fun updateViewModel(adapter: CalMonthListAdapter, date: String) { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지) -> db연결 후에는 서버 연결 코드로 변경 예정.
+    private fun updateViewModel(adapter: CalMonthListAdapter, date: String): Boolean { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지) -> db연결 후에는 서버 연결 코드로 변경 예정.
+        var hasItems = false // 추가된 아이템이 있는지 여부를 나타내는 변수
         calMonthViewModel.calMonthList.observe(viewLifecycleOwner) { calMonthList ->
             adapter.clearItem() // 업데이트 전 리스트 초기화 후 항목을 모두 추가 (중복 삽입 방지)
+
             calMonthList.forEach { calMonth ->
                 adapter.addItem(calMonth)
             }
-            adapter.updateList(date)
+            hasItems = adapter.updateList(date)
         }
+        return hasItems
     }
 
     private fun initScheduleList(v: View): CalMonthListAdapter { // 일정 리스트 초기화 함수
