@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.Calendar
 
 class CalendarHyg {
+    private var isActivated = false
     fun getInstance(): Calendar {
         return Calendar.getInstance()
     }
@@ -25,14 +26,22 @@ class CalendarHyg {
         val daysList = ArrayList<DateSelect>().apply {
             val weekOfTheDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
-            for (i in 1..7) {
-                add(DateSelect(weekOfTheDayList[i - 1], false))
+            for (i in 1..7) { // 요일 출력 부분
+                add(DateSelect(weekOfTheDayList[i - 1]))
             }
-            for (i in 0..dayOfWeekIndex - 2) {
-                add(DateSelect(" ", false))
+            for (i in 0..dayOfWeekIndex - 2) { // 1일이 나오기 전까지 공백을 메우는 부분
+                add(DateSelect(" "))
             }
-            for (i in 1..daysInMonth) {
-                add(DateSelect("$i", false))
+            if (!isActivated) { // 날짜 추가 부분(1일부터)
+                isActivated = true
+                for (i in 1..daysInMonth) {
+                    add(DateSelect("$i"))
+                }
+            } else {
+                add(DateSelect("1", isHighlighted = true)) // 첫 달의 1일이 디폴트 값으로 선택 되도록
+                for (i in 2..daysInMonth) {
+                    add(DateSelect("$i"))
+                }
             }
         }
 

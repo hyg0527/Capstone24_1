@@ -58,7 +58,7 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
         }
 
 
-        if (!items[position].isScheduled)
+        if (!items[position].isScheduled)   //저장된 일정부분이 없으면 점표시 없애기(초기화 부분)
             holder.isScheduled.visibility = View.GONE
 
         if (items[position].isHighlighted)
@@ -87,9 +87,9 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
     }
 
     fun updateScheduleDot(selectedItem: DateSelect, isVisible: Boolean) {
-        for (item in items) {
-            item.isScheduled = false
-        }
+//        for (item in items) {
+//            item.isScheduled = false
+//        }
         selectedItem.isScheduled = isVisible
         notifyDataSetChanged()
     }

@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel
 
 class CalMonthViewModel : ViewModel() {
     private val _calMonthList = MutableLiveData<ArrayList<CalMonth>>(arrayListOf())
+    private val _isScheduledLiveData = MutableLiveData<ArrayList<DateSelect>>(arrayListOf())
+
     val calMonthList: LiveData<ArrayList<CalMonth>> get() = _calMonthList // 읽기만 가능(get)
+    val isScheduledLiveData: LiveData<ArrayList<DateSelect>> get() = _isScheduledLiveData
 
     fun addDateMonth(value: CalMonth) { // 추가
         _calMonthList.value?.add(value)
@@ -28,6 +31,10 @@ class CalMonthViewModel : ViewModel() {
             _calMonthList.value = _calMonthList.value
         }
     }
+
+//    fun updateIsScheduled(item: DateSelect, isScheduled: Boolean) {
+//        _isScheduledLiveData.value = isScheduled
+//    }
 }
 
 class QnaListViewModel : ViewModel() {
