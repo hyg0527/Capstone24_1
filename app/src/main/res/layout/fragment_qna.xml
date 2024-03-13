@@ -96,7 +96,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <ImageView
-            android:id="@+id/blueline"
+            android:id="@+id/totalLine"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -107,7 +107,7 @@
             app:srcCompat="@drawable/blue_line" />
 
         <ImageView
-            android:id="@+id/lightblueline"
+            android:id="@+id/wholeLine"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

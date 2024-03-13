@@ -2,7 +2,6 @@ package com.credential.cubrism
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
@@ -40,6 +39,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         val mylicenseRCV = view.findViewById<RecyclerView>(R.id.mylicenseRCV)
         val tdlist = TodayData()
 
+
         login.setOnClickListener {
             val intent = Intent(requireActivity(), LoginActivity::class.java)
             startActivity(intent)
@@ -68,6 +68,15 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             add(TodayData(false, "친구랑 약속"))
         }
     }
+
+    private fun LCSData(): ArrayList<myLicenseData> {
+        return ArrayList<myLicenseData>().apply {
+            add(myLicenseData("정보처리기사"))
+            add(myLicenseData("한식조리기능사"))
+            add(myLicenseData("미팅 준비하기!!"))
+        }
+    }
+
 
 
 }
@@ -119,6 +128,8 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         val btnAddPost = view.findViewById<ImageView>(R.id.btnAddPost)
         val totalBtn = view.findViewById<TextView>(R.id.textView6)
         val wholeBtn = view.findViewById<TextView>(R.id.textView7)
+        val totalLine = view.findViewById<ImageView>(R.id.totalLine)
+        val wholeLine = view.findViewById<ImageView>(R.id.wholeLine)
 
         btnAddPost.setOnClickListener {
             changeFragment(writeFragment)
@@ -135,9 +146,17 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         })
 
         totalBtn.setOnClickListener {
+            totalBtn.setTextColor(resources.getColor(R.color.blue))
+            wholeBtn.setTextColor(resources.getColor(R.color.lightblue))
+            totalLine.setImageResource(R.drawable.blue_line)
+            wholeLine.setImageResource(R.drawable.lightblue_line)
             changeTotalOrWhole(adapter, "total")
         }
         wholeBtn.setOnClickListener {
+            totalBtn.setTextColor(resources.getColor(R.color.lightblue))
+            wholeBtn.setTextColor(resources.getColor(R.color.blue))
+            totalLine.setImageResource(R.drawable.lightblue_line)
+            wholeLine.setImageResource(R.drawable.blue_line)
             changeTotalOrWhole(adapter, "whole")
         }
 

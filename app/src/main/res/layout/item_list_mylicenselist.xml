@@ -34,7 +34,7 @@
                         android:src="@drawable/button_rounded_corner_blue3" />
 
                     <TextView
-                        android:id="@+id/imageView10"
+                        android:id="@+id/myLCStxt"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:fontFamily="@font/godom"
