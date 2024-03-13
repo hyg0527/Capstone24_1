@@ -58,14 +58,14 @@ class QnaListViewModel : ViewModel() {
         _questionList.value = _questionList.value
     }
 }
-
-class TodoViewModel : ViewModel() {
-    val itemList: MutableLiveData<List<TodayData>> = MutableLiveData()
-
-    // 아이템 상태 업데이트
-    fun updateTodo(position: Int, isChecked: Boolean) {
-        val currentList = itemList.value.orEmpty().toMutableList()
-        currentList[position].isChecked = isChecked
-        itemList.value = currentList
-    }
-}
+//
+//class TodoViewModel : ViewModel() {
+//    val itemList: MutableLiveData<List<TodayData>> = MutableLiveData()
+//
+//    // 아이템 상태 업데이트
+//    fun updateTodo(position: Int, isChecked: Boolean) {
+//        val currentList = itemList.value.orEmpty().toMutableList()
+//        currentList[position].todayCheck = isChecked
+//        itemList.value = currentList
+//    }
+//}

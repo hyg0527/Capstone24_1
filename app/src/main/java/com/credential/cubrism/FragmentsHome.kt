@@ -31,6 +31,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 }
 
 class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
+
+//    private var view: View? = null
+//    private lateinit var tdlistviewModel: TodoViewModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val login = view.findViewById<LinearLayout>(R.id.loginBtnLayout)
@@ -61,6 +65,8 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
         todoRCV.layoutManager = LinearLayoutManager(requireActivity())
         todoRCV.adapter = td_adapter
+
+
 
         mylicenseRCV.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         mylicenseRCV.adapter = lcs_adapter

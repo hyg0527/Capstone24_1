@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-data class TodayData(val todayCheck: Boolean? = null, val toaySchedule: String? = null) :Parcelable {
+data class TodayData(var todayCheck: Boolean? = null, val toaySchedule: String? = null) :Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readString()
