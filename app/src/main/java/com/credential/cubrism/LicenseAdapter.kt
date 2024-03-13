@@ -5,17 +5,19 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-data class myLicenseData(val myLicense: String? = null) :Parcelable {
-    constructor(parcel: Parcel) : this(parcel.readString()) {
+data class myLicenseData(val myLCStxt: String? = null) :Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()
+    ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(myLicense)
+        parcel.writeString(myLCStxt)
     }
 
     override fun describeContents(): Int {
@@ -39,8 +41,8 @@ class LicenseAdapter(private val items: ArrayList<myLicenseData>) : RecyclerView
 
     inner class LCSViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val myLCStxt = v.findViewById<TextView>(R.id.myLCStxt)
-
-
+        val myLCSimage = v.findViewById<ImageView>(R.id.myLCSimage)
+        val myLCSpin = v.findViewById<ImageView>(R.id.yellowpin)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LCSViewHolder {
@@ -54,7 +56,28 @@ class LicenseAdapter(private val items: ArrayList<myLicenseData>) : RecyclerView
     }
 
     override fun onBindViewHolder(holder: LCSViewHolder, position: Int) {
-        holder.myLCStxt.text = items[position].myLicense
+
+        holder.myLCStxt.text = items[position].myLCStxt
+        holder.myLCSimage.setImageResource(R.drawable.button_rounded_corner_blue3)
+        holder.myLCSpin.setImageResource(R.drawable.yellow_pin)
+
+        // 배경색을 번갈아서 출력
+        if ((position + 1) % 2 == 0) {
+            holder.myLCSimage.setImageResource(R.drawable.button_rounded_corner_mdblue)
+        } else {
+            holder.myLCSimage.setImageResource(R.drawable.button_rounded_corner_blue3)
+        }
+
+        // pin의 색을 번갈아서 출력
+        if ((position + 1) % 3 == 0) {
+            holder.myLCSpin.setImageResource(R.drawable.red_pin)
+        } else if ((position + 1) % 3 == 1) {
+            holder.myLCSpin.setImageResource(R.drawable.yellow_pin)
+        } else {
+            holder.myLCSpin.setImageResource(R.drawable.green_pin)
+        }
+
+
 
     }
 

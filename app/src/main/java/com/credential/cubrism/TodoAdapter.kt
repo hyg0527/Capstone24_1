@@ -58,8 +58,14 @@ class TodoAdapter(private val items: ArrayList<TodayData>) : RecyclerView.Adapte
     }
 
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
+        val currentItem = items[position]
+
         holder.checkTodo.isChecked = false
         holder.todoSchedule.text = items[position].toaySchedule
+
+        holder.checkTodo.setOnCheckedChangeListener { buttonView, isChecked ->
+            holder.checkTodo.isChecked = isChecked
+        }
 
     }
 

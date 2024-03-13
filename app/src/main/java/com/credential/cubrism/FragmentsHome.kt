@@ -38,6 +38,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         val todoRCV = view.findViewById<RecyclerView>(R.id.todoRCV)
         val mylicenseRCV = view.findViewById<RecyclerView>(R.id.mylicenseRCV)
         val tdlist = TodayData()
+        val lcslist = LCSData()
 
 
         login.setOnClickListener {
@@ -54,11 +55,15 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         }
 
 
-        val adapter = TodoAdapter(tdlist)
+        val td_adapter = TodoAdapter(tdlist)
+        val lcs_adapter = LicenseAdapter(lcslist)
 
 
         todoRCV.layoutManager = LinearLayoutManager(requireActivity())
-        todoRCV.adapter = adapter
+        todoRCV.adapter = td_adapter
+
+        mylicenseRCV.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+        mylicenseRCV.adapter = lcs_adapter
 
     }
     private fun TodayData(): ArrayList<TodayData> {
@@ -73,7 +78,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         return ArrayList<myLicenseData>().apply {
             add(myLicenseData("정보처리기사"))
             add(myLicenseData("한식조리기능사"))
-            add(myLicenseData("미팅 준비하기!!"))
+            add(myLicenseData("직업상담사1급"))
         }
     }
 
