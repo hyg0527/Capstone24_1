@@ -58,15 +58,16 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             changeFragment(parentFragment, NotifyFragment())
         }
 
-        val qnaEnter = view.findViewById<Button>(R.id.btnQnaEnter)
-        qnaEnter.setOnClickListener {
-            changeFragment(parentFragment, QnaFragment())
-        }
-
 
         val td_adapter = TodoAdapter(tdlist)
         val lcs_adapter = LicenseAdapter(lcslist)
         val bn_adapter = BannerAdapter(bnlist)
+
+        bn_adapter.setBannerListener(object: QnaBannerEnterListener {
+            override fun onBannerClicked() {
+                changeFragment(parentFragment, QnaFragment())
+            }
+        })
 
 
         todoRCV.layoutManager = LinearLayoutManager(requireActivity())
@@ -98,7 +99,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
     private fun BannerData(): ArrayList<BannerData> {
         return ArrayList<BannerData>().apply {
-            add(BannerData("궁금한 것이 있을 땐?\nQ&amp;A 게시판에 질문하세요!"))
+            add(BannerData("궁금한 것이 있을 땐?\nQ&A 게시판에 질문하세요!"))
         }
     }
 

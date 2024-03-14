@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         android:background="#FFF4DF"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +35,7 @@
             android:lineSpacingExtra="6dp"
             android:text="궁금한 것이 있을 땐?\nQ&amp;A 게시판에 질문하세요!"
             android:textColor="#414141"
-            android:textSize="19dp"
+            android:textSize="17dp"
             android:textStyle="italic" />
 
         <android.widget.Button
@@ -43,7 +43,7 @@
             android:layout_width="65dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/button_rounded_corner_red"
             android:fontFamily="@font/kopubdotumbold"
