@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,8 +44,10 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         val notify = view.findViewById<ImageButton>(R.id.btnNotify)
         val todoRCV = view.findViewById<RecyclerView>(R.id.todoRCV)
         val mylicenseRCV = view.findViewById<RecyclerView>(R.id.mylicenseRCV)
+        val bannerVP = view.findViewById<ViewPager2>(R.id.bannerViewPager)
         val tdlist = TodayData()
         val lcslist = LCSData()
+        val bnlist = BannerData()
 
 
         login.setOnClickListener {
@@ -61,6 +66,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
         val td_adapter = TodoAdapter(tdlist)
         val lcs_adapter = LicenseAdapter(lcslist)
+        val bn_adapter = BannerAdapter(bnlist)
 
 
         todoRCV.layoutManager = LinearLayoutManager(requireActivity())
@@ -70,6 +76,8 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
         mylicenseRCV.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         mylicenseRCV.adapter = lcs_adapter
+
+        bannerVP.adapter = bn_adapter
 
     }
     private fun TodayData(): ArrayList<TodayData> {
@@ -85,6 +93,12 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             add(myLicenseData("정보처리기사"))
             add(myLicenseData("한식조리기능사"))
             add(myLicenseData("직업상담사1급"))
+        }
+    }
+
+    private fun BannerData(): ArrayList<BannerData> {
+        return ArrayList<BannerData>().apply {
+            add(BannerData("궁금한 것이 있을 땐?\nQ&amp;A 게시판에 질문하세요!"))
         }
     }
 
