@@ -35,7 +35,7 @@ class ChattingActivity : AppCompatActivity() {
 
         val chatAdapter = initChatList()
 
-        val sendingBtn = findViewById<Button>(R.id.sendingBtn) // 메시지 전송 로직
+        val sendingBtn = findViewById<ImageButton>(R.id.sendingBtn) // 메시지 전송 로직
         sendingBtn.setOnClickListener {
             val sendingText = findViewById<EditText>(R.id.editTextSendMessage).text.toString()
             chatAdapter.addItem(sendingText)

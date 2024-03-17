@@ -22,6 +22,7 @@
         android:id="@+id/linearLayout9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:background="#EBF1FF"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"

@@ -177,25 +177,60 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/editTextSendMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:hint="댓글 입력"
-            android:inputType="text" />
 
-        <Button
-            android:id="@+id/sendingBtn"
-            android:layout_width="30dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
             android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
             android:layout_gravity="center"
-            android:text="전송" />
+            android:background="@drawable/layout_rounded_corner_lb"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="35dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:src="@drawable/reply_btn" />
+
+            <TextView
+                android:id="@+id/textView44"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:layout_marginLeft="3dp"
+                android:textColor="@color/blue"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:fontFamily="@font/kopubdotumbold"
+                android:text="닉네임" />
+
+            <EditText
+                android:id="@+id/editTextSendMessage"
+                style="@style/NoUnderlineEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/kopubdotummedium"
+                android:hint="댓글 입력"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/sendingBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="center"
+            android:background="@drawable/send_btn" />
+
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
