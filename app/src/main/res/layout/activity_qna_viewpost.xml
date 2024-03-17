@@ -189,16 +189,16 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView10"
+                android:id="@+id/replyIMG"
                 android:layout_width="35dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
                 android:visibility="gone"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/reply_btn" />
 
             <TextView
-                android:id="@+id/textView44"
+                android:id="@+id/replyUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
