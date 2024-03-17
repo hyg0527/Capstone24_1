@@ -1,5 +1,6 @@
 package com.credential.cubrism
 
+import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -8,10 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-
-interface QnaClickListener {
-    fun onQnaClick(item: QnaData)
-}
 
 data class QnaData(val medalName: String? = null, val title: String? = null, val postImg: Int? = null,
                    val postIn: String? = null, val writingTime: String? = null, val userName: String? = null) : Parcelable {
@@ -50,11 +47,6 @@ data class QnaData(val medalName: String? = null, val title: String? = null, val
 }
 
 class QnaAdapter(private val items: ArrayList<QnaData>) : RecyclerView.Adapter<QnaAdapter.QnaViewHolder>() {
-    private var qnaClickListener: QnaClickListener? = null
-    fun setQnaClickListener(listener: QnaClickListener) {
-        qnaClickListener = listener
-    }
-
     inner class QnaViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val medalName = v.findViewById<TextView>(R.id.textView8)
         val qName = v.findViewById<TextView>(R.id.textView15)
@@ -66,7 +58,12 @@ class QnaAdapter(private val items: ArrayList<QnaData>) : RecyclerView.Adapter<Q
             v.setOnClickListener {
                 val position = adapterPosition
                 val clickedInfo = items[position]
-                qnaClickListener?.onQnaClick(clickedInfo)
+
+                val context = itemView.context
+                val intent = Intent(context, ChattingActivity::class.java)
+                intent.putExtra("qnaInfo", clickedInfo)
+
+                context.startActivity(intent)
             }
         }
     }
