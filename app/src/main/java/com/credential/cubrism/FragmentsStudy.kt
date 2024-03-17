@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,15 +26,13 @@ class StudyFragment : Fragment(R.layout.fragment_study) {
 }
 
 class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
-    private var view: View? = null
+    private lateinit var studyListViewModel: StudyListViewModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.view = view
 
-        val itemList = ArrayList<String>().apply {
-            for (i in 1..7)
-                add("스터디 모집글 $i")
-        }
+        val itemList = ArrayList<String>()
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.studyListView)
         val adapter = StudyListAdapter(itemList)
 
@@ -44,6 +43,9 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
         val divider = DividerItemDecoration(requireContext(), layoutManager.orientation)
         recyclerView.addItemDecoration(divider)
 
+        studyListViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
+        updateViewModel(adapter)
+
         adapter.setItemClickListener(object: StudyItemClickListener {
             override fun onItemClicked(item: String) {
                 val infoFragment = StudyInfoFragment()
@@ -52,12 +54,12 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
         })
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
+    private fun updateViewModel(adapter: StudyListAdapter) {
+        studyListViewModel.studyList.observe(viewLifecycleOwner) { studyList ->
+            adapter.clearItem()
+            studyList.forEach { title ->
+                adapter.addItem(title)
+            }
         }
     }
 

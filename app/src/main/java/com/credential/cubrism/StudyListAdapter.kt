@@ -42,4 +42,12 @@ class StudyListAdapter(private val items: ArrayList<String>) : RecyclerView.Adap
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = items[position]
     }
+
+    fun addItem(item: String) {
+        items.add(item)
+    }
+
+    fun clearItem() {
+        items.clear()
+    }
 }

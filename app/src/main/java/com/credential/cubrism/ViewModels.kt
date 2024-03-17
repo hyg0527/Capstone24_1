@@ -69,3 +69,33 @@ class QnaListViewModel : ViewModel() {
 //        itemList.value = currentList
 //    }
 //}
+
+class StudyListViewModel : ViewModel() { // 스터디 그룹 페이지 항목 리스트 viewmodel
+    private val _studyList = MutableLiveData<ArrayList<String>>(arrayListOf())
+    val studyList: LiveData<ArrayList<String>> get() = _studyList // 읽기만 가능(get)
+
+    init {
+        addList("정처기 삼일컷 스터디")
+        addList("토익 토플 토스 오픽 일주일컷 스터디")
+    }
+
+    fun addList(value: String) { // 질문 추가
+        _studyList.value?.add(value)
+        _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
+    }
+}
+
+class MyStudyViewModel : ViewModel() { // 나의 스터디 항목 리스트 viewmodel
+    private val _studyList = MutableLiveData<ArrayList<String>>(arrayListOf())
+    val studyList: LiveData<ArrayList<String>> get() = _studyList // 읽기만 가능(get)
+
+    init {
+        addList("정처기 삼일컷 스터디")
+        addList("토익 토플 토스 오픽 일주일컷 스터디")
+    }
+
+    fun addList(value: String) { // 질문 추가
+        _studyList.value?.add(value)
+        _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
+    }
+}
