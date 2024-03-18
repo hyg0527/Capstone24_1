@@ -20,7 +20,7 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
     private fun initRankList(v: View) {
         val items = ArrayList<Rank>().apply {
             for (i in 1..5) {
-                add(Rank("참가자 $i",i * 20))
+                add(Rank("참가자 $i",(6 - i) * 20))
             }
         }
         val recyclerView = v.findViewById<RecyclerView>(R.id.studyGroupRankView)

@@ -6,31 +6,31 @@
     android:layout_height="match_parent">
 
 
-    <ScrollView
+    <ImageButton
+        android:id="@+id/backBtn_qnaview"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="7dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:foreground="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow_left" />
+
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/chattingLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/backBtn_qnaview">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/backBtn_qnaview"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="7dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:foreground="@android:color/transparent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/arrow_left" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -160,13 +160,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chattingView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
 
         </LinearLayout>
 
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/chattingLayout"

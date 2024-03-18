@@ -80,6 +80,10 @@ class ChattingAdapter(private val items: ArrayList<Chat>) : RecyclerView.Adapter
                     listener?.onClicked(isReply)
                     isReply = !isReply
                 }
+
+                val visibility = if (items[position].showReplyImg) View.VISIBLE else View.GONE
+                holder.yourreplyimg.visibility = visibility
+                holder.yourreplynick.visibility = visibility
             }
         }
     }
@@ -87,5 +91,9 @@ class ChattingAdapter(private val items: ArrayList<Chat>) : RecyclerView.Adapter
     fun addItem(item: Chat) {
         items.add(item)
         notifyDataSetChanged()
+    }
+
+    fun getItem(): ArrayList<Chat> {
+        return items
     }
 }

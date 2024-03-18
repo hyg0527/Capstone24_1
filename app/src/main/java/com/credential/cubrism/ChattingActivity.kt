@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,16 +42,28 @@ class ChattingActivity : AppCompatActivity() {
 
         val sendingBtn = findViewById<ImageButton>(R.id.sendingBtn) // 메시지 전송 로직
         sendingBtn.setOnClickListener {
-            val sendingText = findViewById<EditText>(R.id.editTextSendMessage).text.toString()
-            val item: Chat
+            val sendingText = findViewById<EditText>(R.id.editTextSendMessage)
+            if (sendingText.text.isNotEmpty()) {
+                val sendTxt = sendingText.text.toString()
+                val item: Chat
 
-            if (reply.isVisible && replyImg.isVisible) {
-                item = Chat("user", R.drawable.profil_image, sendingText,false, true)
+                if (reply.isVisible && replyImg.isVisible) {
+                    item = Chat("user", R.drawable.profil_image, sendTxt,false, true)
+                }
+                else {
+                    item = Chat("user", R.drawable.profil_image, sendTxt,false, false)
+                }
+
+                chatAdapter.addItem(item)
+                sendingText.setText("")
+
+                // 보내고나면 텍스트칸 초기화 로직
+                reply.visibility = View.GONE
+                replyImg.visibility = View.GONE
             }
             else {
-                item = Chat("user", R.drawable.profil_image, sendingText,false, false)
+                Toast.makeText(this, "메시지를 입력하세요.", Toast.LENGTH_SHORT).show()
             }
-            chatAdapter.addItem(item)
         }
 
 
@@ -81,6 +94,7 @@ class ChattingActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
+        recyclerView.isNestedScrollingEnabled = false
 
         return adapter
     }

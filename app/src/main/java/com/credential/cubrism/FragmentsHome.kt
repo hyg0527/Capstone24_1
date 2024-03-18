@@ -56,7 +56,6 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             changeFragment(parentFragment, NotifyFragment())
         }
 
-
         val td_adapter = TodoAdapter(tdlist)
         val lcs_adapter = LicenseAdapter(lcslist)
         val bn_adapter = BannerAdapter(bnlist)
@@ -67,11 +66,8 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             }
         })
 
-
         todoRCV.layoutManager = LinearLayoutManager(requireActivity())
         todoRCV.adapter = td_adapter
-
-
 
         mylicenseRCV.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         mylicenseRCV.adapter = lcs_adapter
