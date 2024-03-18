@@ -12,7 +12,7 @@ interface ReplyListener {
     fun onClicked(isReply: Boolean)
 }
 data class Chat(val userName: String?= null, val profileImg: Int? = null,
-                val text: String? = null, val reply: Boolean = false)
+                val text: String? = null, val reply: Boolean = false, val showReplyImg: Boolean = false)
 class ChattingAdapter(private val items: ArrayList<Chat>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var listener: ReplyListener? = null
     private var isReply = false
@@ -66,15 +66,17 @@ class ChattingAdapter(private val items: ArrayList<Chat>) : RecyclerView.Adapter
                 holder.chat.text = items[position].text
                 holder.myreplyimg.setImageResource(items[position].profileImg ?: 0)
                 holder.myreplynick.text = items[position].userName
+
+                val visibility = if (items[position].showReplyImg) View.VISIBLE else View.GONE
+                holder.myreplyimg.visibility = visibility
+                holder.myreplynick.visibility = visibility
+
             }
             is YourViewHolder -> { // 뷰 타입 B에 대한 데이터 바인딩
                 holder.chat.text = items[position].text
                 holder.yourreplyimg.setImageResource(items[position].profileImg ?: 0)
                 holder.yourreplynick.text = items[position].userName
                 holder.yourreplybtn.setOnClickListener {
-//                    val context = holder.itemView.context
-//                    Toast.makeText(context, "눌럈ㄴ[여!", Toast.LENGTH_SHORT).show()
-
                     listener?.onClicked(isReply)
                     isReply = !isReply
                 }
