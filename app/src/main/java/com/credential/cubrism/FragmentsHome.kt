@@ -224,49 +224,6 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         }
     }
 }
-// qna 글보기 fragment
-//class QnaViewPostFragment : Fragment(R.layout.activity_qna_viewpost) {
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        val backBtn_qnaview = view.findViewById<ImageButton>(R.id.backBtn_qnaview)
-//        backBtn_qnaview.setOnClickListener {
-//            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
-//        }
-//
-//        val receivedData = arguments?.getParcelable<QnaData>("qnaInfo")
-//
-//        val medalName = view.findViewById<Button>(R.id.button2)
-//        val title = view.findViewById<TextView>(R.id.textView36)
-//        val info = view.findViewById<TextView>(R.id.textView37)
-//        val userName = view.findViewById<TextView>(R.id.textView33)
-//
-//        medalName.setText(receivedData?.medalName)
-//        title.text = receivedData?.title
-//        info.text = receivedData?.postIn
-//        userName.text = receivedData?.userName
-//        // 시간 필드 추가 요망
-//
-//        val chatAdapter = initChatList(view)
-//
-//        val sendingBtn = view.findViewById<Button>(R.id.sendingBtn) // 메시지 전송 로직
-//        sendingBtn.setOnClickListener {
-//            val sendingText = view.findViewById<EditText>(R.id.editTextSendMessage).text.toString()
-//            chatAdapter.addItem(sendingText)
-//        }
-//
-//        handleBackStack(view, parentFragment)
-//    }
-//
-//    override fun onHiddenChanged(hidden: Boolean) {
-//        super.onHiddenChanged(hidden)
-//
-//        if (!hidden) {
-//            // Fragment가 다시 화면에 나타날 때의 작업 수행
-//            view?.let { handleBackStack(it, parentFragment) }
-//        }
-//    }
-//}
 
 class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 프래그먼트
     private var view: View? = null
