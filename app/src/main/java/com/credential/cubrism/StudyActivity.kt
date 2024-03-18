@@ -74,9 +74,16 @@ class StudyActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.medal -> {     // 관리 버튼을 누르면 관리 화면으로 이동
+            R.id.manage -> {     // 관리 버튼을 누르면 관리 화면으로 이동
                 val intent = Intent(this, StudyManageActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.goal -> {     // 목표 설정 화면 호출
+
+                true
+            }
+            R.id.d_day -> {     // 디데이 설정 화면 호출
 
                 true
             }

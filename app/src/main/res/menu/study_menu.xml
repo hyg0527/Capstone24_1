@@ -4,8 +4,19 @@
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/medal"
-        android:id="@+id/medal"
+        android:id="@+id/manage"
         android:title="관리" />
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/goal"
+        android:title="목표 설정" />
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/d_day"
+        android:title="D-day 설정" />
 
 </menu>
