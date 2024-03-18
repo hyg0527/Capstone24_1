@@ -56,6 +56,5 @@ class ChattingAdapter(private val items: ArrayList<String>) : RecyclerView.Adapt
     fun addItem(item: String) {
         items.add(item)
         notifyDataSetChanged()
-        println("호출됨")
     }
 }

@@ -10,9 +10,20 @@ import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import de.hdodenhof.circleimageview.CircleImageView
 
 class StudyActivity : AppCompatActivity() {
+    private lateinit var currentFragment: Fragment
+    private val homeFragment = StudyGroupHomeFragment()
+    private val func2Fragment = StudyGroupFunc2Fragment()
+    private val func3Fragment = StudyGroupFunc3Fragment()
+    private val func4Fragment = StudyGroupFunc4Fragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
@@ -26,11 +37,6 @@ class StudyActivity : AppCompatActivity() {
 
         title.text = titleTxt
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.studyGroupContainerView, StudyGroupHomeFragment())
-            .setReorderingAllowed(true)
-            .commit()
-
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
         val navView = findViewById<NavigationView>(R.id.nav_view_drawer)
 
@@ -41,7 +47,7 @@ class StudyActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // 네비게이션 메뉴 아이템 선택 시 처리할 리스너 등록
+        // 네비게이션 드로어 메뉴 아이템 선택 시 처리할 리스너 등록
         navView.setNavigationItemSelectedListener { menuItem ->
             // 선택한 메뉴 아이템에 따라 처리
             when (menuItem.itemId) {
@@ -56,6 +62,9 @@ class StudyActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        navigationInit()
+        menuSetUp()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,11 +84,49 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
+    private fun navigationInit() {
+        currentFragment = homeFragment
+        val fragmentList = listOf(homeFragment, func2Fragment, func3Fragment, func4Fragment)
+        val transaction = supportFragmentManager.beginTransaction()
+
+        for (fragment in fragmentList) {
+            transaction.add(R.id.studyGroupContainerView, fragment)
+        }
+        for (fragment in listOf(func2Fragment, func3Fragment, func4Fragment)) {
+            transaction.hide(fragment)
+        }
+
+        transaction.commit()
+    }
+
+    private fun menuSetUp() { // 상단 프래그먼트 메뉴 이동 버튼 설정
+        val homeBtn = findViewById<CircleImageView>(R.id.homeGroup)
+        val func2Btn = findViewById<CircleImageView>(R.id.func2Group)
+        val func3Btn = findViewById<CircleImageView>(R.id.func3Group)
+        val func4Btn = findViewById<CircleImageView>(R.id.func4Group)
+
+        homeBtn.setOnClickListener {
+            changeFragment(homeFragment)
+        }
+        func2Btn.setOnClickListener {
+            changeFragment(func2Fragment)
+        }
+        func3Btn.setOnClickListener {
+            changeFragment(func3Fragment)
+        }
+        func4Btn.setOnClickListener {
+            changeFragment(func4Fragment)
+        }
+    }
+
     private fun changeFragment(fragment: Fragment) { // 프래그먼트 전환 함수
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.studyGroupContainerView, fragment)
-            .addToBackStack(null)
-            .setReorderingAllowed(true)
-            .commit()
+        if (fragment != currentFragment) {
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+                .hide(currentFragment)
+                .show(fragment)
+                .commit()
+        }
+        currentFragment = fragment
     }
 }
