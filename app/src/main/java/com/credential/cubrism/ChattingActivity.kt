@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,15 +39,34 @@ class ChattingActivity : AppCompatActivity() {
         val sendingBtn = findViewById<ImageButton>(R.id.sendingBtn) // 메시지 전송 로직
         sendingBtn.setOnClickListener {
             val sendingText = findViewById<EditText>(R.id.editTextSendMessage).text.toString()
-            chatAdapter.addItem(sendingText)
+            val item = Chat("user", R.drawable.profil_image, sendingText,false)
+            chatAdapter.addItem(item)
         }
+
+        val reply = findViewById<TextView>(R.id.replyUser)
+        val replyImg = findViewById<ImageView>(R.id.replyIMG)
+        chatAdapter.setReplyListener(object: ReplyListener {
+            override fun onClicked(isReply: Boolean) {
+                println("onclicked GHCNFEHLA")
+                if (isReply) {
+                    reply.visibility = View.GONE
+                    replyImg.visibility = View.GONE
+                    println("false인가?")
+                }
+                else {
+                    reply.visibility = View.VISIBLE
+                    replyImg.visibility = View.VISIBLE
+                    println("true인가?")
+                }
+            }
+        })
     }
 
     private fun initChatList(): ChattingAdapter {
-        val itemList = ArrayList<String>().apply {
+        val itemList = ArrayList<Chat>().apply {
             for (i in 1..6) {
-                add("${i}번째 텍스트입니다.")
-                add("-${i}번째 텍스트입니다.")
+                add(Chat("user", R.drawable.profil_image, "${i}번째 텍스트입니다.", false))
+                add(Chat("user", R.drawable.profil_image, "-${i}번째 텍스트입니다.", false))
             }
         }
         val recyclerView = findViewById<RecyclerView>(R.id.chattingView)
