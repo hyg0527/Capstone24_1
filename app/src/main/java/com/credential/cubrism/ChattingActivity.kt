@@ -48,10 +48,10 @@ class ChattingActivity : AppCompatActivity() {
                 val item: Chat
 
                 if (reply.isVisible && replyImg.isVisible) {
-                    item = Chat("user", R.drawable.profil_image, sendTxt,false, true)
+                    item = Chat("user", R.drawable.reply_btn, sendTxt,false, true)
                 }
                 else {
-                    item = Chat("user", R.drawable.profil_image, sendTxt,false, false)
+                    item = Chat("user", R.drawable.reply_btn, sendTxt,false, false)
                 }
 
                 chatAdapter.addItem(item)
