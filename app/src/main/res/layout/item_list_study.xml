@@ -6,80 +6,120 @@
     android:layout_height="wrap_content">
 
     <android.widget.Button
-        android:id="@+id/studyStatus"
-        android:layout_width="70dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/studyStatus_ing"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/button_rounded_corner_lb4"
         android:text="모집중"
-        android:textSize="18dp"
+        android:textSize="15dp"
+        android:gravity="center"
         android:fontFamily="@font/kopubdotumbold"
         android:textColor="@color/blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.widget.Button
-        android:id="@+id/studyStatus2"
-        android:layout_width="70dp"
-        android:layout_height="33dp"
+        android:id="@+id/studyStatus_end"
+        android:layout_width="80dp"
+        android:layout_height="35dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_rounded_corner_search"
-        android:text="#널널함"
-        android:textSize="15dp"
-        android:textColor="@color/blue"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:background="@drawable/button_rounded_corner_gray2"
+        android:text="모집완료"
+        android:textSize="17dp"
         android:fontFamily="@font/kopubdotumbold"
+        android:textColor="#919191"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.widget.Button
-        android:id="@+id/studyStatus3"
-        android:layout_width="70dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_rounded_corner_search"
-        android:text="#열공"
-        android:textSize="15dp"
-        android:textColor="@color/blue"
-        android:fontFamily="@font/kopubdotumbold"
-        app:layout_constraintStart_toEndOf="@+id/studyStatus2"
-        app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle" />
+    <LinearLayout
+        android:id="@+id/tagLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle">
+
+        <android.widget.Button
+            android:id="@+id/studyStatus2"
+            android:layout_width="70dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edittext_rounded_corner_search"
+            android:fontFamily="@font/kopubdotumbold"
+            android:text="#널널함"
+            android:textColor="@color/blue"
+            android:textSize="15dp" />
+
+        <android.widget.Button
+            android:id="@+id/studyStatus3"
+            android:layout_width="60dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edittext_rounded_corner_search"
+            android:fontFamily="@font/kopubdotumbold"
+            android:text="#열공"
+            android:textColor="@color/blue"
+            android:textSize="15dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txtStudyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
         android:fontFamily="@font/kopubdotumbold"
-        android:textColor="#222222"
+        android:textColor="#4F4A4A"
         android:text="같이 공부하실 분 구합니다!~"
-        android:textSize="20dp"
+        android:textSize="19dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studyStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/studyStatus_ing" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/studymember"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtStudyInfo" />
 
     <TextView
         android:id="@+id/textView41"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="22dp"
+        android:fontFamily="@font/kopubdotumbold"
         android:text="1 / 4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView10" />
 
     <TextView
         android:id="@+id/txtStudyInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="스터디 소개글입니다.\n스터디 소개글입니다."
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/kopubdotummedium"
+        android:maxWidth="280dp"
+        android:maxLines="3"
+        android:text="스터디 소개글입니다.\n스터디 소개글입니다.스터디소개글입니다스터디소개글입니다스터디소개글입니다"
+        android:textColor="#898989"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studyStatus2" />
+        app:layout_constraintTop_toBottomOf="@+id/tagLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>
