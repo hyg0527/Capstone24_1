@@ -123,12 +123,18 @@ class MyPageCreateStudyFragment : Fragment(R.layout.fragment_mypage_addstudy) {
         }
         addBtn.setOnClickListener { // 스터디 등록 부분
             val title = view.findViewById<EditText>(R.id.editTextStudyTitle)
-            myStudyListViewModel.addList(title.text.toString())
-            studyListViewModel.addList(title.text.toString())
 
-            hideKeyboard(requireContext(), view)
-            Toast.makeText(requireContext(), "스터디를 등록하였습니다.", Toast.LENGTH_SHORT).show()
-            (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
+            if (title.text.isNotEmpty()) {
+                myStudyListViewModel.addList(title.text.toString())
+                studyListViewModel.addList(title.text.toString())
+
+                hideKeyboard(requireContext(), view)
+                Toast.makeText(requireContext(), "스터디를 등록하였습니다.", Toast.LENGTH_SHORT).show()
+                (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
+            }
+            else {
+                Toast.makeText(requireContext(), "스터디그룹명을 입력하세요", Toast.LENGTH_SHORT).show()
+            }
         }
 
         handleBackStack(view, parentFragment)

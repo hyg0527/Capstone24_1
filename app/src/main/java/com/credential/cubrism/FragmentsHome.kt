@@ -1,18 +1,25 @@
 package com.credential.cubrism
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -181,15 +188,6 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
         }
     }
 
-    private fun sampleData(): ArrayList<QnaData> {
-        return ArrayList<QnaData>().apply {
-            add(QnaData("정보처리기사", "제목1", R.drawable.qna_photo,
-                "글 1입니다.", "11:00", "안해연"))
-            add(QnaData("제빵왕기능사", "제목2", R.drawable.qna_photo,
-                "글 2입니다. 근데 이런 자격증이 있나요?\n글쎄요. 제가 만들면 있는 겁니다.\n- 익명의 사나이 -", "12:00", "황윤구"))
-        }
-    }
-
     private fun changeTotalOrWhole(adapter: QnaAdapter, value: String) { // 전체리스트 <-> 관심분야 리스트 전환 함수
         if (value.equals("total")) { // 전체 리스트
             val data = qnaListViewModel.questionList.value
@@ -232,22 +230,41 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         val postingBtn = view.findViewById<Button>(R.id.postingBtn)
         val backBtnPosting = view.findViewById<ImageButton>(R.id.backBtnPosting)
         val dropDown = view.findViewById<ImageView>(R.id.medalDropDown)
+        val category = view.findViewById<Button>(R.id.txtPostingCategory)
+
         qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
 
-        postingBtn.setOnClickListener {
+        postingBtn.setOnClickListener { // 글등록 버튼 클릭 리스너
             val data = postData(view)
-            qnaViewModel.addQuestion(data)
 
-            Toast.makeText(requireContext(), "질문이 등록되었습니다", Toast.LENGTH_SHORT).show()
-            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+            if (data.title.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), "제목을 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else if (data.postIn.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                qnaViewModel.addQuestion(data)
+                Toast.makeText(requireContext(), "질문이 등록되었습니다", Toast.LENGTH_SHORT).show()
+
+                (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+                hideKeyboard(requireContext(), view)
+            }
         }
 
         backBtnPosting.setOnClickListener {
             (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+            hideKeyboard(requireContext(), view)
         }
         dropDown.setOnClickListener {
-            // 관심 카테고리 설정 화면 나올 예정.
-            // bottomdialog or dropdown
+            val (adapter, dialog) = showSearchDialog()
+
+            adapter.setItemClickListener(object: SearchItemClickListener {
+                override fun onItemClick(item: DialogItem) {
+                    category.text = item.name
+                    dialog.dismiss()
+                }
+            })
         }
 
         handleBackStack(view, parentFragment)
@@ -262,12 +279,66 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         }
     }
 
+    private fun showSearchDialog(): Pair<DialogSearchAdapter, Dialog> { // 카테고리 검색 다이얼로그 호출
+        val builder = AlertDialog.Builder(requireActivity())
+        val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.dialog_posting_search, null)
+
+        val adapter = initSearchRecyclerView(view)
+        builder.setView(view)
+
+        val searchView = view.findViewById<SearchView>(R.id.searchViewPosting) // searchView 선언
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean { // 검색어 제출시 호출(여기선 안씀)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean { // 검색어 실시간 변경 리스너
+                adapter.filter.filter(newText.orEmpty()) // 글자 변경시마다 리사이클러뷰 갱신
+                return true
+            }
+        })
+
+        val dialog = builder.create()
+        dialog.show()
+
+        return Pair(adapter, dialog)
+    }
+
+    private fun initSearchRecyclerView(v: View): DialogSearchAdapter {
+        val names = listOf("정보처리기사", "네트워크관리사", "정보관리기술사", "정보처리기능사", "청소부", "기능장", "사람", "동물")
+        val imageRes = R.drawable.icon_17
+        val itemList = ArrayList<DialogItem>().apply {
+            for (name in names) {
+                add(DialogItem(name, imageRes))
+            }
+        }
+
+        val recyclerView = v.findViewById<RecyclerView>(R.id.postingSearchView)
+        val adapter = DialogSearchAdapter(itemList)
+        val layoutManager = LinearLayoutManager(requireActivity())
+        val dividerItemDecoration = DividerItemDecoration(requireActivity(), layoutManager.orientation) // 구분선 추가
+
+        recyclerView.addItemDecoration(dividerItemDecoration)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        return adapter
+    }
+
     private fun postData(v: View): QnaData { // 등록화면에서 작성한 글 정보 리턴 함수
-        val medalName = v.findViewById<Button>(R.id.button2).text.toString()
+        val medalName = v.findViewById<Button>(R.id.txtPostingCategory).text.toString()
         val title = v.findViewById<EditText>(R.id.postTitle).text.toString()
         val postWriting = v.findViewById<EditText>(R.id.postWriting).text.toString()
 
         return QnaData(medalName, title, R.drawable.qna_photo, postWriting, "13:00", "user123")
+    }
+
+    // 뷰에 포커스를 주고 키보드를 숨기는 함수
+    private fun hideKeyboard(context: Context, view: View) {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 

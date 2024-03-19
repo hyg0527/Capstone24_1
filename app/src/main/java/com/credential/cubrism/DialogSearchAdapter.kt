@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
@@ -26,6 +27,7 @@ class DialogSearchAdapter(private val items: ArrayList<DialogItem>) : RecyclerVi
 
     inner class DialogViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val name = v.findViewById<TextView>(R.id.nameSearch)
+        val image = v.findViewById<ImageView>(R.id.imageViewSearch)
         init {
             v.setOnClickListener {
                 val position = adapterPosition
@@ -47,6 +49,7 @@ class DialogSearchAdapter(private val items: ArrayList<DialogItem>) : RecyclerVi
 
     override fun onBindViewHolder(holder: DialogViewHolder, position: Int) {
         holder.name.text = filteredItems[position].name
+        holder.image.setImageResource(items[position].image ?: 0)
     }
 
     override fun getFilter(): Filter { // 검색어 필터 기능 활성화
