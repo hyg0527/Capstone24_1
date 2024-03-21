@@ -27,14 +27,15 @@ class StudyFragment : Fragment(R.layout.fragment_study) {
 
 class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
     private lateinit var studyListViewModel: StudyListViewModel
+    private lateinit var adapter: StudyListAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val itemList = ArrayList<String>()
+        val itemList = ArrayList<StudyList>()
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.studyListView)
-        val adapter = StudyListAdapter(itemList)
+        adapter = StudyListAdapter(itemList, false)
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
@@ -47,7 +48,7 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
         updateViewModel(adapter)
 
         adapter.setItemClickListener(object: StudyItemClickListener {
-            override fun onItemClicked(item: String) {
+            override fun onItemClicked(item: StudyList) {
                 val infoFragment = StudyInfoFragment()
                 changeFragmentStudy(infoFragment, "studyInfo")
             }
@@ -57,8 +58,8 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
     private fun updateViewModel(adapter: StudyListAdapter) {
         studyListViewModel.studyList.observe(viewLifecycleOwner) { studyList ->
             adapter.clearItem()
-            studyList.forEach { title ->
-                adapter.addItem(title)
+            studyList.forEach { item ->
+                adapter.addItem(item)
             }
         }
     }
@@ -70,6 +71,14 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
             .setReorderingAllowed(true)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            adapter.updateItem()
+        }
     }
 }
 

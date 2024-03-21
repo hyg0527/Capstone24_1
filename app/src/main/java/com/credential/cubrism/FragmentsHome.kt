@@ -17,6 +17,7 @@ import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -234,6 +235,7 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
 
         qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
 
+        category.visibility = View.GONE
         postingBtn.setOnClickListener { // 글등록 버튼 클릭 리스너
             val data = postData(view)
 
@@ -242,6 +244,9 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
             }
             else if (data.postIn.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else if (!category.isVisible) {
+                Toast.makeText(requireContext(), "카테고리를 설정해주세요", Toast.LENGTH_SHORT).show()
             }
             else {
                 qnaViewModel.addQuestion(data)
@@ -261,6 +266,7 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
 
             adapter.setItemClickListener(object: SearchItemClickListener {
                 override fun onItemClick(item: DialogItem) {
+                    category.visibility = View.VISIBLE
                     category.text = item.name
                     dialog.dismiss()
                 }
@@ -307,10 +313,9 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
 
     private fun initSearchRecyclerView(v: View): DialogSearchAdapter {
         val names = listOf("정보처리기사", "네트워크관리사", "정보관리기술사", "정보처리기능사", "청소부", "기능장", "사람", "동물")
-        val imageRes = R.drawable.icon_17
         val itemList = ArrayList<DialogItem>().apply {
             for (name in names) {
-                add(DialogItem(name, imageRes))
+                add(DialogItem(name, 0))
             }
         }
 

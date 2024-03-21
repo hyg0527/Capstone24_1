@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -52,7 +53,7 @@ class MyPageFragmentHome : Fragment(R.layout.fragment_mypage_home) {
 
 class MyPageFragmentMyStudy : Fragment(R.layout.fragment_mypage_mystudy) {
     private var view: View? = null
-    private lateinit var studyViewModel: MyStudyViewModel
+    private lateinit var studyViewModel: StudyListViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,10 +70,10 @@ class MyPageFragmentMyStudy : Fragment(R.layout.fragment_mypage_mystudy) {
     }
 
     private fun showStudyList(view: View) { // 스터디 리스트 출력
-        val itemList = ArrayList<String>()
+        val itemList = ArrayList<StudyList>()
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.myStudyView)
-        val adapter = MyStudyAdapter(itemList)
+        val adapter = StudyListAdapter(itemList, true)
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         recyclerView.layoutManager = layoutManager
@@ -81,15 +82,15 @@ class MyPageFragmentMyStudy : Fragment(R.layout.fragment_mypage_mystudy) {
         val dividerItemDecoration = DividerItemDecoration(requireActivity(), layoutManager.orientation) // 구분선 추가
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        studyViewModel = ViewModelProvider(requireActivity())[MyStudyViewModel::class.java]
+        studyViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
         updateViewModel(adapter)
     }
 
-    private fun updateViewModel(adapter: MyStudyAdapter) {
+    private fun updateViewModel(adapter: StudyListAdapter) {
         studyViewModel.studyList.observe(viewLifecycleOwner) { studyList ->
             adapter.clearItem()
-            studyList.forEach { title ->
-                adapter.addItem(title)
+            studyList.forEach { item ->
+                adapter.addItem(item)
             }
         }
     }
@@ -106,38 +107,53 @@ class MyPageFragmentMyStudy : Fragment(R.layout.fragment_mypage_mystudy) {
 
 class MyPageCreateStudyFragment : Fragment(R.layout.fragment_mypage_addstudy) {
     private var view: View? = null
-    private lateinit var myStudyListViewModel: MyStudyViewModel
     private lateinit var studyListViewModel: StudyListViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
-        myStudyListViewModel = ViewModelProvider(requireActivity())[MyStudyViewModel::class.java]
         studyListViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
 
         val backBtn = view.findViewById<ImageView>(R.id.backBtn)
         val addBtn = view.findViewById<Button>(R.id.btnStudyCreate)
 
+        initTagRecyclerView(view)
+
         backBtn.setOnClickListener { // 뒤로가기 버튼
             (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
         }
         addBtn.setOnClickListener { // 스터디 등록 부분
-            val title = view.findViewById<EditText>(R.id.editTextStudyTitle)
+            val title = view.findViewById<EditText>(R.id.editTextStudyTitle).text
+            val info = view.findViewById<EditText>(R.id.editTextStudyInfo).text.toString()
+            val numS = view.findViewById<EditText>(R.id.editTextNums).text.toString().toInt()
 
-            if (title.text.isNotEmpty()) {
-                myStudyListViewModel.addList(title.text.toString())
-                studyListViewModel.addList(title.text.toString())
+            if (title.isNotEmpty()) {
+                studyListViewModel.addList(StudyList(title.toString(), info, numS))
 
                 hideKeyboard(requireContext(), view)
                 Toast.makeText(requireContext(), "스터디를 등록하였습니다.", Toast.LENGTH_SHORT).show()
                 (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
             }
             else {
-                Toast.makeText(requireContext(), "스터디그룹명을 입력하세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "스터디그룹명을 입력하세요.", Toast.LENGTH_SHORT).show()
             }
         }
 
         handleBackStack(view, parentFragment)
+    }
+
+    private fun initTagRecyclerView(v: View) {
+        val itemList = listOf("#널널함", "#열공", "#일주일", "#자유롭게", "#한달", "#필참", "#뭐가", "#있지", "#음..", "#알아서", "#없음")
+        val items = ArrayList<Tags>().apply {
+            for (item in itemList)
+                add(Tags(item))
+        }
+
+        val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerView)
+        val adapter = TagAdapter(items)
+
+        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL)
+        recyclerView.adapter = adapter
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
