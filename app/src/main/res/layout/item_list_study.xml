@@ -37,36 +37,23 @@
 
     <LinearLayout
         android:id="@+id/tagLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle">
 
-        <android.widget.Button
-            android:id="@+id/studyStatus2"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/edittext_rounded_corner_search"
-            android:fontFamily="@font/kopubdotumbold"
-            android:text="#널널함"
-            android:textColor="@color/blue"
-            android:textSize="13dp" />
-
-        <android.widget.Button
-            android:id="@+id/studyStatus3"
-            android:layout_width="55dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/edittext_rounded_corner_search"
-            android:fontFamily="@font/kopubdotumbold"
-            android:text="#열공"
-            android:textColor="@color/blue"
-            android:textSize="13dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tagRecyclerViewList"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:clickable="false"
+            android:focusable="false"/>
     </LinearLayout>
 
     <TextView

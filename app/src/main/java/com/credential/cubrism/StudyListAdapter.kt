@@ -1,17 +1,52 @@
 package com.credential.cubrism
 
 import android.content.Intent
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 interface StudyItemClickListener {
     fun onItemClicked(item: StudyList)
 }
-data class StudyList(val title: String? = null, val info: String? = null, val num: Int? = null)
+data class StudyList(val title: String? = null, val info: String? = null,
+                     val tagList: ArrayList<Tags>, val totalNum: Int? = null, val num: Int? = null): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        ArrayList<Tags>().apply {
+            parcel.readList(this, Tags::class.java.classLoader)
+        },
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int
+    ) {}
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(info)
+        parcel.writeValue(totalNum)
+        parcel.writeValue(num)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<StudyList> {
+        override fun createFromParcel(parcel: Parcel): StudyList {
+            return StudyList(parcel)
+        }
+
+        override fun newArray(size: Int): Array<StudyList?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 class StudyListAdapter(private val items: ArrayList<StudyList>,
                        val isMyStudy: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -22,8 +57,9 @@ class StudyListAdapter(private val items: ArrayList<StudyList>,
 
     inner class StudyViewHolder(v: View) : RecyclerView.ViewHolder(v) { // 두번째탭의 리스트 화면에 보여질 viewholder
         val title = v.findViewById<TextView>(R.id.txtStudyTitle)
-//        val num = v.findViewById<TextView>(R.id.txtNums)
+        val num = v.findViewById<TextView>(R.id.txtNums)
         val info = v.findViewById<TextView>(R.id.txtStudyInfo)
+        val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerViewList)
 
         init {
             v.setOnClickListener {
@@ -83,8 +119,16 @@ class StudyListAdapter(private val items: ArrayList<StudyList>,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is StudyViewHolder -> {
-                holder.title.text = items[position].title
-                holder.info.text = items[position].info
+                val context = holder.itemView.context
+                val item = items[position]
+                val numText = "${item.num} / ${item.totalNum}"
+
+                holder.title.text = item.title
+                holder.num.text = numText
+                holder.info.text = item.info
+
+                holder.recyclerView.adapter = TagAdapter(item.tagList, false)
+                holder.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
             is MyStudyViewHolder -> {
                 holder.studyTitle.text = items[position].title
