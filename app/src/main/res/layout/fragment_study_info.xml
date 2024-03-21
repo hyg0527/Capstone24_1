@@ -154,6 +154,7 @@
             </FrameLayout>
 
             <LinearLayout
+                android:id="@+id/endOfView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -169,31 +170,36 @@
                     android:id="@+id/textView325"
                     android:layout_width="match_parent"
                     android:layout_height="15dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_weight="0.045"
                     android:background="#BFEBF8" />
 
             </LinearLayout>
 
 
-
         </LinearLayout>
+
 
 
     </androidx.core.widget.NestedScrollView>
 
     <android.widget.Button
         android:id="@+id/btnStudyJoin"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="37dp"
-        android:background="@drawable/button_rounded_corner_red"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/button_rounded_corner_skyblue2"
         android:text="가입하기 / 가입완료"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
