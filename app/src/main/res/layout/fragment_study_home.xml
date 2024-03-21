@@ -41,8 +41,8 @@
         <Switch
             android:id="@+id/switch1"
             android:track="@drawable/switch_track"
-            android:thumbTint="@color/blue"
-            android:layout_width="match_parent"
+            android:thumb="@drawable/switch_on_thumb"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
