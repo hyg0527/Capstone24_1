@@ -1,11 +1,23 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
 
+val properties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
+}
+
 android {
     namespace = "com.credential.cubrism"
     compileSdk = 34
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.credential.cubrism"
@@ -15,6 +27,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String","SPRING_URL", getApi("SPRING_URL"))
     }
 
     buildTypes {
@@ -35,6 +49,14 @@ android {
     }
 }
 
+fun getApi(propertyKey: String): String {
+    val propertiesFile = rootProject.file("local.properties")
+    val properties = Properties().apply {
+        load(FileInputStream(propertiesFile))
+    }
+    return properties.getProperty(propertyKey)
+}
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
@@ -48,6 +70,11 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.etebarian:meow-bottom-navigation:1.2.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.10.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.10.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
