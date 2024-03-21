@@ -12,8 +12,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="STUDY"
-        android:textSize="20sp"
+        android:textSize="25dp"
         android:textStyle="bold"
+        android:textColor="@color/blue"
         android:fontFamily="@font/godom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="end"
+        android:gravity="center|end"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -34,14 +36,15 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/kopubdotumbold"
             android:textColor="#8C8C8C"
-            android:layout_marginRight="10dp"
-            android:textSize="13dp"
+            android:layout_marginRight="7dp"
+            android:textSize="14dp"
             android:text="모집 완료된 글 제외" />
 
         <Switch
             android:id="@+id/switch1"
             android:track="@drawable/switch_track"
-            android:thumbTint="@color/blue"
+            android:thumbTint="@color/white"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -50,7 +53,7 @@
         android:id="@+id/linearLayout9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:background="#EBF1FF"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"

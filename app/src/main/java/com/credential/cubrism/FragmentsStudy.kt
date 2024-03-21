@@ -1,8 +1,10 @@
 package com.credential.cubrism
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Switch
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +35,7 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
         super.onViewCreated(view, savedInstanceState)
 
         val itemList = ArrayList<StudyList>()
-
+        val switch = view.findViewById<Switch>(R.id.switch1)
         val recyclerView = view.findViewById<RecyclerView>(R.id.studyListView)
         adapter = StudyListAdapter(itemList, false)
 
@@ -46,6 +48,16 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
 
         studyListViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
         updateViewModel(adapter)
+
+        switch.thumbDrawable.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.MULTIPLY)
+
+        switch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                switch.thumbDrawable.setColorFilter(resources.getColor(R.color.blue), PorterDuff.Mode.MULTIPLY)
+            } else {
+                switch.thumbDrawable.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.MULTIPLY)
+            }
+        }
 
         adapter.setItemClickListener(object: StudyItemClickListener {
             override fun onItemClicked(item: StudyList) {

@@ -1,8 +1,3 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <size
-        android:width="40dp"
-        android:height="24dp" />
-    <corners android:radius="12dp" />
-    <solid android:color="#FF0000" /> <!-- 활성화된 상태일 때의 Thumb 색상 -->
+    android:shape="oval">
 </shape>

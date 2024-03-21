@@ -1,7 +1,4 @@
 <!-- res/drawable/switch_thumb_selector.xml -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 활성화된 상태일 때의 Thumb -->
-    <item android:state_checked="true" android:drawable="@drawable/switch_on_thumb" />
-    <!-- 비활성화된 상태일 때의 Thumb -->
-    <item android:drawable="@drawable/switch_off_thumb" />
+
 </selector>
