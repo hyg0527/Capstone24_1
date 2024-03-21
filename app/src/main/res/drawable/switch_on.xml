@@ -6,7 +6,7 @@
 
     <item
         android:bottom="12dp"
-        android:top="1sdp">
+        android:top="12dp">
         <shape android:shape="rectangle">
             <!-- 양쪽 라운드 처리 -->
             <corners android:radius="15dp" />
