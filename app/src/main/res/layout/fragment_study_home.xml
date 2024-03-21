@@ -19,6 +19,35 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/switchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginRight="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <TextView
+            android:id="@+id/textView51"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kopubdotumbold"
+            android:textColor="#8C8C8C"
+            android:layout_marginRight="10dp"
+            android:textSize="13dp"
+            android:text="모집 완료된 글 제외" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linearLayout9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,7 +55,7 @@
         android:background="#EBF1FF"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/switchLayout">
 
         <LinearLayout
             android:layout_width="wrap_content"

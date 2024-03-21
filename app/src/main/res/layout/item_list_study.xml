@@ -46,27 +46,27 @@
 
         <android.widget.Button
             android:id="@+id/studyStatus2"
-            android:layout_width="70dp"
-            android:layout_height="33dp"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/edittext_rounded_corner_search"
             android:fontFamily="@font/kopubdotumbold"
             android:text="#널널함"
             android:textColor="@color/blue"
-            android:textSize="15dp" />
+            android:textSize="13dp" />
 
         <android.widget.Button
             android:id="@+id/studyStatus3"
-            android:layout_width="60dp"
-            android:layout_height="33dp"
+            android:layout_width="55dp"
+            android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/edittext_rounded_corner_search"
             android:fontFamily="@font/kopubdotumbold"
             android:text="#열공"
             android:textColor="@color/blue"
-            android:textSize="15dp" />
+            android:textSize="13dp" />
     </LinearLayout>
 
     <TextView
@@ -78,7 +78,7 @@
         android:fontFamily="@font/kopubdotumbold"
         android:textColor="#4F4A4A"
         android:text="같이 공부하실 분 구합니다!~"
-        android:textSize="19dp"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/studyStatus_ing" />
