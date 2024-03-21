@@ -1,14 +1,40 @@
 package com.credential.cubrism
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class Tags(val tag: String? = null, var isEnabled: Boolean = false)
+data class Tags(val tag: String? = null, var isEnabled: Boolean = false): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readByte() != 0.toByte()
+    ) {}
 
-class TagAdapter(private val items: ArrayList<Tags>) : RecyclerView.Adapter<TagAdapter.TapViewHolder>() {
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(tag)
+        parcel.writeByte(if (isEnabled) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Tags> {
+        override fun createFromParcel(parcel: Parcel): Tags {
+            return Tags(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Tags?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean) : RecyclerView.Adapter<TagAdapter.TapViewHolder>() {
     inner class TapViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val tag = v.findViewById<TextView>(R.id.txtTag)
 
@@ -17,12 +43,14 @@ class TagAdapter(private val items: ArrayList<Tags>) : RecyclerView.Adapter<TagA
                 val position = adapterPosition
                 val item = items[position]
 
-                if (!item.isEnabled) {
-                    item.isEnabled = true
-                    tag.setBackgroundResource(R.drawable.tag_rounded_corner_selected)
-                } else {
-                    item.isEnabled = false
-                    tag.setBackgroundResource(R.drawable.tag_rounded_corner)
+                if (isList) {
+                    if (!item.isEnabled) {
+                        item.isEnabled = true
+                        tag.setBackgroundResource(R.drawable.tag_rounded_corner_selected)
+                    } else {
+                        item.isEnabled = false
+                        tag.setBackgroundResource(R.drawable.tag_rounded_corner)
+                    }
                 }
             }
         }

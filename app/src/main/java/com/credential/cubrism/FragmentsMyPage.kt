@@ -3,6 +3,7 @@ package com.credential.cubrism
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.os.IResultReceiver._Parcel
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -117,32 +118,19 @@ class MyPageCreateStudyFragment : Fragment(R.layout.fragment_mypage_addstudy) {
         val backBtn = view.findViewById<ImageView>(R.id.backBtn)
         val addBtn = view.findViewById<Button>(R.id.btnStudyCreate)
 
-        initTagRecyclerView(view)
+        val items = initTagRecyclerView(view)
 
         backBtn.setOnClickListener { // 뒤로가기 버튼
             (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
         }
         addBtn.setOnClickListener { // 스터디 등록 부분
-            val title = view.findViewById<EditText>(R.id.editTextStudyTitle).text
-            val info = view.findViewById<EditText>(R.id.editTextStudyInfo).text.toString()
-            val numS = view.findViewById<EditText>(R.id.editTextNums).text.toString().toInt()
-
-            if (title.isNotEmpty()) {
-                studyListViewModel.addList(StudyList(title.toString(), info, numS))
-
-                hideKeyboard(requireContext(), view)
-                Toast.makeText(requireContext(), "스터디를 등록하였습니다.", Toast.LENGTH_SHORT).show()
-                (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
-            }
-            else {
-                Toast.makeText(requireContext(), "스터디그룹명을 입력하세요.", Toast.LENGTH_SHORT).show()
-            }
+            submitButtonPressed(view, items)
         }
 
         handleBackStack(view, parentFragment)
     }
 
-    private fun initTagRecyclerView(v: View) {
+    private fun initTagRecyclerView(v: View): ArrayList<Tags> {
         val itemList = listOf("#널널함", "#열공", "#일주일", "#자유롭게", "#한달", "#필참", "#뭐가", "#있지", "#음..", "#알아서", "#없음")
         val items = ArrayList<Tags>().apply {
             for (item in itemList)
@@ -150,10 +138,40 @@ class MyPageCreateStudyFragment : Fragment(R.layout.fragment_mypage_addstudy) {
         }
 
         val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerView)
-        val adapter = TagAdapter(items)
+        val adapter = TagAdapter(items, true)
 
         recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL)
         recyclerView.adapter = adapter
+
+        return items
+    }
+
+    private fun submitButtonPressed(view: View, items: ArrayList<Tags>) { // 가입하기 버튼 눌렀을 때 처리하는 함수
+        val title = view.findViewById<EditText>(R.id.editTextStudyTitle).text
+        val info = view.findViewById<EditText>(R.id.editTextStudyInfo).text.toString()
+        val numS = view.findViewById<EditText>(R.id.editTextNums).text.toString()
+        val numSInt = if (numS.isNotEmpty()) {
+            numS.toInt()
+        } else 0 // 기본값은 0으로 설정
+
+        val tagS = ArrayList<Tags>() // 선택한 태그만 데이터에 ArrayList타입으로 추가
+        for (item in items)
+            if (item.isEnabled) tagS.add(item)
+
+        when {
+            (title.isEmpty()) -> Toast.makeText(requireContext(), "스터디그룹명을 입력하세요.", Toast.LENGTH_SHORT).show()
+            tagS.size <= 0 -> Toast.makeText(requireContext(), "태그를 한 개 이상 선택하세요.", Toast.LENGTH_SHORT).show()
+            (numS.isEmpty()) -> Toast.makeText(requireContext(), "스터디그룹 인원 수를 입력하세요.", Toast.LENGTH_SHORT).show()
+            (numSInt <= 1) -> Toast.makeText(requireContext(), "스터디그룹 인원 수를 2명 이상 입력하세요.", Toast.LENGTH_SHORT).show()
+            (info.isEmpty()) -> Toast.makeText(requireContext(), "스터디그룹 설명을 입력하세요.", Toast.LENGTH_SHORT).show()
+            else -> {
+                studyListViewModel.addList(StudyList(title.toString(), info, tagS, numSInt, 1))
+
+                hideKeyboard(requireContext(), view)
+                Toast.makeText(requireContext(), "스터디를 등록하였습니다.", Toast.LENGTH_SHORT).show()
+                (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
+            }
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

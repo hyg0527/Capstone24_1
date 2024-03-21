@@ -3,7 +3,9 @@ package com.credential.cubrism
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -49,7 +51,12 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
 
         adapter.setItemClickListener(object: StudyItemClickListener {
             override fun onItemClicked(item: StudyList) {
+                val bundle = Bundle()
                 val infoFragment = StudyInfoFragment()
+
+                bundle.putParcelable("studyGroupInfo", item)
+                infoFragment.arguments = bundle
+
                 changeFragmentStudy(infoFragment, "studyInfo")
             }
         })
@@ -87,6 +94,22 @@ class StudyInfoFragment : Fragment(R.layout.fragment_study_info) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
+        val item = arguments?.getParcelable<StudyList>("studyGroupInfo")
+
+        val joinBtn = view.findViewById<Button>(R.id.btnStudyJoin)
+        if (item?.totalNum == 4) joinBtn.text = "가입하기"
+        else {
+            joinBtn.text = "가입완료"
+            joinBtn.setBackgroundResource(R.drawable.button_rounded_corner_gray2)
+
+            val resolvedColor = ContextCompat.getColor(requireContext(), R.color.black)
+            joinBtn.setTextColor(resolvedColor)
+            joinBtn.isEnabled = false
+        }
+
+        joinBtn.setOnClickListener {
+            Toast.makeText(requireContext(), "가입 요청이 전달되었습니다.", Toast.LENGTH_SHORT).show()
+        }
 
         handleBackStack(view, parentFragment)
     }

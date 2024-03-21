@@ -75,9 +75,14 @@ class StudyListViewModel : ViewModel() { // 스터디 그룹 페이지 항목 �
     val studyList: LiveData<ArrayList<StudyList>> get() = _studyList // 읽기만 가능(get)
 
     val sampleInfo = "스터디 소개글입니다.\n스터디 소개글입니다.스터디소개글입니다스터디소개글입니다스터디소개글입니다"
+    val sampleTags = ArrayList<Tags>().apply {
+        add(Tags("#널널함"))
+        add(Tags("#열공"))
+    }
+
     init {
-        addList(StudyList("정처기 삼일컷 스터디", sampleInfo, 4))
-        addList(StudyList("토익 토플 토스 오픽 일주일컷 스터디", sampleInfo, 4))
+        addList(StudyList("정처기 삼일컷 스터디", sampleInfo, sampleTags, 4, 1))
+        addList(StudyList("토익 토플 토스 오픽 일주일컷 스터디", sampleInfo, sampleTags, 10, 1))
     }
 
     fun addList(value: StudyList) { // 질문 추가
