@@ -7,17 +7,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.R
 import com.credential.cubrism.data.api.AuthApi
 import com.credential.cubrism.data.dto.EmailVerifyDto
 import com.credential.cubrism.data.dto.EmailVerifyRequestDto
 import com.credential.cubrism.data.dto.SignUpDto
 import com.credential.cubrism.data.service.RetrofitClient
-import com.credential.cubrism.data.utils.NetworkUtil.Companion.executeNetworkCall
 import com.credential.cubrism.databinding.ActivitySignupBinding
-import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
 /**
@@ -57,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.requestCodeBtn.isEnabled = false
         binding.countDown.visibility = View.VISIBLE
 
-        countDown = object : CountDownTimer(300000, 1000) {
+        countDown = object : CountDownTimer(10000, 1000) {
             // 유효시간 5분
             override fun onTick(millisUntilFinished: Long) {
                 val minute = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
@@ -70,12 +71,12 @@ class SignUpActivity : AppCompatActivity() {
             override fun onFinish() {
                 isTimerRunning = false
                 if (!isValidEmail) {
-                    binding.requestCodeBtn.apply {
-                        text = "재인증"
-                        setBackgroundResource(R.drawable.button_rounded_corner)
-                        isEnabled = true
+                    binding.countDown.visibility = View.GONE
+                    binding.verifyCodeBtn.text = "재인증"
+                    binding.isvalidCode.apply {
+                        visibility = View.VISIBLE
+                        text = "✓ 재인증이 필요합니다."
                     }
-                    binding.isvalidCode.text = "✓ 재인증이 필요합니다."
                 }
             }
         }
@@ -89,57 +90,47 @@ class SignUpActivity : AppCompatActivity() {
         binding.requestCodeBtn.isEnabled = false
         binding.progressIndicator.show()
 
-        lifecycleScope.launch {
-            executeNetworkCall(
-                call = {
-                    RetrofitClient.getRetrofit()
-                        ?.create(AuthApi::class.java)
-                        ?.emailVerifyRequest(EmailVerifyRequestDto(binding.registerEmail.text.toString()))
-                },
-                onSuccess = { response ->
-                    println("[테스트] response.body(): ${response.body()}")
-                    println("[테스트] response.errorBody(): ${response.errorBody()}")
-                    val message: String? = if (response.isSuccessful) {
+        RetrofitClient.getRetrofit()
+            ?.create(AuthApi::class.java)
+            ?.emailVerifyRequest(EmailVerifyRequestDto(binding.registerEmail.text.toString()))
+            ?.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    val message: String?
+                    if (response.isSuccessful) {
+                        message = response.body()?.string()?.let { JSONObject(it).getString("message") }
                         startCountdownTimer()
-                        response.body()?.string()?.let { JSONObject(it).getString("message") }
                     } else {
-                        response.errorBody()?.string()?.let { JSONObject(it).getString("message") }
+                        message = response.errorBody()?.string()?.let { JSONObject(it).getString("message") }
                     }
                     Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
-
-                    binding.requestCodeBtn.isEnabled = true
-                    binding.progressIndicator.hide()
-                },
-                onError = {
-                    Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
                     binding.requestCodeBtn.isEnabled = true
                     binding.progressIndicator.hide()
                 }
-            )
-        }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     // 이메일 인증
     private fun verifyEmail() {
-        lifecycleScope.launch {
-            executeNetworkCall(
-                call = {
-                    RetrofitClient.getRetrofit()
-                        ?.create(AuthApi::class.java)
-                        ?.emailVerify(EmailVerifyDto(binding.registerEmail.text.toString(), binding.emailCode.text.toString()))
-                },
-                onSuccess = { response ->
+        RetrofitClient.getRetrofit()
+            ?.create(AuthApi::class.java)
+            ?.emailVerify(EmailVerifyDto(binding.registerEmail.text.toString(), binding.emailCode.text.toString()))
+            ?.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
                         emailVerifySuccess()
                     } else {
                         emailVerifyFailed()
                     }
-                },
-                onError = {
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
                 }
-            )
-        }
+            })
     }
 
     // 회원가입
@@ -164,30 +155,27 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        lifecycleScope.launch {
-            executeNetworkCall(
-                call = {
-                    RetrofitClient.getRetrofit()
-                        ?.create(AuthApi::class.java)
-                        ?.signUp(SignUpDto(email, password, nickname))
-                },
-                onSuccess = { response ->
-                    if (response.isSuccessful) {
-                        val message = response.body()?.string()?.let { JSONObject(it).getString("message") }
-                        Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
-                        // TODO: 회원가입 성공 시 로그인 화면으로 이동
+        RetrofitClient.getRetrofit()
+            ?.create(AuthApi::class.java)
+            ?.signUp(SignUpDto(email, password, nickname))
+            ?.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    val message: String? = if (response.isSuccessful) {
+                        response.body()?.string()?.let { JSONObject(it).getString("message") }
+                        // TODO: 회원가입 성공 시 자동으로 로그인
                     } else {
-                        val errorMessage = response.errorBody()?.string()?.let { JSONObject(it).getString("message") }
-                        Toast.makeText(this@SignUpActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        response.errorBody()?.string()?.let { JSONObject(it).getString("message") }
                     }
-                },
-                onError = {
+                    Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
                 }
-            )
-        }
+            })
     }
 
+    // 이메일 인증 성공
     private fun emailVerifySuccess() {
         countDown?.cancel()
         binding.apply {
@@ -206,6 +194,7 @@ class SignUpActivity : AppCompatActivity() {
         isValidEmail = true
     }
 
+    // 이메일 인증 실패
     private fun emailVerifyFailed() {
         binding.isvalidCode.apply {
             visibility = View.VISIBLE
