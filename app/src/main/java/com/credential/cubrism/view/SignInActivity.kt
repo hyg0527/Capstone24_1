@@ -78,8 +78,11 @@ class SignInActivity : AppCompatActivity() {
                     Log.d("SignInActivity", "RefreshToken: $refreshToken")
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                 }
-                is ResultUtil.Failure -> {
+                is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                }
+                is ResultUtil.NetworkError -> {
+                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -93,8 +96,11 @@ class SignInActivity : AppCompatActivity() {
                     Log.d("SignInActivity", "RefreshToken: $refreshToken")
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                 }
-                is ResultUtil.Failure -> {
+                is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                }
+                is ResultUtil.NetworkError -> {
+                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -108,8 +114,11 @@ class SignInActivity : AppCompatActivity() {
                     Log.d("SignInActivity", "RefreshToken: $refreshToken")
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                 }
-                is ResultUtil.Failure -> {
+                is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                }
+                is ResultUtil.NetworkError -> {
+                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
                 }
             }
         }

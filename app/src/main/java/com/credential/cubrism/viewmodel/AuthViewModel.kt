@@ -7,8 +7,21 @@ import com.credential.cubrism.data.dto.SignInDto
 import com.credential.cubrism.data.dto.TokenDto
 import com.credential.cubrism.data.repository.AuthRepository
 import com.credential.cubrism.data.utils.ResultUtil
+import okhttp3.ResponseBody
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
+    private val _signUpResult = MutableLiveData<ResultUtil<ResponseBody>>()
+    val signUpResult: LiveData<ResultUtil<ResponseBody>>
+        get() = _signUpResult
+
+    private val _emailVerifyRequestResult = MutableLiveData<ResultUtil<ResponseBody>>()
+    val emailVerifyRequestResult: LiveData<ResultUtil<ResponseBody>>
+        get() = _emailVerifyRequestResult
+
+    private val _emailVerifyResult = MutableLiveData<ResultUtil<ResponseBody>>()
+    val emailVerifyResult: LiveData<ResultUtil<ResponseBody>>
+        get() = _emailVerifyResult
+
     private val _signInResult = MutableLiveData<ResultUtil<TokenDto>>()
     val signInResult: LiveData<ResultUtil<TokenDto>>
         get() = _signInResult
@@ -20,6 +33,24 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _kakaoSignInResult = MutableLiveData<ResultUtil<TokenDto>>()
     val kakaoSignInResult: LiveData<ResultUtil<TokenDto>>
         get() = _kakaoSignInResult
+
+    fun signUp(email: String, password: String, nickname: String) {
+        authRepository.signUp(email, password, nickname) { result ->
+            _signUpResult.postValue(result)
+        }
+    }
+
+    fun emailVerifyRequest(email: String) {
+        authRepository.emailVerifyRequest(email) { result ->
+            _emailVerifyRequestResult.postValue(result)
+        }
+    }
+
+    fun emailVerify(email: String, code: String) {
+        authRepository.emailVerify(email, code) { result ->
+            _emailVerifyResult.postValue(result)
+        }
+    }
 
     fun signIn(email: String, password: String) {
         authRepository.signIn(SignInDto(email, password)) { result ->

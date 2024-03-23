@@ -4,21 +4,17 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.credential.cubrism.R
-import com.credential.cubrism.data.api.AuthApi
-import com.credential.cubrism.data.dto.EmailVerifyDto
-import com.credential.cubrism.data.dto.EmailVerifyRequestDto
-import com.credential.cubrism.data.dto.SignUpDto
-import com.credential.cubrism.data.service.RetrofitClient
+import com.credential.cubrism.data.repository.AuthRepository
+import com.credential.cubrism.data.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySignupBinding
-import okhttp3.ResponseBody
+import com.credential.cubrism.viewmodel.AuthViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
 /**
@@ -31,6 +27,7 @@ import java.util.concurrent.TimeUnit
  */
 class SignUpActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater) }
+    private val viewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
 
     private var countDown: CountDownTimer? = null
     private var isTimerRunning = false
@@ -39,6 +36,8 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        viewModelObserver()
 
         binding.apply {
             backBtn.setOnClickListener { finish() }
@@ -52,37 +51,54 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    // 타이머 시작
-    private fun startCountdownTimer() {
-        countDown?.cancel() // 기존의 타이머가 있다면 취소
-        binding.requestCodeBtn.isEnabled = false
-        binding.countDown.visibility = View.VISIBLE
-
-        countDown = object : CountDownTimer(300000, 1000) {
-            // 유효시간 5분
-            override fun onTick(millisUntilFinished: Long) {
-                val minute = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
-                val second = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(minute)
-
-                val displayTime = String.format("%02d:%02d", minute, second)
-                binding.countDown.text = displayTime
-            }
-
-            override fun onFinish() {
-                isTimerRunning = false
-                if (!isValidEmail) {
-                    binding.countDown.visibility = View.GONE
-                    binding.verifyCodeBtn.text = "재인증"
-                    binding.isvalidCode.apply {
-                        visibility = View.VISIBLE
-                        text = "✓ 재인증이 필요합니다."
-                    }
+    private fun viewModelObserver() {
+        viewModel.emailVerifyRequestResult.observe(this) { result ->
+            binding.requestCodeBtn.isEnabled = true
+            binding.progressIndicator.hide()
+            when (result) {
+                is ResultUtil.Success -> {
+                    startCountdownTimer()
+                    val message = result.data.string().let { JSONObject(it).getString("message") }
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+                is ResultUtil.Error -> {
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                }
+                is ResultUtil.NetworkError -> {
+                    Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        countDown?.start()
-        isTimerRunning = true
+        viewModel.emailVerifyResult.observe(this) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    emailVerifySuccess()
+                }
+                is ResultUtil.Error -> {
+                    emailVerifyFailed()
+                }
+                is ResultUtil.NetworkError -> {
+                    Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        viewModel.signUpResult.observe(this) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    val message = result.data.string().let { JSONObject(it).getString("message") }
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    // TODO: 회원가입 성공 시 자동으로 로그인
+                }
+                is ResultUtil.Error -> {
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                }
+                is ResultUtil.NetworkError -> {
+                    Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     // 이메일 인증 번호 요청
@@ -90,48 +106,16 @@ class SignUpActivity : AppCompatActivity() {
         binding.requestCodeBtn.isEnabled = false
         binding.progressIndicator.show()
 
-        RetrofitClient.getRetrofit()
-            ?.create(AuthApi::class.java)
-            ?.emailVerifyRequest(EmailVerifyRequestDto(binding.registerEmail.text.toString()))
-            ?.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    val message: String?
-                    if (response.isSuccessful) {
-                        message = response.body()?.string()?.let { JSONObject(it).getString("message") }
-                        startCountdownTimer()
-                    } else {
-                        message = response.errorBody()?.string()?.let { JSONObject(it).getString("message") }
-                    }
-                    Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
-                    binding.requestCodeBtn.isEnabled = true
-                    binding.progressIndicator.hide()
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
-                    binding.progressIndicator.hide()
-                }
-            })
+        val email = binding.registerEmail.text.toString()
+        viewModel.emailVerifyRequest(email)
     }
 
     // 이메일 인증
     private fun verifyEmail() {
-        RetrofitClient.getRetrofit()
-            ?.create(AuthApi::class.java)
-            ?.emailVerify(EmailVerifyDto(binding.registerEmail.text.toString(), binding.emailCode.text.toString()))
-            ?.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if (response.isSuccessful) {
-                        emailVerifySuccess()
-                    } else {
-                        emailVerifyFailed()
-                    }
-                }
+        val email = binding.registerEmail.text.toString()
+        val code = binding.emailCode.text.toString()
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
-                }
-            })
+        viewModel.emailVerify(email, code)
     }
 
     // 회원가입
@@ -156,24 +140,7 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        RetrofitClient.getRetrofit()
-            ?.create(AuthApi::class.java)
-            ?.signUp(SignUpDto(email, password, nickname))
-            ?.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    val message: String? = if (response.isSuccessful) {
-                        response.body()?.string()?.let { JSONObject(it).getString("message") }
-                        // TODO: 회원가입 성공 시 자동으로 로그인
-                    } else {
-                        response.errorBody()?.string()?.let { JSONObject(it).getString("message") }
-                    }
-                    Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
-                }
-            })
+        viewModel.signUp(email, password, nickname)
     }
 
     // 이메일 인증 성공
@@ -204,5 +171,37 @@ class SignUpActivity : AppCompatActivity() {
         }
         binding.emailCode.setBackgroundResource(R.drawable.edittext_rounded_corner_red)
         isValidEmail = false
+    }
+
+    // 타이머 시작
+    private fun startCountdownTimer() {
+        countDown?.cancel() // 기존의 타이머가 있다면 취소
+        binding.countDown.visibility = View.VISIBLE
+
+        countDown = object : CountDownTimer(300000, 1000) {
+            // 유효시간 5분
+            override fun onTick(millisUntilFinished: Long) {
+                val minute = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
+                val second = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(minute)
+
+                val displayTime = String.format("%02d:%02d", minute, second)
+                binding.countDown.text = displayTime
+            }
+
+            override fun onFinish() {
+                isTimerRunning = false
+                if (!isValidEmail) {
+                    binding.countDown.visibility = View.GONE
+                    binding.verifyCodeBtn.text = "재인증"
+                    binding.isvalidCode.apply {
+                        visibility = View.VISIBLE
+                        text = "✓ 재인증이 필요합니다."
+                    }
+                }
+            }
+        }
+
+        countDown?.start()
+        isTimerRunning = true
     }
 }
