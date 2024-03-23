@@ -222,6 +222,7 @@ class QnaFragment : Fragment(R.layout.fragment_qna) {
 
 class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 프래그먼트
     private var view: View? = null
+    private var countphoto: Int = 0
     private lateinit var qnaViewModel: QnaListViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -232,12 +233,9 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         val backBtnPosting = view.findViewById<ImageButton>(R.id.backBtnPosting)
         val dropDown = view.findViewById<ImageView>(R.id.medalDropDown)
         val category = view.findViewById<Button>(R.id.txtPostingCategory)
-        val photoRCV = view.findViewById<RecyclerView>(R.id.photoRCV)
-        val photoImage = view.findViewById<ImageView>(R.id.photoImage)
-
+        val photoLayout = view.findViewById<LinearLayout>(R.id.defaultPhotoLayout)
+        val photoCount = view.findViewById<TextView>(R.id.photoCount)
         val adapter = initQnaPhotoRCV(view)
-
-
 
         qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
 
@@ -278,8 +276,14 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
                 }
             })
         }
-        photoImage.setOnClickListener {
-            adapter.addItem(0)
+        photoLayout.setOnClickListener {
+            if(countphoto>=10)
+                Toast.makeText(requireContext(), "사진은 10장까지 첨부 가능합니다.", Toast.LENGTH_SHORT).show()
+            else {
+                adapter.addItem(0)
+                countphoto++
+                photoCount.text = "$countphoto/10"
+            }
         }
 
         handleBackStack(view, parentFragment)

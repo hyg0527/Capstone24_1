@@ -86,7 +86,7 @@
                     android:src="@drawable/qna_photo" />
 
                 <TextView
-                    android:id="@+id/textView27"
+                    android:id="@+id/photoCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -156,7 +156,7 @@
     <LinearLayout
         android:id="@+id/categorylayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="1dp"
@@ -192,6 +192,7 @@
             android:layout_height="35dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
+            android:visibility="gone"
             android:background="@drawable/button_rounded_corner_outline_b"
             android:fontFamily="@font/kopubdotumbold"
             android:textColor="@color/blue"
