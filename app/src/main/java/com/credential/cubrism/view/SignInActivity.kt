@@ -128,8 +128,6 @@ class SignInActivity : AppCompatActivity() {
                         Toast.makeText(this@SignInActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
                     }
                 })
-
-                UserApiClient.instance.logout { _ -> } // JWT 토큰을 사용하기 때문에 로그아웃 처리
             }
         }
 
@@ -138,5 +136,7 @@ class SignInActivity : AppCompatActivity() {
         } else {
             UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
         }
+
+        UserApiClient.instance.logout { _ -> } // JWT 토큰을 사용하기 때문에 로그아웃 처리
     }
 }
