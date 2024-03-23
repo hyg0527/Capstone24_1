@@ -89,4 +89,9 @@ class StudyListViewModel : ViewModel() { // 스터디 그룹 페이지 항목 �
         _studyList.value?.add(value)
         _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
     }
+
+    fun deleteList(value: StudyList) {
+        _studyList.value?.remove(value)
+        _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
+    }
 }

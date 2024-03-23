@@ -9,10 +9,16 @@ class StudyManageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study_manage)
 
+        val titleTxt = intent.getStringExtra("titleName")
+        val manageFragment = StudyGroupManageFragment()
+        val bundle = Bundle()
+        bundle.putString("titleName", titleTxt)
+        manageFragment.arguments = bundle
+
         // 처음 화면을 fragment_study_home으로 설정
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.studyGroupManageContainerView, StudyGroupManageFragment())
+                .replace(R.id.studyGroupManageContainerView, manageFragment)
                 .setReorderingAllowed(true)
                 .commit()
         }

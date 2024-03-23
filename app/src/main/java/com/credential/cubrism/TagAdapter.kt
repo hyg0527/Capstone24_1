@@ -69,6 +69,20 @@ class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean) : Recy
 
     override fun onBindViewHolder(holder: TapViewHolder, position: Int) {
         holder.tag.text = items[position].tag
+
+        if (items[position].isEnabled) {
+            holder.tag.setBackgroundResource(R.drawable.tag_rounded_corner_selected)
+        }
     }
 
+    fun changeTagStatus(newItem: ArrayList<Tags>) {
+        for (item in items) {
+            val matchingItem = newItem.find { it.tag.equals(item.tag, ignoreCase = true) }
+            if (matchingItem != null) {
+                item.isEnabled = true
+            }
+        }
+
+        notifyDataSetChanged()
+    }
 }
