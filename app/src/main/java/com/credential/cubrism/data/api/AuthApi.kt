@@ -2,6 +2,7 @@ package com.credential.cubrism.data.api
 
 import com.credential.cubrism.data.dto.EmailVerifyDto
 import com.credential.cubrism.data.dto.EmailVerifyRequestDto
+import com.credential.cubrism.data.dto.SignInDto
 import com.credential.cubrism.data.dto.SignUpDto
 import com.credential.cubrism.data.dto.TokenDto
 import okhttp3.ResponseBody
@@ -19,6 +20,9 @@ interface AuthApi {
 
     @POST("/auth/signup/email/verify") // 이메일 인증 번호 확인
     fun emailVerify(@Body emailVerifyDto: EmailVerifyDto): Call<ResponseBody>
+
+    @POST("/auth/signin") // 로그인
+    fun signIn(@Body signInDto: SignInDto): Call<TokenDto>
 
     @POST("/auth/social/login/google") // 구글 로그인
     fun googleLogIn(@Query("serverAuthCode") serverAuthCode: String): Call<TokenDto>
