@@ -6,13 +6,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class StudyGroupHomeFragment : Fragment(R.layout.fragment_studygroup_home) {}
 
@@ -109,19 +112,33 @@ class StudyGroupFuncListFragment : Fragment(R.layout.fragment_studygroup_funclis
     }
 }
 
-class StudyGroupTimerFragment : Fragment(R.layout.fragment_studygroup_timer) {}
+class StudyGroupTimerFragment : Fragment(R.layout.fragment_studygroup_timer) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val progressBar = view.findViewById<ProgressBar>(R.id.timerBar)
+        progressBar.isIndeterminate = false
+    }
+}
 
 class StudyGroupManageFragment : Fragment(R.layout.fragment_studygroup_managehome) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initList(view)
+        val title = arguments?.getString("titleName")
+        initList(view, title)
     }
 
-    private fun initList(v: View) {
+    private fun initList(v: View, title: String?) {
         val manageAnnounce = v.findViewById<LinearLayout>(R.id.manageAnnounce)
+
+        val fragment = StudyGroupAnnounceFixFragment()
+        val bundle = Bundle()
+        bundle.putString("titleName", title)
+        fragment.arguments = bundle
+
         manageAnnounce.setOnClickListener {
-            (activity as StudyManageActivity).changeFragmentManage(StudyGroupAnnounceFixFragment())
+            (activity as StudyManageActivity).changeFragmentManage(fragment)
         }
     }
 }
@@ -132,9 +149,11 @@ class StudyGroupAnnounceFixFragment : Fragment(R.layout.fragment_mypage_addstudy
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val title = arguments?.getString("titleName")
+
         studyListViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
         initPageInfo(view)
-        loadData(view)
+        loadData(view, title)
     }
 
     private fun initPageInfo(v: View) {
@@ -157,18 +176,48 @@ class StudyGroupAnnounceFixFragment : Fragment(R.layout.fragment_mypage_addstudy
                 false -> layout.visibility = View.VISIBLE
             }
         }
+        submitBtn.setOnClickListener {
+            if (switch.isEnabled) {
+
+                Toast.makeText(requireContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+            else {
+
+                Toast.makeText(requireContext(), "게시글이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
-    private fun loadData(v: View) {
+    private fun loadData(v: View, title: String?) {
         val listTitle = v.findViewById<EditText>(R.id.editTextStudyTitle)
         val listInfo = v.findViewById<EditText>(R.id.editTextStudyInfo)
         val numS = v.findViewById<EditText>(R.id.editTextNums)
 
-        val data = studyListViewModel.studyList.value ?: ArrayList()
-//        for (item in data) {
-//            if (item?.title.equals(""))
-//        }
+        val adapter = loadTagRecyclerView(v)
 
-        listTitle.setText("")
+        val data = studyListViewModel.studyList.value ?: ArrayList()
+        for (item in data) {
+            if (item.title.equals(title)) {
+                listTitle.setText(item.title)
+                listInfo.setText(item.info)
+                numS.setText(item.totalNum.toString())
+
+                adapter.changeTagStatus(item.tagList)
+            }
+        }
+    }
+
+    private fun loadTagRecyclerView(v: View): TagAdapter {
+        val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerView)
+        val itemList = listOf("#널널함", "#열공", "#일주일", "#자유롭게", "#한달", "#필참", "#뭐가", "#있지", "#음..", "#알아서", "#없음")
+        val items = ArrayList<Tags>().apply {
+            for (item in itemList)
+                add(Tags(item))
+        }
+        val adapter = TagAdapter(items, true)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL)
+        recyclerView.adapter = adapter
+
+        return adapter
     }
 }

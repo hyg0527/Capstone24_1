@@ -23,6 +23,7 @@ class StudyActivity : AppCompatActivity() {
     private val func2Fragment = StudyGroupFunc2Fragment()
     private val func3Fragment = StudyGroupFunc3Fragment()
     private val func4Fragment = StudyGroupFunc4Fragment()
+    private lateinit var titleTxt: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,7 @@ class StudyActivity : AppCompatActivity() {
         setSupportActionBar(actionBar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
 
-        val titleTxt = intent.getStringExtra("studyGroupTitle") // title 정보 가져와서 출력
+        titleTxt = intent.getStringExtra("studyGroupTitle") ?: ""// title 정보 가져와서 출력
         val title = findViewById<TextView>(R.id.txtStudyGroupTitleIn)
 
         title.text = titleTxt
@@ -76,6 +77,7 @@ class StudyActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.manage -> {     // 관리 버튼을 누르면 관리 화면으로 이동
                 val intent = Intent(this, StudyManageActivity::class.java)
+                intent.putExtra("titleName", titleTxt)
                 startActivity(intent)
                 true
             }
