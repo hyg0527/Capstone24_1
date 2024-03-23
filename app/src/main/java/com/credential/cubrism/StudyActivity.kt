@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -101,10 +102,10 @@ class StudyActivity : AppCompatActivity() {
     }
 
     private fun menuSetUp() { // 상단 프래그먼트 메뉴 이동 버튼 설정
-        val homeBtn = findViewById<CircleImageView>(R.id.homeGroup)
-        val func2Btn = findViewById<CircleImageView>(R.id.func2Group)
-        val func3Btn = findViewById<CircleImageView>(R.id.func3Group)
-        val func4Btn = findViewById<CircleImageView>(R.id.func4Group)
+        val homeBtn = findViewById<ImageView>(R.id.homeGroup)
+        val func2Btn = findViewById<ImageView>(R.id.func2Group)
+        val func3Btn = findViewById<ImageView>(R.id.func3Group)
+        val func4Btn = findViewById<ImageView>(R.id.func4Group)
 
         homeBtn.setOnClickListener {
             changeFragment(homeFragment)

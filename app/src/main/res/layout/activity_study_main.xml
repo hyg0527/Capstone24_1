@@ -22,7 +22,7 @@
             android:gravity="center"
             android:text="스터디그룹 제목"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -31,51 +31,59 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/naviagtionLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/homeGroup" />
 
-    <LinearLayout
-        android:id="@+id/naviagtionLayout"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+
+    <ImageView
+        android:id="@+id/homeGroup"
+        android:layout_width="34dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/folder"
+        app:layout_constraintEnd_toStartOf="@+id/func2Group"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleActionBar">
+        app:layout_constraintTop_toBottomOf="@+id/titleActionBar" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/homeGroup"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:background="@drawable/ellipse_1"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/func2Group"
+        android:layout_width="34dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/chalkboard_user"
+        app:layout_constraintEnd_toStartOf="@+id/func3Group"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/homeGroup"
+        app:layout_constraintTop_toBottomOf="@+id/titleActionBar" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/func2Group"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:background="@drawable/ellipse_1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/func3Group"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/meeting"
+        app:layout_constraintEnd_toStartOf="@+id/func4Group"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/func2Group"
+        app:layout_constraintTop_toBottomOf="@+id/titleActionBar" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/func3Group"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:background="@drawable/ellipse_1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/func4Group"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:background="@drawable/ellipse_1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/func4Group"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/function_square"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/func3Group"
+        app:layout_constraintTop_toBottomOf="@+id/titleActionBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
