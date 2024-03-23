@@ -187,7 +187,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/todaylistLayout">
 
                 <TextView
-                    android:id="@+id/textView38"
+                    android:id="@+id/txtScanMenu"
                     android:layout_width="25dp"
                     android:layout_height="10dp"
                     android:background="#D5E3FF"

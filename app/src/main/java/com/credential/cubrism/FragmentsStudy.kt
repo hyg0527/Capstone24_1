@@ -6,6 +6,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Switch
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -51,13 +53,17 @@ class StudyHomeFragment : Fragment(R.layout.fragment_study_home) {
         studyListViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
         updateViewModel(adapter)
 
+        // 모집중/모집완료 스위치
         switch.thumbDrawable.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.MULTIPLY)
 
         switch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 switch.thumbDrawable.setColorFilter(resources.getColor(R.color.blue), PorterDuff.Mode.MULTIPLY)
+                adapter.filterItem()
             } else {
                 switch.thumbDrawable.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.MULTIPLY)
+                val data = studyListViewModel.studyList.value
+                adapter.addAllItems(data!!)
             }
         }
 
@@ -108,8 +114,10 @@ class StudyInfoFragment : Fragment(R.layout.fragment_study_info) {
         this.view = view
         val item = arguments?.getParcelable<StudyList>("studyGroupInfo")
 
+        initStudyInfo(view, item)
+
         val joinBtn = view.findViewById<Button>(R.id.btnStudyJoin)
-        if (item?.totalNum == 4) joinBtn.text = "가입하기"
+        if ((item?.totalNum ?: 0) > (item?.num ?: 0)) joinBtn.text = "가입하기"
         else {
             joinBtn.text = "가입완료"
             joinBtn.setBackgroundResource(R.drawable.button_rounded_corner_gray2)
@@ -119,11 +127,37 @@ class StudyInfoFragment : Fragment(R.layout.fragment_study_info) {
             joinBtn.isEnabled = false
         }
 
-        joinBtn.setOnClickListener {
+        joinBtn.setOnClickListener { // 가입 요청 버튼
             Toast.makeText(requireContext(), "가입 요청이 전달되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+        val backBtn = view.findViewById<ImageButton>(R.id.backBtn_Study)
+        backBtn.setOnClickListener {
+            parentFragmentManager.popBackStack()
         }
 
         handleBackStack(view, parentFragment)
+    }
+
+    private fun initStudyInfo(v: View, item: StudyList?) {
+        val title = v.findViewById<TextView>(R.id.txtStudyInfoTitle)
+        val info = v.findViewById<TextView>(R.id.txtStudyInfoInfo)
+        val numS = v.findViewById<TextView>(R.id.txtNumsStudy)
+
+        initRecyclerViewStudyList(v, item)
+        val numString = item?.num.toString() + " / " + item?.totalNum.toString()
+
+        title.text = item?.title
+        info.text = item?.info
+        numS.text = numString
+    }
+
+    private fun initRecyclerViewStudyList(v: View, item: StudyList?) {
+        val items = item?.tagList ?: ArrayList()
+        val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerViewStudyList)
+        val adapter = TagAdapter(items, true)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.adapter = adapter
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

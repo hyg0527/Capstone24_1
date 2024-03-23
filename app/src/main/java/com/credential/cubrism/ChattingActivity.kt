@@ -26,8 +26,8 @@ class ChattingActivity : AppCompatActivity() {
         val receivedData = intent?.getParcelableExtra<QnaData>("qnaInfo")
 
         val medalName = findViewById<Button>(R.id.txtPostingCategory)
-        val title = findViewById<TextView>(R.id.textView36)
-        val info = findViewById<TextView>(R.id.textView37)
+        val title = findViewById<TextView>(R.id.txtStudyInfoTitle)
+        val info = findViewById<TextView>(R.id.txtStudyInfoInfo)
         val userName = findViewById<TextView>(R.id.textView33)
 
         medalName.setText(receivedData?.medalName)

@@ -79,14 +79,6 @@ class StudyActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-            R.id.goal -> {     // 목표 설정 화면 호출
-
-                true
-            }
-            R.id.d_day -> {     // 디데이 설정 화면 호출
-
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }

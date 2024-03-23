@@ -59,7 +59,7 @@
                         android:textSize="13dp" />
 
                     <TextView
-                        android:id="@+id/textView36"
+                        android:id="@+id/txtStudyInfoTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -69,7 +69,7 @@
                         android:textSize="23dp" />
 
                     <TextView
-                        android:id="@+id/textView37"
+                        android:id="@+id/txtStudyInfoInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"

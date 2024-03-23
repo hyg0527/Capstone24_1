@@ -57,9 +57,11 @@ class StudyListAdapter(private val items: ArrayList<StudyList>,
 
     inner class StudyViewHolder(v: View) : RecyclerView.ViewHolder(v) { // 두번째탭의 리스트 화면에 보여질 viewholder
         val title = v.findViewById<TextView>(R.id.txtStudyTitle)
-        val num = v.findViewById<TextView>(R.id.txtNums)
+        val num = v.findViewById<TextView>(R.id.txtNumsStudy)
         val info = v.findViewById<TextView>(R.id.txtStudyInfo)
         val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerViewList)
+        val recruiting = v.findViewById<Button>(R.id.studyStatus_ing)
+        val recruitComplete = v.findViewById<Button>(R.id.studyStatus_end)
 
         init {
             v.setOnClickListener {
@@ -129,11 +131,42 @@ class StudyListAdapter(private val items: ArrayList<StudyList>,
 
                 holder.recyclerView.adapter = TagAdapter(item.tagList, false)
                 holder.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+                isRecruitCompleted(item, holder)
             }
             is MyStudyViewHolder -> {
                 holder.studyTitle.text = items[position].title
             }
         }
+    }
+
+    private fun isRecruitCompleted(item: StudyList, holder: StudyViewHolder) {
+        if ((item.num ?: 0) >= (item.totalNum ?: 0)) {
+            holder.recruiting.visibility = View.GONE
+            holder.recruitComplete.visibility = View.VISIBLE
+        } else {
+            holder.recruiting.visibility = View.VISIBLE
+            holder.recruitComplete.visibility = View.GONE
+        }
+    }
+
+    fun filterItem() { // 모집중/모집완료 필터링 함수
+        val filteredItem = ArrayList<StudyList>()
+
+        for (item in items) {
+            if ((item.num ?: 0) < (item.totalNum ?: 0))
+                filteredItem.add(item)
+        }
+
+        clearItem()
+        items.addAll(filteredItem)
+        notifyDataSetChanged()
+    }
+
+    fun addAllItems(item: ArrayList<StudyList>) {
+        items.clear()
+        items.addAll(item)
+        notifyDataSetChanged()
     }
 
     fun addItem(item: StudyList) {

@@ -81,7 +81,7 @@ class StudyListViewModel : ViewModel() { // 스터디 그룹 페이지 항목 �
     }
 
     init {
-        addList(StudyList("정처기 삼일컷 스터디", sampleInfo, sampleTags, 4, 1))
+        addList(StudyList("정처기 삼일컷 스터디", sampleInfo, sampleTags, 4, 4))
         addList(StudyList("토익 토플 토스 오픽 일주일컷 스터디", sampleInfo, sampleTags, 10, 1))
     }
 

@@ -56,7 +56,7 @@
                             android:src="@drawable/user_2" />
 
                         <TextView
-                            android:id="@+id/txtNums"
+                            android:id="@+id/txtNumsStudy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -67,7 +67,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/textView36"
+                        android:id="@+id/txtStudyInfoTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -77,13 +77,13 @@
                         android:textSize="23dp" />
 
                     <TextView
-                        android:id="@+id/textView37"
+                        android:id="@+id/txtStudyInfoInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="30dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/kopubdotummedium"
                         android:text="잘 모르겠어서 물어봅니다 ㅠㅠ 디자인이라는 건 어떻게 하는 걸까요? 게시판에 글 남기는 건 처음이에요 이렇게 하는 게 맞는지
 도 알 수 없지만요! *^^*\n\n이 어플 정말 좋은 어플이군요 다들 써
@@ -94,10 +94,12 @@
                         android:textSize="16dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/tagRecyclerViewStudyList"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
 
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="20dp"/>
 
 
 
