@@ -232,6 +232,7 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         val backBtnPosting = view.findViewById<ImageButton>(R.id.backBtnPosting)
         val dropDown = view.findViewById<ImageView>(R.id.medalDropDown)
         val category = view.findViewById<Button>(R.id.txtPostingCategory)
+        val photoRCV = view.findViewById<RecyclerView>(R.id.photoRCV)
 
         qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
 
