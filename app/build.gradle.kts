@@ -29,6 +29,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String","SPRING_URL", getApi("SPRING_URL"))
+        buildConfigField("String","GOOGLE_CLIENT_ID", getApi("GOOGLE_CLIENT_ID"))
+        buildConfigField("String","KAKAO_NATIVE_APP_KEY", getApi("KAKAO_NATIVE_APP_KEY"))
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = properties["KAKAO_NATIVE_APP_KEY"].toString().replace("\"", "")
     }
 
     buildTypes {
@@ -61,13 +64,17 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
-
-    implementation("com.airbnb.android:lottie:6.3.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    implementation("com.kakao.sdk:v2-user:2.20.1")
+
+    implementation("com.airbnb.android:lottie:6.3.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.etebarian:meow-bottom-navigation:1.2.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")

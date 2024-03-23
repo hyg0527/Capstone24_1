@@ -58,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.requestCodeBtn.isEnabled = false
         binding.countDown.visibility = View.VISIBLE
 
-        countDown = object : CountDownTimer(10000, 1000) {
+        countDown = object : CountDownTimer(300000, 1000) {
             // 유효시간 5분
             override fun onTick(millisUntilFinished: Long) {
                 val minute = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
@@ -109,6 +109,7 @@ class SignUpActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
+                    binding.progressIndicator.hide()
                 }
             })
     }

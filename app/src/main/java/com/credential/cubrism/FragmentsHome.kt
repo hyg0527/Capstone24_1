@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.credential.cubrism.view.SignInActivity
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +50,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
 
         login.setOnClickListener {
-            val intent = Intent(requireActivity(), LoginActivity::class.java)
+            val intent = Intent(requireActivity(), SignInActivity::class.java)
             startActivity(intent)
         }
         notify.setOnClickListener { // 알림 화면 출력
