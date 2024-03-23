@@ -233,6 +233,11 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
         val dropDown = view.findViewById<ImageView>(R.id.medalDropDown)
         val category = view.findViewById<Button>(R.id.txtPostingCategory)
         val photoRCV = view.findViewById<RecyclerView>(R.id.photoRCV)
+        val photoImage = view.findViewById<ImageView>(R.id.photoImage)
+
+        val adapter = initQnaPhotoRCV(view)
+
+
 
         qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
 
@@ -273,8 +278,22 @@ class QnaWriteFragment : Fragment(R.layout.fragment_qna_posting) { // 글등록 
                 }
             })
         }
+        photoImage.setOnClickListener {
+            adapter.addItem(0)
+        }
 
         handleBackStack(view, parentFragment)
+    }
+
+    private fun initQnaPhotoRCV(view: View): QnaPhotoAdapter {
+        val initQnaPhotoRCV = view.findViewById<RecyclerView>(R.id.photoRCV)
+        val itemsList = ArrayList<Int>()
+
+        val adapter = QnaPhotoAdapter(itemsList)
+        initQnaPhotoRCV.adapter = adapter
+        initQnaPhotoRCV.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+        initQnaPhotoRCV.isNestedScrollingEnabled = true
+        return adapter
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
