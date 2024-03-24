@@ -11,28 +11,22 @@ import okhttp3.ResponseBody
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _signUpResult = MutableLiveData<ResultUtil<ResponseBody>>()
-    val signUpResult: LiveData<ResultUtil<ResponseBody>>
-        get() = _signUpResult
+    val signUpResult: LiveData<ResultUtil<ResponseBody>> = _signUpResult
 
     private val _emailVerifyRequestResult = MutableLiveData<ResultUtil<ResponseBody>>()
-    val emailVerifyRequestResult: LiveData<ResultUtil<ResponseBody>>
-        get() = _emailVerifyRequestResult
+    val emailVerifyRequestResult: LiveData<ResultUtil<ResponseBody>> = _emailVerifyRequestResult
 
     private val _emailVerifyResult = MutableLiveData<ResultUtil<ResponseBody>>()
-    val emailVerifyResult: LiveData<ResultUtil<ResponseBody>>
-        get() = _emailVerifyResult
+    val emailVerifyResult: LiveData<ResultUtil<ResponseBody>> = _emailVerifyResult
 
     private val _signInResult = MutableLiveData<ResultUtil<TokenDto>>()
-    val signInResult: LiveData<ResultUtil<TokenDto>>
-        get() = _signInResult
+    val signInResult: LiveData<ResultUtil<TokenDto>> = _signInResult
 
     private val _googleSignInResult = MutableLiveData<ResultUtil<TokenDto>>()
-    val googleSignInResult: LiveData<ResultUtil<TokenDto>>
-        get() = _googleSignInResult
+    val googleSignInResult: LiveData<ResultUtil<TokenDto>> = _googleSignInResult
 
     private val _kakaoSignInResult = MutableLiveData<ResultUtil<TokenDto>>()
-    val kakaoSignInResult: LiveData<ResultUtil<TokenDto>>
-        get() = _kakaoSignInResult
+    val kakaoSignInResult: LiveData<ResultUtil<TokenDto>> = _kakaoSignInResult
 
     fun signUp(email: String, password: String, nickname: String) {
         authRepository.signUp(email, password, nickname) { result ->

@@ -2,7 +2,6 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -12,6 +11,7 @@ import com.credential.cubrism.data.repository.AuthRepository
 import com.credential.cubrism.data.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
 import com.credential.cubrism.viewmodel.AuthViewModel
+import com.credential.cubrism.viewmodel.JwtTokenViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,7 +22,8 @@ import com.kakao.sdk.user.UserApiClient
 
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
-    private val viewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
+    private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
+    private val jwtTokenViewModel: JwtTokenViewModel by viewModels()
 
     private val googleAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         try {
@@ -69,14 +70,12 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun viewModelObserver() {
-        viewModel.signInResult.observe(this) { result ->
+        authViewModel.signInResult.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
                     val refreshToken = result.data.refreshToken
-                    Log.d("SignInActivity", "AccessToken: $accessToken")
-                    Log.d("SignInActivity", "RefreshToken: $refreshToken")
-                    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                    signInSuccess(accessToken, refreshToken)
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
@@ -87,14 +86,12 @@ class SignInActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.googleSignInResult.observe(this) { result ->
+        authViewModel.googleSignInResult.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
                     val refreshToken = result.data.refreshToken
-                    Log.d("SignInActivity", "AccessToken: $accessToken")
-                    Log.d("SignInActivity", "RefreshToken: $refreshToken")
-                    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                    signInSuccess(accessToken, refreshToken)
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
@@ -105,14 +102,12 @@ class SignInActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.kakaoSignInResult.observe(this) { result ->
+        authViewModel.kakaoSignInResult.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
                     val refreshToken = result.data.refreshToken
-                    Log.d("SignInActivity", "AccessToken: $accessToken")
-                    Log.d("SignInActivity", "RefreshToken: $refreshToken")
-                    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                    signInSuccess(accessToken, refreshToken)
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
@@ -138,12 +133,12 @@ class SignInActivity : AppCompatActivity() {
         val email = binding.loginEmail.text.toString()
         val password = binding.loginPassword.text.toString()
 
-        viewModel.signIn(email, password)
+        authViewModel.signIn(email, password)
     }
 
     // 구글 로그인
     private fun googleLogin(serverAuthCode: String) {
-        viewModel.googleSignIn(serverAuthCode)
+        authViewModel.googleSignIn(serverAuthCode)
         getGoogleClient().signOut() // JWT 토큰을 사용하기 때문에 로그아웃 처리
     }
 
@@ -154,7 +149,7 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this@SignInActivity, "로그인을 실패했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
             } else if (token != null) {
                 val accessToken = token.accessToken
-                viewModel.kakaoSignIn(accessToken)
+                authViewModel.kakaoSignIn(accessToken)
             }
         }
 
@@ -165,5 +160,13 @@ class SignInActivity : AppCompatActivity() {
         }
 
         UserApiClient.instance.logout { _ -> } // JWT 토큰을 사용하기 때문에 로그아웃 처리
+    }
+
+    // 로그인 성공
+    private fun signInSuccess(accessToken: String, refreshToken: String) {
+        jwtTokenViewModel.saveAccessToken(accessToken)
+        jwtTokenViewModel.saveRefreshToken(refreshToken)
+        Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show() // 로그인 성공 확인을 위한 임시 토스트
+        // TODO: 메인 화면으로 이동
     }
 }

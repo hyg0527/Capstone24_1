@@ -31,6 +31,7 @@ android {
         buildConfigField("String","SPRING_URL", getApi("SPRING_URL"))
         buildConfigField("String","GOOGLE_CLIENT_ID", getApi("GOOGLE_CLIENT_ID"))
         buildConfigField("String","KAKAO_NATIVE_APP_KEY", getApi("KAKAO_NATIVE_APP_KEY"))
+        buildConfigField("String", "KEYSTORE_ENCRYPTOR_KEY_ALIAS", getApi("KEYSTORE_ENCRYPTOR_KEY_ALIAS"))
         manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = properties["KAKAO_NATIVE_APP_KEY"].toString().replace("\"", "")
     }
 
@@ -68,6 +69,7 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("com.google.android.material:material:1.10.0")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
@@ -82,6 +84,7 @@ dependencies {
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.10.0")
     implementation("com.squareup.retrofit2:converter-gson:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
