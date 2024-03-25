@@ -1,6 +1,8 @@
 package com.credential.cubrism
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -11,21 +13,54 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
-class StudyGroupHomeFragment : Fragment(R.layout.fragment_studygroup_home) {}
-
-class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
-    private lateinit var adapter: StudyGroupRankAdapter
-
+class StudyGroupHomeFragment : Fragment(R.layout.fragment_studygroup_home) {
+    private lateinit var goalListViewModel: GoalListViewModel
+    private lateinit var titleViewModel: TitleViewModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        goalListViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
+        titleViewModel = ViewModelProvider(requireActivity())[TitleViewModel::class.java]
+        initGoalListView(view)
+
+        val textView = view.findViewById<TextView>(R.id.txtStudyGroupInfoTitle)
+        // ViewModel에서 EditText의 값을 가져와서 TextView에 설정
+        titleViewModel.editTextValue.observe(viewLifecycleOwner, Observer { value ->
+            textView.text = value
+        })
+    }
+
+    private fun initGoalListView(v: View) {
+        val items = goalListViewModel.goalList.value ?: ArrayList()
+        val recyclerView = v.findViewById<RecyclerView>(R.id.goalRecyclerViewList)
+        val adapter = GoalAdapter(items, true)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+    }
+}
+
+class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
+    private lateinit var adapter: StudyGroupRankAdapter
+    private lateinit var dDayViewModel: DDayViewModel
+    private var view: View? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        this.view = view
+
+        dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
         initRankList(view)
+        loadDDayData(view)
     }
 
     private fun initRankList(v: View) {
@@ -41,11 +76,38 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
         recyclerView.adapter = adapter
     }
 
+    private fun loadDDayData(v: View) {
+        val noLabel = v.findViewById<TextView>(R.id.txtDdayNotLabel)
+        val title = v.findViewById<TextView>(R.id.txtDDayTitleShow)
+        val yesLabel = v.findViewById<TextView>(R.id.dDayLabel)
+        val date = v.findViewById<TextView>(R.id.txtDdayDateShow)
+
+        val data = dDayViewModel.pairStringLiveData.value
+        println(data)
+        if (!data?.first.isNullOrEmpty()) {
+            noLabel.visibility = View.GONE
+            title.visibility = View.VISIBLE
+            yesLabel.visibility = View.VISIBLE
+            date.visibility = View.VISIBLE
+
+            title.text = data?.first
+            date.text = data?.second
+        }
+        else {
+            noLabel.visibility = View.VISIBLE
+            title.visibility = View.GONE
+            yesLabel.visibility = View.GONE
+            date.visibility = View.GONE
+        }
+
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
         if (!hidden) {
             adapter.reloadItems()
+            view?.let { loadDDayData(it) }
         }
     }
 }
@@ -131,15 +193,23 @@ class StudyGroupManageFragment : Fragment(R.layout.fragment_studygroup_managehom
 
     private fun initList(v: View, title: String?) {
         val manageAnnounce = v.findViewById<LinearLayout>(R.id.manageAnnounce)
+        val manageGoal = v.findViewById<LinearLayout>(R.id.manageGoal)
+        val manageDday = v.findViewById<LinearLayout>(R.id.manageDday)
+        val manageTitle = v.findViewById<LinearLayout>(R.id.manageTitle)
 
-        val fragment = StudyGroupAnnounceFixFragment()
+        val announceFragment = StudyGroupAnnounceFixFragment()
+        val goalFragment = StudyGroupGoalFragment()
+        val dDayFragment = StudyGroupDDayFragment()
+        val titleFragment = StudyGroupSetTitleFragment()
+
         val bundle = Bundle()
         bundle.putString("titleName", title)
-        fragment.arguments = bundle
+        announceFragment.arguments = bundle
 
-        manageAnnounce.setOnClickListener {
-            (activity as StudyManageActivity).changeFragmentManage(fragment)
-        }
+        manageAnnounce.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(announceFragment) }
+        manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(goalFragment) }
+        manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(dDayFragment) }
+        manageTitle.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(titleFragment) }
     }
 }
 
@@ -219,5 +289,103 @@ class StudyGroupAnnounceFixFragment : Fragment(R.layout.fragment_mypage_addstudy
         recyclerView.adapter = adapter
 
         return adapter
+    }
+}
+
+class StudyGroupGoalFragment : Fragment(R.layout.fragment_studygroup_goal) { // 목표 설정 프래그먼트
+    private lateinit var goalViewModel: GoalListViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val backBtn = view.findViewById<ImageButton>(R.id.backBtn)
+        val submit = view.findViewById<TextView>(R.id.txtGoalSubmit)
+        val add = view.findViewById<Button>(R.id.btnAddGoal)
+
+        goalViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
+        val adapter = initGoalRecyclerView(view)
+
+        backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+        submit.setOnClickListener {
+            for (item in adapter.getItem()) {
+                goalViewModel.addList(item)
+            }
+
+            Toast.makeText(requireContext(), "목표 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            (activity as StudyManageActivity).popBackStackFragment()
+        }
+        add.setOnClickListener {
+            if (adapter.getItem().size >= 3) {
+                Toast.makeText(requireContext(), "목표 개수는 3개까지 작성 가능합니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                adapter.addItem(adapter.getItem().size + 1)
+            }
+        }
+    }
+
+    private fun initGoalRecyclerView(v: View): GoalAdapter {
+        val items = goalViewModel.goalList.value ?: ArrayList()
+        val recyclerView = v.findViewById<RecyclerView>(R.id.goalRecyclerView)
+        val adapter = GoalAdapter(items, false)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+
+        return adapter
+    }
+}
+
+class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
+    private lateinit var dDayViewModel: DDayViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
+        initView(view)
+    }
+
+    private fun initView(view: View) {
+        val submitBtn = view.findViewById<TextView>(R.id.btnDdaySubmit)
+        val resetBtn = view.findViewById<Button>(R.id.btnResetDday)
+
+        val title = view.findViewById<EditText>(R.id.editTextDdayTitle)
+        val date = view.findViewById<TextView>(R.id.txtDdayDate)
+
+        submitBtn.setOnClickListener {
+            dDayViewModel.setPairString(Pair(title.text.toString(), date.text.toString()))
+
+            Toast.makeText(requireContext(), "디데이를 등록하였습니다.", Toast.LENGTH_SHORT).show()
+            (activity as StudyManageActivity).popBackStackFragment()
+        }
+        resetBtn.setOnClickListener {
+            title.setText("")
+            date.text = "2024년 00월 00일"
+            Toast.makeText(requireContext(), "디데이정보를 초기화하였습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitle) {
+    private lateinit var titleViewModel: TitleViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        titleViewModel = ViewModelProvider(requireActivity())[TitleViewModel::class.java]
+        initView(view)
+    }
+
+    private fun initView(view: View) {
+        val backBtn = view.findViewById<ImageButton>(R.id.backBtn)
+        val submitBtn = view.findViewById<TextView>(R.id.btnTitleSubmit)
+        val text = view.findViewById<EditText>(R.id.editTextStudyTitleTxt)
+
+        backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+        submitBtn.setOnClickListener {
+            println(text.text.toString())
+            titleViewModel.setEditTextValue(text.text.toString())
+
+            Toast.makeText(requireContext(), "소개글 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            (activity as StudyManageActivity).popBackStackFragment()
+        }
+
     }
 }

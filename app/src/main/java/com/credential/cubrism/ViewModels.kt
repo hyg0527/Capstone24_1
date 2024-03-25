@@ -95,3 +95,37 @@ class StudyListViewModel : ViewModel() { // 스터디 그룹 페이지 항목 �
         _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
     }
 }
+
+class GoalListViewModel : ViewModel() {
+    private val _goalList = MutableLiveData<ArrayList<Goals>>(arrayListOf())
+    val goalList: LiveData<ArrayList<Goals>> get() = _goalList
+
+    init {
+        addList(Goals("목표 1입니다.", "0시간 0분", 1))
+    }
+    fun addList(value: Goals) {
+        _goalList.value?.add(value)
+        _goalList.value = _goalList.value
+    }
+}
+
+class DDayViewModel : ViewModel() {
+    private val _pairStringLiveData = MutableLiveData<Pair<String, String>>()
+    val pairStringLiveData: LiveData<Pair<String, String>> get() = _pairStringLiveData
+
+    // Pair<String, String> 값을 설정하는 함수
+    fun setPairString(pair: Pair<String, String>) {
+        _pairStringLiveData.value = pair
+        _pairStringLiveData.value = _pairStringLiveData.value
+    }
+}
+
+class TitleViewModel : ViewModel() {
+    private val _editTextValue = MutableLiveData<String>()
+    val editTextValue: LiveData<String> get() = _editTextValue
+
+    // EditText의 값을 저장하는 메서드
+    fun setEditTextValue(value: String) {
+        _editTextValue.value = value
+    }
+}
