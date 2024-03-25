@@ -272,6 +272,7 @@ class QualificationSearchFragment : Fragment() {
         binding.qualificationSearchView.apply {
             layoutManager = linearLayoutManager
             adapter = qualificationAdapter
+            itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.GRAY))
             setHasFixedSize(true)
         }
@@ -297,7 +298,7 @@ class QualificationSearchFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-//                qualificationAdapter.filter.filter(newText)
+                qualificationAdapter.filter.filter(newText)
                 return false
             }
         })
