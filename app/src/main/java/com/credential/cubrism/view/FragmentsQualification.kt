@@ -66,6 +66,8 @@ class MajorFieldFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationMajorfieldBinding.inflate(inflater, container, false)
 
+        binding.progressIndicator.show()
+
         gridLayoutmanager = GridLayoutManager(context, 2)
         binding.gridRecyclerView.apply {
             layoutManager = gridLayoutmanager
@@ -84,6 +86,7 @@ class MajorFieldFragment : Fragment() {
 
         viewModel.getMajorFieldList()
         viewModel.majorFieldList.observe(viewLifecycleOwner) { result ->
+            binding.progressIndicator.hide()
             when (result) {
                 is ResultUtil.Success -> { majorFieldAdapter.setItemList(result.data) }
                 is ResultUtil.Error -> { Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show() }
@@ -143,6 +146,7 @@ class MiddleFieldFragment : Fragment() {
         _binding = FragmentQualificationMiddlefieldBinding.inflate(inflater, container, false)
 
         binding.txtListName.text = majorFieldName
+        binding.progressIndicator.show()
 
         linearLayoutManager = LinearLayoutManager(context)
         binding.categoryView.apply {
@@ -157,6 +161,7 @@ class MiddleFieldFragment : Fragment() {
         }
 
         viewModel.middleFieldList.observe(viewLifecycleOwner) { result ->
+            binding.progressIndicator.hide()
             when (result) {
                 is ResultUtil.Success -> {
                     middleFieldAdapter.setItemList(result.data)
@@ -284,6 +289,8 @@ class QualificationSearchFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationSearchBinding.inflate(inflater, container, false)
 
+        binding.progressIndicator.show()
+
         linearLayoutManager = LinearLayoutManager(context)
         binding.qualificationSearchView.apply {
             layoutManager = linearLayoutManager
@@ -295,6 +302,7 @@ class QualificationSearchFragment : Fragment() {
 
         viewModel.getQualificationList()
         viewModel.qualificationList.observe(viewLifecycleOwner) { result ->
+            binding.progressIndicator.hide()
             when (result) {
                 is ResultUtil.Success -> { qualificationAdapter.setItemList(result.data) }
                 is ResultUtil.Error -> { Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show() }
