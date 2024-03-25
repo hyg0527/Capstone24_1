@@ -7,8 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.BuildConfig
-import com.credential.cubrism.data.repository.AuthRepository
-import com.credential.cubrism.data.utils.ResultUtil
+import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.JwtTokenViewModel

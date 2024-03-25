@@ -3,10 +3,10 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.credential.cubrism.data.dto.SignInDto
-import com.credential.cubrism.data.dto.TokenDto
-import com.credential.cubrism.data.repository.AuthRepository
-import com.credential.cubrism.data.utils.ResultUtil
+import com.credential.cubrism.model.dto.SignInDto
+import com.credential.cubrism.model.dto.TokenDto
+import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.utils.ResultUtil
 import okhttp3.ResponseBody
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {

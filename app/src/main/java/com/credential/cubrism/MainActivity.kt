@@ -1,10 +1,10 @@
 package com.credential.cubrism
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.credential.cubrism.view.QualificationFragment
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 
 class MainActivity : AppCompatActivity() {
@@ -22,14 +22,14 @@ class MainActivity : AppCompatActivity() {
         MeowBottomNavigation.Model(1, R.drawable.home),
         MeowBottomNavigation.Model(2, R.drawable.study),
         MeowBottomNavigation.Model(3, R.drawable.calendar),
-        MeowBottomNavigation.Model(4, R.drawable.medal),
+        MeowBottomNavigation.Model(4, R.drawable.qualification),
         MeowBottomNavigation.Model(5, R.drawable.mypage)
     )
     private lateinit var currentFragment: Fragment
     private var homeFragment: HomeFragment = HomeFragment()
     private var studyFragment: StudyFragment = StudyFragment()
     private var calFragment: CalFragment = CalFragment()
-    private var medalFragment: MedalFragment = MedalFragment()
+    private var qualificationFragment: QualificationFragment = QualificationFragment()
     private var myPageFragment: MyPageFragment = MyPageFragment()
 
     private fun navigationSet() {
@@ -46,20 +46,21 @@ class MainActivity : AppCompatActivity() {
                 1 -> showFragment(homeFragment)
                 2 -> showFragment(studyFragment)
                 3 -> showFragment(calFragment)
-                4 -> showFragment(medalFragment)
+                4 -> showFragment(qualificationFragment)
                 5 -> showFragment(myPageFragment)
             }
         }
     }
     private fun navigationInit() {
         currentFragment = homeFragment
-        val fragmentList = listOf(homeFragment, studyFragment, calFragment, medalFragment, myPageFragment)
+        val fragmentList = listOf(homeFragment, studyFragment, calFragment, qualificationFragment, myPageFragment)
         val transaction = supportFragmentManager.beginTransaction()
 
         for (fragment in fragmentList) {
             transaction.add(R.id.fragmentContainerView, fragment)
         }
-        for (fragment in listOf(studyFragment, calFragment, medalFragment, myPageFragment)) {
+
+        for (fragment in listOf(studyFragment, calFragment, qualificationFragment, myPageFragment)) {
             transaction.hide(fragment)
         }
 

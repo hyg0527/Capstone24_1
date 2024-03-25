@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.credential.cubrism.R
-import com.credential.cubrism.data.repository.AuthRepository
-import com.credential.cubrism.data.utils.ResultUtil
+import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySignupBinding
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory

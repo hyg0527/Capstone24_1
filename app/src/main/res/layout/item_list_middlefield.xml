@@ -5,11 +5,13 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/nameSearch"
+        android:id="@+id/txtCategoryName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/edittext_rounded_corner_search"
         android:padding="16dp"
-        android:textSize="15sp"
+        android:text="category"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
