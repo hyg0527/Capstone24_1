@@ -85,6 +85,7 @@
                 android:background="@drawable/textview_dark_corner"
                 android:elevation="4dp"
                 android:padding="10dp"
+                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView20" />
@@ -95,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="8dp"
-                android:text="- 출제경향"
+                android:text="- 출제 경향"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtFee" />
@@ -107,6 +108,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="10dp"
+                android:autoLink="web"
                 android:background="@drawable/textview_dark_corner"
                 android:elevation="4dp"
                 android:padding="10dp"
@@ -121,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="8dp"
-                android:text="- 출제기준"
+                android:text="- 출제 기준"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtTendency" />
@@ -136,7 +138,6 @@
                 android:background="@drawable/textview_dark_corner"
                 android:elevation="4dp"
                 android:padding="10dp"
-                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView23" />
@@ -147,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="8dp"
-                android:text="- 공개문제"
+                android:text="- 공개 문제"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtStandard" />
@@ -198,7 +199,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="8dp"
-                android:text="- 추천도서"
+                android:text="- 추천 도서"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtAcquistion" />

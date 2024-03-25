@@ -3,6 +3,7 @@ package com.credential.cubrism.model.repository
 import com.credential.cubrism.model.api.QualificationApi
 import com.credential.cubrism.model.dto.MajorFieldDto
 import com.credential.cubrism.model.dto.MiddleFieldDto
+import com.credential.cubrism.model.dto.QualificationDetailsDto
 import com.credential.cubrism.model.dto.QualificationListDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
@@ -57,6 +58,22 @@ class QualificationRepository {
             }
 
             override fun onFailure(call: Call<List<MiddleFieldDto>>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun qualificationDetails(code: String, callback: (ResultUtil<QualificationDetailsDto>) -> Unit) {
+        qualificationApi.getQualificationDetails(code).enqueue(object : Callback<QualificationDetailsDto> {
+            override fun onResponse(call: Call<QualificationDetailsDto>, response: Response<QualificationDetailsDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).getString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<QualificationDetailsDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })

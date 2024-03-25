@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.MajorFieldDto
 import com.credential.cubrism.model.dto.MiddleFieldDto
+import com.credential.cubrism.model.dto.QualificationDetailsDto
 import com.credential.cubrism.model.dto.QualificationListDto
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.model.utils.ResultUtil
@@ -18,6 +19,9 @@ class QualificationViewModel(private val repository: QualificationRepository) : 
 
     private val _middleFieldList = MutableLiveData<ResultUtil<List<MiddleFieldDto>>>()
     val middleFieldList: LiveData<ResultUtil<List<MiddleFieldDto>>> = _middleFieldList
+
+    private val _qualificationDetails = MutableLiveData<ResultUtil<QualificationDetailsDto>>()
+    val qualificationDetails: LiveData<ResultUtil<QualificationDetailsDto>> = _qualificationDetails
 
     fun getQualificationList() {
         repository.qualificationList { result ->
@@ -34,6 +38,12 @@ class QualificationViewModel(private val repository: QualificationRepository) : 
     fun getMiddleFieldList(field: String) {
         repository.middleFieldList(field) { result ->
             _middleFieldList.postValue(result)
+        }
+    }
+
+    fun getQualificationDetails(code: String) {
+        repository.qualificationDetails(code) { result ->
+            _qualificationDetails.postValue(result)
         }
     }
 }

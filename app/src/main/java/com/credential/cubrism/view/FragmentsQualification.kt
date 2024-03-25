@@ -167,7 +167,7 @@ class MiddleFieldFragment : Fragment() {
         }
 
         middleFieldAdapter.setOnItemClickListener { item, _ ->
-            showDetailsFragment(item.name)
+            showDetailsFragment(item.name, item.code)
         }
 
         handleBackStack(binding.root, parentFragment)
@@ -202,10 +202,11 @@ class MiddleFieldFragment : Fragment() {
         }
     }
 
-    private fun showDetailsFragment(qualificationName: String) {
+    private fun showDetailsFragment(qualificationName: String, qualificationCode: String) {
         val fragment = QualificationDetailsFragment()
         val bundle = Bundle()
         bundle.putString("qualificationName", qualificationName)
+        bundle.putString("qualificationCode", qualificationCode)
         fragment.arguments = bundle
 
         (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
@@ -219,13 +220,28 @@ class MiddleFieldFragment : Fragment() {
 class QualificationDetailsFragment : Fragment() {
     private var _binding: FragmentQualificationDetailsBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
 
     private val qualificationName by lazy { arguments?.getString("qualificationName") }
+    private val qualificationCode by lazy { arguments?.getString("qualificationCode") }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationDetailsBinding.inflate(inflater, container, false)
 
         binding.txtQualificationName.text = qualificationName
+        qualificationCode?.let { viewModel.getQualificationDetails(it) }
+
+        viewModel.qualificationDetails.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    binding.txtFee.text = "필기 : ${result.data.fee.writtenFee}원\n실기 : ${result.data.fee.practicalFee}원" // 수수료
+                    binding.txtTendency.text = result.data.tendency // 출제경향
+                    binding.txtAcquistion.text = result.data.acquisition // 취득방법
+                }
+                is ResultUtil.Error -> { Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show() }
+                is ResultUtil.NetworkError -> { Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
+            }
+        }
 
         return binding.root
     }
@@ -287,7 +303,7 @@ class QualificationSearchFragment : Fragment() {
         }
 
         qualificationAdapter.setOnItemClickListener { item, _ ->
-            showInfoFragmentSearch(item.name)
+            showInfoFragmentSearch(item.name, item.code)
             hideKeyboard(binding.root)
         }
 
@@ -332,10 +348,11 @@ class QualificationSearchFragment : Fragment() {
         }
     }
 
-    private fun showInfoFragmentSearch(qualificationName: String) {
+    private fun showInfoFragmentSearch(qualificationName: String, qualificationCode: String) {
         val fragment = QualificationDetailsFragment()
         val bundle = Bundle()
         bundle.putString("qualificationName", qualificationName)
+        bundle.putString("qualificationCode", qualificationCode)
         fragment.arguments = bundle
 
         (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
