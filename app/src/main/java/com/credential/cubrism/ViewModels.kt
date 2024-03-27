@@ -71,31 +71,69 @@ class QnaListViewModel : ViewModel() {
 //}
 
 class StudyListViewModel : ViewModel() { // 스터디 그룹 페이지 항목 리스트 viewmodel
-    private val _studyList = MutableLiveData<ArrayList<String>>(arrayListOf())
-    val studyList: LiveData<ArrayList<String>> get() = _studyList // 읽기만 가능(get)
+    private val _studyList = MutableLiveData<ArrayList<StudyList>>(arrayListOf())
+    val studyList: LiveData<ArrayList<StudyList>> get() = _studyList // 읽기만 가능(get)
 
-    init {
-        addList("정처기 삼일컷 스터디")
-        addList("토익 토플 토스 오픽 일주일컷 스터디")
+    val sampleInfo = "스터디 소개글입니다.\n스터디 소개글입니다.스터디소개글입니다스터디소개글입니다스터디소개글입니다"
+    val sampleTags = ArrayList<Tags>().apply {
+        add(Tags("#널널함"))
+        add(Tags("#열공"))
     }
 
-    fun addList(value: String) { // 질문 추가
+    init {
+        addList(StudyList("정처기 삼일컷 스터디", sampleInfo, sampleTags, 4, 4))
+        addList(StudyList("토익 토플 토스 오픽 일주일컷 스터디", sampleInfo, sampleTags, 10, 1))
+    }
+
+    fun addList(value: StudyList) { // 질문 추가
         _studyList.value?.add(value)
+        _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
+    }
+
+    fun deleteList(value: StudyList) {
+        _studyList.value?.remove(value)
         _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
     }
 }
 
-class MyStudyViewModel : ViewModel() { // 나의 스터디 항목 리스트 viewmodel
-    private val _studyList = MutableLiveData<ArrayList<String>>(arrayListOf())
-    val studyList: LiveData<ArrayList<String>> get() = _studyList // 읽기만 가능(get)
+class GoalListViewModel : ViewModel() {
+    private val _goalList = MutableLiveData<ArrayList<Goals>>(arrayListOf())
+    val goalList: LiveData<ArrayList<Goals>> get() = _goalList
 
     init {
-        addList("정처기 삼일컷 스터디")
-        addList("토익 토플 토스 오픽 일주일컷 스터디")
+        addList(Goals("목표 1입니다.", "0시간 0분", 1))
+    }
+    fun addList(value: Goals) {
+        _goalList.value?.add(value)
+        _goalList.value = _goalList.value
+    }
+}
+
+class DDayViewModel : ViewModel() {
+    private val _pairStringLiveData = MutableLiveData<Pair<String, String>>()
+    val pairStringLiveData: LiveData<Pair<String, String>> get() = _pairStringLiveData
+
+    // Pair<String, String> 값을 설정하는 함수
+    fun setPairString(pair: Pair<String, String>) {
+        _pairStringLiveData.value = pair
+    }
+}
+
+class TitleViewModel : ViewModel() {
+    // 초기값을 보관하는 변수
+    private val _initialValue = "스터디 환영글이다!!!"
+    private val _editTextValue = MutableLiveData<String>()
+
+    // LiveData를 통해 초기값을 전달하는 메서드
+    val editTextValue: LiveData<String> = _editTextValue
+
+    init {
+        // 초기값을 LiveData에 설정
+        setEditTextValue(_initialValue)
     }
 
-    fun addList(value: String) { // 질문 추가
-        _studyList.value?.add(value)
-        _studyList.value = _studyList.value // 옵서버 에게 변경 사항을 알림
+    // EditText의 값을 저장하는 메서드
+    fun setEditTextValue(value: String) {
+        _editTextValue.value = value
     }
 }

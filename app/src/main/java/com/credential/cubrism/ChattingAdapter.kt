@@ -13,6 +13,7 @@ interface ReplyListener {
 }
 data class Chat(val userName: String?= null, val profileImg: Int? = null,
                 val text: String? = null, val reply: Boolean = false, val showReplyImg: Boolean = false)
+
 class ChattingAdapter(private val items: ArrayList<Chat>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var listener: ReplyListener? = null
     private var isReply = false

@@ -29,6 +29,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,37 +40,38 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".view.SignInActivity"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".view.SignUpActivity"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".ProfileFixActivity"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".StudyActivity"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".StudyManageActivity"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".ChattingActivity"
             android:exported="true" >
-
+        </activity>
+        <activity
+            android:name=".PWFindActivity"
+            android:exported="true" >
+        </activity>
+        <activity
+            android:name=".PWResetActivity"
+            android:exported="true" >
         </activity>
     </application>
 

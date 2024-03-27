@@ -2,30 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
-    android:layout_height="150dp">
+    android:layout_width="117dp"
+    android:layout_height="110dp">
 
-    <android.widget.Button
-        android:id="@+id/photobutton"
+    <ImageView
+        android:id="@+id/qnaImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/button_rounded_corner_gray"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/photo"
-        android:layout_width="60dp"
-        android:layout_height="55dp"
-        android:layout_gravity="center"
-        android:src="@drawable/qna_photo"
-        android:text="TextView"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="7dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

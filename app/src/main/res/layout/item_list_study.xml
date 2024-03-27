@@ -5,140 +5,106 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <android.widget.Button
         android:id="@+id/studyStatus_ing"
-        android:layout_width="wrap_content"
+        android:layout_width="55dp"
         android:layout_height="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_rounded_corner_lb4"
-        android:elevation="2dp"
         android:fontFamily="@font/kopubdotumbold"
         android:gravity="center"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:text="모집중"
         android:textColor="@color/blue"
         android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <android.widget.Button
         android:id="@+id/studyStatus_end"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_rounded_corner_gray2"
-        android:elevation="2dp"
-        android:fontFamily="@font/kopubdotumbold"
-        android:gravity="center"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:text="모집완료"
-        android:textColor="#919191"
+        android:visibility="gone"
         android:textSize="15dp"
-        android:visibility="invisible"
+        android:fontFamily="@font/kopubdotumbold"
+        android:textColor="#919191"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/tagLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tagRecyclerViewList"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:clickable="false"
+            android:focusable="false"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txtStudyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="60dp"
         android:fontFamily="@font/kopubdotumbold"
+        android:text="같이 공부하실 분 구합니다!~"
         android:textColor="#4F4A4A"
-        android:textSize="19dp"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studyStatus_ing" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingStart="20dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle" />
-
-    <TextView
-        android:id="@+id/txtStudyInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="16dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/kopubdotummedium"
-        android:maxWidth="280dp"
-        android:maxLines="3"
-        android:textColor="#898989"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView10"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView10"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="60dp"
         android:layout_marginBottom="20dp"
+        android:src="@drawable/studymember"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView41" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/textView41"
+        android:id="@+id/txtNumsStudy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="22dp"
         android:fontFamily="@font/kopubdotumbold"
+        android:text="1 / 4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="1 / 4" />
+        app:layout_constraintStart_toEndOf="@+id/imageView10" />
 
-    <!--    <LinearLayout-->
-    <!--        android:id="@+id/tagLayout"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="3dp"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/txtStudyTitle">-->
-
-    <!--        <android.widget.Button-->
-    <!--            android:id="@+id/studyStatus2"-->
-    <!--            android:layout_width="70dp"-->
-    <!--            android:layout_height="33dp"-->
-    <!--            android:layout_marginStart="20dp"-->
-    <!--            android:layout_marginTop="8dp"-->
-    <!--            android:background="@drawable/edittext_rounded_corner_search"-->
-    <!--            android:fontFamily="@font/kopubdotumbold"-->
-    <!--            android:text="#널널함"-->
-    <!--            android:textColor="@color/blue"-->
-    <!--            android:textSize="15dp" />-->
-
-    <!--        <android.widget.Button-->
-    <!--            android:id="@+id/studyStatus3"-->
-    <!--            android:layout_width="60dp"-->
-    <!--            android:layout_height="33dp"-->
-    <!--            android:layout_marginStart="8dp"-->
-    <!--            android:layout_marginTop="8dp"-->
-    <!--            android:background="@drawable/edittext_rounded_corner_search"-->
-    <!--            android:fontFamily="@font/kopubdotumbold"-->
-    <!--            android:text="#열공"-->
-    <!--            android:textColor="@color/blue"-->
-    <!--            android:textSize="15dp" />-->
-    <!--    </LinearLayout>-->
-
-
+    <TextView
+        android:id="@+id/txtStudyInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/kopubdotummedium"
+        android:maxWidth="280dp"
+        android:maxLines="3"
+        android:text="스터디 소개글입니다.\n스터디 소개글입니다.스터디소개글입니다스터디소개글입니다스터디소개글입니다"
+        android:textColor="#898989"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tagLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

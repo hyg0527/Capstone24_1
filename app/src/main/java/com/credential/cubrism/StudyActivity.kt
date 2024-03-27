@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -23,6 +24,7 @@ class StudyActivity : AppCompatActivity() {
     private val func2Fragment = StudyGroupFunc2Fragment()
     private val func3Fragment = StudyGroupFunc3Fragment()
     private val func4Fragment = StudyGroupFunc4Fragment()
+    private lateinit var titleTxt: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ class StudyActivity : AppCompatActivity() {
         setSupportActionBar(actionBar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
 
-        val titleTxt = intent.getStringExtra("studyGroupTitle") // title 정보 가져와서 출력
+        titleTxt = intent.getStringExtra("studyGroupTitle") ?: ""// title 정보 가져와서 출력
         val title = findViewById<TextView>(R.id.txtStudyGroupTitleIn)
 
         title.text = titleTxt
@@ -76,15 +78,8 @@ class StudyActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.manage -> {     // 관리 버튼을 누르면 관리 화면으로 이동
                 val intent = Intent(this, StudyManageActivity::class.java)
+                intent.putExtra("titleName", titleTxt)
                 startActivity(intent)
-                true
-            }
-            R.id.goal -> {     // 목표 설정 화면 호출
-
-                true
-            }
-            R.id.d_day -> {     // 디데이 설정 화면 호출
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -107,10 +102,10 @@ class StudyActivity : AppCompatActivity() {
     }
 
     private fun menuSetUp() { // 상단 프래그먼트 메뉴 이동 버튼 설정
-        val homeBtn = findViewById<CircleImageView>(R.id.homeGroup)
-        val func2Btn = findViewById<CircleImageView>(R.id.func2Group)
-        val func3Btn = findViewById<CircleImageView>(R.id.func3Group)
-        val func4Btn = findViewById<CircleImageView>(R.id.func4Group)
+        val homeBtn = findViewById<ImageView>(R.id.homeGroup)
+        val func2Btn = findViewById<ImageView>(R.id.func2Group)
+        val func3Btn = findViewById<ImageView>(R.id.func3Group)
+        val func4Btn = findViewById<ImageView>(R.id.func4Group)
 
         homeBtn.setOnClickListener {
             changeFragment(homeFragment)
