@@ -42,8 +42,8 @@
             android:id="@+id/postingBtn"
             android:layout_width="70dp"
             android:layout_height="40dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="15dp"
             android:background="@drawable/button_rounded_corner"
             android:fontFamily="@font/kopubdotumbold"
             android:paddingLeft="0dp"
@@ -52,17 +52,61 @@
             android:textSize="16dp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollLayout"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/defaultPhotoLayout"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_rounded_corner_gray"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/photoImage"
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="25dp"
+                    android:src="@drawable/qna_photo" />
+
+                <TextView
+                    android:id="@+id/photoCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/kopubdotumbold"
+                    android:text="0/10"
+                    android:textColor="#BDBDBD" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/photoRCV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <View
         android:id="@+id/middleLine4"
@@ -74,7 +118,8 @@
         android:background="#EDEDED"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollLayout" />
+
 
     <EditText
         android:id="@+id/postTitle"
@@ -111,7 +156,7 @@
     <LinearLayout
         android:id="@+id/categorylayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="1dp"
@@ -142,11 +187,12 @@
             app:layout_constraintTop_toBottomOf="@+id/middleLine6" />
 
         <android.widget.Button
-            android:id="@+id/button2"
+            android:id="@+id/txtPostingCategory"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
+            android:visibility="gone"
             android:background="@drawable/button_rounded_corner_outline_b"
             android:fontFamily="@font/kopubdotumbold"
             android:textColor="@color/blue"
@@ -194,4 +240,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/middleLine7" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

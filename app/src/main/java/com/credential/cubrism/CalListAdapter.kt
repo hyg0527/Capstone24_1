@@ -82,7 +82,7 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
         holder.timeEnd.text = items[position].endTime
     }
 
-    fun updateList(date: String) { // 날짜에 맞는 일정만 화면에 출력하는 함수
+    fun updateList(date: String): Boolean { // 날짜에 맞는 일정만 화면에 출력하는 함수
         val newList = ArrayList<CalMonth>()
         newList.clear()
 
@@ -96,7 +96,10 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
 
         items.clear()
         items.addAll(newList)
+
         notifyDataSetChanged()
+
+        return items.isNotEmpty()
     }
 
     private fun findDate(item: CalMonth, date: String): Triple<Int, Int, Int> {
@@ -112,7 +115,7 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
             realDateStart = item.startTime?.substringBefore(" 오")?.trim() ?: ""
             realDateEnd = item.endTime?.substringBefore(" 오")?.trim() ?: ""
         }
-        else { }
+        else return Triple(0,0,0)
 
         val realDateStartDay = realDateStart.replace(" - ", "").toInt()
         val realDateEndDay = realDateEnd.replace(" - ", "").toInt()

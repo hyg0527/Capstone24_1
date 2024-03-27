@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#D5E3FF"
+        android:orientation="horizontal"
+        android:layout_marginRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <CheckBox
+            android:id="@+id/todayCheckBox"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:button="@null"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:textSize="18dp"
+            android:background="@drawable/checkbox_todaylist" />
+
+        <TextView
+            android:id="@+id/todaySchedule"
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="13dp"
+            android:textSize="20dp"
+            android:lineSpacingExtra="8dp"
+            android:fontFamily="@font/godom"
+            android:textColor="@color/blue"
+            android:text="오늘의 일정은 이거랑 저거랑 요거랑 전부 합치면" />
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

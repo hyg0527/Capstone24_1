@@ -124,7 +124,7 @@
 
 
             <android.widget.Button
-                android:id="@+id/codeBtn"
+                android:id="@+id/verifyBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -196,7 +196,7 @@
         </LinearLayout>
 
         <android.widget.Button
-            android:id="@+id/registerBtn"
+            android:id="@+id/btnFindPW"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_rounded_corner"
