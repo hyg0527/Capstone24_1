@@ -116,13 +116,21 @@ class DDayViewModel : ViewModel() {
     // Pair<String, String> 값을 설정하는 함수
     fun setPairString(pair: Pair<String, String>) {
         _pairStringLiveData.value = pair
-        _pairStringLiveData.value = _pairStringLiveData.value
     }
 }
 
 class TitleViewModel : ViewModel() {
+    // 초기값을 보관하는 변수
+    private val _initialValue = "스터디 환영글이다!!!"
     private val _editTextValue = MutableLiveData<String>()
-    val editTextValue: LiveData<String> get() = _editTextValue
+
+    // LiveData를 통해 초기값을 전달하는 메서드
+    val editTextValue: LiveData<String> = _editTextValue
+
+    init {
+        // 초기값을 LiveData에 설정
+        setEditTextValue(_initialValue)
+    }
 
     // EditText의 값을 저장하는 메서드
     fun setEditTextValue(value: String) {

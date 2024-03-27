@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,7 +68,7 @@ class MyPageFragmentMyStudy : Fragment(R.layout.fragment_mypage_mystudy) {
             changeFragmentMyStudy(parentFragment, MyPageCreateStudyFragment())
         }
 
-        handleBackStack(view, parentFragment)
+        handleBackStack(view, parentFragmentManager)
     }
 
     private fun showStudyList(view: View) { // 스터디 리스트 출력
@@ -101,7 +102,7 @@ class MyPageFragmentMyStudy : Fragment(R.layout.fragment_mypage_mystudy) {
 
         if (!hidden) {
             // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
+            view?.let { handleBackStack(it, parentFragmentManager) }
         }
     }
 }
@@ -127,7 +128,7 @@ class MyPageCreateStudyFragment : Fragment(R.layout.fragment_mypage_addstudy) {
             submitButtonPressed(view, items)
         }
 
-        handleBackStack(view, parentFragment)
+        handleBackStack(view, parentFragmentManager)
     }
 
     private fun initTagRecyclerView(v: View): ArrayList<Tags> {
@@ -179,7 +180,7 @@ class MyPageCreateStudyFragment : Fragment(R.layout.fragment_mypage_addstudy) {
 
         if (!hidden) {
             // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
+            view?.let { handleBackStack(it, parentFragmentManager) }
         }
     }
 
@@ -201,12 +202,12 @@ private fun changeFragmentMyStudy(parentFragment: Fragment?, fragment: Fragment)
 }
 
 // 백스택 호출 함수 선언
-private fun handleBackStack(v: View, parentFragment: Fragment?) {
+private fun handleBackStack(v: View, parentFragmentManager: FragmentManager?) {
     v.isFocusableInTouchMode = true
     v.requestFocus()
     v.setOnKeyListener { _, keyCode, event ->
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-            (parentFragment as MyPageFragment).childFragmentManager.popBackStack()
+            parentFragmentManager?.popBackStack()
             return@setOnKeyListener true
         }
         false

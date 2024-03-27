@@ -16,9 +16,15 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
+
         val closeBtn = findViewById<ImageButton>(R.id.closeBtn)
         closeBtn.setOnClickListener {
             finish()
+        }
+
+        val resetBtn = findViewById<TextView>(R.id.forgotEmail)
+        resetBtn.setOnClickListener {
+            startActivity(Intent(this, PWFindActivity::class.java))
         }
     }
 

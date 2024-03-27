@@ -52,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register)
 
         val backBtn = findViewById<ImageButton>(R.id.backBtn)
-        validBtn = findViewById(R.id.codeBtn)
+        validBtn = findViewById(R.id.verifyBtn)
         countTxt = findViewById(R.id.countDown)
         noticeTxt = findViewById(R.id.isvalidCode)
         val checkEmailTxt = findViewById<EditText>(R.id.emailCode)

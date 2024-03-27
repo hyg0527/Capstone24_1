@@ -2,7 +2,6 @@ package com.credential.cubrism
 
 import android.content.Context
 import android.os.Bundle
-import android.os.IBinder
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class MedalFragment : Fragment(R.layout.fragment_medal) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -191,6 +192,8 @@ class MedalInfoFragment : Fragment(R.layout.fragment_medal_info) {
 
 // 자격증 검색 dialogfragment
 class MedalSearchFragment : Fragment(R.layout.fragment_medal_search) {
+    private lateinit var searchView: SearchView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_medal_search, container, false)
         val medalSearchView = view.findViewById<RecyclerView>(R.id.medalSearchView)
@@ -220,7 +223,7 @@ class MedalSearchFragment : Fragment(R.layout.fragment_medal_search) {
             }
         })
 
-        val searchView = view.findViewById<SearchView>(R.id.searchViewMedal) // searchView 선언
+        searchView = view.findViewById(R.id.searchViewMedal) // searchView 선언
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean { // 검색어 제출시 호출(여기선 안씀)
                 return true
@@ -253,7 +256,9 @@ class MedalSearchFragment : Fragment(R.layout.fragment_medal_search) {
 
         if (!hidden) {
             // Fragment가 다시 화면에 나타날 때의 작업 수행
-            sView?.let { handleBackStack(it, parentFragment) }
+            sView?.let {
+                handleBackStack(it, parentFragment)
+            }
         }
     }
 

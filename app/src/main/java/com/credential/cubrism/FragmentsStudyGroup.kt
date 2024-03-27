@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,18 +25,20 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class StudyGroupHomeFragment : Fragment(R.layout.fragment_studygroup_home) {
     private lateinit var goalListViewModel: GoalListViewModel
-    private lateinit var titleViewModel: TitleViewModel
+    private lateinit var title: TextView
+    private val titleViewModel: TitleViewModel by activityViewModels()
+    private var view: View? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.view = view
 
         goalListViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
-        titleViewModel = ViewModelProvider(requireActivity())[TitleViewModel::class.java]
-        initGoalListView(view)
+        title = view.findViewById(R.id.txtStudyGroupInfoTitle)
 
-        val textView = view.findViewById<TextView>(R.id.txtStudyGroupInfoTitle)
-        // ViewModel에서 EditText의 값을 가져와서 TextView에 설정
+        initGoalListView(view)
         titleViewModel.editTextValue.observe(viewLifecycleOwner, Observer { value ->
-            textView.text = value
+            title.text = value
         })
     }
 
@@ -46,6 +49,7 @@ class StudyGroupHomeFragment : Fragment(R.layout.fragment_studygroup_home) {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+
     }
 }
 
@@ -365,11 +369,10 @@ class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
 }
 
 class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitle) {
-    private lateinit var titleViewModel: TitleViewModel
+    private val titleViewModel: TitleViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        titleViewModel = ViewModelProvider(requireActivity())[TitleViewModel::class.java]
         initView(view)
     }
 
@@ -380,12 +383,11 @@ class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitl
 
         backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
         submitBtn.setOnClickListener {
-            println(text.text.toString())
             titleViewModel.setEditTextValue(text.text.toString())
+            println("수정된 값" + titleViewModel.editTextValue.value)
 
             Toast.makeText(requireContext(), "소개글 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()
         }
-
     }
 }

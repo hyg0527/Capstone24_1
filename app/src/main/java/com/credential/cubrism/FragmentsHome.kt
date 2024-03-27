@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import java.util.Timer
+import java.util.TimerTask
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,6 +45,8 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
 //    private var view: View? = null
 //    private lateinit var tdlistviewModel: TodoViewModel
+    private var currentPage = 0
+    private val timer = Timer()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,10 +54,9 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         val notify = view.findViewById<ImageButton>(R.id.btnNotify)
         val todoRCV = view.findViewById<RecyclerView>(R.id.todoRCV)
         val mylicenseRCV = view.findViewById<RecyclerView>(R.id.mylicenseRCV)
-        val bannerVP = view.findViewById<ViewPager2>(R.id.bannerViewPager)
         val tdlist = TodayData()
         val lcslist = LCSData()
-        val bnlist = BannerData()
+//        val bnlist = BannerData()
 
 
         login.setOnClickListener {
@@ -66,11 +69,15 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
 
         val td_adapter = TodoAdapter(tdlist)
         val lcs_adapter = LicenseAdapter(lcslist)
-        val bn_adapter = BannerAdapter(bnlist)
+        val bn_adapter = BannerAdapter()
 
         bn_adapter.setBannerListener(object: QnaBannerEnterListener {
             override fun onBannerClicked() {
                 changeFragment(parentFragment, QnaFragment())
+            }
+
+            override fun onBannerStudyClicked() {
+                changeFragment(parentFragment, MyPageFragmentMyStudy())
             }
         })
 
@@ -80,9 +87,54 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         mylicenseRCV.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         mylicenseRCV.adapter = lcs_adapter
 
+        val bannerVP = view.findViewById<ViewPager2>(R.id.bannerViewPager)
         bannerVP.adapter = bn_adapter
+        bannerVP.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
+        // 3초마다 자동으로 viewpager2가 스크롤되도록 타이머 설정
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                activity?.runOnUiThread {
+                    if (currentPage == bn_adapter.itemCount) {
+                        currentPage = 0
+                    }
+                    bannerVP.setCurrentItem(currentPage++, true)
+                }
+            }
+        }, 3000, 5000) // 3초마다 실행, 첫 실행까지 3초 대기
     }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        // Fragment가 다시 보일 때 타이머 시작
+//        startTimer()
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        // Fragment가 숨겨질 때 타이머 중지
+//        stopTimer()
+//    }
+//
+//    private fun startTimer() {
+//        timer = Timer()
+//        timer?.schedule(object : TimerTask() {
+//            override fun run() {
+//                activity?.runOnUiThread {
+//                    if (currentPage == adapter.itemCount) {
+//                        currentPage = 0
+//                    }
+//                    viewPager.setCurrentItem(currentPage++, true)
+//                }
+//            }
+//        }, 3000, 3000) // 3초마다 실행, 첫 실행까지 3초 대기
+//    }
+//
+//    private fun stopTimer() {
+//        timer?.cancel()
+//        timer = null
+//    }
+
     private fun TodayData(): ArrayList<TodayData> {
         return ArrayList<TodayData>().apply {
             add(TodayData(false, "미팅 준비하기!!"))
@@ -100,9 +152,7 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
     }
 
     private fun BannerData(): ArrayList<BannerData> {
-        return ArrayList<BannerData>().apply {
-            add(BannerData("궁금한 것이 있을 땐?\nQ&A 게시판에 질문하세요!"))
-        }
+        return ArrayList()
     }
 
 
