@@ -41,4 +41,8 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
             _isLoading.postValue(false)
         }
     }
+
+    fun clearStudyGroupList() {
+        _studyGroupList.value = mutableListOf()
+    }
 }

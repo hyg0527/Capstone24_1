@@ -62,6 +62,7 @@ class StudyHomeFragment : Fragment() {
         studyGroupAdapter = StudyGroupAdapter(binding.studyListView)
         binding.studyListView.apply {
             adapter = studyGroupAdapter
+            itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 80, Color.parseColor("#E0E0E0")))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -81,9 +82,18 @@ class StudyHomeFragment : Fragment() {
             })
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            studyGroupAdapter.clear()
+            viewModel.clearStudyGroupList()
+            viewModel.getStudyGroupList(0, 5)
+        }
+
         viewModel.apply {
             getStudyGroupList(0, 5)
-            studyGroupList.observe(viewLifecycleOwner) { studyGroupAdapter.setItemList(it) }
+            studyGroupList.observe(viewLifecycleOwner) {
+                studyGroupAdapter.setItemList(it)
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
             isLoading.observe(viewLifecycleOwner) {
                 binding.studyListView.post {
                     studyGroupAdapter.setLoading(it)

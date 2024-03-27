@@ -11,24 +11,23 @@ import com.credential.cubrism.databinding.ItemListProgresBinding
 import com.credential.cubrism.databinding.ItemListStudyBinding
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.view.diff.StudyGroupDiffUtil
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
 class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<GroupList>()
     private var onItemClickListener: ((GroupList, Int) -> Unit)? = null
+
     private var isLoading = false
+    private val viewPool = RecyclerView.RecycledViewPool()
 
     companion object {
         private const val VIEW_TYPE_ITEM = 0
         private const val VIEW_TYPE_LOADING = 1
     }
 
-    override fun getItemCount(): Int {
-        return if (isLoading) itemList.size + 1 else itemList.size
-    }
+    override fun getItemCount(): Int = if (isLoading) itemList.size + 1 else itemList.size
 
-    override fun getItemViewType(position: Int): Int {
-        return if (isLoading && position == itemList.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
-    }
+    override fun getItemViewType(position: Int): Int = if (isLoading && position == itemList.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
@@ -56,6 +55,7 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
                     onItemClickListener?.invoke(itemList[position], position)
                 }
             }
+            binding.recyclerView.addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
         }
 
         fun bind(item: GroupList) {
@@ -69,6 +69,13 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
             } else {
                 binding.studyStatusIng.visibility = View.INVISIBLE
                 binding.studyStatusEnd.visibility = View.VISIBLE
+            }
+
+            val tagAdapter = StudyGroupTagAdapter()
+            binding.recyclerView.apply {
+                adapter = tagAdapter
+                setRecycledViewPool(viewPool)
+                tagAdapter.setItemList(item.tags)
             }
         }
     }
@@ -106,5 +113,10 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
         } else {
             notifyItemRemoved(lastPosition)
         }
+    }
+
+    fun clear() {
+        itemList.clear()
+        setItemList(itemList)
     }
 }
