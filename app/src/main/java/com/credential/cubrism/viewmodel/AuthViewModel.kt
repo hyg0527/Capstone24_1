@@ -3,21 +3,21 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
-import okhttp3.ResponseBody
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
-    private val _signUpResult = MutableLiveData<ResultUtil<ResponseBody>>()
-    val signUpResult: LiveData<ResultUtil<ResponseBody>> = _signUpResult
+    private val _signUpResult = MutableLiveData<ResultUtil<MessageDto>>()
+    val signUpResult: LiveData<ResultUtil<MessageDto>> = _signUpResult
 
-    private val _emailVerifyRequestResult = MutableLiveData<ResultUtil<ResponseBody>>()
-    val emailVerifyRequestResult: LiveData<ResultUtil<ResponseBody>> = _emailVerifyRequestResult
+    private val _emailVerifyRequestResult = MutableLiveData<ResultUtil<MessageDto>>()
+    val emailVerifyRequestResult: LiveData<ResultUtil<MessageDto>> = _emailVerifyRequestResult
 
-    private val _emailVerifyResult = MutableLiveData<ResultUtil<ResponseBody>>()
-    val emailVerifyResult: LiveData<ResultUtil<ResponseBody>> = _emailVerifyResult
+    private val _emailVerifyResult = MutableLiveData<ResultUtil<MessageDto>>()
+    val emailVerifyResult: LiveData<ResultUtil<MessageDto>> = _emailVerifyResult
 
     private val _signInResult = MutableLiveData<ResultUtil<TokenDto>>()
     val signInResult: LiveData<ResultUtil<TokenDto>> = _signInResult

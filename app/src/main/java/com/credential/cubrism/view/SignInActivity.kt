@@ -75,7 +75,9 @@ class SignInActivity : AppCompatActivity() {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
                     val refreshToken = result.data.refreshToken
-                    signInSuccess(accessToken, refreshToken)
+
+                    if (accessToken != null && refreshToken != null)
+                        signInSuccess(accessToken, refreshToken)
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
@@ -91,7 +93,9 @@ class SignInActivity : AppCompatActivity() {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
                     val refreshToken = result.data.refreshToken
-                    signInSuccess(accessToken, refreshToken)
+
+                    if (accessToken != null && refreshToken != null)
+                        signInSuccess(accessToken, refreshToken)
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
@@ -107,7 +111,9 @@ class SignInActivity : AppCompatActivity() {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
                     val refreshToken = result.data.refreshToken
-                    signInSuccess(accessToken, refreshToken)
+
+                    if (accessToken != null && refreshToken != null)
+                        signInSuccess(accessToken, refreshToken)
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()

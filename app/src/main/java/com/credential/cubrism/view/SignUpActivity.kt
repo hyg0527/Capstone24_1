@@ -9,12 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ActivitySignupBinding
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
-import com.credential.cubrism.databinding.ActivitySignupBinding
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
-import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 /**
@@ -58,8 +57,7 @@ class SignUpActivity : AppCompatActivity() {
             when (result) {
                 is ResultUtil.Success -> {
                     startCountdownTimer()
-                    val message = result.data.string().let { JSONObject(it).getString("message") }
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
                 }
                 is ResultUtil.Error -> {
                     Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
@@ -87,8 +85,7 @@ class SignUpActivity : AppCompatActivity() {
         viewModel.signUpResult.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
-                    val message = result.data.string().let { JSONObject(it).getString("message") }
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
                     // TODO: 회원가입 성공 시 자동으로 로그인
                 }
                 is ResultUtil.Error -> {
