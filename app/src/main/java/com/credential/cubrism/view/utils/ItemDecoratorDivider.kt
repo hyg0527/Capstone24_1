@@ -1,4 +1,4 @@
-package com.credential.cubrism.view.util
+package com.credential.cubrism.view.utils
 
 import android.graphics.Canvas
 import android.graphics.Paint

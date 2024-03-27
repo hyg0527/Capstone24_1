@@ -25,7 +25,7 @@ import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.MajorFieldAdapter
 import com.credential.cubrism.view.adapter.MiddleFieldAdapter
 import com.credential.cubrism.view.adapter.QualificationAdapter
-import com.credential.cubrism.view.util.ItemDecoratorDivider
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.QualificationViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
@@ -68,7 +68,7 @@ class MajorFieldFragment : Fragment() {
 
         binding.progressIndicator.show()
 
-        gridLayoutmanager = GridLayoutManager(context, 2)
+        gridLayoutmanager = GridLayoutManager(context, 3)
         binding.gridRecyclerView.apply {
             layoutManager = gridLayoutmanager
             adapter = majorFieldAdapter

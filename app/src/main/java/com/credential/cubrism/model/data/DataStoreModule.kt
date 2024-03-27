@@ -1,4 +1,4 @@
-package com.credential.cubrism.model.model
+package com.credential.cubrism.model.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
