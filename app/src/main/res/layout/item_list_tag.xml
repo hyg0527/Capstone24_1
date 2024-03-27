@@ -13,8 +13,9 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="7dp"
         android:text="# 태그1"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/kopubdotumbold"
+        android:textSize="14dp"
+        android:textColor="@color/blue"
         android:background="@drawable/tag_rounded_corner"
         tools:layout_editor_absoluteX="31dp"
         tools:layout_editor_absoluteY="22dp" />

@@ -74,50 +74,93 @@
         app:layout_constraintBottom_toBottomOf="@+id/profileImg"
         app:layout_constraintStart_toEndOf="@+id/profileImg" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circle1"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="180dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+
+
+    <FrameLayout
+        android:id="@+id/edit_profile_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@drawable/registeration"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/circle2"
+        android:layout_marginTop="180dp"
+        app:layout_constraintEnd_toStartOf="@+id/my_study_layout"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circle2"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="180dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        <ImageButton
+            android:id="@+id/editbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ellipse_3"
+            android:text="Button" />
+
+        <ImageView
+            android:id="@+id/editimg"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:src="@drawable/edit_profile" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/my_study_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@drawable/books"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/circle3"
+        android:layout_marginTop="180dp"
+        app:layout_constraintEnd_toStartOf="@+id/my_schedule_layout"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/circle1"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/edit_profile_layout"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circle3"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="180dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        <ImageButton
+            android:id="@+id/mystudybtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ellipse_3"
+            android:text="Button" />
+
+        <ImageView
+            android:id="@+id/mystudyimg"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:src="@drawable/bookmark" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/my_schedule_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@drawable/today"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
+        android:layout_marginTop="180dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/circle2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/my_study_layout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/myschedulebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ellipse_3"
+            android:text="Button" />
+
+        <ImageView
+            android:id="@+id/myscheduleimg"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_gravity="center"
+            android:src="@drawable/my_schedule" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/editInfo"
@@ -130,7 +173,7 @@
         app:layout_constraintEnd_toStartOf="@+id/studyTxt"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circle1" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_profile_layout" />
 
     <TextView
         android:id="@+id/studyTxt"
@@ -143,7 +186,7 @@
         app:layout_constraintEnd_toStartOf="@+id/todayTxt"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/editInfo"
-        app:layout_constraintTop_toBottomOf="@+id/circle2" />
+        app:layout_constraintTop_toBottomOf="@+id/my_study_layout" />
 
     <TextView
         android:id="@+id/todayTxt"
@@ -156,7 +199,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/studyTxt"
-        app:layout_constraintTop_toBottomOf="@+id/circle3" />
+        app:layout_constraintTop_toBottomOf="@+id/my_schedule_layout" />
 
     <View
         android:id="@+id/middleLine"
