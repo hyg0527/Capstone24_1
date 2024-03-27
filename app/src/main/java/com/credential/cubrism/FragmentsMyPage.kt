@@ -9,7 +9,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -39,8 +42,8 @@ class MyPageFragmentHome : Fragment(R.layout.fragment_mypage_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val profileFix = view.findViewById<CircleImageView>(R.id.circle1)
-        val myStudy = view.findViewById<CircleImageView>(R.id.circle2)
+        val profileFix = view.findViewById<ImageButton>(R.id.editbtn)
+        val myStudy = view.findViewById<ImageButton>(R.id.mystudybtn)
 
         profileFix.setOnClickListener { // 프로필 수정 화면 출력
             val intent = Intent(requireActivity(), ProfileFixActivity::class.java)
