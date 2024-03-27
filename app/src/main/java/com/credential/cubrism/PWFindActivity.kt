@@ -18,6 +18,10 @@ class PWFindActivity : AppCompatActivity() {
     private var isTimerRunning = false
     private var isValidEmail = false
 
+    /*코드 전송 버튼을 누르고 인증 번호를 입력 후에 인증하기 버튼을 누르면 인증 여부가 나옴.
+    * 시간이 지나면 재인증 버튼 활성화 되고 인증 하기 버튼 비활성화됨
+    * 인증이 성공하면 비밀번호찾기 버튼이 활성화 되고 누르면 비밀번호 변경 화면으로 이동함.*/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -45,6 +49,7 @@ class PWFindActivity : AppCompatActivity() {
             codeBtn.setBackgroundResource(R.drawable.button_rounded_corner_lightblue)
             verifyBtn.isEnabled = true
             verifyBtn.setBackgroundResource(R.drawable.button_rounded_corner)
+
             emailCode.setBackgroundResource(R.drawable.edittext_rounded_corner)
             emailCode.setText("")
             isvalidCode.text = ""
