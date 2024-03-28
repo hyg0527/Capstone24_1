@@ -42,11 +42,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 }
 
 class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
-
-//    private var view: View? = null
-//    private lateinit var tdlistviewModel: TodoViewModel
     private var currentPage = 0
-    private val timer = Timer()
+    private var timer: Timer? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,7 +53,6 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         val mylicenseRCV = view.findViewById<RecyclerView>(R.id.mylicenseRCV)
         val tdlist = TodayData()
         val lcslist = LCSData()
-//        val bnlist = BannerData()
 
 
         login.setOnClickListener {
@@ -91,8 +87,9 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
         bannerVP.adapter = bn_adapter
         bannerVP.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
+        timer = Timer()
         // 3초마다 자동으로 viewpager2가 스크롤되도록 타이머 설정
-        timer.schedule(object : TimerTask() {
+        timer!!.schedule(object : TimerTask() {
             override fun run() {
                 activity?.runOnUiThread {
                     if (currentPage == bn_adapter.itemCount) {
@@ -103,37 +100,13 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             }
         }, 3000, 5000) // 3초마다 실행, 첫 실행까지 3초 대기
     }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        // Fragment가 다시 보일 때 타이머 시작
-//        startTimer()
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        // Fragment가 숨겨질 때 타이머 중지
-//        stopTimer()
-//    }
-//
-//    private fun startTimer() {
-//        timer = Timer()
-//        timer?.schedule(object : TimerTask() {
-//            override fun run() {
-//                activity?.runOnUiThread {
-//                    if (currentPage == adapter.itemCount) {
-//                        currentPage = 0
-//                    }
-//                    viewPager.setCurrentItem(currentPage++, true)
-//                }
-//            }
-//        }, 3000, 3000) // 3초마다 실행, 첫 실행까지 3초 대기
-//    }
-//
-//    private fun stopTimer() {
-//        timer?.cancel()
-//        timer = null
-//    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Fragment가 사라질 때 타이머를 취소하여 중복 실행을 방지
+        timer!!.cancel()
+        timer = null
+    }
 
     private fun TodayData(): ArrayList<TodayData> {
         return ArrayList<TodayData>().apply {
@@ -150,14 +123,8 @@ class HomeUiFragment : Fragment(R.layout.fragment_home_ui) {
             add(myLicenseData("직업상담사1급"))
         }
     }
-
-    private fun BannerData(): ArrayList<BannerData> {
-        return ArrayList()
-    }
-
-
-
 }
+
 // 알림 화면
 class NotifyFragment : Fragment(R.layout.fragment_home_notification) {
     private var view: View? = null

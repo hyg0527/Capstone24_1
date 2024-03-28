@@ -43,6 +43,7 @@ class BannerAdapter : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>() {
         // position이 짝수면 첫 번째 아이템, 홀수면 두 번째 아이템
         if (position % 2 == 0) {
             holder.bannerTxt.text = "궁금한 것이 있을 땐?\nQ&A 게시판에 질문하세요!"
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bannerYellow))
             holder.bannerbtn.setOnClickListener {
                 listener?.onBannerClicked()
             }
