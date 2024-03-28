@@ -154,7 +154,7 @@ class StudyInfoFragment : Fragment(R.layout.fragment_study_info) {
     private fun initRecyclerViewStudyList(v: View, item: StudyList?) {
         val items = item?.tagList ?: ArrayList()
         val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerViewStudyList)
-        val adapter = TagAdapter(items, true)
+        val adapter = TagAdapter(items, true, false)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = adapter

@@ -34,15 +34,16 @@ data class Tags(val tag: String? = null, var isEnabled: Boolean = false): Parcel
     }
 }
 
-class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean) : RecyclerView.Adapter<TagAdapter.TapViewHolder>() {
+class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean, val isBlue: Boolean = true)
+    : RecyclerView.Adapter<TagAdapter.TapViewHolder>() {
     inner class TapViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val tag = v.findViewById<TextView>(R.id.txtTag)
 
         init {
-            v.setOnClickListener {
-                val position = adapterPosition
-                val item = items[position]
+            val position = adapterPosition
+            val item = items[position]
 
+            v.setOnClickListener {
                 if (isList) {
                     if (!item.isEnabled) {
                         item.isEnabled = true
@@ -52,6 +53,12 @@ class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean) : Recy
                         tag.setBackgroundResource(R.drawable.tag_rounded_corner)
                     }
                 }
+            }
+
+            if (!isBlue) {
+                item.isEnabled = false
+                tag.setBackgroundResource(R.drawable.tag_rounded_corner_study)
+                tag.resources.getColor(R.color.white, null)
             }
         }
     }
