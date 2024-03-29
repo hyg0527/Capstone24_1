@@ -65,44 +65,63 @@
         app:layout_constraintBottom_toBottomOf="@+id/imgProfile"
         app:layout_constraintStart_toEndOf="@+id/imgProfile" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgEdit"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <FrameLayout
+        android:id="@+id/layoutEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/registeration"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/imgStudy"
+        android:background="@drawable/ellipse_3"
+        app:layout_constraintEnd_toStartOf="@+id/layoutStudy"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/imgProfile">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgStudy"
-        android:layout_width="60dp"
-        android:layout_height="0dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/books"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgEdit"
-        app:layout_constraintEnd_toStartOf="@+id/imgSchedule"
-        app:layout_constraintStart_toEndOf="@+id/imgEdit"
-        app:layout_constraintTop_toTopOf="@+id/imgEdit" />
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:src="@drawable/edit_profile" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgSchedule"
-        android:layout_width="60dp"
-        android:layout_height="0dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/today"
-        app:civ_border_color="#FFFFFF"
-        app:civ_border_width="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgEdit"
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutStudy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ellipse_3"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutEdit"
+        app:layout_constraintEnd_toStartOf="@+id/layoutSchedule"
+        app:layout_constraintStart_toEndOf="@+id/layoutEdit"
+        app:layout_constraintTop_toTopOf="@+id/layoutEdit">
+
+        <ImageView
+            android:id="@+id/mystudyimg"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:src="@drawable/bookmark" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ellipse_3"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutEdit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgStudy"
-        app:layout_constraintTop_toTopOf="@+id/imgEdit" />
+        app:layout_constraintStart_toEndOf="@+id/layoutStudy"
+        app:layout_constraintTop_toTopOf="@+id/layoutEdit">
+
+        <ImageView
+            android:id="@+id/myscheduleimg"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_gravity="center"
+            android:src="@drawable/my_schedule" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/txtEdit"
@@ -112,33 +131,33 @@
         android:fontFamily="@font/kopubdotumbold"
         android:text="정보 수정"
         android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="@+id/imgEdit"
-        app:layout_constraintStart_toStartOf="@+id/imgEdit"
-        app:layout_constraintTop_toBottomOf="@+id/imgEdit" />
+        app:layout_constraintEnd_toEndOf="@+id/layoutEdit"
+        app:layout_constraintStart_toStartOf="@+id/layoutEdit"
+        app:layout_constraintTop_toBottomOf="@+id/layoutEdit" />
 
     <TextView
-        android:id="@+id/studyTxt"
+        android:id="@+id/txtStudy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/kopubdotumbold"
         android:text="나의 스터디"
         android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="@+id/imgStudy"
-        app:layout_constraintStart_toStartOf="@+id/imgStudy"
-        app:layout_constraintTop_toBottomOf="@+id/imgEdit" />
+        app:layout_constraintEnd_toEndOf="@+id/layoutStudy"
+        app:layout_constraintStart_toStartOf="@+id/layoutStudy"
+        app:layout_constraintTop_toBottomOf="@+id/layoutEdit" />
 
     <TextView
-        android:id="@+id/todayTxt"
+        android:id="@+id/txtSchedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/kopubdotumbold"
         android:text="나의 일정"
         android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="@+id/imgSchedule"
-        app:layout_constraintStart_toStartOf="@+id/imgSchedule"
-        app:layout_constraintTop_toBottomOf="@+id/imgEdit" />
+        app:layout_constraintEnd_toEndOf="@+id/layoutSchedule"
+        app:layout_constraintStart_toStartOf="@+id/layoutSchedule"
+        app:layout_constraintTop_toBottomOf="@+id/layoutEdit" />
 
     <View
         android:id="@+id/view"
@@ -148,7 +167,7 @@
         android:background="#C6C6C6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studyTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEdit" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

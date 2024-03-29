@@ -1,7 +1,6 @@
-package com.credential.cubrism.view
+package com.credential.cubrism
 
 import android.app.Application
-import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.model.data.DataStoreModule
 import com.kakao.sdk.common.KakaoSdk
 

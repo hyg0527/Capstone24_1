@@ -61,17 +61,17 @@ class MyPageFragmentHome : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 프로필 수정 화면 출력
-        binding.imgEdit.setOnClickListener {
+        binding.layoutEdit.setOnClickListener {
             val intent = Intent(requireActivity(), EditProfileActivity::class.java)
             startActivity(intent)
         }
 
         // 나의 스터디 리스트 화면 출력
-        binding.imgStudy.setOnClickListener {
+        binding.layoutStudy.setOnClickListener {
             changeFragmentMyStudy(parentFragment, MyPageFragmentMyStudy())
         }
 
-        binding.imgSchedule.setOnClickListener {
+        binding.layoutSchedule.setOnClickListener {
 
         }
 
