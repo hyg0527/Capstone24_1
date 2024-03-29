@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <TextView
         android:id="@+id/txtMyCal"
         android:layout_width="wrap_content"
@@ -30,6 +29,42 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/addnew" />
 
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleGroup"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtMyCal"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/toggleMonth"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="MONTH"
+            android:textColor="@color/color_togglebutton_text"
+            app:cornerRadius="4dp"
+            app:strokeColor="@color/color_togglebutton_border"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/toggleWeek"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="WEEK"
+            android:textColor="@color/color_togglebutton_text"
+            app:cornerRadius="4dp"
+            app:strokeColor="@color/color_togglebutton_border"
+            app:strokeWidth="2dp" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/calFragmentContainerView"
         android:layout_width="0dp"
@@ -38,35 +73,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtMyCal">
-
-        <ToggleButton
-            android:id="@+id/toggleMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_weight="1"
-            android:background="@drawable/toggle_background"
-            android:textOff="Month"
-            android:textOn="Month" />
-
-        <ToggleButton
-            android:id="@+id/toggleWeek"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_weight="1"
-            android:background="@drawable/toggle_background"
-            android:textOff="Week"
-            android:textOn="Week" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/toggleGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

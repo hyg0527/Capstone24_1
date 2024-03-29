@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.credential.cubrism.model.dto.MajorFieldDto
 import com.credential.cubrism.databinding.ItemListMajorfieldBinding
+import com.credential.cubrism.model.dto.MajorFieldDto
 import com.credential.cubrism.view.diff.MajorFieldDiffUtil
 
 class MajorFieldAdapter : RecyclerView.Adapter<MajorFieldAdapter.ViewHolder>() {
@@ -40,7 +40,7 @@ class MajorFieldAdapter : RecyclerView.Adapter<MajorFieldAdapter.ViewHolder>() {
 
         fun bind(item: MajorFieldDto) {
             Glide.with(binding.root).load(item.iconUrl).placeholder(ColorDrawable(Color.TRANSPARENT)).transition(DrawableTransitionOptions.withCrossFade()).into(binding.icon)
-            binding.listName.text = item.majorFieldName
+            binding.txtMajorField.text = item.majorFieldName
         }
     }
 

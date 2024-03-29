@@ -35,7 +35,7 @@ class MiddleFieldAdapter : RecyclerView.Adapter<MiddleFieldAdapter.ViewHolder>()
         }
 
         fun bind(item: MiddleFieldDto) {
-            binding.txtCategoryName.text = item.name
+            binding.txtMiddleField.text = item.name
         }
     }
 

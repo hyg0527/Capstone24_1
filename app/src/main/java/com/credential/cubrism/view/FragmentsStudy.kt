@@ -24,21 +24,21 @@ class StudyFragment : Fragment() {
     private var _binding: FragmentStudyBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudyBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // 처음 화면을 fragment_study_home으로 설정
         if (savedInstanceState == null) {
             childFragmentManager.beginTransaction()
-                .replace(binding.studyFragmentContainerView.id, StudyHomeFragment())
+                .replace(binding.fragmentContainerView.id, StudyHomeFragment())
                 .setReorderingAllowed(true)
                 .commit()
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentStudyBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onDestroyView() {
@@ -59,9 +59,10 @@ class StudyHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        studyGroupAdapter = StudyGroupAdapter(binding.studyListView)
-        binding.studyListView.apply {
+        studyGroupAdapter = StudyGroupAdapter(binding.recyclerView)
+        binding.recyclerView.apply {
             adapter = studyGroupAdapter
+            itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 80, Color.parseColor("#E0E0E0")))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -81,11 +82,20 @@ class StudyHomeFragment : Fragment() {
             })
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            studyGroupAdapter.clear()
+            viewModel.clearStudyGroupList()
+            viewModel.getStudyGroupList(0, 5)
+        }
+
         viewModel.apply {
             getStudyGroupList(0, 5)
-            studyGroupList.observe(viewLifecycleOwner) { studyGroupAdapter.setItemList(it) }
+            studyGroupList.observe(viewLifecycleOwner) {
+                studyGroupAdapter.setItemList(it)
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
             isLoading.observe(viewLifecycleOwner) {
-                binding.studyListView.post {
+                binding.recyclerView.post {
                     studyGroupAdapter.setLoading(it)
                     loadingState = it
                 }
@@ -93,6 +103,10 @@ class StudyHomeFragment : Fragment() {
             errorMessage.observe(viewLifecycleOwner) {
                 it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
             }
+        }
+
+        studyGroupAdapter.setOnItemClickListener { item, _ ->
+            // TODO: 스터디 가입 요청 화면으로 이동
         }
     }
 
@@ -104,7 +118,7 @@ class StudyHomeFragment : Fragment() {
     private fun changeFragmentStudy(fragment: Fragment, tag: String) {
         (parentFragment as StudyFragment).childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.studyFragmentContainerView, fragment, tag)
+            .replace(R.id.fragmentContainerView, fragment, tag)
             .setReorderingAllowed(true)
             .addToBackStack(null)
             .commit()

@@ -3,7 +3,7 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.credential.cubrism.MyApplication
+import com.credential.cubrism.view.MyApplication
 import kotlinx.coroutines.launch
 
 class JwtTokenViewModel : ViewModel() {

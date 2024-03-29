@@ -65,7 +65,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         binding.forgotEmail.setOnClickListener {
-
+            startActivity(Intent(this, PWFindActivity::class.java))
         }
     }
 

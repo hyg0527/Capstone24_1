@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginEmail" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -98,7 +98,6 @@
         android:layout_marginEnd="30dp"
         android:background="@drawable/button_rounded_corner"
         android:fontFamily="@font/koulen"
-        android:padding="0dp"
         android:text="LOGIN"
         android:textColor="@color/white"
         android:textSize="23sp"

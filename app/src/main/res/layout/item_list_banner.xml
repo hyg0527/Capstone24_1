@@ -1,60 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF4DF">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="15dp"
+        android:src="@drawable/qnaicon"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <ImageView
-            android:id="@+id/imageView8"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/qnaicon" />
+    <TextView
+        android:id="@+id/txtBanner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="5dp"
+        android:fontFamily="@font/godom"
+        android:lineSpacingExtra="6dp"
+        android:text="궁금한 것이 있을 땐?\nQ&amp;A 게시판에 질문하세요!"
+        android:textColor="#414141"
+        android:textSize="17dp"
+        android:textStyle="italic"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon"
+        app:layout_constraintEnd_toStartOf="@+id/btnGo"/>
 
-        <TextView
-            android:id="@+id/textView40"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/godom"
-            android:lineSpacingExtra="6dp"
-            android:text="궁금한 것이 있을 땐?\nQ&amp;A 게시판에 질문하세요!"
-            android:textColor="#414141"
-            android:textSize="17dp"
-            android:textStyle="italic" />
-
-        <android.widget.Button
-            android:id="@+id/quitBtn"
-            android:layout_width="65dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/button_rounded_corner_red"
-            android:fontFamily="@font/kopubdotumbold"
-            android:text="바로가기"
-            android:textColor="@color/white"
-            android:textSize="13dp"
-
-            android:textStyle="bold" />
-
-
-    </LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGo"
+        android:layout_width="65dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/button_rounded_corner_red"
+        android:fontFamily="@font/kopubdotumbold"
+        android:text="바로가기"
+        android:textColor="@color/white"
+        android:textSize="13dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

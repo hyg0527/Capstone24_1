@@ -1,116 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow_left" />
 
-        <ImageButton
-            android:id="@+id/backBtnPosting"
-            android:layout_width="25dp"
-            android:layout_height="26dp"
-            android:layout_margin="10dp"
-            android:layout_marginLeft="5dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:foreground="@android:color/transparent"
-            app:srcCompat="@drawable/arrow_left" />
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/godom"
+        android:gravity="center_vertical"
+        android:text="글 작성"
+        android:textSize="23dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintEnd_toStartOf="@+id/btnAdd"
+        app:layout_constraintStart_toEndOf="@+id/btnBack"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAdd"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_rounded_corner"
+        android:fontFamily="@font/kopubdotumbold"
+        android:text="등록"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutPhoto"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_rounded_corner_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBack">
+
+        <ImageView
+            android:id="@+id/imgPhoto"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/qna_photo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/txtPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/godom"
-            android:text="글 작성"
-            android:textSize="23dp" />
-
-        <Button
-            android:id="@+id/postingBtn"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/button_rounded_corner"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/kopubdotumbold"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:text="등록"
-            android:textSize="16dp" />
-    </LinearLayout>
+            android:text="0/10"
+            android:textColor="#BDBDBD"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgPhoto" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollLayout"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:layout_marginTop="15dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:clipToPadding="false"
         android:orientation="horizontal"
-        android:fillViewport="true"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutPhoto"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/defaultPhotoLayout"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/button_rounded_corner_gray"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/photoImage"
-                    android:layout_width="40dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="25dp"
-                    android:src="@drawable/qna_photo" />
-
-                <TextView
-                    android:id="@+id/photoCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/kopubdotumbold"
-                    android:text="0/10"
-                    android:textColor="#BDBDBD" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/photoRCV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:nestedScrollingEnabled="false">
-
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        app:layout_constraintStart_toEndOf="@+id/layoutPhoto"
+        app:layout_constraintTop_toTopOf="@+id/layoutPhoto" />
 
     <View
-        android:id="@+id/middleLine4"
-        android:layout_width="match_parent"
+        android:id="@+id/view1"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
@@ -118,128 +98,119 @@
         android:background="#EDEDED"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollLayout" />
-
+        app:layout_constraintTop_toBottomOf="@+id/layoutPhoto" />
 
     <EditText
         android:id="@+id/postTitle"
         style="@style/NoUnderlineEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="10dp"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="제목"
         android:inputType="text"
-        android:paddingLeft="10dp"
-        android:paddingRight="15dp"
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="15dp"
         android:textColor="@color/blue"
         android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/middleLine4" />
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
 
     <View
-        android:id="@+id/middleLine6"
-        android:layout_width="match_parent"
+        android:id="@+id/view2"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:background="#EDEDED"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postTitle"/>
+        app:layout_constraintTop_toBottomOf="@+id/postTitle" />
 
-    <LinearLayout
-        android:id="@+id/categorylayout"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/middleLine6">
-
-
-        <TextView
-            android:id="@+id/postTitle2"
-            style="@style/NoUnderlineEditText"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:fontFamily="@font/kopubdotumbold"
-            android:hint="카테고리"
-            android:inputType="text"
-            android:paddingLeft="10dp"
-            android:paddingRight="15dp"
-            android:textColor="@color/blue"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/middleLine6" />
-
-        <android.widget.Button
-            android:id="@+id/txtPostingCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:visibility="gone"
-            android:background="@drawable/button_rounded_corner_outline_b"
-            android:fontFamily="@font/kopubdotumbold"
-            android:textColor="@color/blue"
-            android:textSize="15dp"
-            android:text="정보처리기사" />
-
-        <ImageView
-            android:id="@+id/medalDropDown"
-            android:layout_width="22dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="23dp"
-            app:srcCompat="@drawable/select" />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/middleLine7"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="15dp"
-        android:background="#EDEDED"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categorylayout"/>
-
-    <EditText
-        android:id="@+id/postWriting"
+    <TextView
+        android:id="@+id/category"
         style="@style/NoUnderlineEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="15dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
         android:fontFamily="@font/kopubdotumbold"
-        android:hint="내용이 들어가는 부분입니다."
-        android:inputType="text"
-        android:paddingLeft="10dp"
+        android:maxLines="1"
+        android:paddingStart="20dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="16dp"
+        android:text="카테고리"
+        android:textColor="#A8A3AA"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toStartOf="@+id/txtCategory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <TextView
+        android:id="@+id/txtCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/button_rounded_corner_outline_b"
+        android:fontFamily="@font/kopubdotumbold"
+        android:gravity="center"
+        android:paddingLeft="15dp"
         android:paddingRight="15dp"
+        android:text="정보처리기사"
         android:textColor="@color/blue"
-        android:layout_marginLeft="20dp"
         android:textSize="15dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/category"
+        app:layout_constraintEnd_toStartOf="@+id/imgDropDown"
+        app:layout_constraintStart_toEndOf="@+id/category"
+        app:layout_constraintTop_toTopOf="@+id/category" />
+
+    <ImageView
+        android:id="@+id/imgDropDown"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/category"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/category"
+        app:srcCompat="@drawable/select" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="#EDEDED"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/middleLine7" />
+        app:layout_constraintTop_toBottomOf="@+id/category" />
+
+    <EditText
+        android:id="@+id/editContent"
+        style="@style/NoUnderlineEditText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/kopubdotumbold"
+        android:gravity="top"
+        android:hint="내용이 들어가는 부분입니다."
+        android:inputType="none"
+        android:paddingStart="20dp"
+        android:paddingTop="30dp"
+        android:paddingEnd="20dp"
+        android:textColor="@color/blue"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

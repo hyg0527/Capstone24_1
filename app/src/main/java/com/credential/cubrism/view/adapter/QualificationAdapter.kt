@@ -38,7 +38,7 @@ class QualificationAdapter : RecyclerView.Adapter<QualificationAdapter.ViewHolde
         }
 
         fun bind(item: QualificationListDto) {
-            binding.nameSearch.text = item.name
+            binding.txtQualificationName.text = item.name
         }
     }
 

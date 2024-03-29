@@ -11,11 +11,14 @@ import com.credential.cubrism.databinding.ItemListProgresBinding
 import com.credential.cubrism.databinding.ItemListStudyBinding
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.view.diff.StudyGroupDiffUtil
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
 class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<GroupList>()
     private var onItemClickListener: ((GroupList, Int) -> Unit)? = null
+
     private var isLoading = false
+    private val viewPool = RecyclerView.RecycledViewPool()
 
     companion object {
         private const val VIEW_TYPE_ITEM = 0
@@ -56,19 +59,27 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
                     onItemClickListener?.invoke(itemList[position], position)
                 }
             }
+            binding.recyclerView.addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
         }
 
         fun bind(item: GroupList) {
-            Glide.with(itemView.context).load(R.drawable.studymember).into(binding.imageView10)
-            binding.txtStudyTitle.text = item.groupName
-            binding.txtStudyInfo.text = item.groupDescription
-            binding.textView41.text = "${item.currentMembers} / ${item.maxMembers}"
+            Glide.with(itemView.context).load(R.drawable.studymember).into(binding.imgMember)
+            binding.txtGruopName.text = item.groupName
+            binding.txtGroupDescription.text = item.groupDescription
+            binding.txtMember.text = "${item.currentMembers} / ${item.maxMembers}"
             if (item.recruiting) {
-                binding.studyStatusIng.visibility = View.VISIBLE
-                binding.studyStatusEnd.visibility = View.INVISIBLE
+                binding.txtIsRecruiting.visibility = View.VISIBLE
+                binding.txtIsNotRecruiting.visibility = View.INVISIBLE
             } else {
-                binding.studyStatusIng.visibility = View.INVISIBLE
-                binding.studyStatusEnd.visibility = View.VISIBLE
+                binding.txtIsRecruiting.visibility = View.INVISIBLE
+                binding.txtIsNotRecruiting.visibility = View.VISIBLE
+            }
+
+            val tagAdapter = StudyGroupTagAdapter()
+            binding.recyclerView.apply {
+                adapter = tagAdapter
+                setRecycledViewPool(viewPool)
+                tagAdapter.setItemList(item.tags)
             }
         }
     }
@@ -106,5 +117,10 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
         } else {
             notifyItemRemoved(lastPosition)
         }
+    }
+
+    fun clear() {
+        itemList.clear()
+        setItemList(itemList)
     }
 }

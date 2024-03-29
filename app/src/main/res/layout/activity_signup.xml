@@ -80,14 +80,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerName" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/requestCodeBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/button_rounded_corner"
         android:fontFamily="@font/kopubdotumbold"
-        android:padding="0dp"
         android:text="인증 요청"
         android:textColor="#FFFFFF"
         android:textSize="17dp"
@@ -118,14 +117,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerEmail" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/verifyCodeBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/button_rounded_corner"
         android:fontFamily="@font/kopubdotumbold"
-        android:padding="0dp"
         android:text="코드 인증"
         android:textColor="#FFFFFF"
         android:textSize="17dp"
@@ -219,7 +217,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerPWConfirm" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

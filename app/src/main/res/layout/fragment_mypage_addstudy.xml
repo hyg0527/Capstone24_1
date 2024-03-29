@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/backBtn"
+            android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -25,7 +24,7 @@
             app:srcCompat="@drawable/arrow_left" />
 
         <TextView
-            android:id="@+id/txtAddStudyTitle"
+            android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -34,7 +33,7 @@
             android:textStyle="bold" />
 
         <Switch
-            android:id="@+id/switch2"
+            android:id="@+id/switchHide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -42,10 +41,11 @@
             android:layout_weight="1"
             android:text="게시글 숨기기"
             android:visibility="gone" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/studyAddTemplate"
+        android:id="@+id/layoutBody"
         android:layout_width="0dp"
         android:layout_height="570dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
         <EditText
-            android:id="@+id/editTextStudyTitle"
+            android:id="@+id/editGroupName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -67,7 +67,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextStudyInfo"
+            android:id="@+id/editDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -83,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNums" />
+            app:layout_constraintTop_toBottomOf="@+id/editMaxMembers" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
@@ -96,10 +96,10 @@
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextStudyTitle">
+            app:layout_constraintTop_toBottomOf="@+id/editGroupName">
 
             <TextView
-                android:id="@+id/textView48"
+                android:id="@+id/tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="태그"
@@ -109,7 +109,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tagRecyclerView"
+                android:id="@+id/recyclerView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:nestedScrollingEnabled="false"
@@ -117,11 +117,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView48" />
+                app:layout_constraintTop_toBottomOf="@+id/tag" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textView41"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
@@ -129,12 +129,12 @@
             android:text="인원 수:"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/editTextStudyInfo"
+            app:layout_constraintBottom_toTopOf="@+id/editDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
         <EditText
-            android:id="@+id/editTextNums"
+            android:id="@+id/editMaxMembers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -146,10 +146,11 @@
             android:textColorHint="#888888"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.widget.Button
-        android:id="@+id/btnStudyCreate"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCreate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -162,8 +163,6 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studyAddTemplate" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/layoutBody" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

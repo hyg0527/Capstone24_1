@@ -20,6 +20,7 @@ import com.credential.cubrism.databinding.FragmentQualificationDetailsBinding
 import com.credential.cubrism.databinding.FragmentQualificationMajorfieldBinding
 import com.credential.cubrism.databinding.FragmentQualificationMiddlefieldBinding
 import com.credential.cubrism.databinding.FragmentQualificationSearchBinding
+
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.MajorFieldAdapter
@@ -33,20 +34,20 @@ class QualificationFragment : Fragment() {
     private var _binding: FragmentQualificationBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentQualificationBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState == null) {
             childFragmentManager.beginTransaction()
-                .replace(binding.qualificationFragmentContainerView.id, MajorFieldFragment())
+                .replace(binding.fragmentContainerView.id, MajorFieldFragment())
                 .setReorderingAllowed(true)
                 .commit()
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentQualificationBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onDestroyView() {
@@ -65,11 +66,16 @@ class MajorFieldFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationMajorfieldBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.progressIndicator.show()
 
         gridLayoutmanager = GridLayoutManager(context, 3)
-        binding.gridRecyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = gridLayoutmanager
             adapter = majorFieldAdapter
             addItemDecoration(ItemDecoratorDivider(0, 48, 48, 48, 0, 0, null))
@@ -101,8 +107,6 @@ class MajorFieldFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             showSearchFragment()
         }
-
-        return binding.root
     }
 
     override fun onDestroy() {
@@ -118,7 +122,7 @@ class MajorFieldFragment : Fragment() {
 
         (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.qualificationFragmentContainerView, fragment)
+            .replace(R.id.fragmentContainerView, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -126,7 +130,7 @@ class MajorFieldFragment : Fragment() {
     private fun showSearchFragment() {
         (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.qualificationFragmentContainerView, QualificationSearchFragment())
+            .replace(R.id.fragmentContainerView, QualificationSearchFragment())
             .addToBackStack(null)
             .commit()
     }
@@ -144,12 +148,18 @@ class MiddleFieldFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationMiddlefieldBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding.txtListName.text = majorFieldName
+    private var sView: View? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.txtMajorField.text = majorFieldName
         binding.progressIndicator.show()
 
         linearLayoutManager = LinearLayoutManager(context)
-        binding.categoryView.apply {
+        binding.recyclerView.apply {
             layoutManager = linearLayoutManager
             adapter = middleFieldAdapter
             addItemDecoration(ItemDecoratorDivider(0, 64, 0, 0, 0, 0, null))
@@ -177,25 +187,18 @@ class MiddleFieldFragment : Fragment() {
 
         handleBackStack(binding.root, parentFragment)
 
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    private var sView: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         // 뒤로가기 버튼도 동일하게 popstack
-        binding.backBtnQualificationList.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             (parentFragment as QualificationFragment).childFragmentManager.popBackStack()
         }
 
         sView = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -216,7 +219,7 @@ class MiddleFieldFragment : Fragment() {
 
         (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.qualificationFragmentContainerView, fragment)
+            .replace(R.id.fragmentContainerView, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -232,6 +235,12 @@ class QualificationDetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    private var iView: View? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.txtQualificationName.text = qualificationName
         qualificationCode?.let { viewModel.getQualificationDetails(it) }
@@ -248,24 +257,17 @@ class QualificationDetailsFragment : Fragment() {
             }
         }
 
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    private var iView: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.backBtnQualificationDetails.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             (parentFragment as QualificationFragment).childFragmentManager.popBackStack()
         }
 
         iView = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -288,11 +290,17 @@ class QualificationSearchFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQualificationSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    private var sView: View? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.progressIndicator.show()
 
         linearLayoutManager = LinearLayoutManager(context)
-        binding.qualificationSearchView.apply {
+        binding.recyclerView.apply {
             layoutManager = linearLayoutManager
             adapter = qualificationAdapter
             itemAnimator = null
@@ -315,9 +323,9 @@ class QualificationSearchFragment : Fragment() {
             hideKeyboard(binding.root)
         }
 
-        binding.searchViewQualification.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                binding.searchViewQualification.clearFocus()
+                binding.searchView.clearFocus()
                 return false
             }
 
@@ -327,24 +335,17 @@ class QualificationSearchFragment : Fragment() {
             }
         })
 
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private var sView: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.backBtnQualificationSearchInfo.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             (parentFragment as QualificationFragment).childFragmentManager.popBackStack()
         }
 
         sView = view
         handleBackStack(view, parentFragment)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -365,7 +366,7 @@ class QualificationSearchFragment : Fragment() {
 
         (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.qualificationFragmentContainerView, fragment)
+            .replace(R.id.fragmentContainerView, fragment)
             .addToBackStack(null)
             .commit()
     }
