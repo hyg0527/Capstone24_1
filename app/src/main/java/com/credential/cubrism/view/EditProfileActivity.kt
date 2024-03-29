@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,7 +12,6 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityEditProfileBinding
 import com.credential.cubrism.databinding.DialogProfilePickBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import de.hdodenhof.circleimageview.CircleImageView
 
 class EditProfileActivity : AppCompatActivity() {
     private val binding by lazy { ActivityEditProfileBinding.inflate(layoutInflater) }
