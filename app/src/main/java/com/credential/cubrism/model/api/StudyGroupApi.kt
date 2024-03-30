@@ -7,5 +7,9 @@ import retrofit2.http.Query
 
 interface StudyGroupApi {
     @GET("/studygroup/list")
-    fun getStudyGroupList(@Query("page") page: Int, @Query("limit") limit: Int): Call<StudyGroupListDto>
+    fun getStudyGroupList(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("recruiting") recruiting: String
+    ): Call<StudyGroupListDto>
 }

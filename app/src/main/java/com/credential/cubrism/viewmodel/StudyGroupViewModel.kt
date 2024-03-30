@@ -22,9 +22,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
-    fun getStudyGroupList(page: Int, limit: Int, refresh: Boolean = false) {
+    fun getStudyGroupList(page: Int, limit: Int, recruiting: String, refresh: Boolean = false) {
         _isLoading.value = true
-        repository.studyGroupList(page, limit) { result ->
+        repository.studyGroupList(page, limit, recruiting) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     if (refresh) {

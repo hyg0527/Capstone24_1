@@ -54,6 +54,7 @@ class StudyHomeFragment : Fragment() {
     private val studyGroupAdapter = StudyGroupAdapter()
 
     private var loadingState = false
+    private var isRecruiting = "false"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,19 +71,29 @@ class StudyHomeFragment : Fragment() {
                 if (!loadingState) {
                     viewModel.page.value?.let { page ->
                         // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                        page.nextPage?.let { viewModel.getStudyGroupList(it, 5) }
+                        page.nextPage?.let { viewModel.getStudyGroupList(it, 5, "") }
                     }
                 }
             }
         })
 
+        studyGroupAdapter.setOnItemClickListener { item, _ ->
+            // TODO: 스터디 가입 요청 화면으로 이동
+        }
+
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getStudyGroupList(0, 5, true)
+            viewModel.getStudyGroupList(0, 5, isRecruiting, true)
+            binding.swipeRefreshLayout.isRefreshing = true
+        }
+
+        binding.switchRecruiting.setOnCheckedChangeListener { _, isChecked ->
+            isRecruiting = if (isChecked) "true" else "false"
+            viewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
         }
 
         viewModel.apply {
-            getStudyGroupList(0, 5)
+            getStudyGroupList(0, 5, isRecruiting)
             binding.swipeRefreshLayout.isRefreshing = true
 
             studyGroupList.observe(viewLifecycleOwner) {
@@ -96,10 +107,6 @@ class StudyHomeFragment : Fragment() {
             errorMessage.observe(viewLifecycleOwner) {
                 it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
             }
-        }
-
-        studyGroupAdapter.setOnItemClickListener { item, _ ->
-            // TODO: 스터디 가입 요청 화면으로 이동
         }
     }
 
