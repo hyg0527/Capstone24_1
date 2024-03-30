@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentStudyBinding
 import com.credential.cubrism.databinding.FragmentStudyHomeBinding
@@ -63,23 +62,19 @@ class StudyHomeFragment : Fragment() {
             adapter = studyGroupAdapter
             itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 80, Color.parseColor("#E0E0E0")))
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
+        }
 
-                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager?)?.findLastCompletelyVisibleItemPosition()
-                    val itemTotalCount = recyclerView.adapter?.itemCount?.minus(1)
-
-                    // 스크롤을 끝까지 내렸을 때
-                    if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !loadingState) {
-                        viewModel.page.value?.let { page ->
-                            // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                            page.nextPage?.let { viewModel.getStudyGroupList(it, 5) }
-                        }
+        binding.scrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+            if (scrollY >= v.getChildAt(0).measuredHeight - v.measuredHeight) {
+                // 스크롤을 끝까지 내렸을 때
+                if (!loadingState) {
+                    viewModel.page.value?.let { page ->
+                        // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
+                        page.nextPage?.let { viewModel.getStudyGroupList(it, 5) }
                     }
                 }
-            })
-        }
+            }
+        })
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.getStudyGroupList(0, 5, true)
