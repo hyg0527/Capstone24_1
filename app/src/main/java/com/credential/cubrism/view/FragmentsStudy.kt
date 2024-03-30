@@ -90,6 +90,7 @@ class StudyHomeFragment : Fragment() {
             isRecruiting = if (isChecked) "true" else "false"
             viewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
+            binding.scrollView.scrollTo(0, 0)
         }
 
         viewModel.apply {
