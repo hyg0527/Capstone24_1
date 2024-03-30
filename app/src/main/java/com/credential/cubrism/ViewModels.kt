@@ -121,7 +121,7 @@ class DDayViewModel : ViewModel() {
 
 class TitleViewModel : ViewModel() {
     // 초기값을 보관하는 변수
-    private val _initialValue = "스터디 환영글이다!!!"
+    private val _initialValue = "스터디 환영글입니다."
     private val _editTextValue = MutableLiveData<String>()
 
     // LiveData를 통해 초기값을 전달하는 메서드

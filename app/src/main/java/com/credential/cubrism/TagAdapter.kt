@@ -40,25 +40,21 @@ class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean, val is
         val tag = v.findViewById<TextView>(R.id.txtTag)
 
         init {
-            val position = adapterPosition
-            val item = items[position]
-
             v.setOnClickListener {
-                if (isList) {
-                    if (!item.isEnabled) {
-                        item.isEnabled = true
-                        tag.setBackgroundResource(R.drawable.tag_rounded_corner_selected)
-                    } else {
-                        item.isEnabled = false
-                        tag.setBackgroundResource(R.drawable.tag_rounded_corner)
+                if (isBlue) {
+                    val position = adapterPosition
+                    val item = items[position]
+
+                    if (isList) {
+                        if (!item.isEnabled) {
+                            item.isEnabled = true
+                            tag.setBackgroundResource(R.drawable.tag_rounded_corner_selected)
+                        } else {
+                            item.isEnabled = false
+                            tag.setBackgroundResource(R.drawable.tag_rounded_corner)
+                        }
                     }
                 }
-            }
-
-            if (!isBlue) {
-                item.isEnabled = false
-                tag.setBackgroundResource(R.drawable.tag_rounded_corner_study)
-                tag.resources.getColor(R.color.white, null)
             }
         }
     }
@@ -79,6 +75,12 @@ class TagAdapter(private val items: ArrayList<Tags>, val isList: Boolean, val is
 
         if (items[position].isEnabled) {
             holder.tag.setBackgroundResource(R.drawable.tag_rounded_corner_selected)
+        }
+
+        if (!isBlue) {
+            holder.tag.isEnabled = false
+            holder.tag.setBackgroundResource(R.drawable.tag_rounded_corner_study)
+            holder.tag.resources.getColor(R.color.white, null)
         }
     }
 
