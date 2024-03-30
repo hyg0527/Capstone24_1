@@ -22,14 +22,17 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
-    fun getStudyGroupList(page: Int, limit: Int) {
+    fun getStudyGroupList(page: Int, limit: Int, refresh: Boolean = false) {
         _isLoading.value = true
         repository.studyGroupList(page, limit) { result ->
             when (result) {
                 is ResultUtil.Success -> {
-                    val updatedList = _studyGroupList.value.orEmpty() + result.data.studyGroupList
+                    if (refresh) {
+                        _studyGroupList.postValue(result.data.studyGroupList)
+                    } else {
+                        _studyGroupList.postValue(_studyGroupList.value.orEmpty() + result.data.studyGroupList)
+                    }
                     _page.postValue(result.data.page)
-                    _studyGroupList.postValue(updatedList)
                 }
                 is ResultUtil.Error -> {
                     _errorMessage.postValue(Event(result.error))
@@ -38,11 +41,7 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
                     _errorMessage.postValue(Event("네트워크 오류가 발생했습니다."))
                 }
             }
-            _isLoading.postValue(false)
+            _isLoading.value = false
         }
-    }
-
-    fun clearStudyGroupList() {
-        _studyGroupList.value = mutableListOf()
     }
 }

@@ -13,7 +13,7 @@ import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.view.diff.StudyGroupDiffUtil
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
-class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StudyGroupAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<GroupList>()
     private var onItemClickListener: ((GroupList, Int) -> Unit)? = null
 
@@ -25,13 +25,9 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
         private const val VIEW_TYPE_LOADING = 1
     }
 
-    override fun getItemCount(): Int {
-        return if (isLoading) itemList.size + 1 else itemList.size
-    }
+    override fun getItemCount(): Int = if (isLoading) itemList.size + 1 else itemList.size
 
-    override fun getItemViewType(position: Int): Int {
-        return if (isLoading && position == itemList.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
-    }
+    override fun getItemViewType(position: Int): Int = if (isLoading && position == itemList.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
@@ -102,14 +98,10 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
     }
 
     fun setLoading(isLoading: Boolean) {
-        if (this.isLoading == isLoading) return
+        if (this.isLoading == isLoading)
+            return
 
         val lastPosition = if (this.isLoading) itemList.size else itemList.size - 1
-        recyclerView.scrollToPosition(lastPosition)
-
-        val progressBarHeight = recyclerView.height / 10
-        recyclerView.smoothScrollBy(0, progressBarHeight)
-
         this.isLoading = isLoading
 
         if (isLoading) {
@@ -117,10 +109,5 @@ class StudyGroupAdapter(private val recyclerView: RecyclerView) : RecyclerView.A
         } else {
             notifyItemRemoved(lastPosition)
         }
-    }
-
-    fun clear() {
-        itemList.clear()
-        setItemList(itemList)
     }
 }

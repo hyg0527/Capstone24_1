@@ -52,14 +52,13 @@ class StudyHomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
-    private lateinit var studyGroupAdapter: StudyGroupAdapter
+    private val studyGroupAdapter = StudyGroupAdapter()
 
     private var loadingState = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        studyGroupAdapter = StudyGroupAdapter(binding.recyclerView)
         binding.recyclerView.apply {
             adapter = studyGroupAdapter
             itemAnimator = null
@@ -83,22 +82,21 @@ class StudyHomeFragment : Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            studyGroupAdapter.clear()
-            viewModel.clearStudyGroupList()
-            viewModel.getStudyGroupList(0, 5)
+            viewModel.getStudyGroupList(0, 5, true)
+            binding.swipeRefreshLayout.isRefreshing = true
         }
 
         viewModel.apply {
             getStudyGroupList(0, 5)
+            binding.swipeRefreshLayout.isRefreshing = true
+
             studyGroupList.observe(viewLifecycleOwner) {
-                studyGroupAdapter.setItemList(it)
+                studyGroupAdapter.setItemList(it ?: emptyList())
                 binding.swipeRefreshLayout.isRefreshing = false
             }
             isLoading.observe(viewLifecycleOwner) {
-                binding.recyclerView.post {
-                    studyGroupAdapter.setLoading(it)
-                    loadingState = it
-                }
+                studyGroupAdapter.setLoading(it)
+                loadingState = it
             }
             errorMessage.observe(viewLifecycleOwner) {
                 it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
