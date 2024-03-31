@@ -2,6 +2,7 @@ package com.credential.cubrism.view
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -14,7 +15,10 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
@@ -22,9 +26,11 @@ import com.credential.cubrism.databinding.FragmentHomeNotificationBinding
 import com.credential.cubrism.databinding.FragmentHomeUiBinding
 import com.credential.cubrism.databinding.FragmentQnaBinding
 import com.credential.cubrism.databinding.FragmentQnaPostingBinding
+import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.BannerData
 import com.credential.cubrism.view.adapter.LicenseAdapter
+import com.credential.cubrism.view.adapter.PostAdapter
 import com.credential.cubrism.view.adapter.QnaAdapter
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.QnaData
@@ -33,7 +39,9 @@ import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.QnaListViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.util.Timer
 
 class HomeFragment : Fragment() {
@@ -226,7 +234,12 @@ class QnaFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var view: View? = null
-    private lateinit var qnaListViewModel: QnaListViewModel
+
+    private val viewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
+    private val postAdapter = PostAdapter()
+
+    private var loadingState = false
+    private val board = "QnA"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentQnaBinding.inflate(inflater, container, false)
@@ -238,15 +251,6 @@ class QnaFragment : Fragment() {
         this.view = view
         val writeFragment = QnaWriteFragment()
 
-        val postList = ArrayList<QnaData>()
-
-        qnaListViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
-        val adapter = QnaAdapter(postList)
-
-        updateViewModel(adapter)
-
-        binding.recyclerView.adapter = adapter
-
         binding.btnAddPost.setOnClickListener {
             changeFragment(writeFragment)
         }
@@ -256,7 +260,6 @@ class QnaFragment : Fragment() {
             binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
             binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
             binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
-            changeTotalOrWhole(adapter, "total")
         }
 
         binding.txtFavorite.setOnClickListener {
@@ -264,31 +267,63 @@ class QnaFragment : Fragment() {
             binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
             binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
             binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
-            changeTotalOrWhole(adapter, "whole")
+        }
+
+        binding.recyclerView.apply {
+            adapter = postAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager?)?.findLastCompletelyVisibleItemPosition()
+                    val itemTotalCount = recyclerView.adapter?.itemCount?.minus(1)
+
+                    // 스크롤을 끝까지 내렸을 때
+                    if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !loadingState) {
+                        viewModel.page.value?.let { page ->
+                            // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
+                            page.nextPage?.let { viewModel.getPostList(it, 5, board) }
+                        }
+                    }
+
+                    if (dy > 0) {
+                        binding.floatingActionButton.hide()
+                    } else {
+                        binding.floatingActionButton.show()
+                    }
+                }
+            })
+        }
+
+        postAdapter.setOnItemClickListener { item, _ ->
+            // TODO: 게시글 상세 화면으로 이동
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getPostList(0, 5, board, true)
+            binding.swipeRefreshLayout.isRefreshing = true
+        }
+
+        viewModel.apply {
+            getPostList(0, 5, board)
+            binding.swipeRefreshLayout.isRefreshing = true
+
+            postList.observe(viewLifecycleOwner) {
+                postAdapter.setItemList(it ?: emptyList())
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+            isLoading.observe(viewLifecycleOwner) {
+                postAdapter.setLoading(it)
+                loadingState = it
+            }
+            errorMessage.observe(viewLifecycleOwner) {
+                it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
+            }
         }
 
         handleBackStack(view, parentFragment)
-    }
-
-    private fun updateViewModel(adapter: QnaAdapter) {
-        qnaListViewModel.questionList.observe(viewLifecycleOwner) { questionList ->
-            adapter.clearItem()
-            questionList.forEach { qnaList ->
-                adapter.addItem(qnaList)
-            }
-        }
-    }
-
-    private fun changeTotalOrWhole(adapter: QnaAdapter, value: String) { // 전체리스트 <-> 관심분야 리스트 전환 함수
-        if (value.equals("total")) { // 전체 리스트
-            val data = qnaListViewModel.questionList.value
-            adapter.addAll(data!!)
-        }
-        else if (value.equals("whole")) { // 관심분야 리스트
-            // 현재는 샘플로 정처기만 필터링하도록 설정. 나중에 관심분야를 QnaFragment 클래스에서 받아오는 로직이 필요할 것임.
-            adapter.filterList("정보처리기사")
-        }
-        else return
     }
 
     // HomeFragment 내부 전환 함수
