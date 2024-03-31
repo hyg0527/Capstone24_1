@@ -1,11 +1,21 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaViewBinding
+import com.credential.cubrism.model.repository.PostRepository
+import com.credential.cubrism.model.utils.ResultUtil
+import com.credential.cubrism.viewmodel.PostViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 
 class QnaViewActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQnaViewBinding.inflate(layoutInflater) }
+
+    private val viewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -13,6 +23,28 @@ class QnaViewActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener {
             finish()
+        }
+
+        val postId = intent.getIntExtra("postId", -1)
+        val boardName = intent.getStringExtra("boardName")
+
+        if (postId != -1 && boardName != null) {
+            viewModel.getPostView(boardName, postId)
+        }
+
+        viewModel.postView.observe(this) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    val postView = result.data
+                    Glide.with(this).load(postView.profileImageUrl).error(R.drawable.profil_image).into(binding.imgProfile)
+                    binding.txtNickname.text = postView.nickname
+                    binding.txtCategory.text = postView.category
+                    binding.txtTitle.text = postView.title
+                    binding.txtContent.text = postView.content.replace(" ", "\u00A0")
+                }
+                is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
+                is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
+            }
         }
 
 //        val receivedData = intent?.getParcelableExtra<QnaData>("qnaInfo")

@@ -12,7 +12,7 @@ import retrofit2.Response
 class StudyGroupRepository {
     private val studyGroupApi: StudyGroupApi = RetrofitClient.getRetrofit()?.create(StudyGroupApi::class.java)!!
 
-    fun studyGroupList(page: Int, limit: Int, recruiting: String, callback: (ResultUtil<StudyGroupListDto>) -> Unit) {
+    fun studyGroupList(page: Int, limit: Int, recruiting: Boolean, callback: (ResultUtil<StudyGroupListDto>) -> Unit) {
         studyGroupApi.getStudyGroupList(page, limit, recruiting).enqueue(object : Callback<StudyGroupListDto> {
             override fun onResponse(call: Call<StudyGroupListDto>, response: Response<StudyGroupListDto>) {
                 if (response.isSuccessful) {

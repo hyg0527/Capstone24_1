@@ -31,7 +31,6 @@ import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.BannerData
 import com.credential.cubrism.view.adapter.LicenseAdapter
 import com.credential.cubrism.view.adapter.PostAdapter
-import com.credential.cubrism.view.adapter.QnaAdapter
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.QnaData
 import com.credential.cubrism.view.adapter.QnaPhotoAdapter
@@ -298,7 +297,10 @@ class QnaFragment : Fragment() {
         }
 
         postAdapter.setOnItemClickListener { item, _ ->
-            // TODO: 게시글 상세 화면으로 이동
+            val intent = Intent(requireActivity(), QnaViewActivity::class.java)
+            intent.putExtra("postId", item.postId)
+            intent.putExtra("boardName", item.boardName)
+            startActivity(intent)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {

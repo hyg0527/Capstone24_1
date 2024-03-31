@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.PostList
+import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -15,6 +16,9 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
 
     private val _postList = MutableLiveData<List<PostList>>()
     val postList: LiveData<List<PostList>> = _postList
+
+    private val _postView = MutableLiveData<ResultUtil<PostViewDto>>()
+    val postView: LiveData<ResultUtil<PostViewDto>> = _postView
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -42,6 +46,12 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
                 }
             }
             _isLoading.value = false
+        }
+    }
+
+    fun getPostView(boardName: String, postId: Int) {
+        repository.getPostView(boardName, postId) { result ->
+            _postView.postValue(result)
         }
     }
 }

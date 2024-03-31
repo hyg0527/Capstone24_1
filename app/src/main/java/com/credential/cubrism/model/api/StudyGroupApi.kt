@@ -10,6 +10,6 @@ interface StudyGroupApi {
     fun getStudyGroupList(
         @Query("page") page: Int,
         @Query("limit") limit: Int,
-        @Query("recruiting") recruiting: String
+        @Query("recruiting") recruiting: Boolean
     ): Call<StudyGroupListDto>
 }

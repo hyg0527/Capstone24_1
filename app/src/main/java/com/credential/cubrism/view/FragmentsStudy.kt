@@ -54,7 +54,7 @@ class StudyHomeFragment : Fragment() {
     private val studyGroupAdapter = StudyGroupAdapter()
 
     private var loadingState = false
-    private var isRecruiting = "false"
+    private var isRecruiting = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,7 +71,7 @@ class StudyHomeFragment : Fragment() {
                 if (!loadingState) {
                     viewModel.page.value?.let { page ->
                         // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                        page.nextPage?.let { viewModel.getStudyGroupList(it, 5, "") }
+                        page.nextPage?.let { viewModel.getStudyGroupList(it, 5, isRecruiting) }
                     }
                 }
             }
@@ -87,7 +87,7 @@ class StudyHomeFragment : Fragment() {
         }
 
         binding.switchRecruiting.setOnCheckedChangeListener { _, isChecked ->
-            isRecruiting = if (isChecked) "true" else "false"
+            isRecruiting = isChecked
             viewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
             binding.scrollView.scrollTo(0, 0)
