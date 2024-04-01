@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListCommentMyBinding
 import com.credential.cubrism.databinding.ItemListCommentOthersBinding
 import com.credential.cubrism.model.dto.Comments
@@ -51,7 +52,7 @@ class PostCommentAdapter(private val myEmail: String) : RecyclerView.Adapter<Rec
 
     inner class OthersViewHolder(private val binding: ItemListCommentOthersBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Comments) {
-            Glide.with(binding.root).load(item.profileImageUrl).into(binding.imgProfile)
+            Glide.with(binding.root).load(item.profileImageUrl).error(R.drawable.profil_image).into(binding.imgProfile)
             binding.txtNickname.text = item.nickname
             binding.txtMessage.text = item.content
             binding.txtTime.text = convertDate(item.createdDate)

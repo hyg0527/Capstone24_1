@@ -53,10 +53,18 @@ class QnaViewActivity : AppCompatActivity() {
                     binding.txtContent.text = postView.content.replace(" ", "\u00A0")
 
                     postCommentAdapter.setItemList(postView.comments)
+                    binding.swipeRefreshLayout.isRefreshing = false
                 }
                 is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
                 is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
             }
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            if (postId != -1 && boardName != null) {
+                viewModel.getPostView(boardName, postId)
+            }
+            binding.swipeRefreshLayout.isRefreshing = true
         }
 
         binding.btnBack.setOnClickListener {
