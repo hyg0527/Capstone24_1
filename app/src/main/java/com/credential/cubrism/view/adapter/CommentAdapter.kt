@@ -47,11 +47,11 @@ class ChattingAdapter(private val items: ArrayList<Chat>) : RecyclerView.Adapter
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {    // 왼쪽 오른쪽 각각의 레이아웃 inflate
             MY_CHAT -> {
-                val itemView = LayoutInflater.from(parent.context).inflate(R.layout.comment_layout, parent, false)
+                val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_list_comment_my, parent, false)
                 MyViewHolder(itemView)
             }
             OTHER_CHAT -> {
-                val itemView = LayoutInflater.from(parent.context).inflate(R.layout.comment_layout_receive, parent, false)
+                val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_list_comment_others, parent, false)
                 YourViewHolder(itemView)
             }
             else -> throw IllegalArgumentException("Invalid view type") // 예외 처리

@@ -63,7 +63,8 @@
         </activity>
         <activity
             android:name=".view.QnaViewActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".view.PWFindActivity"

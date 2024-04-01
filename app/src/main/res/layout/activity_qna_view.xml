@@ -171,7 +171,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
                 android:padding="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imgDivider" />
@@ -183,21 +185,23 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutFooter"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/layout_rounded_corner_lb"
-            app:layout_constraintBottom_toBottomOf="@+id/btnLeave"
-            app:layout_constraintEnd_toStartOf="@+id/btnLeave"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnSend"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnLeave">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/imgReply"
@@ -230,6 +234,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:ems="10"
                 android:fontFamily="@font/kopubdotummedium"
                 android:hint="댓글 입력"
@@ -243,9 +249,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
-            android:id="@+id/btnLeave"
+            android:id="@+id/btnSend"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:padding="8dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/send_btn"
             app:layout_constraintBottom_toBottomOf="parent"
