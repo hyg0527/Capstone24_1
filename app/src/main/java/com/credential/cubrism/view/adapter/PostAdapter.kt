@@ -16,10 +16,6 @@ import com.credential.cubrism.databinding.ItemListProgresBinding
 import com.credential.cubrism.databinding.ItemListQnaBinding
 import com.credential.cubrism.model.dto.PostList
 import com.credential.cubrism.view.diff.PostDiffUtil
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<PostList>()
