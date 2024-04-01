@@ -21,7 +21,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-class PostAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<PostList>()
     private var onItemClickListener: ((PostList, Int) -> Unit)? = null
 
@@ -83,7 +83,7 @@ class PostAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.txtCategory.text = item.category
             binding.txtTitle.text = item.title
             binding.txtContent.text = item.content.replace(" ", "\u00A0")
-            binding.txtDate.text = getTimeAgo(item.createdDate)
+            binding.txtDate.text = item.createdDate
         }
     }
 
@@ -116,34 +116,5 @@ class PostAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         } else {
             notifyItemRemoved(lastPosition)
         }
-    }
-
-    private fun getTimeAgo(dateString: String?): String {
-        dateString?.let {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val date: Date = dateFormat.parse(it) ?: return ""
-
-            // 현재 날짜와 게시글 날짜의 차이 계산
-            val diff = Date().time - date.time
-
-            // 시간 단위로 변환
-            val seconds = TimeUnit.MILLISECONDS.toSeconds(diff)
-            val minutes = TimeUnit.MILLISECONDS.toMinutes(diff)
-            val hours = TimeUnit.MILLISECONDS.toHours(diff)
-            val days = TimeUnit.MILLISECONDS.toDays(diff)
-
-            val dateFormatter = SimpleDateFormat("M/dd", Locale.getDefault())
-
-            return when {
-                seconds < 60 -> "방금 전" // 60초 이내
-                minutes < 60 -> "${minutes}분 전" // 60분 이내
-                hours < 24 -> "${hours}시간 전" // 하루 이내
-                days < 7 -> "${days}일 전" // 1주일 이내
-                else -> dateFormatter.format(date) // 그 외
-            }
-        }
-
-        // 날짜가 null일 경우 빈 문자열 반환
-        return ""
     }
 }
