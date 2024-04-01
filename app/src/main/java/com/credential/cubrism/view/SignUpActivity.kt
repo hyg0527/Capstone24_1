@@ -16,14 +16,6 @@ import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.util.concurrent.TimeUnit
 
-/**
- * 코드 설명
- *
- * 이메일을 입력하고 인증 요청 버튼을 누르면 서버에서 이메일 존재 여부를 확인하고 인증 코드를 발급한다.
- * 인증 코드를 입력하고 코드 인증 버튼을 누르면 서버에서 인증 코드를 확인한다.
- * 인증이 완료되면 이메일 EditText, 인증 코드 EditText, 인증 요청 버튼, 코드 인증 버튼이 비활성화된다.
- * 닉네임, 비밀번호를 입력하고 회원가입 버튼을 누르면 서버에서 각각 유효성을 확인하고 회원가입을 진행한다.
- */
 class SignUpActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater) }
     private val viewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
@@ -51,7 +43,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun viewModelObserver() {
-        viewModel.emailVerifyRequestResult.observe(this) { result ->
+        viewModel.emailVerifyRequest.observe(this) { result ->
             binding.requestCodeBtn.isEnabled = true
             binding.progressIndicator.hide()
             when (result) {
@@ -68,7 +60,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.emailVerifyResult.observe(this) { result ->
+        viewModel.emailVerify.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     emailVerifySuccess()
@@ -82,7 +74,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.signUpResult.observe(this) { result ->
+        viewModel.signUp.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()

@@ -70,7 +70,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun viewModelObserver() {
-        authViewModel.signInResult.observe(this) { result ->
+        authViewModel.signIn.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
@@ -88,7 +88,7 @@ class SignInActivity : AppCompatActivity() {
             }
         }
 
-        authViewModel.googleSignInResult.observe(this) { result ->
+        authViewModel.googleSignIn.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken
@@ -106,7 +106,7 @@ class SignInActivity : AppCompatActivity() {
             }
         }
 
-        authViewModel.kakaoSignInResult.observe(this) { result ->
+        authViewModel.kakaoSignIn.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val accessToken = result.data.accessToken

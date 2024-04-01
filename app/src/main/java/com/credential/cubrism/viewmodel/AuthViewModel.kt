@@ -10,57 +10,57 @@ import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
-    private val _signUpResult = MutableLiveData<ResultUtil<MessageDto>>()
-    val signUpResult: LiveData<ResultUtil<MessageDto>> = _signUpResult
+    private val _signUp = MutableLiveData<ResultUtil<MessageDto>>()
+    val signUp: LiveData<ResultUtil<MessageDto>> = _signUp
 
-    private val _emailVerifyRequestResult = MutableLiveData<ResultUtil<MessageDto>>()
-    val emailVerifyRequestResult: LiveData<ResultUtil<MessageDto>> = _emailVerifyRequestResult
+    private val _emailVerifyRequest = MutableLiveData<ResultUtil<MessageDto>>()
+    val emailVerifyRequest: LiveData<ResultUtil<MessageDto>> = _emailVerifyRequest
 
-    private val _emailVerifyResult = MutableLiveData<ResultUtil<MessageDto>>()
-    val emailVerifyResult: LiveData<ResultUtil<MessageDto>> = _emailVerifyResult
+    private val _emailVerify = MutableLiveData<ResultUtil<MessageDto>>()
+    val emailVerify: LiveData<ResultUtil<MessageDto>> = _emailVerify
 
-    private val _signInResult = MutableLiveData<ResultUtil<TokenDto>>()
-    val signInResult: LiveData<ResultUtil<TokenDto>> = _signInResult
+    private val _signIn = MutableLiveData<ResultUtil<TokenDto>>()
+    val signIn: LiveData<ResultUtil<TokenDto>> = _signIn
 
-    private val _googleSignInResult = MutableLiveData<ResultUtil<TokenDto>>()
-    val googleSignInResult: LiveData<ResultUtil<TokenDto>> = _googleSignInResult
+    private val _googleSignIn = MutableLiveData<ResultUtil<TokenDto>>()
+    val googleSignIn: LiveData<ResultUtil<TokenDto>> = _googleSignIn
 
-    private val _kakaoSignInResult = MutableLiveData<ResultUtil<TokenDto>>()
-    val kakaoSignInResult: LiveData<ResultUtil<TokenDto>> = _kakaoSignInResult
+    private val _kakaoSignIn = MutableLiveData<ResultUtil<TokenDto>>()
+    val kakaoSignIn: LiveData<ResultUtil<TokenDto>> = _kakaoSignIn
 
     fun signUp(email: String, password: String, nickname: String) {
         authRepository.signUp(email, password, nickname) { result ->
-            _signUpResult.postValue(result)
+            _signUp.postValue(result)
         }
     }
 
     fun emailVerifyRequest(email: String) {
         authRepository.emailVerifyRequest(email) { result ->
-            _emailVerifyRequestResult.postValue(result)
+            _emailVerifyRequest.postValue(result)
         }
     }
 
     fun emailVerify(email: String, code: String) {
         authRepository.emailVerify(email, code) { result ->
-            _emailVerifyResult.postValue(result)
+            _emailVerify.postValue(result)
         }
     }
 
     fun signIn(email: String, password: String) {
         authRepository.signIn(SignInDto(email, password)) { result ->
-            _signInResult.postValue(result)
+            _signIn.postValue(result)
         }
     }
 
     fun googleSignIn(serverAuthCode: String) {
         authRepository.googleLogin(serverAuthCode) { result ->
-            _googleSignInResult.postValue(result)
+            _googleSignIn.postValue(result)
         }
     }
 
     fun kakaoSignIn(accessToken: String) {
         authRepository.kakaoLogin(accessToken) { result ->
-            _kakaoSignInResult.postValue(result)
+            _kakaoSignIn.postValue(result)
         }
     }
 }
