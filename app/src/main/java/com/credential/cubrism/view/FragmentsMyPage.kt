@@ -132,6 +132,9 @@ class MyPageFragmentMyStudy : Fragment() {
         binding.btnAdd.setOnClickListener { // 스터디그룹 만들기 화면으로 이동
             changeFragmentMyStudy(parentFragment, MyPageCreateStudyFragment())
         }
+        binding.btnEnterStudyGroup.setOnClickListener { // 스터디그룹 진입 버튼(임시)
+            startActivity(Intent(requireActivity(), StudyActivity::class.java))
+        }
 
         handleBackStack(view, parentFragmentManager)
     }

@@ -98,70 +98,6 @@
         </LinearLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="228dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/emailCode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edittext_rounded_corner"
-                    android:ems="10"
-                    android:fontFamily="@font/kopubdotumbold"
-                    android:hint="인증번호를 입력하세요."
-                    android:inputType="text"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:textSize="17dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/countDown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="185dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:fontFamily="@font/kopubdotumbold"
-                    android:text="05:00"
-                    android:textColor="@color/red2"
-                    android:textSize="12dp"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@id/emailCode"
-                    app:layout_constraintStart_toEndOf="@+id/emailCode"
-                    app:layout_constraintStart_toStartOf="@+id/emailCode"
-                    app:layout_constraintTop_toTopOf="@+id/emailCode" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <android.widget.Button
-                android:id="@+id/verifyBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/button_rounded_corner_lightblue"
-                android:fontFamily="@font/kopubdotumbold"
-                android:enabled="false"
-                android:text="인증하기"
-                android:textColor="#FFFFFF"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/isvalidCode"
             android:layout_width="wrap_content"
@@ -173,16 +109,5 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <android.widget.Button
-            android:id="@+id/btnFindPW"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/button_rounded_corner_lightblue"
-            android:fontFamily="@font/kopubdotumbold"
-            android:text="비밀번호 찾기"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp"
-            android:textStyle="bold" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

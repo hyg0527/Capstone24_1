@@ -68,7 +68,7 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
 
         dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
         initRankList(view)
-        loadDDayData(view)
+        //loadDDayData(view)
     }
 
     private fun initRankList(v: View) {
@@ -84,31 +84,28 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
         recyclerView.adapter = adapter
     }
 
+    /*
     private fun loadDDayData(v: View) {
+
+
         val noLabel = v.findViewById<TextView>(R.id.txtDdayNotLabel)
-        val title = v.findViewById<TextView>(R.id.txtDDayTitleShow)
-        val yesLabel = v.findViewById<TextView>(R.id.dDayLabel)
-        val date = v.findViewById<TextView>(R.id.txtDdayDateShow)
+
 
         val data = dDayViewModel.pairStringLiveData.value
         println(data)
         if (!data?.first.isNullOrEmpty()) {
             noLabel.visibility = View.GONE
-            title.visibility = View.VISIBLE
-            yesLabel.visibility = View.VISIBLE
-            date.visibility = View.VISIBLE
 
-            title.text = data?.first
-            date.text = data?.second
+
+
         }
         else {
             noLabel.visibility = View.VISIBLE
-            title.visibility = View.GONE
-            yesLabel.visibility = View.GONE
-            date.visibility = View.GONE
+
         }
 
     }
+
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -118,6 +115,7 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
             view?.let { loadDDayData(it) }
         }
     }
+    */
 }
 
 class StudyGroupFunc3Fragment : Fragment(R.layout.fragment_studygroup_func3) {

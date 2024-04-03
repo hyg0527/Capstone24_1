@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 interface ScheduleClickListener {
     fun onItemClick(item: CalMonth)
@@ -55,8 +57,9 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
 
     inner class CalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val title = v.findViewById<TextView>(R.id.txtCalMonthTitle)
-        val timeStart = v.findViewById<TextView>(R.id.txtCalMonthTimeStart)
-        val timeEnd = v.findViewById<TextView>(R.id.txtCalMonthTimeEnd)
+        val timeStart = v.findViewById<TextView>(R.id.timeStart)
+        val timeEnd = v.findViewById<TextView>(R.id.timeEnd)
+        val info = v.findViewById<TextView>(R.id.txtCalMonthInfo)
         init {
             v.setOnClickListener {
                 val position = adapterPosition
@@ -79,8 +82,26 @@ class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView
 
     override fun onBindViewHolder(holder: CalViewHolder, position: Int) {
         holder.title.text = items[position].title
-        holder.timeStart.text = items[position].startTime
-        holder.timeEnd.text = items[position].endTime
+        holder.timeStart.text = convertStartEndTxt(items[position].startTime)
+        holder.timeEnd.text = convertStartEndTxt(items[position].endTime)
+        holder.info.text = items[position].info
+    }
+
+    private fun convertStartEndTxt(inputString: String?): String {
+        val inputDateString = inputString ?: ""
+        val inputFormat = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
+        val outputFormat = SimpleDateFormat("MM.dd  h:mm a", Locale.ENGLISH)
+
+        return if (inputDateString.contains("종일"))
+            inputDateString.take(inputDateString.length - 3)
+        else {
+            val date = inputFormat.parse(inputDateString)
+            return if (date != null) {
+                outputFormat.format(date)
+            } else {
+                "Invalid date"
+            }
+        }
     }
 
     fun updateList(date: String): Boolean { // 날짜에 맞는 일정만 화면에 출력하는 함수

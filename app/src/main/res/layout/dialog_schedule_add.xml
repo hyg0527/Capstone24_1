@@ -5,181 +5,230 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/middleLine"
-        android:layout_width="80dp"
-        android:layout_height="3dp"
-        android:layout_marginTop="16dp"
-        android:background="#C6C6C6"
+    <LinearLayout
+        android:id="@+id/addscheduleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:background="@drawable/button_rounded_corner_skyblue4"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/txtTitleAddScheduleModify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="일정 추가"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/middleLine" />
+        <TextView
+            android:id="@+id/txtTitleAddScheduleModify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/godom"
+            android:layout_marginTop="1dp"
+            android:text="일정 추가"
+            android:textColor="#4F4747"
+            android:textSize="23dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btnAddScheduleDialogModify"
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/godom"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textSize="40dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txtAddScheduleName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="제목: "
-        android:textSize="25sp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:gravity="center"
+        android:layout_marginTop="25dp"
+        android:text="제목"
+        android:background="@drawable/button_rounded_corner_skyblue3"
+        android:textColor="@color/white"
+        android:fontFamily="@font/godom"
+        android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCancelScheduleDialog" />
+        app:layout_constraintTop_toBottomOf="@+id/addscheduleLayout" />
 
     <EditText
         android:id="@+id/editTextAddTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="21dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
+        android:fontFamily="@font/godom"
         android:inputType="text"
+        android:textColor="#453C3C"
+        android:textSize="18dp"
+        android:backgroundTint="#3EB8EC"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/txtAddScheduleName"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitleAddScheduleModify" />
+        app:layout_constraintTop_toBottomOf="@+id/addscheduleLayout" />
+
+
+    <LinearLayout
+        android:id="@+id/dateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAddScheduleName">
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_corner_skyblue3"
+            android:fontFamily="@font/godom"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:text="기간"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtCurrentDateAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/godom"
+                android:text="0000 - 00 - 00"
+                android:textColor="#453C3C"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/txtCurrentDateAddEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/godom"
+                android:textColor="#453C3C"
+                android:text="0000 - 00 - 00"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/godom"
+                android:text="오전 01:00"
+                android:textColor="#453C3C"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/txtEndTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/godom"
+                android:textColor="#453C3C"
+                android:text="오전 02:00"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/daylongtxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="시작: "
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtAddScheduleName" />
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/godom"
+        android:layout_marginStart="70dp"
+        android:text="~"
+        android:textColor="#453C3C"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="@+id/dateLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/dateLayout" />
+
+    <CheckBox
+        android:id="@+id/isFullCheck"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/checkbox_schedule_allday"
+        android:button="@null"
+        app:layout_constraintEnd_toStartOf="@+id/textView22"
+        app:layout_constraintTop_toTopOf="@+id/dateLayout" />
 
     <TextView
         android:id="@+id/textView22"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="8dp"
-        android:text="끝: "
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-    <TextView
-        android:id="@+id/textVie20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="63dp"
-        android:text="내용: "
-        android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-    <CheckBox
-        android:id="@+id/isFullCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/godom"
         android:text="종일"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddTitle" />
+        android:textColor="#3EB8EC"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/dateLayout"
+        app:layout_constraintTop_toTopOf="@+id/dateLayout" />
 
     <TextView
-        android:id="@+id/btnCancelScheduleDialog"
+        android:id="@+id/textView20"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="취소"
-        android:textColor="@color/blue"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_rounded_corner_skyblue3"
+        android:fontFamily="@font/godom"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="5dp"
+        android:text="내용"
+        android:textColor="@color/white"
+        android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/middleLine" />
-
-    <TextView
-        android:id="@+id/btnAddScheduleDialogModify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:text="추가"
-        android:textColor="@color/blue"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/middleLine" />
-
-    <TextView
-        android:id="@+id/txtCurrentDateAdd"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="0000 - 00 - 00"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/txtStartTime"
-        app:layout_constraintStart_toEndOf="@+id/textView19"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddTitle" />
-
-    <TextView
-        android:id="@+id/txtCurrentDateAddEnd"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:text="0000 - 00 - 00"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/txtEndTime"
-        app:layout_constraintStart_toEndOf="@+id/textView19"
-        app:layout_constraintTop_toBottomOf="@+id/txtCurrentDateAdd" />
-
-    <TextView
-        android:id="@+id/txtStartTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:text="오전 01:00"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/isFullCheck"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddTitle" />
-
-    <TextView
-        android:id="@+id/txtEndTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:text="오전 02:00"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/isFullCheck"
-        app:layout_constraintTop_toBottomOf="@+id/txtStartTime" />
+        app:layout_constraintTop_toBottomOf="@+id/dateLayout"/>
 
     <EditText
         android:id="@+id/editTxtSchInfoFix"
         android:layout_width="0dp"
-        android:layout_height="220dp"
+        android:layout_height="120dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/edittext_rounded_corner"
+        android:fontFamily="@font/godom"
+        android:background="@drawable/edittext_rounded_corner_schedule"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
@@ -187,8 +236,6 @@
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textVie20"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddTitle"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toBottomOf="@+id/dateLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

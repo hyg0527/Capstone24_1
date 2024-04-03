@@ -93,8 +93,9 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/tagRecyclerViewStudyList"
                         android:layout_width="match_parent"
-
                         android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
                         android:layout_marginLeft="20dp"
                         android:layout_marginBottom="20dp"/>
 

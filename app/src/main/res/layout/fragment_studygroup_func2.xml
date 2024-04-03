@@ -5,17 +5,124 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView45"
-        android:layout_width="wrap_content"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ddaylayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="D-day"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_margin="10dp"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="10dp">
+
+        <FrameLayout
+            android:id="@+id/ddayframe"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <TextView
+                android:id="@+id/backgroundimg"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#A9BFF9" />
+
+            <TextView
+                android:id="@+id/stripes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.4"
+                android:background="@drawable/wave" />
+
+            <ImageView
+                android:id="@+id/cloud"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="-60dp"
+                android:layout_marginRight="-10dp"
+                android:src="@drawable/cloud" />
+
+            <TextView
+                android:id="@+id/textView59"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:background="#CBD7F6" />
+
+            <ImageView
+                android:id="@+id/whale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="-30dp"
+                android:src="@drawable/whale2" />
+
+
+            <ImageView
+                android:id="@+id/whaleeye"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="55dp"
+                android:src="@drawable/ellipse_4" />
+
+            <TextView
+                android:id="@+id/goaltxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/godom"
+                android:layout_marginTop="30dp"
+                android:textSize="19dp"
+                android:textStyle="bold"
+                android:textColor="#4F4747"
+                android:layout_marginLeft="20dp"
+                android:text="목표까지" />
+
+            <TextView
+                android:id="@+id/textView60"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/godom"
+                android:textStyle="bold"
+                android:textColor="#4F4747"
+                android:layout_gravity="center_vertical|end|bottom"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp"
+                android:textSize="19dp"
+                android:text="남았어요!" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ddaytext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="85dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/digikyonb"
+                    android:letterSpacing="-0.1"
+                    android:text="D-"
+                    android:textColor="@color/white"
+                    android:textSize="90dp" />
+
+                <TextView
+                    android:id="@+id/ddaynumtext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="85dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/digikyonb"
+                    android:letterSpacing="-0.1"
+                    android:text="52"
+                    android:textColor="#FFE290"
+                    android:textSize="90dp" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/textView44"
@@ -27,66 +134,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/layout_rounded_corner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView45">
-
-        <TextView
-            android:id="@+id/txtDdayNotLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="설정한 디데이가 없습니다."
-            android:visibility="gone"
-            android:textColor="#939393"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txtDDayTitleShow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="정보처리기사 시험일!!"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/txtDdayDateShow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="30일 16시간 23분"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dDayLabel" />
-
-        <TextView
-            android:id="@+id/dDayLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="27dp"
-            android:layout_marginTop="61dp"
-            android:text="남은 시간: "
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/ddaylayout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/studyGroupRankView"

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
 import de.hdodenhof.circleimageview.CircleImageView
@@ -58,6 +59,15 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
             holder.itemView.setBackgroundResource(0)
         }
 
+        val typeface = ResourcesCompat.getFont(holder.date.context, R.font.godom) // 요일만 폰트 변경
+        if (holder.date.text.length == 3) {
+            holder.date.typeface = typeface
+
+            val layoutParams = holder.itemView.layoutParams
+            layoutParams.height = 80 // 변경할 높이 값
+            holder.itemView.layoutParams = layoutParams
+        }
+
 
         if (!items[position].isScheduled)   //저장된 일정부분이 없으면 점표시 없애기(초기화 부분)
             holder.isScheduled.visibility = View.GONE
@@ -77,7 +87,7 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
     private fun getCurrentDayToString(): String {
         val currentDate = LocalDate.now()
         // DateTimeFormatter를 사용하여 날짜를 원하는 형식의 문자열로 변환
-        val formatter = DateTimeFormatter.ofPattern("dd")
+        val formatter = DateTimeFormatter.ofPattern("d")
 
         return currentDate.format(formatter)
     }
@@ -87,11 +97,22 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
         notifyDataSetChanged()
     }
 
-    fun updateScheduleDot(selectedItem: DateSelect, isVisible: Boolean) {
-//        for (item in items) {
-//            item.isScheduled = false
-//        }
-        selectedItem.isScheduled = isVisible
+    fun updateScheduleDot(startDate: String, endDate: String, isVisible: Boolean) {
+        val start = String.format("%s", startDate.takeLast(2)).toInt()
+        val end = String.format("%s", endDate.takeLast(2)).toInt()
+        println("start: " + start + ", end" + end)
+        val selectedItem = ArrayList<DateSelect>()
+
+        for (item in items) {
+            for (i in start..end) {
+                if ((item.date ?: "") == i.toString())
+                    selectedItem.add(item)
+            }
+        }
+
+        for (item in selectedItem)
+            item.isScheduled = isVisible
+
         notifyDataSetChanged()
     }
 

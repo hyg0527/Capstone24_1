@@ -1,15 +1,14 @@
 package com.credential.cubrism.view
 
+import android.util.Log
 import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
-import com.credential.cubrism.view.adapter.CalWeekAdapter
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateSelect
-import com.credential.cubrism.view.adapter.DateWeek
 import java.util.Calendar
 
 class CalendarHyg {
@@ -18,13 +17,25 @@ class CalendarHyg {
         return Calendar.getInstance()
     }
 
-    fun initToday(): String { // 오늘 날짜로 돌아오는 함수
+    fun initToday(monthTxt: TextView, currentDate: TextView, adapter: CalendarAdapter,
+                  callback: (String) -> Unit) { // 오늘 날짜로 돌아오는 함수
         val calInstance = getInstance()
         val initYear = calInstance.get(Calendar.YEAR) // 처음 뷰 생성시 오늘날짜로 초기화
         val initMonth = calInstance.get(Calendar.MONTH) + 1  // 월은 0부터 시작하므로 1+.
         val initDay = calInstance.get(Calendar.DAY_OF_MONTH)
 
-        return "${initYear}년 ${initMonth}월 ${initDay}일"
+        val todayTxt = "${initYear}년 ${initMonth}월 ${initDay}일"
+        val monthPickTxt = "${selectedMonthToString(initMonth)} ${initYear}"
+        currentDate.text = todayTxt
+        monthTxt.text = monthPickTxt
+
+        val (m, w) = setDateWeek(initYear, initMonth)
+        val monthList = showMonthCalendar(m, w)
+        adapter.updateCalendar(monthList)
+
+        val selectedReturn = String.format("%02d", initYear) + " - " +
+                String.format("%02d", initMonth) + " - " + String.format("%02d", initDay)
+        callback(selectedReturn)
     }
 
     fun showMonthCalendar(daysInMonth: Int, dayOfWeekIndex: Int): ArrayList<DateSelect> { // 해당 월의 달력 출력 함수(월간)
@@ -53,17 +64,6 @@ class CalendarHyg {
         return daysList
     }
 
-    fun showWeekCalendar(daysInMonth: Int, dayOfWeek: Int): ArrayList<DateWeek> { // 해당 월의 달력 출력 함수(주간)
-        val dayOfTheWeekList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-        val weekList = ArrayList<DateWeek>().apply {
-            for (i in 1..daysInMonth) {
-                val dayWeek = dayOfTheWeekList[(dayOfWeek + i - 2) % dayOfTheWeekList.size]
-                add(DateWeek(i, dayWeek))
-            }
-        }
-        return weekList
-    }
-
     fun getYearMonth(): Pair<Int, Int> { // 현재 날짜의 연, 월을 반환
         val current = Calendar.getInstance()
         val getYear = current.get(Calendar.YEAR)
@@ -73,7 +73,7 @@ class CalendarHyg {
     }
 
     fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView,
-                           txtCurrentDate: TextView, adapter: RecyclerView.Adapter<*>, callback: (String) -> Unit) { // numberpicker dialog 호출
+                           txtCurrentDate: TextView, adapter: CalendarAdapter, callback: (String) -> Unit) { // numberpicker dialog 호출
         val yearPick = view.findViewById<NumberPicker>(R.id.yearPick)
         val monthPick = view.findViewById<NumberPicker>(R.id.monthPick)
         val (getYear, getMonth) = getSelectedYearMonth(datePickTxt.text.toString())
@@ -102,14 +102,8 @@ class CalendarHyg {
                 txtCurrentDate.text = resTextDate
 
                 // RecyclerView에 데이터 갱신
-                if (adapter is CalWeekAdapter) {
-                    val weekList = showWeekCalendar(m, w)
-                    adapter.updateCalendar(weekList)
-                }
-                if (adapter is CalendarAdapter) {
-                    val monthList = showMonthCalendar(m, w)
-                    adapter.updateCalendar(monthList)
-                }
+                val monthList = showMonthCalendar(m, w)
+                adapter.updateCalendar(monthList)
 
                 val selectedReturn = String.format("%02d", selectedYear) + " - " + String.format("%02d", selectedMonth) + " - 01"
                 callback(selectedReturn)
@@ -131,16 +125,41 @@ class CalendarHyg {
     }
 
     private fun setDateWeek(year: Int, month: Int): Pair<Int, Int> { // 선택된 날짜의 일수와 요일 반환
-        val calInstance = Calendar.getInstance()
-        calInstance.set(Calendar.YEAR, year)
-        calInstance.set(Calendar.MONTH, month - 1)
+        val calInstance = getInstance()
+        calInstance.set(year, month - 1, 1)
 
         val daysInMonth = calInstance.getActualMaximum(Calendar.DAY_OF_MONTH) // 해당 월의 마지막 날짜
-        calInstance.set(Calendar.DAY_OF_MONTH, 1)
-
         val dayOfWeek = calInstance.get(Calendar.DAY_OF_WEEK) // 1일의 요일 저장
 
         return Pair(daysInMonth, dayOfWeek)
+    }
+
+    fun setPreNextMonthCalendar(adapter: CalendarAdapter, yearMonth: TextView,
+                                currentDate: TextView, isPreNext: String, callback: (String) -> Unit) {
+        var (year, month) = getSelectedYearMonth(yearMonth.text.toString())
+
+        when (isPreNext) {
+            "pre" -> {
+                if (month == 1) { year--; month = 12 }
+                else month--
+            }
+            "next" -> {
+                if (month == 12) { year++; month = 1 }
+                else month++
+            }
+            else -> { Log.d("invalid type", "이전 이후 선택 부분 타입 오류") }
+        }
+
+        val (m, w) = setDateWeek(year, month)
+        val monthList = showMonthCalendar(m, w)
+        adapter.updateCalendar(monthList)
+
+        val dateTxt = "${year}년 ${month}월 1일"
+        currentDate.text = dateTxt
+        yearMonth.text = selectedMonthToString(month) + " " + year
+
+        val selectedReturn = String.format("%02d", year) + " - " + String.format("%02d", month) + " - 01"
+        callback(selectedReturn)
     }
 
     fun selectedMonthToString(selectedMonth: Int): String { // 월에 해당하는 숫자를 영어로 변환
