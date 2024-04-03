@@ -78,7 +78,7 @@ class MajorFieldFragment : Fragment() {
         binding.recyclerView.apply {
             layoutManager = gridLayoutmanager
             adapter = majorFieldAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 48, 48, 48, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(0, 80, 48, 48, 0, 0, null))
             setHasFixedSize(true)
 
             setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
