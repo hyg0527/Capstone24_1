@@ -230,7 +230,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:fontFamily="@font/kopubdotumbold"
-                android:text="닉네임"
                 android:textColor="@color/blue"
                 android:textSize="15dp"
                 android:visibility="gone"
