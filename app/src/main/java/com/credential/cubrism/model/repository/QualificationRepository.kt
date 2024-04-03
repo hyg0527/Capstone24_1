@@ -21,7 +21,7 @@ class QualificationRepository {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).getString("message"))) }
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }
             }
 
@@ -37,7 +37,7 @@ class QualificationRepository {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).getString("message"))) }
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }
             }
 
@@ -53,7 +53,7 @@ class QualificationRepository {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).getString("message"))) }
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }
             }
 
@@ -69,7 +69,7 @@ class QualificationRepository {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).getString("message"))) }
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }
             }
 
