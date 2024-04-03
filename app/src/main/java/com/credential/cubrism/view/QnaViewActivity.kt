@@ -1,23 +1,27 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaViewBinding
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
+import com.credential.cubrism.view.adapter.OnReplyClickListener
 import com.credential.cubrism.view.adapter.PostCommentAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class QnaViewActivity : AppCompatActivity() {
+class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val binding by lazy { ActivityQnaViewBinding.inflate(layoutInflater) }
 
-    private val viewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
+    private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
     private lateinit var postCommentAdapter : PostCommentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,21 +32,21 @@ class QnaViewActivity : AppCompatActivity() {
         val boardName = intent.getStringExtra("boardName")
 
         if (postId != -1 && boardName != null) {
-            viewModel.getPostView(boardName, postId)
+            postViewModel.getPostView(boardName, postId)
         }
 
         /* TODO
             - 임시로 지정해둔 이메일 나중에 로그인한 이메일로 변경
             - 키보드 올라올 때 맨 아래로 스크롤
          */
-        postCommentAdapter = PostCommentAdapter("10000000@test.com")
+        postCommentAdapter = PostCommentAdapter("10000000@test.com", this)
         binding.recyclerView.apply {
             adapter = postCommentAdapter
             itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
         }
 
-        viewModel.postView.observe(this) { result ->
+        postViewModel.postView.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     val postView = result.data
@@ -62,7 +66,7 @@ class QnaViewActivity : AppCompatActivity() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             if (postId != -1 && boardName != null) {
-                viewModel.getPostView(boardName, postId)
+                postViewModel.getPostView(boardName, postId)
             }
             binding.swipeRefreshLayout.isRefreshing = true
         }
@@ -70,80 +74,12 @@ class QnaViewActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
+    }
 
-//        val receivedData = intent?.getParcelableExtra<QnaData>("qnaInfo")
-//
-//        val medalName = findViewById<Button>(R.id.txtPostingCategory)
-//        val title = findViewById<TextView>(R.id.txtStudyInfoTitle)
-//        val info = findViewById<TextView>(R.id.txtStudyInfoInfo)
-//        val userName = findViewById<TextView>(R.id.textView33)
-//
-//        medalName.setText(receivedData?.medalName)
-//        title.text = receivedData?.title
-//        info.text = receivedData?.postIn
-//        userName.text = receivedData?.userName
-//        // 시간 필드 추가 요망
-//
-//        val chatAdapter = initChatList()
-//        val reply = findViewById<TextView>(R.id.replyUser)
-//        val replyImg = findViewById<ImageView>(R.id.replyIMG)
-//
-//        val sendingBtn = findViewById<ImageButton>(R.id.sendingBtn) // 메시지 전송 로직
-//        sendingBtn.setOnClickListener {
-//            val sendingText = findViewById<EditText>(R.id.editTextSendMessage)
-//            if (sendingText.text.isNotEmpty()) {
-//                val sendTxt = sendingText.text.toString()
-//                val item: Chat
-//
-//                if (reply.isVisible && replyImg.isVisible) {
-//                    item = Chat("user", R.drawable.reply_btn, sendTxt,false, true)
-//                }
-//                else {
-//                    item = Chat("user", R.drawable.reply_btn, sendTxt,false, false)
-//                }
-//
-//                chatAdapter.addItem(item)
-//                sendingText.setText("")
-//
-//                // 보내고나면 텍스트칸 초기화 로직
-//                reply.visibility = View.GONE
-//                replyImg.visibility = View.GONE
-//            }
-//            else {
-//                Toast.makeText(this, "메시지를 입력하세요.", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//
-//
-//        chatAdapter.setReplyListener(object: ReplyListener {
-//            override fun onClicked(isReply: Boolean) {
-//                if (isReply) {
-//                    reply.visibility = View.GONE
-//                    replyImg.visibility = View.GONE
-//                }
-//                else {
-//                    reply.visibility = View.VISIBLE
-//                    replyImg.visibility = View.VISIBLE
-//                }
-//            }
-//        })
-//    }
-//
-//    private fun initChatList(): ChattingAdapter {
-//        val itemList = ArrayList<Chat>()
-////            .apply {
-////            for (i in 1..6) {
-////                add(Chat("user", R.drawable.profil_image, "${i}번째 텍스트입니다.", false))
-////                add(Chat("user", R.drawable.profil_image, "-${i}번째 텍스트입니다.", false))
-////            }
-////        }
-//        val recyclerView = findViewById<RecyclerView>(R.id.chattingView)
-//        val adapter = ChattingAdapter(itemList)
-//
-//        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-//        recyclerView.adapter = adapter
-//        recyclerView.isNestedScrollingEnabled = false
-//
-//        return adapter
+    override fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String) {
+        binding.txtReply.text = nickname
+        binding.imgReply.visibility = View.VISIBLE
+        binding.txtReply.visibility = View.VISIBLE
+        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.lightblue))
     }
 }
