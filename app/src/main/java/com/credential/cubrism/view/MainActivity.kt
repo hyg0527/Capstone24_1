@@ -1,16 +1,23 @@
 package com.credential.cubrism.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
+import com.credential.cubrism.viewmodel.JwtTokenViewModel
+import com.credential.cubrism.viewmodel.UserViewModel
+import com.credential.cubrism.viewmodel.UserViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
+    private val jwtTokenViewModel: JwtTokenViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels { UserViewModelFactory(jwtTokenViewModel) }
 
     private var backPressedTime: Long = 0
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -31,9 +38,13 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         navigationSet()
-        // 아래 부분은 미 로그인 상태 에만 실행 하도록 이후에 변경 예정
-//        val intent = Intent(this, LoginActivity::class.java)
-//        startActivity(intent)
+
+        jwtTokenViewModel.accessToken.observe(this) { accessToken ->
+            accessToken?.let {
+                // retrofit intercept 코드 완성되면 주석 제거 예정
+//                userViewModel.userInfo()
+            }
+        }
     }
 
     private val bottomNavItems = listOf(
