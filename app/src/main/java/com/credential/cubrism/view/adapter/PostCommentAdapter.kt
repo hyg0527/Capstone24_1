@@ -2,6 +2,7 @@ package com.credential.cubrism.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -13,8 +14,14 @@ import com.credential.cubrism.view.diff.PostCommentDiffUtil
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class PostCommentAdapter(private val myEmail: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+interface OnReplyClickListener {
+    fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String)
+}
+
+class PostCommentAdapter(private val myEmail: String, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
+
+    private var selectedViewHolder: RecyclerView.ViewHolder? = null
 
     companion object {
         private const val VIEW_TYPE_MY = 0
@@ -56,6 +63,11 @@ class PostCommentAdapter(private val myEmail: String) : RecyclerView.Adapter<Rec
             binding.txtNickname.text = item.nickname
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
+            binding.imgReplyTo.setOnClickListener {
+                selectedViewHolder?.itemView?.setBackgroundColor(ContextCompat.getColor(it.context, android.R.color.transparent))
+                listener.onReplyClick(this, item.nickname)
+                selectedViewHolder = this
+            }
         }
     }
 
