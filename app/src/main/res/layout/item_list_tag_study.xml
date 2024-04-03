@@ -19,4 +19,5 @@
         android:background="@drawable/tag_rounded_corner_study"
         tools:layout_editor_absoluteX="31dp"
         tools:layout_editor_absoluteY="22dp" />
+
 </LinearLayout>
