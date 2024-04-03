@@ -35,14 +35,14 @@ interface AuthApi {
     fun kakaoLogIn(@Query("accessToken") accessToken: String): Call<TokenDto>
 
     @GET("/auth/info") // 유저 정보
-    fun getUserInfo(@Header("Authentication") accessToken: String): Call<UserInfoDto>
+    fun getUserInfo(): Call<UserInfoDto>
 
     @POST("/auth/reissue-access-token") // Access Token 재발급
     fun reissueAccessToken(@Header("AccessToken") accessToken: String, @Header("RefreshToken") refreshToken: String): Call<TokenDto>
 
     @POST("/auth/reissue-refresh-token") // Refresh Token 재발급
-    fun reissueRefreshToken(@Header("Authentication") accessToken: String): Call<TokenDto>
+    fun reissueRefreshToken(): Call<TokenDto>
 
     @DELETE("/auth/logout") // 로그아웃
-    fun logOut(@Header("Authentication") accessToken: String): Call<MessageDto>
+    fun logOut(): Call<MessageDto>
 }
