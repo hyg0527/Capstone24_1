@@ -167,7 +167,7 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/kotra"
         android:gravity="center"
-        android:text="Did you forget your email?"
+        android:text="Did you forget your password?"
         android:textColor="#B2B2B2"
         android:textSize="12sp"
         android:textStyle="bold|italic"
