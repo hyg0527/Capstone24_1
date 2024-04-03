@@ -69,6 +69,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtGroupDescription" />
 
+    
     <TextView
         android:id="@+id/txtGroupDescription"
         android:layout_width="0dp"
