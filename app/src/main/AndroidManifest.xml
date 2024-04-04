@@ -39,41 +39,35 @@
         </activity>
         <activity
             android:name=".view.SplashActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".view.SignInActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".view.SignUpActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".view.EditProfileActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
+        <activity
+            android:name=".view.QnaActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.QnaPostingActivity"
+            android:exported="true" />
         <activity
             android:name=".view.StudyActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".view.StudyManageActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".view.QnaViewActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" >
-        </activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.PWFindActivity"
-            android:exported="true" >
-        </activity>
-        <activity
-            android:name=".view.PWResetActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
     </application>
 
 </manifest>

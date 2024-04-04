@@ -3,13 +3,26 @@
     <style name="Base.Theme.Capstone24_1" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="itemIconTint">@color/lightblue</item>
         <item name="itemBackground">@color/lightblue</item>
-
+        <item name="colorSurface">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
         <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="colorControlHighlight">@color/lightblue</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
+
+    <style name="StyleToolbar" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/white</item>
+        <item name="colorControlNormal">@color/blue</item>
+        <item name="android:drawableTint">@color/blue</item>
+    </style>
+
+    <style name="StyleTabLayout" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/kopubdotumbold</item>
+        <item name="android:letterSpacing">-0.03</item>
+    </style>
 </resources>

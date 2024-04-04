@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
 
-        app:mbn_backgroundBottomColor="#fffbfe"
+        app:mbn_backgroundBottomColor="@color/white"
         app:mbn_circleColor="#ffffff"
         app:mbn_countBackgroundColor="#ff6f00"
         app:mbn_countTextColor="#ffffff"

@@ -1,46 +1,24 @@
 package com.credential.cubrism.view
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
 import com.credential.cubrism.databinding.FragmentHomeNotificationBinding
 import com.credential.cubrism.databinding.FragmentHomeUiBinding
-import com.credential.cubrism.databinding.FragmentQnaBinding
-import com.credential.cubrism.databinding.FragmentQnaPostingBinding
-import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.BannerData
 import com.credential.cubrism.view.adapter.LicenseAdapter
-import com.credential.cubrism.view.adapter.PostAdapter
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
-import com.credential.cubrism.view.adapter.QnaData
-import com.credential.cubrism.view.adapter.QnaPhotoAdapter
 import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
-import com.credential.cubrism.view.utils.ItemDecoratorDivider
-import com.credential.cubrism.viewmodel.PostViewModel
-import com.credential.cubrism.viewmodel.QnaListViewModel
-import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.util.Timer
 
 class HomeFragment : Fragment() {
@@ -105,7 +83,7 @@ class HomeUiFragment : Fragment() {
 
         bn_adapter.setBannerListener(object: QnaBannerEnterListener {
             override fun onBannerClicked() {
-                changeFragment(parentFragment, QnaFragment())
+                startActivity(Intent(requireActivity(), QnaActivity::class.java))
             }
 
             override fun onBannerStudyClicked() {
@@ -193,10 +171,8 @@ class HomeUiFragment : Fragment() {
     private fun BannerData(): ArrayList<BannerData> {
         return ArrayList()
     }
-
-
-
 }
+
 // 알림 화면
 class NotifyFragment : Fragment() {
     private var _binding: FragmentHomeNotificationBinding? = null
@@ -225,283 +201,6 @@ class NotifyFragment : Fragment() {
             // Fragment가 다시 화면에 나타날 때의 작업 수행
             view?.let { handleBackStack(it, parentFragment) }
         }
-    }
-}
-// Qna 메인 화면
-class QnaFragment : Fragment() {
-    private var _binding: FragmentQnaBinding? = null
-    private val binding get() = _binding!!
-
-    private var view: View? = null
-
-    private val viewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
-    private val postAdapter = PostAdapter()
-
-    private var loadingState = false
-    private val board = "QnA"
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentQnaBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        this.view = view
-        val writeFragment = QnaWriteFragment()
-
-        binding.btnAddPost.setOnClickListener {
-            changeFragment(writeFragment)
-        }
-
-        binding.txtAll.setOnClickListener {
-            binding.txtAll.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
-            binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
-            binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
-            binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
-        }
-
-        binding.txtFavorite.setOnClickListener {
-            binding.txtAll.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
-            binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
-            binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
-            binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
-        }
-
-        binding.recyclerView.apply {
-            adapter = postAdapter
-            itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-
-                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager?)?.findLastCompletelyVisibleItemPosition()
-                    val itemTotalCount = recyclerView.adapter?.itemCount?.minus(1)
-
-                    // 스크롤을 끝까지 내렸을 때
-                    if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !loadingState) {
-                        viewModel.page.value?.let { page ->
-                            // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                            page.nextPage?.let { viewModel.getPostList(it, 5, board) }
-                        }
-                    }
-
-                    if (dy > 0) {
-                        binding.floatingActionButton.hide()
-                    } else {
-                        binding.floatingActionButton.show()
-                    }
-                }
-            })
-        }
-
-        postAdapter.setOnItemClickListener { item, _ ->
-            val intent = Intent(requireActivity(), QnaViewActivity::class.java)
-            intent.putExtra("postId", item.postId)
-            intent.putExtra("boardName", item.boardName)
-            startActivity(intent)
-        }
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getPostList(0, 5, board, true)
-            binding.swipeRefreshLayout.isRefreshing = true
-        }
-
-        viewModel.apply {
-            getPostList(0, 5, board)
-            binding.swipeRefreshLayout.isRefreshing = true
-
-            postList.observe(viewLifecycleOwner) {
-                postAdapter.setItemList(it ?: emptyList())
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-            isLoading.observe(viewLifecycleOwner) {
-                postAdapter.setLoading(it)
-                loadingState = it
-            }
-            errorMessage.observe(viewLifecycleOwner) {
-                it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
-            }
-        }
-
-        handleBackStack(view, parentFragment)
-    }
-
-    // HomeFragment 내부 전환 함수
-    private fun changeFragment(fragment: Fragment) {
-        (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.fragmentContainerView, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
-        }
-    }
-}
-
-class QnaWriteFragment : Fragment() { // 글등록 프래그먼트
-    private var _binding: FragmentQnaPostingBinding? = null
-    private val binding get() = _binding!!
-
-    private var view: View? = null
-    private var countphoto: Int = 0
-    private lateinit var qnaViewModel: QnaListViewModel
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentQnaPostingBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        this.view = view
-
-        val adapter = initQnaPhotoRCV(view)
-
-        qnaViewModel = ViewModelProvider(requireActivity())[QnaListViewModel::class.java]
-
-        binding.txtCategory.visibility = View.VISIBLE
-        binding.btnAdd.setOnClickListener { // 글등록 버튼 클릭 리스너
-            val data = postData(view)
-
-            if (data.title.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), "제목을 입력해주세요", Toast.LENGTH_SHORT).show()
-            }
-            else if (data.postIn.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), "내용을 입력해주세요", Toast.LENGTH_SHORT).show()
-            }
-            else if (!binding.txtCategory.isVisible) {
-                Toast.makeText(requireContext(), "카테고리를 설정해주세요", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                qnaViewModel.addQuestion(data)
-                Toast.makeText(requireContext(), "질문이 등록되었습니다", Toast.LENGTH_SHORT).show()
-
-                (parentFragment as HomeFragment).childFragmentManager.popBackStack()
-                hideKeyboard(requireContext(), view)
-            }
-        }
-
-        binding.btnBack.setOnClickListener {
-            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
-            hideKeyboard(requireContext(), view)
-        }
-//        dropDown.setOnClickListener {
-//            val (adapter, dialog) = showSearchDialog()
-//
-//            adapter.setItemClickListener(object: SearchItemClickListener {
-//                override fun onItemClick(item: DialogItem) {
-//                    category.visibility = View.VISIBLE
-//                    category.text = item.name
-//                    dialog.dismiss()
-//                }
-//            })
-//        }
-        binding.layoutPhoto.setOnClickListener {
-            if(countphoto>=10)
-                Toast.makeText(requireContext(), "사진은 10장까지 첨부 가능합니다.", Toast.LENGTH_SHORT).show()
-            else {
-                adapter.addItem(0)
-                countphoto++
-                binding.txtPhoto.text = "$countphoto/10"
-            }
-        }
-
-        handleBackStack(view, parentFragment)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
-        }
-    }
-
-    private fun initQnaPhotoRCV(view: View): QnaPhotoAdapter {
-        val itemsList = ArrayList<Int>()
-
-        val adapter = QnaPhotoAdapter(itemsList)
-        binding.recyclerView.apply {
-            this.adapter = adapter
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 40, 0, 0, null))
-        }
-
-        return adapter
-    }
-
-//    private fun showSearchDialog(): Pair<DialogSearchAdapter, Dialog> { // 카테고리 검색 다이얼로그 호출
-//        val builder = AlertDialog.Builder(requireActivity())
-//        val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//        val view = inflater.inflate(R.layout.dialog_posting_search, null)
-//
-//        val adapter = initSearchRecyclerView(view)
-//        builder.setView(view)
-//
-//        val searchView = view.findViewById<SearchView>(R.id.searchViewPosting) // searchView 선언
-//        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String?): Boolean { // 검색어 제출시 호출(여기선 안씀)
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean { // 검색어 실시간 변경 리스너
-//                adapter.filter.filter(newText.orEmpty()) // 글자 변경시마다 리사이클러뷰 갱신
-//                return true
-//            }
-//        })
-//
-//        val dialog = builder.create()
-//        dialog.show()
-//
-//        return Pair(adapter, dialog)
-//    }
-//
-//    private fun initSearchRecyclerView(v: View): DialogSearchAdapter {
-//        val names = listOf("정보처리기사", "네트워크관리사", "정보관리기술사", "정보처리기능사", "청소부", "기능장", "사람", "동물")
-//        val itemList = ArrayList<DialogItem>().apply {
-//            for (name in names) {
-//                add(DialogItem(name, 0))
-//            }
-//        }
-//
-//        val recyclerView = v.findViewById<RecyclerView>(R.id.postingSearchView)
-//        val adapter = DialogSearchAdapter(itemList)
-//        val layoutManager = LinearLayoutManager(requireActivity())
-//        val dividerItemDecoration = DividerItemDecoration(requireActivity(), layoutManager.orientation) // 구분선 추가
-//
-//        recyclerView.addItemDecoration(dividerItemDecoration)
-//        recyclerView.layoutManager = layoutManager
-//        recyclerView.adapter = adapter
-//
-//        return adapter
-//    }
-
-    private fun postData(v: View): QnaData { // 등록화면에서 작성한 글 정보 리턴 함수
-        val medalName = v.findViewById<TextView>(R.id.txtTitle).text.toString()
-        val title = v.findViewById<EditText>(R.id.postTitle).text.toString()
-        val postWriting = v.findViewById<EditText>(R.id.editContent).text.toString()
-
-        return QnaData(medalName, title, R.drawable.qna_photo, postWriting, "13:00", "user123")
-    }
-
-    // 뷰에 포커스를 주고 키보드를 숨기는 함수
-    private fun hideKeyboard(context: Context, view: View) {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 
