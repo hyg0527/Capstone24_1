@@ -23,6 +23,9 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _isRefreshed = MutableLiveData<Boolean>()
+    val isRefreshed: LiveData<Boolean> = _isRefreshed
+
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
@@ -46,6 +49,7 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
                 }
             }
             _isLoading.value = false
+            _isRefreshed.value = refresh
         }
     }
 

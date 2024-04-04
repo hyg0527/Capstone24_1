@@ -2,18 +2,14 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +21,6 @@ import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 
 class QnaActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQnaBinding.inflate(layoutInflater) }
@@ -152,6 +147,11 @@ class QnaActivity : AppCompatActivity() {
             isLoading.observe(this@QnaActivity) {
                 postAdapter.setLoading(it)
                 loadingState = it
+            }
+
+            isRefreshed.observe(this@QnaActivity) { refreshed ->
+                if (refreshed)
+                    binding.recyclerView.scrollToPosition(0)
             }
 
             errorMessage.observe(this@QnaActivity) {
