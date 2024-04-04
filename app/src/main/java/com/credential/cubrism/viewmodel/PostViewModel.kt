@@ -29,9 +29,9 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
-    fun getPostList(page: Int, limit: Int, boardName: String, refresh: Boolean = false) {
+    fun getPostList(page: Int, limit: Int, boardName: String, searchQuery: String?, refresh: Boolean = false) {
         _isLoading.value = true
-        repository.getPostList(page, limit, boardName) { result ->
+        repository.getPostList(page, limit, boardName, searchQuery) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     if (refresh) {

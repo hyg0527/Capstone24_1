@@ -11,7 +11,8 @@ interface PostApi {
     fun getPostList(
         @Query("page") page: Int,
         @Query("limit") limit: Int,
-        @Query("boardName") boardName: String
+        @Query("boardName") boardName: String,
+        @Query("searchQuery") searchQuery: String?
     ): Call<PostListDto>
 
     @GET("/post/view")

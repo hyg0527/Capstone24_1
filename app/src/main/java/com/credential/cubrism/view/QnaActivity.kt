@@ -28,9 +28,11 @@ class QnaActivity : AppCompatActivity() {
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
     private val postAdapter = PostAdapter()
+    private lateinit var searchView: SearchView
 
-    private var loadingState = false
     private val board = "QnA"
+    private var loadingState = false
+    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,13 +55,14 @@ class QnaActivity : AppCompatActivity() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.search_menu, menu)
                 val searchItem = menu.findItem(R.id.search)
-                val searchView = searchItem.actionView as SearchView
+                searchView = searchItem.actionView as SearchView
 
                 searchView.queryHint = "게시글 검색"
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
+                        searchQuery = query
+                        postViewModel.getPostList(0, 10, board, query, true)
                         searchView.clearFocus()
-                        // TODO: 검색 기능 구현 예정
                         return false
                     }
 
@@ -67,6 +70,8 @@ class QnaActivity : AppCompatActivity() {
                         return false
                     }
                 })
+
+                // TODO: searchview를 닫았을 때 리스트를 초기화하는 기능 추가
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -114,7 +119,7 @@ class QnaActivity : AppCompatActivity() {
                     if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !loadingState) {
                         postViewModel.page.value?.let { page ->
                             // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                            page.nextPage?.let { postViewModel.getPostList(it, 10, board) }
+                            page.nextPage?.let { postViewModel.getPostList(it, 10, board, searchQuery) }
                         }
                     }
                 }
@@ -129,14 +134,17 @@ class QnaActivity : AppCompatActivity() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            postViewModel.getPostList(0, 10, board, true)
+            postViewModel.getPostList(0, 10, board, null, true)
+            binding.toolbar.collapseActionView()
+            searchView.setQuery("", false)
+            searchQuery = null
             binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 
     private fun observeViewModel() {
         postViewModel.apply {
-            getPostList(0, 10, board)
+            getPostList(0, 10, board, searchQuery)
             binding.swipeRefreshLayout.isRefreshing = true
 
             postList.observe(this@QnaActivity) {
