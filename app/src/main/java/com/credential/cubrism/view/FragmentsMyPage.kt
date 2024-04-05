@@ -10,11 +10,16 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentMypageAddstudyBinding
 import com.credential.cubrism.databinding.FragmentMypageBinding
 import com.credential.cubrism.databinding.FragmentMypageHomeBinding
 import com.credential.cubrism.databinding.FragmentMypageMystudyBinding
+import com.credential.cubrism.model.data.UserDataManager
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -60,21 +65,50 @@ class MyPageFragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 프로필 수정 화면 출력
+        setupWidget()
+        setupRecyclerView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if (!hidden) {
+            UserDataManager.getUserInfo()?.let { user ->
+                val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(140))
+                Glide.with(requireContext()).load(user.profileImage)
+                    .apply(requestOptions)
+                    .error(R.drawable.account_circle)
+                    .fallback(R.drawable.account_circle)
+                    .into(binding.imgProfile)
+                binding.txtNickname.text = user.nickname
+                binding.txtEmail.text = user.email
+            }
+        }
+    }
+    
+    private fun setupWidget() {
+        // 정보 수정
         binding.layoutEdit.setOnClickListener {
-            val intent = Intent(requireActivity(), EditProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
         }
 
-        // 나의 스터디 리스트 화면 출력
+        // 나의 스터디
         binding.layoutStudy.setOnClickListener {
             changeFragmentMyStudy(parentFragment, MyPageFragmentMyStudy())
         }
 
+        // 나의 일정
         binding.layoutSchedule.setOnClickListener {
 
         }
+    }
 
+    private fun setupRecyclerView() {
         binding.recyclerView.apply {
             adapter = myPageAdapter
             addItemDecoration(ItemDecoratorDivider(0, 48, 0, 0, 0, 0, null))
@@ -88,26 +122,15 @@ class MyPageFragmentHome : Fragment() {
         ))
 
         myPageAdapter.setOnItemClickListener { _, position ->
-            when (position) {
-                0 -> { // 내가 작성한 글
-//                    val intent = Intent(requireActivity(), OOOActivity::class.java)
-//                    startActivity(intent)
-                }
-                1 -> { // 참여 중인 채팅방
-//                    val intent = Intent(requireActivity(), OOOActivity::class.java)
-//                    startActivity(intent)
-                }
-                2 -> { // Q&A 내역
-//                    val intent = Intent(requireActivity(), OOOActivity::class.java)
-//                    startActivity(intent)
-                }
-            }
+//            when (position) {
+//                // 내가 작성한 글
+//                0 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
+//                // 참여 중인 채팅방
+//                1 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
+//                // Q&A 내역
+//                2 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
+//            }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
 

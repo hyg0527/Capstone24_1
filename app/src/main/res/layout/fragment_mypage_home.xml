@@ -11,8 +11,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="70dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/account_circle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtNickname"
@@ -20,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:fontFamily="@font/godom"
-        android:text="OOO"
         android:textColor="@color/blue"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -59,7 +57,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:fontFamily="@font/kotra"
-        android:text="any9432@naver.com"
         android:textColor="@color/blue"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/imgProfile"
