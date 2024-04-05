@@ -8,16 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
+import com.credential.cubrism.model.repository.JwtTokenRepository
 import com.credential.cubrism.viewmodel.JwtTokenViewModel
-import com.credential.cubrism.viewmodel.UserViewModel
-import com.credential.cubrism.viewmodel.UserViewModelFactory
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private val jwtTokenViewModel: JwtTokenViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels { UserViewModelFactory(jwtTokenViewModel) }
+    private val jwtTokenViewModel: JwtTokenViewModel by viewModels { ViewModelFactory(JwtTokenRepository()) }
 
     private var backPressedTime: Long = 0
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -39,12 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         navigationSet()
 
-        jwtTokenViewModel.accessToken.observe(this) { accessToken ->
-            accessToken?.let {
-                // retrofit intercept 코드 완성되면 주석 제거 예정
-//                userViewModel.userInfo()
-            }
-        }
+        jwtTokenViewModel.getUserInfo()
     }
 
     private val bottomNavItems = listOf(

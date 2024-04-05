@@ -1,20 +1,46 @@
 package com.credential.cubrism.model.repository
 
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
 import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
-import com.credential.cubrism.viewmodel.JwtTokenViewModel
+import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserRepository(jwtTokenViewModel: JwtTokenViewModel) {
-    private val authApiWithAuth: AuthApi = RetrofitClient.getRetrofitWithAuth(jwtTokenViewModel)?.create(AuthApi::class.java)!!
+class JwtTokenRepository {
+    private val dataStore = MyApplication.getInstance().getDataStore()
+    private val authApi = RetrofitClient.getRetrofitWithAuth(this)?.create(AuthApi::class.java)!!
+
+    suspend fun saveAccessToken(token: String) {
+        dataStore.saveAccessToken(token)
+    }
+
+    suspend fun saveRefreshToken(token: String) {
+        dataStore.saveRefreshToken(token)
+    }
+
+    suspend fun deleteAccessToken() {
+        dataStore.deleteAccessToken()
+    }
+
+    suspend fun deleteRefreshToken() {
+        dataStore.deleteRefreshToken()
+    }
+
+    fun getAccessToken(): Flow<String?> {
+        return dataStore.getAccessToken()
+    }
+
+    fun getRefreshToken(): Flow<String?> {
+        return dataStore.getRefreshToken()
+    }
 
     fun userInfo(callback: (ResultUtil<UserInfoDto>) -> Unit) {
-        authApiWithAuth.getUserInfo().enqueue(object : Callback<UserInfoDto> {
+        authApi.getUserInfo().enqueue(object : Callback<UserInfoDto> {
             override fun onResponse(call: Call<UserInfoDto>, response: Response<UserInfoDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let {

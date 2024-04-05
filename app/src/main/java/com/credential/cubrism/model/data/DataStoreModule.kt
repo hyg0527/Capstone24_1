@@ -40,4 +40,18 @@ class DataStoreModule(private val context: Context) {
             prefs[refreshTokenKey]
         }
     }
+
+    // Access Token 삭제
+    suspend fun deleteAccessToken() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(accessTokenKey)
+        }
+    }
+
+    // Refresh Token 삭제
+    suspend fun deleteRefreshToken() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(refreshTokenKey)
+        }
+    }
 }

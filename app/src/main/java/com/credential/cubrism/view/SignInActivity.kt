@@ -10,6 +10,7 @@ import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
+import com.credential.cubrism.model.repository.JwtTokenRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.JwtTokenViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -23,7 +24,7 @@ import com.kakao.sdk.user.UserApiClient
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val jwtTokenViewModel: JwtTokenViewModel by viewModels()
+    private val jwtTokenViewModel: JwtTokenViewModel by viewModels { ViewModelFactory(JwtTokenRepository()) }
 
     private val googleAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         try {
@@ -172,7 +173,6 @@ class SignInActivity : AppCompatActivity() {
     private fun signInSuccess(accessToken: String, refreshToken: String) {
         jwtTokenViewModel.saveAccessToken(accessToken)
         jwtTokenViewModel.saveRefreshToken(refreshToken)
-        Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show() // 로그인 성공 확인을 위한 임시 토스트
-        // TODO: 메인 화면으로 이동
+        setResult(RESULT_OK).also { finish() }
     }
 }

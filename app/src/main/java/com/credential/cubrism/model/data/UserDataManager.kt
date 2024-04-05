@@ -12,4 +12,8 @@ object UserDataManager {
     fun getUserInfo(): UserInfoDto? {
         return userInfo
     }
+
+    fun clearUserInfo() {
+        userInfo = null
+    }
 }
