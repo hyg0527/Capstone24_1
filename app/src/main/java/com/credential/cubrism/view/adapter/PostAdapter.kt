@@ -66,7 +66,12 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             } else {
                 binding.imgThumbnail.visibility = View.VISIBLE
                 val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(40))
-                Glide.with(binding.root).load(item.imageUrl).apply(requestOptions).placeholder(ColorDrawable(Color.TRANSPARENT)).transition(DrawableTransitionOptions.withCrossFade()).into(binding.imgThumbnail)
+                Glide.with(binding.root).load(item.imageUrl)
+                    .apply(requestOptions)
+                    .placeholder(ColorDrawable(Color.TRANSPARENT))
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .sizeMultiplier(0.5f)
+                    .into(binding.imgThumbnail)
             }
 
             if (item.commentCount == 0) {
