@@ -219,7 +219,7 @@ class StudyGroupManageFragment : Fragment(R.layout.fragment_studygroup_managehom
     }
 }
 
-class StudyGroupAnnounceFixFragment : Fragment(R.layout.fragment_mypage_addstudy) {
+class StudyGroupAnnounceFixFragment : Fragment(R.layout.activity_addstudy) {
 //    private lateinit var studyListViewModel: StudyListViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -87,7 +87,7 @@ class HomeUiFragment : Fragment() {
             }
 
             override fun onBannerStudyClicked() {
-                changeFragment(parentFragment, MyPageFragmentMyStudy())
+                startActivity(Intent(requireActivity(), MyStudyListActivity::class.java))
             }
         })
 
