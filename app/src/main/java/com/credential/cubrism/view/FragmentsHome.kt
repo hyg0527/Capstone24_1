@@ -1,12 +1,16 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
@@ -19,6 +23,7 @@ import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
+import com.credential.cubrism.viewmodel.JwtTokenViewModel
 import java.util.Timer
 
 class HomeFragment : Fragment() {
@@ -57,6 +62,15 @@ class HomeUiFragment : Fragment() {
     private var currentPage = 0
     private val timer = Timer()
 
+    private val jwtTokenViewModel: JwtTokenViewModel by activityViewModels()
+
+    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(requireContext(), "로그인 성공!", Toast.LENGTH_SHORT).show()
+            jwtTokenViewModel.getUserInfo()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeUiBinding.inflate(inflater, container, false)
         return binding.root
@@ -70,7 +84,7 @@ class HomeUiFragment : Fragment() {
 //        val bnlist = BannerData()
 
         binding.txtSignIn.setOnClickListener {
-            startActivity(Intent(requireActivity(), SignInActivity::class.java))
+            startForRegisterResult.launch(Intent(requireActivity(), SignInActivity::class.java))
         }
 
         binding.btnNotify.setOnClickListener { // 알림 화면 출력
