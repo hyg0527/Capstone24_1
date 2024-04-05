@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -34,6 +36,13 @@ class QnaActivity : AppCompatActivity() {
     private var loadingState = false
     private var searchQuery: String? = null
 
+    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            postViewModel.getPostList(0, 10, board, searchQuery, true)
+            binding.swipeRefreshLayout.isRefreshing = true
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -42,6 +51,10 @@ class QnaActivity : AppCompatActivity() {
         setupTabLayout()
         setupRecyclerView()
         observeViewModel()
+
+        binding.floatingActionButton.setOnClickListener {
+            startForRegisterResult.launch(Intent(this, QnaPostingActivity::class.java))
+        }
     }
 
     private fun setupToolbar() {
