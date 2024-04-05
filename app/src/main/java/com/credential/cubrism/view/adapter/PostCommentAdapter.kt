@@ -59,7 +59,10 @@ class PostCommentAdapter(private val myEmail: String, private val listener: OnRe
 
     inner class OthersViewHolder(private val binding: ItemListCommentOthersBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Comments) {
-            Glide.with(binding.root).load(item.profileImageUrl).error(R.drawable.profil_image).into(binding.imgProfile)
+            Glide.with(binding.root).load(item.profileImageUrl)
+                .error(R.drawable.profil_image)
+                .fallback(R.drawable.profil_image)
+                .into(binding.imgProfile)
             binding.txtNickname.text = item.nickname
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)

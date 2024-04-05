@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaViewBinding
+import com.credential.cubrism.model.data.UserDataManager
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.OnReplyClickListener
@@ -30,6 +31,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
         val postId = intent.getIntExtra("postId", -1)
         val boardName = intent.getStringExtra("boardName")
+        val myEmail = UserDataManager.getUserInfo()?.email ?: ""
 
         if (postId != -1 && boardName != null) {
             postViewModel.getPostView(boardName, postId)
@@ -39,7 +41,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
             - 임시로 지정해둔 이메일 나중에 로그인한 이메일로 변경
             - 키보드 올라올 때 맨 아래로 스크롤
          */
-        postCommentAdapter = PostCommentAdapter("10000000@test.com", this)
+        postCommentAdapter = PostCommentAdapter(myEmail, this)
         binding.recyclerView.apply {
             adapter = postCommentAdapter
             itemAnimator = null
@@ -50,7 +52,10 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
             when (result) {
                 is ResultUtil.Success -> {
                     val postView = result.data
-                    Glide.with(this).load(postView.profileImageUrl).error(R.drawable.profil_image).into(binding.imgProfile)
+                    Glide.with(this).load(postView.profileImageUrl)
+                        .error(R.drawable.profil_image)
+                        .fallback(R.drawable.profil_image)
+                        .into(binding.imgProfile)
                     binding.txtNickname.text = postView.nickname
                     binding.txtCategory.text = postView.category
                     binding.txtTitle.text = postView.title
