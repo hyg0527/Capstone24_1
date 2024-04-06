@@ -25,22 +25,36 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
     private lateinit var postCommentAdapter : PostCommentAdapter
 
+    private val boardName = "QnA"
+
+    private val postId by lazy { intent.getIntExtra("postId", -1) }
+    private val myEmail by lazy { UserDataManager.getUserInfo()?.email ?: "" }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val postId = intent.getIntExtra("postId", -1)
-        val boardName = intent.getStringExtra("boardName")
-        val myEmail = UserDataManager.getUserInfo()?.email ?: ""
+        setupToolbar()
+        setupRecyclerView()
+        observeViewModel()
+        getPostView()
+    }
 
-        if (postId != -1 && boardName != null) {
-            postViewModel.getPostView(boardName, postId)
-        }
+    override fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String) {
+        binding.txtReply.text = nickname
+        binding.imgReply.visibility = View.VISIBLE
+        binding.txtReply.visibility = View.VISIBLE
+        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.lightblue))
+    }
 
-        /* TODO
-            - 임시로 지정해둔 이메일 나중에 로그인한 이메일로 변경
-            - 키보드 올라올 때 맨 아래로 스크롤
-         */
+    private fun setupToolbar() {
+        binding.toolbar.title = ""
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    private fun setupRecyclerView() {
         postCommentAdapter = PostCommentAdapter(myEmail, this)
         binding.recyclerView.apply {
             adapter = postCommentAdapter
@@ -48,6 +62,13 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
             addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            getPostView()
+            binding.swipeRefreshLayout.isRefreshing = true
+        }
+    }
+
+    private fun observeViewModel() {
         postViewModel.postView.observe(this) { result ->
             when (result) {
                 is ResultUtil.Success -> {
@@ -56,7 +77,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
                         .error(R.drawable.profil_image)
                         .fallback(R.drawable.profil_image)
                         .into(binding.imgProfile)
-                    binding.txtNickname.text = postView.nickname
+                    binding.txtNickname.text = "  ${postView.nickname}  "
                     binding.txtCategory.text = postView.category
                     binding.txtTitle.text = postView.title
                     binding.txtContent.text = postView.content.replace(" ", "\u00A0")
@@ -68,23 +89,11 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
                 is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
             }
         }
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            if (postId != -1 && boardName != null) {
-                postViewModel.getPostView(boardName, postId)
-            }
-            binding.swipeRefreshLayout.isRefreshing = true
-        }
-
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
     }
 
-    override fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String) {
-        binding.txtReply.text = nickname
-        binding.imgReply.visibility = View.VISIBLE
-        binding.txtReply.visibility = View.VISIBLE
-        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.lightblue))
+    private fun getPostView() {
+        if (postId != -1) {
+            postViewModel.getPostView(boardName, postId)
+        }
     }
 }

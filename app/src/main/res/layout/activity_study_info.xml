@@ -135,17 +135,19 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <com.credential.cubrism.view.utils.OutlineTextView
                 android:id="@+id/txtQnA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="8dp"
                 android:fontFamily="@font/luckiestguy"
-                android:text="STUDY"
-                android:textColor="#86CCFF"
+                android:text="  STUDY  "
+                android:textColor="@color/white"
                 android:textSize="25dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:outlineColor="#86CCFF"
+                app:outlineWidth="16" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -159,25 +161,27 @@
                     android:layout_width="33dp"
                     android:layout_height="33dp"
                     android:layout_marginStart="20dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="2dp"
                     android:src="@drawable/profile_skyblue"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/txtNickname"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <com.credential.cubrism.view.utils.OutlineTextView
                     android:id="@+id/txtNickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="16dp"
                     android:fontFamily="@font/kopubdotumbold"
-                    android:text="닉네임"
+                    android:text="  닉네임  "
                     android:textColor="#40AFFF"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:outlineColor="@color/white"
+                    app:outlineWidth="8" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

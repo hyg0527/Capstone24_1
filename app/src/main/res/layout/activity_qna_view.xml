@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_left" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -20,7 +19,7 @@
         app:layout_constraintBottom_toTopOf="@+id/layoutFooter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnBack">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
@@ -98,17 +97,19 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
+                <com.credential.cubrism.view.utils.OutlineTextView
                     android:id="@+id/txtQnA"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/luckiestguy"
-                    android:text="Q&amp;A"
-                    android:textColor="@color/blue"
+                    android:text="  Q&amp;A  "
+                    android:textColor="@color/white"
                     android:textSize="25dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:outlineColor="@color/blue"
+                    app:outlineWidth="16" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -122,22 +123,25 @@
                         android:layout_width="33dp"
                         android:layout_height="33dp"
                         android:layout_marginStart="20dp"
-                        android:layout_marginEnd="5dp"
+                        android:layout_marginEnd="2dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/txtNickname"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
+                    <com.credential.cubrism.view.utils.OutlineTextView
                         android:id="@+id/txtNickname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginEnd="16dp"
                         android:fontFamily="@font/kopubdotumbold"
-                        android:textSize="13dp"
+                        android:textColor="#3a5aaf"
+                        android:textSize="14dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:outlineColor="@color/white"
+                        app:outlineWidth="8" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

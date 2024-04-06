@@ -142,7 +142,6 @@ class QnaActivity : AppCompatActivity() {
         postAdapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, QnaViewActivity::class.java)
             intent.putExtra("postId", item.postId)
-            intent.putExtra("boardName", item.boardName)
             startActivity(intent)
         }
 

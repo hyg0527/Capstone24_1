@@ -11,6 +11,7 @@
         <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="colorControlHighlight">@color/lightblue</item>
         <item name="elevationOverlayEnabled">false</item>
+        <item name="homeAsUpIndicator">@drawable/arrow_left</item>
     </style>
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
