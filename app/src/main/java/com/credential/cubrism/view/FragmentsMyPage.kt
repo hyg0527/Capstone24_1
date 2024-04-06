@@ -71,7 +71,7 @@ class MyPageFragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupWidget()
+        setupView()
         setupRecyclerView()
     }
 
@@ -96,7 +96,7 @@ class MyPageFragmentHome : Fragment() {
         }
     }
     
-    private fun setupWidget() {
+    private fun setupView() {
         // 정보 수정
         binding.layoutEdit.setOnClickListener {
             startForRegisterResult.launch(Intent(requireActivity(), EditProfileActivity::class.java))

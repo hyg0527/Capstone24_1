@@ -54,7 +54,7 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
-        setupWidget()
+        setupView()
         viewModelObserve()
     }
 
@@ -84,7 +84,7 @@ class EditProfileActivity : AppCompatActivity() {
         })
     }
 
-    private fun setupWidget() {
+    private fun setupView() {
         UserDataManager.getUserInfo()?.let { user ->
             Glide.with(this).load(user.profileImage)
                 .error(R.drawable.profile)
