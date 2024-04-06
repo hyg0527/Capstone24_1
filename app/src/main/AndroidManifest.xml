@@ -57,6 +57,9 @@
             android:name=".view.QnaPostingActivity"
             android:exported="true" />
         <activity
+            android:name=".view.StudyInfoActivity"
+            android:exported="true" />
+        <activity
             android:name=".view.StudyActivity"
             android:exported="true" />
         <activity

@@ -1,8 +1,8 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +10,7 @@ import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentStudyBinding
-import com.credential.cubrism.databinding.FragmentStudyHomeBinding
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.StudyGroupAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -23,6 +21,12 @@ class StudyFragment : Fragment() {
     private var _binding: FragmentStudyBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
+    private val studyGroupAdapter = StudyGroupAdapter()
+
+    private var loadingState = false
+    private var isRecruiting = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudyBinding.inflate(inflater, container, false)
         return binding.root
@@ -31,34 +35,17 @@ class StudyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 처음 화면을 fragment_study_home으로 설정
-        if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainerView.id, StudyHomeFragment())
-                .setReorderingAllowed(true)
-                .commit()
-        }
+        setupRecyclerView()
+        setupView()
+        observeViewModel()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-}
 
-class StudyHomeFragment : Fragment() {
-    private var _binding: FragmentStudyHomeBinding? = null
-    private val binding get() = _binding!!
-
-    private val viewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
-    private val studyGroupAdapter = StudyGroupAdapter()
-
-    private var loadingState = false
-    private var isRecruiting = false
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    private fun setupRecyclerView() {
         binding.recyclerView.apply {
             adapter = studyGroupAdapter
             itemAnimator = null
@@ -78,21 +65,27 @@ class StudyHomeFragment : Fragment() {
         })
 
         studyGroupAdapter.setOnItemClickListener { item, _ ->
-            // TODO: 스터디 가입 요청 화면으로 이동
+            val intent = Intent(requireContext(), StudyInfoActivity::class.java)
+            intent.putExtra("studyGroupId", item.studyGroupId)
+            startActivity(intent)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
         }
+    }
 
+    private fun setupView() {
         binding.switchRecruiting.setOnCheckedChangeListener { _, isChecked ->
             isRecruiting = isChecked
             viewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
             binding.scrollView.scrollTo(0, 0)
         }
+    }
 
+    private fun observeViewModel() {
         viewModel.apply {
             getStudyGroupList(0, 5, isRecruiting)
             binding.swipeRefreshLayout.isRefreshing = true
@@ -109,56 +102,5 @@ class StudyHomeFragment : Fragment() {
                 it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentStudyHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    private fun changeFragmentStudy(fragment: Fragment, tag: String) {
-        (parentFragment as StudyFragment).childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.fragmentContainerView, fragment, tag)
-            .setReorderingAllowed(true)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}
-
-class StudyInfoFragment : Fragment(R.layout.fragment_study_info) {
-    private var view: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        this.view = view
-
-        handleBackStack(view, parentFragment)
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
-        }
-    }
-}
-
-// 백스택 호출 함수 선언
-private fun handleBackStack(v: View, parentFragment: Fragment?) {
-    v.isFocusableInTouchMode = true
-    v.requestFocus()
-    v.setOnKeyListener { _, keyCode, event ->
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-            (parentFragment as StudyFragment).childFragmentManager.popBackStack()
-            return@setOnKeyListener true
-        }
-        false
     }
 }
