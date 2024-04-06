@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,12 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentMypageAddstudyBinding
 import com.credential.cubrism.databinding.FragmentMypageBinding
@@ -57,6 +57,12 @@ class MyPageFragmentHome : Fragment() {
 
     private val myPageAdapter = MyPageAdapter()
 
+    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(requireContext(), "내 정보를 수정했습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMypageHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -79,11 +85,10 @@ class MyPageFragmentHome : Fragment() {
 
         if (!hidden) {
             UserDataManager.getUserInfo()?.let { user ->
-                val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(140))
                 Glide.with(requireContext()).load(user.profileImage)
-                    .apply(requestOptions)
                     .error(R.drawable.account_circle)
                     .fallback(R.drawable.account_circle)
+                    .dontAnimate()
                     .into(binding.imgProfile)
                 binding.txtNickname.text = user.nickname
                 binding.txtEmail.text = user.email
@@ -94,7 +99,7 @@ class MyPageFragmentHome : Fragment() {
     private fun setupWidget() {
         // 정보 수정
         binding.layoutEdit.setOnClickListener {
-            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
+            startForRegisterResult.launch(Intent(requireActivity(), EditProfileActivity::class.java))
         }
 
         // 나의 스터디

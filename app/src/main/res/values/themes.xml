@@ -15,10 +15,22 @@
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
 
-    <style name="StyleToolbar" parent="ThemeOverlay.AppCompat.Light">
+    <style name="StyleToolbar.Qna" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:background">@color/white</item>
         <item name="colorControlNormal">@color/blue</item>
         <item name="android:drawableTint">@color/blue</item>
+    </style>
+
+    <style name="StyleToolbar.EditProfile" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/lightblue</item>
+        <item name="actionMenuTextAppearance">@style/StyleMenu.EditProfile</item>
+        <item name="actionMenuTextColor">@color/blue</item>
+    </style>
+
+    <style name="StyleMenu.EditProfile" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/godom</item>
     </style>
 
     <style name="StyleTabLayout" parent="TextAppearance.Design.Tab">

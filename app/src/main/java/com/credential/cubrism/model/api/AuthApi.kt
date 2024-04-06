@@ -6,6 +6,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SignUpDto
 import com.credential.cubrism.model.dto.TokenDto
+import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
 import retrofit2.Call
 import retrofit2.http.Body
@@ -36,6 +37,9 @@ interface AuthApi {
 
     @GET("/auth/info") // 유저 정보
     fun getUserInfo(): Call<UserInfoDto>
+
+    @POST("/auth/user/edit") // 회원 정보 수정
+    fun editUserInfo(@Body userEditDto: UserEditDto): Call<MessageDto>
 
     @POST("/auth/reissue-access-token") // Access Token 재발급
     fun reissueAccessToken(@Header("AccessToken") accessToken: String, @Header("RefreshToken") refreshToken: String): Call<TokenDto>

@@ -7,6 +7,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SignUpDto
 import com.credential.cubrism.model.dto.TokenDto
+import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
 import org.json.JSONObject
@@ -108,6 +109,22 @@ class AuthRepository {
             }
 
             override fun onFailure(call: Call<TokenDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun editUserInfo(userEditDto: UserEditDto, callback: (ResultUtil<MessageDto>) -> Unit) {
+        authApi.editUserInfo(userEditDto).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })

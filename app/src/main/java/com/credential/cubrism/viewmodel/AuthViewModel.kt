@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.TokenDto
+import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 
@@ -27,6 +28,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     private val _kakaoSignIn = MutableLiveData<ResultUtil<TokenDto>>()
     val kakaoSignIn: LiveData<ResultUtil<TokenDto>> = _kakaoSignIn
+
+    private val _editUserInfo = MutableLiveData<ResultUtil<MessageDto>>()
+    val editUserInfo: LiveData<ResultUtil<MessageDto>> = _editUserInfo
 
     fun signUp(email: String, password: String, nickname: String) {
         authRepository.signUp(email, password, nickname) { result ->
@@ -61,6 +65,12 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     fun kakaoSignIn(accessToken: String) {
         authRepository.kakaoLogin(accessToken) { result ->
             _kakaoSignIn.postValue(result)
+        }
+    }
+
+    fun editUserInfo(nickname: String, profileImage: String?) {
+        authRepository.editUserInfo(UserEditDto(nickname, profileImage)) { result ->
+            _editUserInfo.postValue(result)
         }
     }
 }
