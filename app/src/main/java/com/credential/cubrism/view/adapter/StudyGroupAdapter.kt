@@ -13,7 +13,7 @@ import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.view.diff.StudyGroupDiffUtil
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
-class StudyGroupAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StudyGroupAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<GroupList>()
     private var onItemClickListener: ((GroupList, Int) -> Unit)? = null
 

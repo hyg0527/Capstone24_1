@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.PageDto
+import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -15,6 +16,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _studyGroupList = MutableLiveData<List<GroupList>>()
     val studyGroupList: LiveData<List<GroupList>> = _studyGroupList
+
+    private val _studyGroupInfo = MutableLiveData<ResultUtil<StudyGroupInfoDto>>()
+    val studyGroupInfo: LiveData<ResultUtil<StudyGroupInfoDto>> = _studyGroupInfo
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -42,6 +46,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
                 }
             }
             _isLoading.value = false
+        }
+    }
+
+    fun getStudyGroupInfo(studyGroupId: Int) {
+        repository.studyGroupInfo(studyGroupId) { result ->
+            _studyGroupInfo.postValue(result)
         }
     }
 }

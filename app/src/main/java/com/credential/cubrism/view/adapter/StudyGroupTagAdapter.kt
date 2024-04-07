@@ -9,7 +9,6 @@ import com.credential.cubrism.view.diff.StudyGroupTagDiffUtil
 
 class StudyGroupTagAdapter : RecyclerView.Adapter<StudyGroupTagAdapter.ViewHolder>() {
     private var itemList = mutableListOf<String>()
-    private var onItemClickListener: ((String, Int) -> Unit)? = null
 
     override fun getItemCount(): Int = itemList.size
 
@@ -24,22 +23,9 @@ class StudyGroupTagAdapter : RecyclerView.Adapter<StudyGroupTagAdapter.ViewHolde
     }
 
     inner class ViewHolder(private val binding: ItemListStudyTagBinding) : RecyclerView.ViewHolder(binding.root) {
-        init {
-            itemView.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onItemClickListener?.invoke(itemList[position], position)
-                }
-            }
-        }
-
         fun bind(item: String) {
             binding.txtTag.text = item
         }
-    }
-
-    fun setOnItemClickListener(listener: (String, Int) -> Unit) {
-        onItemClickListener = listener
     }
 
     fun setItemList(list: List<String>) {

@@ -1,5 +1,6 @@
 package com.credential.cubrism.model.api
 
+import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupListDto
 import retrofit2.Call
 import retrofit2.http.GET
@@ -12,4 +13,7 @@ interface StudyGroupApi {
         @Query("limit") limit: Int,
         @Query("recruiting") recruiting: Boolean
     ): Call<StudyGroupListDto>
+
+    @GET("/studygroup/info")
+    fun getStudyGroupInfo(@Query("studyGroupId") studyGroupId: Int): Call<StudyGroupInfoDto>
 }
