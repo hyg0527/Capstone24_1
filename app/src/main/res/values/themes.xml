@@ -7,6 +7,7 @@
         <item name="itemBackground">@color/lightblue</item>
         <item name="colorSurface">@color/white</item>
         <item name="android:colorBackground">@color/white</item>
+        <item name="android:navigationBarColor">@color/extraLightBlue</item>
         <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="colorControlHighlight">@color/lightblue</item>
         <item name="elevationOverlayEnabled">false</item>

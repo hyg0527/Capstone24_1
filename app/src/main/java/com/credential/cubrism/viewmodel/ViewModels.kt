@@ -11,10 +11,8 @@ import com.credential.cubrism.view.adapter.QnaData
 
 class CalMonthViewModel : ViewModel() {
     private val _calMonthList = MutableLiveData<ArrayList<CalMonth>>(arrayListOf())
-    private val _isScheduledLiveData = MutableLiveData<ArrayList<DateSelect>>(arrayListOf())
 
     val calMonthList: LiveData<ArrayList<CalMonth>> get() = _calMonthList // 읽기만 가능(get)
-    val isScheduledLiveData: LiveData<ArrayList<DateSelect>> get() = _isScheduledLiveData
 
     fun addDateMonth(value: CalMonth) { // 추가
         _calMonthList.value?.add(value)
@@ -25,21 +23,6 @@ class CalMonthViewModel : ViewModel() {
         _calMonthList.value?.remove(value)
         _calMonthList.value = _calMonthList.value
     }
-
-    fun modifyDateMonth(value: CalMonth, newValue: CalMonth) { // 수정
-        val updatedList = _calMonthList.value?.toMutableList() ?: mutableListOf()
-
-        // value가 리스트에 포함되어 있다면 해당 인덱스를 찾아 newValue로 대체
-        val index = updatedList.indexOf(value)
-        if (index != -1) {
-            _calMonthList.value?.set(index, newValue)
-            _calMonthList.value = _calMonthList.value
-        }
-    }
-
-//    fun updateIsScheduled(item: DateSelect, isScheduled: Boolean) {
-//        _isScheduledLiveData.value = isScheduled
-//    }
 }
 
 class QnaListViewModel : ViewModel() {

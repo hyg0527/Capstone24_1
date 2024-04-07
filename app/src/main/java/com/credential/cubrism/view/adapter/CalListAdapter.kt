@@ -49,7 +49,7 @@ data class CalMonth(val title: String? = null, val startTime: String? = null,
 
 }
 // 일정 리스트 구현 adapter
-class CalMonthListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adapter<CalMonthListAdapter.CalViewHolder>() {
+class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adapter<CalListAdapter.CalViewHolder>() {
     private var itemClickListener: ScheduleClickListener? = null
     fun setItemClickListener(listener: ScheduleClickListener) {
         itemClickListener = listener

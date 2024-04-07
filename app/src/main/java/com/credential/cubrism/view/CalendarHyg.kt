@@ -5,19 +5,22 @@ import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.text.isDigitsOnly
 import com.credential.cubrism.R
+import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateSelect
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Locale
 
 class CalendarHyg {
-    private var isActivated = false
     fun getInstance(): Calendar {
         return Calendar.getInstance()
     }
 
-    fun initToday(monthTxt: TextView, currentDate: TextView, adapter: CalendarAdapter,
+    fun initToday(monthTxt: TextView, currentDate: TextView, adapter: CalendarAdapter, data: ArrayList<CalMonth>? = null,
                   callback: (String) -> Unit) { // 오늘 날짜로 돌아오는 함수
         val calInstance = getInstance()
         val initYear = calInstance.get(Calendar.YEAR) // 처음 뷰 생성시 오늘날짜로 초기화
@@ -30,7 +33,7 @@ class CalendarHyg {
         monthTxt.text = monthPickTxt
 
         val (m, w) = setDateWeek(initYear, initMonth)
-        val monthList = showMonthCalendar(m, w)
+        val monthList = showMonthCalendar(monthPickTxt, m, w, data)
         adapter.updateCalendar(monthList)
 
         val selectedReturn = String.format("%02d", initYear) + " - " +
@@ -38,7 +41,12 @@ class CalendarHyg {
         callback(selectedReturn)
     }
 
-    fun showMonthCalendar(daysInMonth: Int, dayOfWeekIndex: Int): ArrayList<DateSelect> { // 해당 월의 달력 출력 함수(월간)
+    // 해당 월의 달력 출력 함수
+    fun showMonthCalendar(yearMonth: String, daysInMonth: Int, dayOfWeekIndex: Int, data: ArrayList<CalMonth>? = null): ArrayList<DateSelect> {
+        val (year, month) = getSelectedYearMonth(yearMonth)
+        val monthData = "$year - ${String.format("%02d", month)}"
+
+        val numDate = extractListInfo(data ?: ArrayList())
         val daysList = ArrayList<DateSelect>().apply {
             val weekOfTheDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
@@ -48,32 +56,112 @@ class CalendarHyg {
             for (i in 0..dayOfWeekIndex - 2) { // 1일이 나오기 전까지 공백을 메우는 부분
                 add(DateSelect(" "))
             }
-            if (!isActivated) { // 날짜 추가 부분(1일부터)
-                isActivated = true
-                for (i in 1..daysInMonth) {
-                    add(DateSelect("$i"))
-                }
-            } else {
-                add(DateSelect("1", isHighlighted = true)) // 첫 달의 1일이 디폴트 값으로 선택 되도록
-                for (i in 2..daysInMonth) {
-                    add(DateSelect("$i"))
-                }
+            for (i in 1..daysInMonth) { // 날짜 출력 부분
+                add(DateSelect("$i"))
             }
         }
+        // 일정 리스트와 출력하려는 월의 날짜를 모두 비교 하여 해당 날짜에 일정이 있으면 표시
+        for (date in numDate) if (date.key == monthData)
+            for (day in daysList)
+                for (scDate in date.value)
+                    if ((day.date ?: "").isDigitsOnly() && (day.date ?: "").toInt() == scDate) {
+                        day.isScheduled = true
+                        break
+                    }
 
         return daysList
     }
 
-    fun getYearMonth(): Pair<Int, Int> { // 현재 날짜의 연, 월을 반환
-        val current = Calendar.getInstance()
+    private fun extractListInfo(dataS: ArrayList<CalMonth>): Map<String, List<Int>> { // 월별 일정이 추가된 날을 형식에 맞도록 반환
+        val dateMap: MutableMap<String, List<Int>> = mutableMapOf()
+
+        for (data in dataS) { // 예외 처리 필요
+            val startMonth = data.startTime!!.substring(0, 9)
+            val endMonth = data.endTime!!.substring(0, 9)
+
+            val startDate = data.startTime.substring(12, 14).toInt()
+            val endDate = data.endTime.substring(12, 14).toInt()
+
+            println(getMonthsBetween(startMonth, endMonth))
+            val months = getMonthsBetween(startMonth, endMonth)
+            for (month in months) {
+                val dateList = dateMap[month]?.toMutableList() ?: mutableListOf()
+                val lastDayOfMonth = getLastDayOfMonth(month)
+
+                if (month == startMonth && month == endMonth) {
+                    // 시작 월과 끝 월이 동일한 경우
+                    for (i in startDate..endDate)
+                        dateList.add(i)
+                } else if (month == startMonth) {
+                    // 시작 월 처리
+                    for (i in startDate..lastDayOfMonth)
+                        dateList.add(i)
+                } else if (month == endMonth) {
+                    // 끝 월 처리
+                    for (i in 1..endDate)
+                        dateList.add(i)
+                } else {
+                    // 그 외의 월 처리
+                    for (i in 1..lastDayOfMonth)
+                        dateList.add(i)
+                }
+
+                dateMap[month] = dateList.distinct().sorted().toMutableList()
+            }
+        }
+
+        return dateMap
+    }
+
+    private fun getLastDayOfMonth(yearMonth: String): Int {
+        val formatter = DateTimeFormatter.ofPattern("yyyy - MM")
+        val yearMonthObj = YearMonth.parse(yearMonth, formatter)
+
+        return yearMonthObj.lengthOfMonth()
+    }
+
+    private fun getMonthsBetween(start: String, end: String): List<String> {
+        val formatter = DateTimeFormatter.ofPattern("yyyy - MM")
+        val startDate = YearMonth.parse(start, formatter)
+        val endDate = YearMonth.parse(end, formatter)
+
+        val months = mutableListOf<String>()
+
+        var current = startDate
+        while (current.isBefore(endDate) || current == endDate) {
+            months.add(current.format(formatter))
+            current = current.plusMonths(1)
+        }
+
+        return months
+    }
+
+    fun getYearMonth(): Pair<Int, Int> { // 오늘 날짜의 연, 월을 반환
+        val current = getInstance()
         val getYear = current.get(Calendar.YEAR)
         val getMonth = current.get(Calendar.MONTH) + 1
 
         return Pair(getYear, getMonth)
     }
 
-    fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView,
-                           txtCurrentDate: TextView, adapter: CalendarAdapter, callback: (String) -> Unit) { // numberpicker dialog 호출
+    fun getMonthInfoS(input: String): Pair<Int, Int> { // "April 2024"로 입력을 받으면, 월의 일 수, 1일의 시작 인덱스 반환
+        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
+        val yearMonth = YearMonth.parse(input, formatter)
+
+        // 해당 월의 첫 날과 마지막 날
+        val firstDayOfMonth = yearMonth.atDay(1)
+        val lastDayOfMonth = yearMonth.atEndOfMonth()
+
+        // 첫 날의 시작 인덱스 계산
+        val firstDayIndex = firstDayOfMonth.dayOfWeek.value % 7 + 1
+        // 해당 월의 일 수를 계산
+        val numDaysInMonth = lastDayOfMonth.dayOfMonth
+
+        return Pair(numDaysInMonth, firstDayIndex)
+    }
+
+    fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView, txtCurrentDate: TextView,
+                           adapter: CalendarAdapter, data: ArrayList<CalMonth>? = null, callback: (String) -> Unit) { // numberpicker dialog 호출
         val yearPick = view.findViewById<NumberPicker>(R.id.yearPick)
         val monthPick = view.findViewById<NumberPicker>(R.id.monthPick)
         val (getYear, getMonth) = getSelectedYearMonth(datePickTxt.text.toString())
@@ -102,7 +190,7 @@ class CalendarHyg {
                 txtCurrentDate.text = resTextDate
 
                 // RecyclerView에 데이터 갱신
-                val monthList = showMonthCalendar(m, w)
+                val monthList = showMonthCalendar(resText, m, w, data)
                 adapter.updateCalendar(monthList)
 
                 val selectedReturn = String.format("%02d", selectedYear) + " - " + String.format("%02d", selectedMonth) + " - 01"
@@ -134,8 +222,8 @@ class CalendarHyg {
         return Pair(daysInMonth, dayOfWeek)
     }
 
-    fun setPreNextMonthCalendar(adapter: CalendarAdapter, yearMonth: TextView,
-                                currentDate: TextView, isPreNext: String, callback: (String) -> Unit) {
+    fun setPreNextMonthCalendar(adapter: CalendarAdapter, yearMonth: TextView, currentDate: TextView,
+                                data: ArrayList<CalMonth>? = null, isPreNext: String, callback: (String) -> Unit) {
         var (year, month) = getSelectedYearMonth(yearMonth.text.toString())
 
         when (isPreNext) {
@@ -149,14 +237,13 @@ class CalendarHyg {
             }
             else -> { Log.d("invalid type", "이전 이후 선택 부분 타입 오류") }
         }
-
-        val (m, w) = setDateWeek(year, month)
-        val monthList = showMonthCalendar(m, w)
-        adapter.updateCalendar(monthList)
-
         val dateTxt = "${year}년 ${month}월 1일"
         currentDate.text = dateTxt
         yearMonth.text = selectedMonthToString(month) + " " + year
+
+        val (m, w) = setDateWeek(year, month)
+        val monthList = showMonthCalendar(yearMonth.text.toString(), m, w, data)
+        adapter.updateCalendar(monthList)
 
         val selectedReturn = String.format("%02d", year) + " - " + String.format("%02d", month) + " - 01"
         callback(selectedReturn)
