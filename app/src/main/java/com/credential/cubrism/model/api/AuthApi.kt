@@ -5,48 +5,63 @@ import com.credential.cubrism.model.dto.EmailVerifyRequestDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SignUpDto
+import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.PUT
 
 interface AuthApi {
-    @POST("/auth/signup") // 회원가입
+    // 회원가입
+    @POST("/auth/signup")
     fun signUp(@Body signUpDto: SignUpDto): Call<MessageDto>
 
-    @POST("/auth/signup/email/request") // 이메일 인증 번호 요청
-    fun emailVerifyRequest(@Body emailVerifyRequestDto: EmailVerifyRequestDto): Call<MessageDto>
-
-    @POST("/auth/signup/email/verify") // 이메일 인증 번호 확인
-    fun emailVerify(@Body emailVerifyDto: EmailVerifyDto): Call<MessageDto>
-
-    @POST("/auth/signin") // 로그인
+    // 로그인
+    @POST("/auth/signin")
     fun signIn(@Body signInDto: SignInDto): Call<TokenDto>
 
-    @POST("/auth/social/login/google") // 구글 로그인
-    fun googleLogIn(@Query("serverAuthCode") serverAuthCode: String): Call<TokenDto>
+    // 구글 로그인
+    @POST("/auth/signin/google")
+    fun googleLogIn(@Body socialTokenDto: SocialTokenDto): Call<TokenDto>
 
-    @POST("/auth/social/login/kakao") // 카카오 로그인
-    fun kakaoLogIn(@Query("accessToken") accessToken: String): Call<TokenDto>
+    // 카카오 로그인
+    @POST("/auth/signin/kakao")
+    fun kakaoLogIn(@Body socialTokenDto: SocialTokenDto): Call<TokenDto>
 
-    @GET("/auth/info") // 유저 정보
+    // 로그아웃
+    @POST("/auth/logout")
+    fun logOut(): Call<MessageDto>
+
+    // 로그인 유저 정보
+    @GET("/auth/users")
     fun getUserInfo(): Call<UserInfoDto>
 
-    @POST("/auth/user/edit") // 회원 정보 수정
+    // 회원 정보 수정
+    @PUT("/auth/users")
     fun editUserInfo(@Body userEditDto: UserEditDto): Call<MessageDto>
 
-    @POST("/auth/reissue-access-token") // Access Token 재발급
+    // 회원 탈퇴
+//    @DELETE("/auth/users")
+//    fun withdrawal(): Call<MessageDto>
+
+    // 이메일 인증 번호 요청
+    @POST("/auth/signup/email/request")
+    fun emailVerifyRequest(@Body emailVerifyRequestDto: EmailVerifyRequestDto): Call<MessageDto>
+
+    // 이메일 인증 번호 확인
+    @POST("/auth/signup/email/verify")
+    fun emailVerify(@Body emailVerifyDto: EmailVerifyDto): Call<MessageDto>
+
+    // Access Token 재발급
+    @POST("/auth/token/access")
     fun reissueAccessToken(@Header("AccessToken") accessToken: String, @Header("RefreshToken") refreshToken: String): Call<TokenDto>
 
-    @POST("/auth/reissue-refresh-token") // Refresh Token 재발급
+    // Refresh Token 재발급
+    @POST("/auth/token/refresh")
     fun reissueRefreshToken(): Call<TokenDto>
-
-    @DELETE("/auth/logout") // 로그아웃
-    fun logOut(): Call<MessageDto>
 }

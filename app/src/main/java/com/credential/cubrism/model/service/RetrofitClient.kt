@@ -70,6 +70,7 @@ class ResponseInterceptor(private val jwtTokenRepository: JwtTokenRepository) : 
         if (originalResponse.code == 401) {
             // Body를 JSONObject로 변환 후 에러 메시지를 가져옴
             val errorMessage = JSONObject(responseBodyString).optString("message")
+
             // AccessToken이 만료되었을 경우
             if (errorMessage == "JWT 토큰이 만료되었습니다.") {
                 // DataStore에서 AccessToken과 RefreshToken을 가져옴
@@ -79,6 +80,7 @@ class ResponseInterceptor(private val jwtTokenRepository: JwtTokenRepository) : 
                 if (accessToken != null && refreshToken != null) {
                     // AccessToken과 RefreshToken을 이용해 AccessToken 재발급 요청
                     val call = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)?.reissueAccessToken("Bearer $accessToken", refreshToken)
+
                     runBlocking {
                         val response = call?.execute()
                         if (response?.isSuccessful == true) { // AccessToken 재발급 성공 시
@@ -86,7 +88,6 @@ class ResponseInterceptor(private val jwtTokenRepository: JwtTokenRepository) : 
                             val newAccessToken = response.body()?.accessToken?.let {
                                 jwtTokenRepository.saveAccessToken(it)
                             }
-
 
                             // 새로 발급받은 AccessToken을 헤더에 추가
                             val newRequest = chain.request().newBuilder()

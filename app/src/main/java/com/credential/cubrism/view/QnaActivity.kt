@@ -32,13 +32,13 @@ class QnaActivity : AppCompatActivity() {
     private val postAdapter = PostAdapter()
     private lateinit var searchView: SearchView
 
-    private val board = "QnA"
+    private val boardId = 1
     private var loadingState = false
     private var searchQuery: String? = null
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            postViewModel.getPostList(0, 10, board, searchQuery, true)
+            postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
             binding.swipeRefreshLayout.isRefreshing = true
         }
     }
@@ -74,7 +74,7 @@ class QnaActivity : AppCompatActivity() {
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         searchQuery = query
-                        postViewModel.getPostList(0, 10, board, query, true)
+                        postViewModel.getPostList(boardId, 0, 10, query, true)
                         searchView.clearFocus()
                         return false
                     }
@@ -132,7 +132,7 @@ class QnaActivity : AppCompatActivity() {
                     if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !loadingState) {
                         postViewModel.page.value?.let { page ->
                             // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                            page.nextPage?.let { postViewModel.getPostList(it, 10, board, searchQuery) }
+                            page.nextPage?.let { postViewModel.getPostList(boardId, it, 10, searchQuery) }
                         }
                     }
                 }
@@ -146,7 +146,7 @@ class QnaActivity : AppCompatActivity() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            postViewModel.getPostList(0, 10, board, null, true)
+            postViewModel.getPostList(boardId, 0, 10, null, true)
             binding.toolbar.collapseActionView()
             searchView.setQuery("", false)
             searchQuery = null
@@ -156,7 +156,7 @@ class QnaActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         postViewModel.apply {
-            getPostList(0, 10, board, searchQuery)
+            getPostList(boardId, 0, 10, searchQuery)
             binding.swipeRefreshLayout.isRefreshing = true
 
             postList.observe(this@QnaActivity) {

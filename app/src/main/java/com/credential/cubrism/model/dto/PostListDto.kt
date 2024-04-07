@@ -7,7 +7,6 @@ data class PostListDto(
 
 data class PostList(
     val postId: Int,
-    val boardName: String,
     val category: String,
     val nickname: String,
     val imageUrl: String?,

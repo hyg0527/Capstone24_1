@@ -49,8 +49,8 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
         }
     }
 
-    fun getStudyGroupInfo(studyGroupId: Int) {
-        repository.studyGroupInfo(studyGroupId) { result ->
+    fun getStudyGroupInfo(groupId: Int) {
+        repository.studyGroupInfo(groupId) { result ->
             _studyGroupInfo.postValue(result)
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
+import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.repository.AuthRepository
@@ -56,14 +57,14 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun googleSignIn(serverAuthCode: String) {
-        authRepository.googleLogin(serverAuthCode) { result ->
+    fun googleSignIn(socialTokenDto: SocialTokenDto) {
+        authRepository.googleLogin(socialTokenDto) { result ->
             _googleSignIn.postValue(result)
         }
     }
 
-    fun kakaoSignIn(accessToken: String) {
-        authRepository.kakaoLogin(accessToken) { result ->
+    fun kakaoSignIn(socialTokenDto: SocialTokenDto) {
+        authRepository.kakaoLogin(socialTokenDto) { result ->
             _kakaoSignIn.postValue(result)
         }
     }

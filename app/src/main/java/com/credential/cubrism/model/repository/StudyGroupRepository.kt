@@ -31,8 +31,8 @@ class StudyGroupRepository {
         })
     }
 
-    fun studyGroupInfo(studyGroupId: Int, callback: (ResultUtil<StudyGroupInfoDto>) -> Unit) {
-        studyGroupApi.getStudyGroupInfo(studyGroupId).enqueue(object : Callback<StudyGroupInfoDto> {
+    fun studyGroupInfo(groupId: Int, callback: (ResultUtil<StudyGroupInfoDto>) -> Unit) {
+        studyGroupApi.getStudyGroupInfo(groupId).enqueue(object : Callback<StudyGroupInfoDto> {
             override fun onResponse(call: Call<StudyGroupInfoDto>, response: Response<StudyGroupInfoDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let {

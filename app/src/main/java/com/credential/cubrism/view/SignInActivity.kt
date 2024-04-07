@@ -10,6 +10,7 @@ import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
+import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.repository.JwtTokenRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.JwtTokenViewModel
@@ -145,7 +146,7 @@ class SignInActivity : AppCompatActivity() {
 
     // 구글 로그인
     private fun googleLogin(serverAuthCode: String) {
-        authViewModel.googleSignIn(serverAuthCode)
+        authViewModel.googleSignIn(SocialTokenDto(serverAuthCode))
         getGoogleClient().signOut() // JWT 토큰을 사용하기 때문에 로그아웃 처리
     }
 
@@ -156,7 +157,7 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this@SignInActivity, "로그인을 실패했습니다. 잠시 후 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
             } else if (token != null) {
                 val accessToken = token.accessToken
-                authViewModel.kakaoSignIn(accessToken)
+                authViewModel.kakaoSignIn(SocialTokenDto(accessToken))
             }
         }
 

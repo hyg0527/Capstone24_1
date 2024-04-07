@@ -25,8 +25,6 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
     private lateinit var postCommentAdapter : PostCommentAdapter
 
-    private val boardName = "QnA"
-
     private val postId by lazy { intent.getIntExtra("postId", -1) }
     private val myEmail by lazy { UserDataManager.getUserInfo()?.email ?: "" }
 
@@ -93,7 +91,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
     private fun getPostView() {
         if (postId != -1) {
-            postViewModel.getPostView(boardName, postId)
+            postViewModel.getPostView(postId)
         }
     }
 }
