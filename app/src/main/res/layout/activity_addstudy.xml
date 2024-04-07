@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -131,7 +132,7 @@
             app:layout_constraintTop_toBottomOf="@+id/editGroupName"/>
 
         <TextView
-            android:id="@+id/txtTag"
+            android:id="@+id/tag"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
@@ -160,15 +161,78 @@
             android:ems="10"
             android:gravity="center"
             android:inputType="number"
+            android:hint="원하는 태그 작성"
             android:fontFamily="@font/godom"
             android:textColor="@color/blue"
-            android:textSize="18dp"
+            android:textSize="16dp"
             android:backgroundTint="@color/blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/numS"
             app:layout_constraintTop_toBottomOf="@+id/numS"/>
 
+
+        <FrameLayout
+            android:id="@+id/tagbtnLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            app:layout_constraintStart_toEndOf="@+id/editTag"
+            app:layout_constraintTop_toTopOf="@+id/editTag"
+            >
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ellipse_5" />
+
+            <TextView
+                android:id="@+id/plusbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="27dp"
+                android:layout_marginLeft="0.5dp"
+                android:layout_marginTop="1dp"
+                android:fontFamily="@font/godom"
+                android:textColor="@color/white"
+                android:text="+" />
+        </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="5dp"
+            android:overScrollMode="never"
+            app:layout_constraintStart_toStartOf="@+id/editTag"
+            app:layout_constraintEnd_toEndOf="@+id/tagbtnLayout"
+            app:layout_constraintTop_toBottomOf="@+id/editTag"/>
+
+        <TextView
+            android:id="@+id/txtInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/button_rounded_corner_blue4"
+            android:fontFamily="@font/godom"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:text="소개글"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
 
         <EditText
@@ -205,26 +269,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editGroupName">
 
-            <TextView
-                android:id="@+id/tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="태그"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tag" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
