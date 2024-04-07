@@ -23,7 +23,7 @@ import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
-import com.credential.cubrism.viewmodel.JwtTokenViewModel
+import com.credential.cubrism.viewmodel.UserViewModel
 import java.util.Timer
 
 class HomeFragment : Fragment() {
@@ -62,12 +62,12 @@ class HomeUiFragment : Fragment() {
     private var currentPage = 0
     private val timer = Timer()
 
-    private val jwtTokenViewModel: JwtTokenViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             Toast.makeText(requireContext(), "로그인 성공!", Toast.LENGTH_SHORT).show()
-            jwtTokenViewModel.getUserInfo()
+            userViewModel.getUserInfo()
         }
     }
 

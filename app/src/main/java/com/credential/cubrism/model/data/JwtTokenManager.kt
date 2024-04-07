@@ -1,9 +1,9 @@
-package com.credential.cubrism.model.repository
+package com.credential.cubrism.model.data
 
 import com.credential.cubrism.MyApplication
 import kotlinx.coroutines.flow.Flow
 
-class JwtTokenRepository {
+class TokenManager {
     private val dataStore = MyApplication.getInstance().getDataStore()
 
     suspend fun saveAccessToken(token: String) {

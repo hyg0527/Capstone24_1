@@ -1,6 +1,5 @@
 package com.credential.cubrism.model.repository
 
-import android.util.Log
 import com.credential.cubrism.model.api.AuthApi
 import com.credential.cubrism.model.dto.EmailVerifyDto
 import com.credential.cubrism.model.dto.EmailVerifyRequestDto
