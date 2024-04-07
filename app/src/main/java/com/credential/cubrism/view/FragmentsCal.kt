@@ -291,6 +291,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         val title = view.findViewById<EditText>(R.id.editTextAddTitle)
         val fullTime = view.findViewById<CheckBox>(R.id.isFullCheck)
         val info = view.findViewById<EditText>(R.id.editTxtSchInfoFix)
+        title.setText(""); info.setText("")
 
         fullTime.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -367,6 +368,15 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
                 dismiss()
             }
         }
+    }
+
+    private fun initView(title: EditText, info: EditText, fullTime: CheckBox) {
+        if (title.text.isNullOrEmpty()) {
+            println("called!!!!!")
+            title.setText("")
+        }
+        if (info.text.isNullOrEmpty()) info.setText("")
+        fullTime.isChecked = false
     }
 
     // 작성한 데이터를 리스트에 등록하기 위해 데이터를 리턴하는 함수
