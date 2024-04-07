@@ -71,7 +71,7 @@ class StudyGroupAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 binding.txtIsNotRecruiting.visibility = View.VISIBLE
             }
 
-            val tagAdapter = StudyGroupTagAdapter()
+            val tagAdapter = StudyGroupTagAdapter(1)
             binding.recyclerView.apply {
                 adapter = tagAdapter
                 setRecycledViewPool(viewPool)

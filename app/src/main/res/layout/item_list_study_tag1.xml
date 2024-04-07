@@ -5,9 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/tag_rounded_corner"
     android:fontFamily="@font/kopubdotumbold"
-    android:gravity="center"
     android:paddingHorizontal="10dp"
     android:paddingVertical="7dp"
-    android:text="# 태그1"
     android:textColor="@color/blue"
     android:textSize="14dp" />
