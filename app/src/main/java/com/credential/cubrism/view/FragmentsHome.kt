@@ -20,6 +20,7 @@ import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
 import java.util.Timer
+import java.util.TimerTask
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -99,21 +100,17 @@ class HomeUiFragment : Fragment() {
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
         }
 
-        /**
-         * Q&A게시판 fragment로 전환되어도 타이머가 종료되지 않아
-         * binding이 null이 된 상태에서 viewpager를 참조하려고 해서 앱이 종료되어 임시로 주석처리
-         */
         // 3초마다 자동으로 viewpager2가 스크롤되도록 타이머 설정
-//        timer.schedule(object : TimerTask() {
-//            override fun run() {
-//                activity?.runOnUiThread {
-//                    if (currentPage == bn_adapter.itemCount) {
-//                        currentPage = 0
-//                    }
-//                    binding.viewPager.setCurrentItem(currentPage++, true)
-//                }
-//            }
-//        }, 3000, 5000) // 3초마다 실행, 첫 실행까지 3초 대기
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                activity?.runOnUiThread {
+                    if (currentPage == bn_adapter.itemCount) {
+                        currentPage = 0
+                    }
+                    binding.viewPager.setCurrentItem(currentPage++, true)
+                }
+            }
+        }, 3000, 5000) // 3초마다 실행, 첫 실행까지 3초 대기
     }
 
     override fun onDestroyView() {
