@@ -110,7 +110,7 @@ class HomeUiFragment : Fragment() {
                     binding.viewPager.setCurrentItem(currentPage++, true)
                 }
             }
-        }, 3000, 5000) // 3초마다 실행, 첫 실행까지 3초 대기
+        }, 0, 5000) // 3초마다 실행, 첫 실행 까지 3초 대기
     }
 
     override fun onDestroyView() {

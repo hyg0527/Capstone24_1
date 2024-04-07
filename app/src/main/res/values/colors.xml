@@ -12,4 +12,6 @@
     <color name="green">#5FBE74</color>
     <color name="realwhite">#fffbfe</color>
     <color name="bannerYellow">#FFF4DF</color>
+    <color name="bannerPurple">#E8E4FE</color>
+    <color name="bannerBtnPurple">#B49FF0</color>
 </resources>
