@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
-import com.credential.cubrism.model.repository.JwtTokenRepository
 import com.credential.cubrism.model.repository.UserRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.UserViewModel
@@ -19,7 +18,7 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private val userViewModel: UserViewModel by viewModels { ViewModelFactory(UserRepository(JwtTokenRepository())) }
+    private val userViewModel: UserViewModel by viewModels { ViewModelFactory(UserRepository()) }
     private val userDataManager = MyApplication.getInstance().getUserDataManager()
 
     private var backPressedTime: Long = 0

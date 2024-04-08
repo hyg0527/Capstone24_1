@@ -9,8 +9,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserRepository(jwtTokenRepository: JwtTokenRepository) {
-    private val authApi: AuthApi = RetrofitClient.getRetrofitWithAuth(jwtTokenRepository)?.create(AuthApi::class.java)!!
+class UserRepository {
+    private val authApi: AuthApi = RetrofitClient.getRetrofitWithAuth()?.create(AuthApi::class.java)!!
 
     fun userInfo(callback: (ResultUtil<UserInfoDto>) -> Unit) {
         authApi.getUserInfo().enqueue(object : Callback<UserInfoDto> {

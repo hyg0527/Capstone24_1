@@ -3,7 +3,6 @@ package com.credential.cubrism.model.service
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
-import com.credential.cubrism.model.repository.JwtTokenRepository
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import kotlinx.coroutines.flow.first
@@ -15,6 +14,8 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+private val jwtTokenRepository = MyApplication.getInstance().getJwtTokenRepository()
 
 object RetrofitClient {
     private var retrofit: Retrofit? = null
@@ -32,10 +33,10 @@ object RetrofitClient {
     }
 
     // 인증 필요
-    fun getRetrofitWithAuth(jwtTokenRepository: JwtTokenRepository): Retrofit? {
+    fun getRetrofitWithAuth(): Retrofit? {
         val interceptorClient = OkHttpClient().newBuilder()
-            .addInterceptor(RequestInterceptor(jwtTokenRepository))
-            .addInterceptor(ResponseInterceptor(jwtTokenRepository))
+            .addInterceptor(RequestInterceptor())
+            .addInterceptor(ResponseInterceptor())
             .build()
 
         return retrofitWithAuth ?: Retrofit.Builder()
@@ -55,7 +56,7 @@ object RetrofitClient {
 }
 
 // 요청을 가로챔 (Access Token을 추가하기 위해)
-class RequestInterceptor(private val jwtTokenRepository: JwtTokenRepository) : Interceptor {
+class RequestInterceptor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         // DataStore 에서 Access Token을 가져옴
         val accessToken = runBlocking {
@@ -72,7 +73,7 @@ class RequestInterceptor(private val jwtTokenRepository: JwtTokenRepository) : I
 }
 
 // 응답을 가로챔 (Access Token 만료 시 재발급을 위해)
-class ResponseInterceptor(private val jwtTokenRepository: JwtTokenRepository) : Interceptor {
+class ResponseInterceptor() : Interceptor {
     private val userDataManager = MyApplication.getInstance().getUserDataManager()
 
     override fun intercept(chain: Interceptor.Chain): Response {
