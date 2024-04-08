@@ -27,25 +27,20 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
     fun getStudyGroupList(page: Int, limit: Int, recruiting: Boolean, refresh: Boolean = false) {
-        _isLoading.value = true
         repository.studyGroupList(page, limit, recruiting) { result ->
             when (result) {
                 is ResultUtil.Success -> {
                     if (refresh) {
                         _studyGroupList.postValue(result.data.studyGroupList)
                     } else {
+                        setLoading(true)
                         _studyGroupList.postValue(_studyGroupList.value.orEmpty() + result.data.studyGroupList)
                     }
                     _page.postValue(result.data.page)
                 }
-                is ResultUtil.Error -> {
-                    _errorMessage.postValue(Event(result.error))
-                }
-                is ResultUtil.NetworkError -> {
-                    _errorMessage.postValue(Event("네트워크 오류가 발생했습니다."))
-                }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
             }
-            _isLoading.value = false
         }
     }
 
@@ -53,5 +48,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
         repository.studyGroupInfo(groupId) { result ->
             _studyGroupInfo.postValue(result)
         }
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        _isLoading.value = isLoading
     }
 }

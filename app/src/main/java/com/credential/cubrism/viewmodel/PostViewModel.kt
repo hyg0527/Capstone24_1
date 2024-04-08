@@ -48,8 +48,8 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
                     if (refresh) {
                         _postList.postValue(result.data.postList)
                     } else {
-                        _postList.postValue(_postList.value.orEmpty() + result.data.postList)
                         setLoading(true)
+                        _postList.postValue(_postList.value.orEmpty() + result.data.postList)
                     }
                     _page.postValue(result.data.page)
                 }

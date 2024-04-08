@@ -21,7 +21,7 @@ class StudyFragment : Fragment() {
     private var _binding: FragmentStudyBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
+    private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
     private val studyGroupAdapter = StudyGroupAdapter()
 
     private var loadingState = false
@@ -56,9 +56,9 @@ class StudyFragment : Fragment() {
             if (scrollY >= v.getChildAt(0).measuredHeight - v.measuredHeight) {
                 // 스크롤을 끝까지 내렸을 때
                 if (!loadingState) {
-                    viewModel.page.value?.let { page ->
+                    studyGroupViewModel.page.value?.let { page ->
                         // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                        page.nextPage?.let { viewModel.getStudyGroupList(it, 5, isRecruiting) }
+                        page.nextPage?.let { studyGroupViewModel.getStudyGroupList(it, 5, isRecruiting) }
                     }
                 }
             }
@@ -71,33 +71,36 @@ class StudyFragment : Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getStudyGroupList(0, 5, isRecruiting, true)
+            studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 
     private fun setupView() {
+        studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting)
+        binding.swipeRefreshLayout.isRefreshing = true
+
         binding.switchRecruiting.setOnCheckedChangeListener { _, isChecked ->
             isRecruiting = isChecked
-            viewModel.getStudyGroupList(0, 5, isRecruiting, true)
+            studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
             binding.scrollView.scrollTo(0, 0)
         }
     }
 
     private fun observeViewModel() {
-        viewModel.apply {
-            getStudyGroupList(0, 5, isRecruiting)
-            binding.swipeRefreshLayout.isRefreshing = true
-
+        studyGroupViewModel.apply {
             studyGroupList.observe(viewLifecycleOwner) {
                 studyGroupAdapter.setItemList(it ?: emptyList())
                 binding.swipeRefreshLayout.isRefreshing = false
+                setLoading(false)
             }
+
             isLoading.observe(viewLifecycleOwner) {
                 studyGroupAdapter.setLoading(it)
                 loadingState = it
             }
+
             errorMessage.observe(viewLifecycleOwner) {
                 it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
             }
