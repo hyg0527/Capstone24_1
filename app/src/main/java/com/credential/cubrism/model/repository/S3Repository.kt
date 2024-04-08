@@ -11,8 +11,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class S3Repository(jwtTokenRepository: JwtTokenRepository) {
-    private val s3Api: S3Api = RetrofitClient.getRetrofitWithAuth(jwtTokenRepository)?.create(S3Api::class.java)!!
+class S3Repository {
+    private val s3Api: S3Api = RetrofitClient.getRetrofitWithAuth()?.create(S3Api::class.java)!!
     private val s3ApiXml: S3Api = RetrofitClient.getRetrofitWithXml()?.create(S3Api::class.java)!!
 
     fun getPresignedUrl(presignedUrlRequestDto: List<PresignedUrlRequestDto>, callback: (ResultUtil<PresignedUrlDto>) -> Unit) {
