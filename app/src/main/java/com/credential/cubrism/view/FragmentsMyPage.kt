@@ -67,7 +67,7 @@ class MyPageFragmentHome : Fragment() {
         }
 
         binding.layoutSchedule.setOnClickListener {
-
+            startActivity(Intent(requireActivity(), MyScheduleListActivity::class.java))
         }
 
         binding.recyclerView.apply {
