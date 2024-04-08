@@ -76,6 +76,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
                     Glide.with(this).load(postView.profileImageUrl)
                         .error(R.drawable.profil_image)
                         .fallback(R.drawable.profil_image)
+                        .dontAnimate()
                         .into(binding.imgProfile)
                     binding.txtNickname.text = "  ${postView.nickname}  "
                     binding.txtCategory.text = postView.category

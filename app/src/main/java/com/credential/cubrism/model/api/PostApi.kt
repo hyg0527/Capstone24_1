@@ -1,16 +1,19 @@
 package com.credential.cubrism.model.api
 
+import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
 import com.credential.cubrism.model.dto.PostViewDto
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostApi {
     // 게시글 작성
-//    @POST("/post")
-//    fun addPost(@Body postAddDto: PostAddDto): Call<PostAddDto>
+    @POST("/post")
+    fun addPost(@Body postAddDto: PostAddDto): Call<PostAddDto>
 
     // 게시글 삭제
 //    @DELETE("/post/{postId}")

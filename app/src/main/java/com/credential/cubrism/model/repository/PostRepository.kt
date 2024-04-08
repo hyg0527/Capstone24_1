@@ -1,6 +1,7 @@
 package com.credential.cubrism.model.repository
 
 import com.credential.cubrism.model.api.PostApi
+import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.service.RetrofitClient
@@ -12,14 +13,29 @@ import retrofit2.Response
 
 class PostRepository {
     private val postApi: PostApi = RetrofitClient.getRetrofit()?.create(PostApi::class.java)!!
+    private val postApiAuth: PostApi = RetrofitClient.getRetrofitWithAuth()?.create(PostApi::class.java)!!
+
+    fun addPost(postAddDto: PostAddDto, callback: (ResultUtil<PostAddDto>) -> Unit) {
+        postApiAuth.addPost(postAddDto).enqueue(object : Callback<PostAddDto> {
+            override fun onResponse(call: Call<PostAddDto>, response: Response<PostAddDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<PostAddDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
 
     fun getPostList(boardId: Int, page: Int, limit: Int, searchQuery: String?, callback: (ResultUtil<PostListDto>) -> Unit) {
         postApi.getPostList(boardId, page, limit, searchQuery).enqueue(object : Callback<PostListDto> {
             override fun onResponse(call: Call<PostListDto>, response: Response<PostListDto>) {
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        callback(ResultUtil.Success(it))
-                    }
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
                     response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }
@@ -35,9 +51,7 @@ class PostRepository {
         postApi.getPostView(postId).enqueue(object : Callback<PostViewDto> {
             override fun onResponse(call: Call<PostViewDto>, response: Response<PostViewDto>) {
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        callback(ResultUtil.Success(it))
-                    }
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
                     response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }

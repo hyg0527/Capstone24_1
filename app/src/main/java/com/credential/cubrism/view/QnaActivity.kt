@@ -34,6 +34,7 @@ class QnaActivity : AppCompatActivity() {
 
     private val boardId = 1
     private var loadingState = false
+    private var refreshState = false
     private var searchQuery: String? = null
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -50,6 +51,7 @@ class QnaActivity : AppCompatActivity() {
         setupToolbar()
         setupTabLayout()
         setupRecyclerView()
+        setupView()
         observeViewModel()
 
         binding.floatingActionButton.setOnClickListener {
@@ -154,14 +156,18 @@ class QnaActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupView() {
+        postViewModel.getPostList(boardId, 0, 10, searchQuery)
+        binding.swipeRefreshLayout.isRefreshing = true
+    }
+
     private fun observeViewModel() {
         postViewModel.apply {
-            getPostList(boardId, 0, 10, searchQuery)
-            binding.swipeRefreshLayout.isRefreshing = true
-
             postList.observe(this@QnaActivity) {
                 postAdapter.setItemList(it ?: emptyList())
                 binding.swipeRefreshLayout.isRefreshing = false
+                setLoading(false)
+                if (refreshState) binding.recyclerView.scrollToPosition(0)
             }
 
             isLoading.observe(this@QnaActivity) {
@@ -169,9 +175,8 @@ class QnaActivity : AppCompatActivity() {
                 loadingState = it
             }
 
-            isRefreshed.observe(this@QnaActivity) { refreshed ->
-                if (refreshed)
-                    binding.recyclerView.scrollToPosition(0)
+            isRefreshed.observe(this@QnaActivity) {
+                refreshState = it
             }
 
             errorMessage.observe(this@QnaActivity) {
