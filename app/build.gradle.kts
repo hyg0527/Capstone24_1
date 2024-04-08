@@ -31,7 +31,6 @@ android {
         buildConfigField("String","SPRING_URL", getApi("SPRING_URL"))
         buildConfigField("String","GOOGLE_CLIENT_ID", getApi("GOOGLE_CLIENT_ID"))
         buildConfigField("String","KAKAO_NATIVE_APP_KEY", getApi("KAKAO_NATIVE_APP_KEY"))
-        buildConfigField("String", "KEYSTORE_ENCRYPTOR_KEY_ALIAS", getApi("KEYSTORE_ENCRYPTOR_KEY_ALIAS"))
         manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = properties["KAKAO_NATIVE_APP_KEY"].toString().replace("\"", "")
     }
 
@@ -91,6 +90,7 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.etebarian:meow-bottom-navigation:1.2.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.tickaroo.tikxml:retrofit-converter:0.9.0_11-SNAPSHOT")
 
     // 테스트
     testImplementation("junit:junit:4.13.2")
