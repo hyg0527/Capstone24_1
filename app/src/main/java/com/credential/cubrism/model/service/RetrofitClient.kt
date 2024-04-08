@@ -4,6 +4,8 @@ import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
 import com.credential.cubrism.model.repository.JwtTokenRepository
+import com.tickaroo.tikxml.TikXml
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -17,6 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     private var retrofit: Retrofit? = null
     private var retrofitWithAuth: Retrofit? = null
+    private val tikXml = TikXml.Builder()
+        .exceptionOnUnreadXml(false)
+        .build()
 
     // 인증 불필요
     fun getRetrofit(): Retrofit? {
@@ -37,6 +42,14 @@ object RetrofitClient {
             .baseUrl(BuildConfig.SPRING_URL)
             .client(interceptorClient)
             .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    // XML 파싱
+    fun getRetrofitWithXml(): Retrofit? {
+        return retrofit ?: Retrofit.Builder()
+            .baseUrl("https://cubrism-bucket.s3.ap-northeast-2.amazonaws.com")
+            .addConverterFactory(TikXmlConverterFactory.create(tikXml))
             .build()
     }
 }
