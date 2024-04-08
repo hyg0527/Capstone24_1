@@ -81,6 +81,7 @@ class HomeUiFragment : Fragment() {
         val td_adapter = TodoAdapter(tdlist)
         val lcs_adapter = LicenseAdapter(lcslist)
         val bn_adapter = BannerAdapter()
+        binding.backgroundImage.setImageResource(R.drawable.peopleimage_home)
 
         bn_adapter.setBannerListener(object: QnaBannerEnterListener {
             override fun onBannerClicked() {
