@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +28,7 @@ import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
 import com.credential.cubrism.view.adapter.ScheduleClickListener
-import com.credential.cubrism.viewmodel.CalMonthViewModel
+import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -41,7 +42,8 @@ import java.util.Locale
 class CalFragment : Fragment(R.layout.fragment_cal) {
     private var _binding: FragmentCalBinding? = null
     private val binding get() = _binding!!
-    private lateinit var calMonthViewModel: CalMonthViewModel
+
+    private val calendarViewModel: CalendarViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalBinding.inflate(inflater, container, false)
@@ -53,7 +55,6 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
 
         val calHyg = CalendarHyg()
         // viewmodel 호출. 일정 추가기능을 livedata로 구현.
-        calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
         val adapter = initScheduleList()
 
         val calendarAdapter = CalendarAdapter(ArrayList()) // 날짜 어댑
@@ -61,7 +62,7 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
         binding.calendarRealView.layoutManager = layoutManager // 월간 달력 recyclerView 초기화
         binding.calendarRealView.adapter = calendarAdapter
 
-        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, calMonthViewModel.calMonthList.value) { date ->
+        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, calendarViewModel.calMonthList.value) { date ->
             updateViewModel(adapter, date)
         }
 
@@ -71,7 +72,7 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
                 val pickTxt = binding.txtYearMonth.text.toString()
                 val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
 
-                val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calMonthViewModel.calMonthList.value)
+                val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
                 calendarAdapter.updateCalendar(monthUpdateList)
                 calendarAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
             }
@@ -84,7 +85,7 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
                 val pickTxt = binding.txtYearMonth.text.toString()
                 val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
 
-                val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calMonthViewModel.calMonthList.value)
+                val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
                 calendarAdapter.updateCalendar(monthUpdateList)
                 calendarAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
             }
@@ -108,27 +109,27 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
         }
 
         binding.dateSelect.setOnClickListener {
-            showDatePickDialog(calHyg, calendarAdapter, calMonthViewModel.calMonthList.value) { date ->
+            showDatePickDialog(calHyg, calendarAdapter, calendarViewModel.calMonthList.value) { date ->
                 updateViewModel(adapter, date)
             }
         }
         binding.preMonth.setOnClickListener {
             calHyg.setPreNextMonthCalendar(calendarAdapter, binding.txtYearMonth, binding.currentDate,
-                calMonthViewModel.calMonthList.value, "pre") { date ->
+                calendarViewModel.calMonthList.value, "pre") { date ->
                 updateViewModel(adapter, date)
                 calendarAdapter.highlightDate(date)
             }
         }
         binding.nextMonth.setOnClickListener {
             calHyg.setPreNextMonthCalendar(calendarAdapter, binding.txtYearMonth, binding.currentDate,
-                calMonthViewModel.calMonthList.value, "next") { date ->
+                calendarViewModel.calMonthList.value, "next") { date ->
                 updateViewModel(adapter, date)
                 calendarAdapter.highlightDate(date)
             }
         }
         binding.btnToday.setOnClickListener {
             calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter,
-                calMonthViewModel.calMonthList.value) { date ->
+                calendarViewModel.calMonthList.value) { date ->
                 updateViewModel(adapter, date)
                 calendarAdapter.highlightDate(date)
             }
@@ -212,7 +213,7 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
     }
 
     private fun updateViewModel(adapter: CalListAdapter, date: String) { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지)
-        calMonthViewModel.calMonthList.observe(viewLifecycleOwner) { calList ->
+        calendarViewModel.calMonthList.observe(viewLifecycleOwner) { calList ->
             adapter.clearItem() // 업데이트 전 리스트 초기화 후 항목을 모두 추가 (중복 삽입 방지)
 
             calList.forEach { calMonth ->
@@ -244,7 +245,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
     private lateinit var endTime: TextView
     private lateinit var txtCurrentDateAdd: TextView
     private lateinit var txtCurrentDateAddEnd: TextView
-    private lateinit var calMonthViewModel: CalMonthViewModel
+    private lateinit var calMonthViewModel: CalendarViewModel
     private var listener: AddDot? = null
 
     fun setAddListener(listener: AddDot) {
@@ -311,7 +312,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             showDatePickDialog("end", currentDate)
         }
 
-        calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
+        calMonthViewModel = ViewModelProvider(requireActivity())[CalendarViewModel::class.java]
 
         add.setOnClickListener {
             val data = bringCurrentData(title, info, fullTime)
@@ -576,7 +577,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 
 // 일정 상세 화면 다이얼로그
 class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_info) {
-    private lateinit var calMonthViewModel: CalMonthViewModel
+    private lateinit var calMonthViewModel: CalendarViewModel
     private lateinit var start: TextView
     private lateinit var end: TextView
     private var listener: AddDot? = null
@@ -591,7 +592,7 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
         val delete = view.findViewById<ImageView>(R.id.btnSchDeleteInfo)
         val modify = view.findViewById<ImageView>(R.id.btnSchModifyInfo)
         val item = arguments?.getParcelable<CalMonth>("scheduleInfo")
-        calMonthViewModel = ViewModelProvider(requireActivity())[CalMonthViewModel::class.java]
+        calMonthViewModel = ViewModelProvider(requireActivity())[CalendarViewModel::class.java]
 
         showInfo(view, item)
 

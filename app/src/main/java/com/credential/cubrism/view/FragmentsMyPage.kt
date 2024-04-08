@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentMypageBinding
 import com.credential.cubrism.databinding.FragmentMypageHomeBinding
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.CalendarViewModel
 
 class MyPageFragment : Fragment() {
     private var _binding: FragmentMypageBinding? = null
@@ -46,6 +48,7 @@ class MyPageFragmentHome : Fragment() {
     private var _binding: FragmentMypageHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val calendarViewModel: CalendarViewModel by activityViewModels()
     private val myPageAdapter = MyPageAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -63,7 +66,10 @@ class MyPageFragmentHome : Fragment() {
 
         // 나의 스터디 리스트 화면 출력
         binding.layoutStudy.setOnClickListener {
-            startActivity(Intent(requireActivity(), MyStudyListActivity::class.java))
+            println(calendarViewModel.calMonthList.value)
+            val intent = Intent(requireActivity(), MyStudyListActivity::class.java)
+            intent.putExtra("myScheduleList", calendarViewModel.calMonthList.value)
+            startActivity(intent)
         }
 
         binding.layoutSchedule.setOnClickListener {

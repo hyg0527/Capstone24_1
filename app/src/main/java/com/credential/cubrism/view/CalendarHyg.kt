@@ -16,7 +16,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class CalendarHyg {
-    fun getInstance(): Calendar {
+    private fun getInstance(): Calendar {
         return Calendar.getInstance()
     }
 
