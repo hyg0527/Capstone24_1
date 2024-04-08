@@ -18,7 +18,7 @@ interface OnReplyClickListener {
     fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String)
 }
 
-class PostCommentAdapter(private val myEmail: String, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostCommentAdapter(private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
 
     private var selectedViewHolder: RecyclerView.ViewHolder? = null

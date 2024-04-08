@@ -14,10 +14,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import com.bumptech.glide.Glide
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityEditProfileBinding
 import com.credential.cubrism.databinding.DialogProfilePickBinding
-import com.credential.cubrism.model.data.UserDataManager
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.AuthViewModel
@@ -28,6 +28,7 @@ class EditProfileActivity : AppCompatActivity() {
     private val binding by lazy { ActivityEditProfileBinding.inflate(layoutInflater) }
 
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
+    private val userDataManager = MyApplication.getInstance().getUserDataManager()
 
     private lateinit var bottomProfileDialog: BottomSheetDialog
 
@@ -85,7 +86,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        UserDataManager.getUserInfo()?.let { user ->
+        userDataManager.getUserInfo()?.let { user ->
             Glide.with(this).load(user.profileImage)
                 .error(R.drawable.profile)
                 .fallback(R.drawable.profile)

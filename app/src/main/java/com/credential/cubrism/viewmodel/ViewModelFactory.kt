@@ -6,6 +6,7 @@ import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.JwtTokenRepository
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.repository.QualificationRepository
+import com.credential.cubrism.model.repository.S3Repository
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.model.repository.UserRepository
 
@@ -19,6 +20,7 @@ class ViewModelFactory(private val repository: Any) : ViewModelProvider.Factory 
             QualificationViewModel::class.java -> QualificationViewModel(repository as QualificationRepository) as T
             StudyGroupViewModel::class.java -> StudyGroupViewModel(repository as StudyGroupRepository) as T
             PostViewModel::class.java -> PostViewModel(repository as PostRepository) as T
+            S3ViewModel::class.java -> S3ViewModel(repository as S3Repository) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

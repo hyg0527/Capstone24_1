@@ -14,12 +14,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentMypageAddstudyBinding
 import com.credential.cubrism.databinding.FragmentMypageBinding
 import com.credential.cubrism.databinding.FragmentMypageHomeBinding
 import com.credential.cubrism.databinding.FragmentMypageMystudyBinding
-import com.credential.cubrism.model.data.UserDataManager
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -55,6 +55,8 @@ class MyPageFragmentHome : Fragment() {
     private var _binding: FragmentMypageHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val userDataManager = MyApplication.getInstance().getUserDataManager()
+
     private val myPageAdapter = MyPageAdapter()
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -84,7 +86,7 @@ class MyPageFragmentHome : Fragment() {
         super.onHiddenChanged(hidden)
 
         if (!hidden) {
-            UserDataManager.getUserInfo()?.let { user ->
+            userDataManager.getUserInfo()?.let { user ->
                 Glide.with(requireContext()).load(user.profileImage)
                     .error(R.drawable.account_circle)
                     .fallback(R.drawable.account_circle)

@@ -1,8 +1,8 @@
 package com.credential.cubrism.model.service
 
 import com.credential.cubrism.BuildConfig
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
-import com.credential.cubrism.model.data.UserDataManager
 import com.credential.cubrism.model.repository.JwtTokenRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -60,6 +60,8 @@ class RequestInterceptor(private val jwtTokenRepository: JwtTokenRepository) : I
 
 // 응답을 가로챔 (Access Token 만료 시 재발급을 위해)
 class ResponseInterceptor(private val jwtTokenRepository: JwtTokenRepository) : Interceptor {
+    private val userDataManager = MyApplication.getInstance().getUserDataManager()
+
     override fun intercept(chain: Interceptor.Chain): Response {
         // 응답을 받음
         val originalResponse = chain.proceed(chain.request())
@@ -102,7 +104,7 @@ class ResponseInterceptor(private val jwtTokenRepository: JwtTokenRepository) : 
                             jwtTokenRepository.deleteRefreshToken()
 
                             // UserDataManager에 저장되어 있는 유저 정보를 삭제
-                            UserDataManager.clearUserInfo()
+                            userDataManager.clearUserInfo()
                         }
                     }
                 }

@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaViewBinding
-import com.credential.cubrism.model.data.UserDataManager
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.OnReplyClickListener
@@ -23,10 +23,11 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val binding by lazy { ActivityQnaViewBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
+    private val userDataManager = MyApplication.getInstance().getUserDataManager()
+
     private lateinit var postCommentAdapter : PostCommentAdapter
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
-    private val myEmail by lazy { UserDataManager.getUserInfo()?.email ?: "" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     }
 
     private fun setupRecyclerView() {
+        val myEmail = userDataManager.getUserInfo()?.email
         postCommentAdapter = PostCommentAdapter(myEmail, this)
         binding.recyclerView.apply {
             adapter = postCommentAdapter
