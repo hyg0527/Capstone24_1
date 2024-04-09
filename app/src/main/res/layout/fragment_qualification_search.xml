@@ -20,7 +20,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:closeIcon="@drawable/baseline_clear_24"
-        android:iconifiedByDefault="false"
         android:queryHint="자격증을 검색하세요"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

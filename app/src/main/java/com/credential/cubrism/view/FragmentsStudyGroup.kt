@@ -1,16 +1,12 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
+import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -18,6 +14,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ActivityAddstudyBinding
+import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
+import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
+import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
+import com.credential.cubrism.databinding.FragmentStudygroupFunc4Binding
+import com.credential.cubrism.databinding.FragmentStudygroupFunclistBinding
+import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
+import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
+import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
+import com.credential.cubrism.databinding.FragmentStudygroupSettitleBinding
+import com.credential.cubrism.databinding.FragmentStudygroupTimerBinding
 import com.credential.cubrism.view.adapter.Chat
 import com.credential.cubrism.view.adapter.ChattingAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
@@ -27,40 +34,59 @@ import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.TitleViewModel
 
-class StudyGroupHomeFragment : Fragment(R.layout.fragment_studygroup_home) {
+class StudyGroupHomeFragment : Fragment() {
+    private var _binding: FragmentStudygroupHomeBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var goalListViewModel: GoalListViewModel
     private lateinit var title: TextView
     private val titleViewModel: TitleViewModel by activityViewModels()
     private var view: View? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
 
         goalListViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
-        title = view.findViewById(R.id.txtStudyGroupInfoTitle)
-
         initGoalListView(view)
+
         titleViewModel.editTextValue.observe(viewLifecycleOwner, Observer { value ->
-            title.text = value
+            binding.studyGroupTitle.text = value
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initGoalListView(v: View) {
         val items = goalListViewModel.goalList.value ?: ArrayList()
-        val recyclerView = v.findViewById<RecyclerView>(R.id.goalRecyclerViewList)
         val adapter = GoalAdapter(items, true)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        binding.goalRecyclerViewList.layoutManager = LinearLayoutManager(requireContext())
+        binding.goalRecyclerViewList.adapter = adapter
 
     }
 }
 
-class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
+class StudyGroupFunc2Fragment : Fragment() {
+    private var _binding: FragmentStudygroupFunc2Binding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: StudyGroupRankAdapter
     private lateinit var dDayViewModel: DDayViewModel
     private var view: View? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupFunc2Binding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,7 +94,11 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
 
         dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
         initRankList(view)
-        //loadDDayData(view)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initRankList(v: View) {
@@ -84,67 +114,57 @@ class StudyGroupFunc2Fragment : Fragment(R.layout.fragment_studygroup_func2) {
         recyclerView.adapter = adapter
     }
 
-    /*
-    private fun loadDDayData(v: View) {
-
-
-        val noLabel = v.findViewById<TextView>(R.id.txtDdayNotLabel)
-
-
-        val data = dDayViewModel.pairStringLiveData.value
-        println(data)
-        if (!data?.first.isNullOrEmpty()) {
-            noLabel.visibility = View.GONE
-
-
-
-        }
-        else {
-            noLabel.visibility = View.VISIBLE
-
-        }
-
-    }
-
-
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            adapter.reloadItems()
-            view?.let { loadDDayData(it) }
-        }
+        if (!hidden) { adapter.reloadItems() }
     }
-    */
 }
 
-class StudyGroupFunc3Fragment : Fragment(R.layout.fragment_studygroup_func3) {
+class StudyGroupFunc3Fragment : Fragment() {
+    private var _binding: FragmentStudygroupFunc3Binding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = initRecyclerViewStudyChat(view)
 
-
-        val sendBtn = view.findViewById<ImageButton>(R.id.sendingBtn)
-        sendBtn.setOnClickListener {
+        binding.sendingBtn.setOnClickListener {
             val text = view.findViewById<EditText>(R.id.editTextSendMessage).text.toString()
             adapter.addItem(Chat(null, null, text))
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun initRecyclerViewStudyChat(v: View): ChattingAdapter {
         val itemList = ArrayList<Chat>()
-        val recyclerView = v.findViewById<RecyclerView>(R.id.studyGroupChatView)
         val adapter = ChattingAdapter(itemList)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        binding.studyGroupChatView.layoutManager = LinearLayoutManager(requireContext())
+        binding.studyGroupChatView.adapter = adapter
 
         return adapter
     }
 }
 
-class StudyGroupFunc4Fragment : Fragment(R.layout.fragment_studygroup_func4) {
+class StudyGroupFunc4Fragment : Fragment() {
+    private var _binding: FragmentStudygroupFunc4Binding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupFunc4Binding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -156,19 +176,31 @@ class StudyGroupFunc4Fragment : Fragment(R.layout.fragment_studygroup_func4) {
                 .commit()
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
 
-class StudyGroupFuncListFragment : Fragment(R.layout.fragment_studygroup_funclist) { // 4번째 리스트 출력 프래그먼트
+class StudyGroupFuncListFragment : Fragment() { // 4번째 리스트 출력 프래그먼트
+    private var _binding: FragmentStudygroupFunclistBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupFunclistBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initMenu(view)
+        binding.txtTimerMenu.setOnClickListener { changeFragmentFunc4(parentFragment, StudyGroupTimerFragment()) }
     }
 
-    private fun initMenu(v: View) {
-        val timerMenu = v.findViewById<TextView>(R.id.txtTimerMenu)
-
-        timerMenu.setOnClickListener { changeFragmentFunc4(parentFragment, StudyGroupTimerFragment()) }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun changeFragmentFunc4(parentFragment: Fragment?, fragment: Fragment) {
@@ -180,16 +212,30 @@ class StudyGroupFuncListFragment : Fragment(R.layout.fragment_studygroup_funclis
     }
 }
 
-class StudyGroupTimerFragment : Fragment(R.layout.fragment_studygroup_timer) {
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+class StudyGroupTimerFragment : Fragment() {
+    private var _binding: FragmentStudygroupTimerBinding? = null
+    private val binding get() = _binding!!
 
-        val progressBar = view.findViewById<ProgressBar>(R.id.timerBar)
-        progressBar.isIndeterminate = false
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupTimerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 
-class StudyGroupManageFragment : Fragment(R.layout.fragment_studygroup_managehome) {
+class StudyGroupManageFragment : Fragment() {
+    private var _binding: FragmentStudygroupManagehomeBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupManagehomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -197,121 +243,97 @@ class StudyGroupManageFragment : Fragment(R.layout.fragment_studygroup_managehom
         initList(view, title)
     }
 
-    private fun initList(v: View, title: String?) {
-        val manageAnnounce = v.findViewById<LinearLayout>(R.id.manageAnnounce)
-        val manageGoal = v.findViewById<LinearLayout>(R.id.manageGoal)
-        val manageDday = v.findViewById<LinearLayout>(R.id.manageDday)
-        val manageTitle = v.findViewById<LinearLayout>(R.id.manageTitle)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
+    private fun initList(v: View, title: String?) {
         val announceFragment = StudyGroupAnnounceFixFragment()
-        val goalFragment = StudyGroupGoalFragment()
-        val dDayFragment = StudyGroupDDayFragment()
-        val titleFragment = StudyGroupSetTitleFragment()
 
         val bundle = Bundle()
         bundle.putString("titleName", title)
         announceFragment.arguments = bundle
 
-        manageAnnounce.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(announceFragment) }
-        manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(goalFragment) }
-        manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(dDayFragment) }
-        manageTitle.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(titleFragment) }
+        binding.apply {
+            manageAnnounce.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(announceFragment) }
+            manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupGoalFragment()) }
+            manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupDDayFragment()) }
+            manageTitle.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupSetTitleFragment()) }
+        }
     }
 }
 
-class StudyGroupAnnounceFixFragment : Fragment(R.layout.fragment_mypage_addstudy) {
-//    private lateinit var studyListViewModel: StudyListViewModel
+class StudyGroupAnnounceFixFragment : Fragment() {
+    private var _binding: ActivityAddstudyBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = ActivityAddstudyBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val title = arguments?.getString("titleName")
-
-//        studyListViewModel = ViewModelProvider(requireActivity())[StudyListViewModel::class.java]
-        initPageInfo(view)
-//        loadData(view, title)
+        initPageInfo()
     }
 
-    private fun initPageInfo(v: View) {
-        val title = v.findViewById<TextView>(R.id.txtTitle)
-        val backBtn = v.findViewById<ImageButton>(R.id.btnBack)
-        val submitBtn = v.findViewById<Button>(R.id.btnCreate)
-        val switch = v.findViewById<Switch>(R.id.switchHide)
-        val layout = v.findViewById<ConstraintLayout>(R.id.layoutBody)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        title.text = "게시글 정보 수정"
-        submitBtn.text = "수정하기"
-        switch.visibility = View.VISIBLE
+    private fun initPageInfo() {
+        binding.apply {
+            txtTitle.text = "게시글 정보 수정"
+            btnCreate.text = "수정하기"
+            switchHide.visibility = View.VISIBLE
 
-        backBtn.setOnClickListener {
-            (activity as StudyManageActivity).popBackStackFragment()
-        }
-        switch.setOnCheckedChangeListener { _, isChecked ->
-            when (isChecked) {
-                true -> layout.visibility = View.GONE
-                false -> layout.visibility = View.VISIBLE
+            btnBack.setOnClickListener {
+                (activity as StudyManageActivity).popBackStackFragment()
             }
-        }
-        submitBtn.setOnClickListener {
-            if (switch.isEnabled) {
-
-                Toast.makeText(requireContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            switchHide.setOnCheckedChangeListener { _, isChecked ->
+                when (isChecked) {
+                    true -> layoutBody.visibility = View.GONE
+                    false -> layoutBody.visibility = View.VISIBLE
+                }
             }
-            else {
+            btnCreate.setOnClickListener {// 수정 버튼 클릭
+                if (switchHide.isEnabled) {
 
-                Toast.makeText(requireContext(), "게시글이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                else {
+
+                    Toast.makeText(requireContext(), "게시글이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                }
             }
+
         }
     }
 
-//    private fun loadData(v: View, title: String?) {
-//        val listTitle = v.findViewById<EditText>(R.id.editTextStudyTitle)
-//        val listInfo = v.findViewById<EditText>(R.id.editTextStudyInfo)
-//        val numS = v.findViewById<EditText>(R.id.editTextNums)
-//
-//        val adapter = loadTagRecyclerView(v)
-//
-//        val data = studyListViewModel.studyList.value ?: ArrayList()
-//        for (item in data) {
-//            if (item.title.equals(title)) {
-//                listTitle.setText(item.title)
-//                listInfo.setText(item.info)
-//                numS.setText(item.totalNum.toString())
-//
-//                adapter.changeTagStatus(item.tagList)
-//            }
-//        }
-//    }
-
-//    private fun loadTagRecyclerView(v: View): TagAdapter {
-//        val recyclerView = v.findViewById<RecyclerView>(R.id.tagRecyclerView)
-//        val itemList = listOf("#널널함", "#열공", "#일주일", "#자유롭게", "#한달", "#필참", "#뭐가", "#있지", "#음..", "#알아서", "#없음")
-//        val items = ArrayList<Tags>().apply {
-//            for (item in itemList)
-//                add(Tags(item))
-//        }
-//        val adapter = TagAdapter(items, true)
-//        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL)
-//        recyclerView.adapter = adapter
-//
-//        return adapter
-//    }
 }
 
-class StudyGroupGoalFragment : Fragment(R.layout.fragment_studygroup_goal) { // 목표 설정 프래그먼트
+class StudyGroupGoalFragment : Fragment() { // 목표 설정 프래그먼트
+    private var _binding: FragmentStudygroupGoalBinding? = null
+    private val binding get() = _binding!!
     private lateinit var goalViewModel: GoalListViewModel
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupGoalBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val backBtn = view.findViewById<ImageButton>(R.id.backBtn)
-        val submit = view.findViewById<TextView>(R.id.txtGoalSubmit)
-        val add = view.findViewById<Button>(R.id.btnAddGoal)
 
         goalViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
         val adapter = initGoalRecyclerView(view)
 
-        backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
-        submit.setOnClickListener {
+        binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+        binding.txtGoalSubmit.setOnClickListener {
             for (item in adapter.getItem()) {
                 goalViewModel.addList(item)
             }
@@ -319,7 +341,7 @@ class StudyGroupGoalFragment : Fragment(R.layout.fragment_studygroup_goal) { // 
             Toast.makeText(requireContext(), "목표 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()
         }
-        add.setOnClickListener {
+        binding.btnAddGoal.setOnClickListener {
             if (adapter.getItem().size >= 3) {
                 Toast.makeText(requireContext(), "목표 개수는 3개까지 작성 가능합니다.", Toast.LENGTH_SHORT).show()
             } else {
@@ -328,41 +350,55 @@ class StudyGroupGoalFragment : Fragment(R.layout.fragment_studygroup_goal) { // 
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun initGoalRecyclerView(v: View): GoalAdapter {
         val items = goalViewModel.goalList.value ?: ArrayList()
-        val recyclerView = v.findViewById<RecyclerView>(R.id.goalRecyclerView)
         val adapter = GoalAdapter(items, false)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        binding.goalRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.goalRecyclerView.adapter = adapter
 
         return adapter
     }
 }
 
 class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
+    private var _binding: FragmentStudygroupDdayBinding? = null
+    private val binding get() = _binding!!
     private lateinit var dDayViewModel: DDayViewModel
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupDdayBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
-        initView(view)
+        initView()
     }
 
-    private fun initView(view: View) {
-        val submitBtn = view.findViewById<TextView>(R.id.btnDdaySubmit)
-        val resetBtn = view.findViewById<Button>(R.id.btnResetDday)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        val title = view.findViewById<EditText>(R.id.editTextDdayTitle)
-        val date = view.findViewById<TextView>(R.id.txtDdayDate)
+    private fun initView() {
+        val title = binding.editTextDdayTitle
+        val date = binding.txtDdayDate
 
-        submitBtn.setOnClickListener {
+        binding.btnDdaySubmit.setOnClickListener {
             dDayViewModel.setPairString(Pair(title.text.toString(), date.text.toString()))
 
             Toast.makeText(requireContext(), "디데이를 등록하였습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()
         }
-        resetBtn.setOnClickListener {
+        binding.btnResetDday.setOnClickListener {
             title.setText("")
             date.text = "2024년 00월 00일"
             Toast.makeText(requireContext(), "디데이정보를 초기화하였습니다.", Toast.LENGTH_SHORT).show()
@@ -371,21 +407,30 @@ class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
 }
 
 class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitle) {
+    private var _binding: FragmentStudygroupSettitleBinding? = null
+    private val binding get() = _binding!!
     private val titleViewModel: TitleViewModel by activityViewModels()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentStudygroupSettitleBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView(view)
+        initView()
     }
 
-    private fun initView(view: View) {
-        val backBtn = view.findViewById<ImageButton>(R.id.backBtn)
-        val submitBtn = view.findViewById<TextView>(R.id.btnTitleSubmit)
-        val text = view.findViewById<EditText>(R.id.editTextStudyTitleTxt)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
-        submitBtn.setOnClickListener {
-            titleViewModel.setEditTextValue(text.text.toString())
+    private fun initView() {
+        binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+        binding.btnTitleSubmit.setOnClickListener {
+            titleViewModel.setEditTextValue(binding.editTextStudyTitleTxt.text.toString())
             println("수정된 값" + titleViewModel.editTextValue.value)
 
             Toast.makeText(requireContext(), "소개글 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()

@@ -23,7 +23,7 @@
             app:srcCompat="@drawable/arrow_left" />
 
         <TextView
-            android:id="@+id/txtRegister"
+            android:id="@+id/txtMySchedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="3dp"

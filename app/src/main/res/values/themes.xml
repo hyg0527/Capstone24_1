@@ -1,51 +1,28 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Capstone24_1" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
-        <item name="colorAccent">@color/lightblue</item>
         <item name="itemIconTint">@color/lightblue</item>
         <item name="itemBackground">@color/lightblue</item>
         <item name="colorSurface">@color/white</item>
         <item name="android:colorBackground">@color/white</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="colorControlHighlight">@color/lightblue</item>
         <item name="elevationOverlayEnabled">false</item>
-        <item name="homeAsUpIndicator">@drawable/arrow_left</item>
     </style>
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
 
-    <style name="StyleToolbar.Qna" parent="ThemeOverlay.AppCompat.Light">
+    <style name="StyleToolbar" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:background">@color/white</item>
         <item name="colorControlNormal">@color/blue</item>
         <item name="android:drawableTint">@color/blue</item>
-    </style>
-
-    <style name="StyleToolbar.EditProfile" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:background">@color/lightblue</item>
-        <item name="actionMenuTextAppearance">@style/StyleMenu.EditProfile</item>
-        <item name="actionMenuTextColor">@color/blue</item>
-    </style>
-
-    <style name="StyleMenu.EditProfile" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
-        <item name="android:textColor">@color/blue</item>
-        <item name="android:textSize">20dp</item>
-        <item name="android:fontFamily">@font/godom</item>
     </style>
 
     <style name="StyleTabLayout" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">20dp</item>
         <item name="android:fontFamily">@font/kopubdotumbold</item>
         <item name="android:letterSpacing">-0.03</item>
-    </style>
-
-    <style name="NoUnderlineEditText" parent="Widget.AppCompat.EditText">
-        <item name="android:background">@null</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-    </style>
-
-    <style name="testtt" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/button_rounded_corner_lightblue</item>
     </style>
 </resources>

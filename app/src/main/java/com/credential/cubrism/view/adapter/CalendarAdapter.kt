@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
 import de.hdodenhof.circleimageview.CircleImageView
@@ -53,7 +54,7 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
         holder.date.text = currentItem.date
 
         if (!isBackgroundSet && currentItem.date.equals(getCurrentDayToString())) {
-            isBackgroundSet = true
+            isBackgroundSet = true // 처음 로드 될때 오늘 날짜 하이라이팅
             holder.itemView.setBackgroundResource(R.drawable.date_highlighted)
         } else {
             holder.itemView.setBackgroundResource(0)
@@ -86,7 +87,7 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
 
     private fun getCurrentDayToString(): String {
         val currentDate = LocalDate.now()
-        // DateTimeFormatter를 사용하여 날짜를 원하는 형식의 문자열로 변환
+        // DateTimeFormatter를 사용 하여 날짜를 원하는 형식의 문자열로 변환
         val formatter = DateTimeFormatter.ofPattern("d")
 
         return currentDate.format(formatter)
@@ -97,30 +98,27 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
         notifyDataSetChanged()
     }
 
-    fun updateScheduleDot(startDate: String, endDate: String, isVisible: Boolean) {
-        val start = String.format("%s", startDate.takeLast(2)).toInt()
-        val end = String.format("%s", endDate.takeLast(2)).toInt()
-        println("start: " + start + ", end" + end)
-        val selectedItem = ArrayList<DateSelect>()
-
-        for (item in items) {
-            for (i in start..end) {
-                if ((item.date ?: "") == i.toString())
-                    selectedItem.add(item)
-            }
-        }
-
-        for (item in selectedItem)
-            item.isScheduled = isVisible
-
-        notifyDataSetChanged()
-    }
-
     fun highlightCurrentDate(selectedItem: DateSelect, isHighlighted: Boolean) {
         for (item in items) {
             item.isHighlighted = false
         }
         selectedItem.isHighlighted = isHighlighted
         notifyDataSetChanged()
+    }
+
+    fun highlightDate(dateString: String) { // 현재 선택된 날짜 highlighting 함수
+        val (_, date) = convertDateStringAndInt(dateString)
+        for (item in items) {
+            if ((item.date ?: "").isDigitsOnly() && (item.date ?: "").toInt() == date)
+                item.isHighlighted = true
+        }
+        notifyDataSetChanged()
+    }
+
+    private fun convertDateStringAndInt(dateString: String): Pair<String, Int> { // 연월을 string(0000 - 00), 일을 int(0)으로 반환
+        val yearMonth = dateString.take(9)
+        val dateInt = dateString.substring(12, 14).toInt()
+
+        return Pair(yearMonth, dateInt)
     }
 }

@@ -72,6 +72,15 @@
         <activity
             android:name=".view.PWFindActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.MyStudyListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyCreateActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyScheduleListActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

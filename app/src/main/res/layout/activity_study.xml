@@ -47,7 +47,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="15dp"
-            android:background="@drawable/folder"
+            android:background="@drawable/func1"
             app:layout_constraintEnd_toStartOf="@+id/func2Group"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -58,7 +58,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="15dp"
-            android:background="@drawable/chalkboard_user"
+            android:background="@drawable/func2"
             app:layout_constraintEnd_toStartOf="@+id/func3Group"
             app:layout_constraintStart_toEndOf="@+id/homeGroup"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -69,18 +69,18 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="15dp"
-            android:background="@drawable/meeting"
+            android:background="@drawable/func3"
             app:layout_constraintEnd_toStartOf="@+id/func4Group"
             app:layout_constraintStart_toEndOf="@+id/func2Group"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <ImageView
             android:id="@+id/func4Group"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/function_square"
+            android:layout_marginTop="11dp"
+            android:background="@drawable/func4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/func3Group"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />

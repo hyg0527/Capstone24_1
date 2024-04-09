@@ -1,6 +1,5 @@
 package com.credential.cubrism.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,13 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentMypageAddstudyBinding
 import com.credential.cubrism.databinding.FragmentMypageBinding
@@ -24,8 +18,6 @@ import com.credential.cubrism.databinding.FragmentMypageMystudyBinding
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class MyPageFragment : Fragment() {
     private var _binding: FragmentMypageBinding? = null
@@ -58,15 +50,7 @@ class MyPageFragmentHome : Fragment() {
     private var _binding: FragmentMypageHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
-
     private val myPageAdapter = MyPageAdapter()
-
-    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            Toast.makeText(requireContext(), "내 정보를 수정했습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMypageHomeBinding.inflate(inflater, container, false)
@@ -76,49 +60,21 @@ class MyPageFragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
-        setupRecyclerView()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            lifecycleScope.launch {
-                Glide.with(requireContext()).load(dataStore.getProfileImage().first())
-                    .error(R.drawable.account_circle)
-                    .fallback(R.drawable.account_circle)
-                    .dontAnimate()
-                    .into(binding.imgProfile)
-                binding.txtEmail.text = dataStore.getEmail().first()
-                binding.txtNickname.text = dataStore.getNickname().first()
-            }
-        }
-    }
-    
-    private fun setupView() {
-        // 정보 수정
+        // 프로필 수정 화면 출력
         binding.layoutEdit.setOnClickListener {
-            startForRegisterResult.launch(Intent(requireActivity(), EditProfileActivity::class.java))
+            val intent = Intent(requireActivity(), EditProfileActivity::class.java)
+            startActivity(intent)
         }
 
-        // 나의 스터디
+        // 나의 스터디 리스트 화면 출력
         binding.layoutStudy.setOnClickListener {
             changeFragmentMyStudy(parentFragment, MyPageFragmentMyStudy())
         }
 
-        // 나의 일정
         binding.layoutSchedule.setOnClickListener {
 
         }
-    }
 
-    private fun setupRecyclerView() {
         binding.recyclerView.apply {
             adapter = myPageAdapter
             addItemDecoration(ItemDecoratorDivider(0, 48, 0, 0, 0, 0, null))
@@ -132,15 +88,26 @@ class MyPageFragmentHome : Fragment() {
         ))
 
         myPageAdapter.setOnItemClickListener { _, position ->
-//            when (position) {
-//                // 내가 작성한 글
-//                0 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//                // 참여 중인 채팅방
-//                1 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//                // Q&A 내역
-//                2 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//            }
+            when (position) {
+                0 -> { // 내가 작성한 글
+//                    val intent = Intent(requireActivity(), OOOActivity::class.java)
+//                    startActivity(intent)
+                }
+                1 -> { // 참여 중인 채팅방
+//                    val intent = Intent(requireActivity(), OOOActivity::class.java)
+//                    startActivity(intent)
+                }
+                2 -> { // Q&A 내역
+//                    val intent = Intent(requireActivity(), OOOActivity::class.java)
+//                    startActivity(intent)
+                }
+            }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 
