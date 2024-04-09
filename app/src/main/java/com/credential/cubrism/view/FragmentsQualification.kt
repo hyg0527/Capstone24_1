@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -334,13 +335,31 @@ class QualificationSearchFragment : Fragment() {
                 return false
             }
         })
+        // SearchView의 닫기 버튼 리스너 설정
+        binding.searchView.setOnCloseListener(object : SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                handleBackStack(view, parentFragment)
+                return false
+            }
+        })
 
         binding.btnBack.setOnClickListener {
             (parentFragment as QualificationFragment).childFragmentManager.popBackStack()
         }
 
+        // 뒤로가기 이벤트 처리
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // SearchView의 Close 버튼 이벤트를 호출하여 "x" 표시를 누름
+                binding.searchView.onActionViewCollapsed()
+                handleBackStack(view, parentFragment)
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         sView = view
         handleBackStack(view, parentFragment)
+        binding.searchView.clearFocus()
     }
 
     override fun onDestroyView() {

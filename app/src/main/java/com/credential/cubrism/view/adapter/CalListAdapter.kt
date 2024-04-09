@@ -71,7 +71,7 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_list_calmonth, parent, false)
+        val view = inflater.inflate(R.layout.item_list_schedule, parent, false)
 
         return CalViewHolder(view)
     }

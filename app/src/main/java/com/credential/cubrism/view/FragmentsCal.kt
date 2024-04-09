@@ -68,27 +68,13 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
 
         val addFragment = CalScheduleAddFragment()
         addFragment.setAddListener(object: AddDot {
-            override fun onAddDelete() {
-                val pickTxt = binding.txtYearMonth.text.toString()
-                val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
-
-                val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
-                calendarAdapter.updateCalendar(monthUpdateList)
-                calendarAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
-            }
+            override fun onAddDelete() { addDelSchedule(calendarAdapter, calHyg) }
             override fun bringInfo(item: CalMonth?) {}
         })
 
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
-            override fun onAddDelete() {
-                val pickTxt = binding.txtYearMonth.text.toString()
-                val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
-
-                val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
-                calendarAdapter.updateCalendar(monthUpdateList)
-                calendarAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
-            }
+            override fun onAddDelete() { addDelSchedule(calendarAdapter, calHyg) }
             override fun bringInfo(item: CalMonth?) {
                 val bundle = Bundle()
                 bundle.putParcelable("scheduleFix", item) // 날짜 putString으로 dialogFragment에 보내기
@@ -183,6 +169,15 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
 
     private fun getCurrentDate(): String {  // 월간 프래그먼트의 현재 날짜 getter 함수 (일정 추가 dialog에 날짜 표시에 활용됨)
         return binding.currentDate.text.toString()
+    }
+
+    private fun addDelSchedule(adapter: CalendarAdapter, calHyg: CalendarHyg) {
+        val pickTxt = binding.txtYearMonth.text.toString()
+        val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
+
+        val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
+        adapter.updateCalendar(monthUpdateList)
+        adapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
     }
 
     private fun convertDateFormat(input: String): String { // 날짜 형식 변환 함수

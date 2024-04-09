@@ -3,7 +3,6 @@ package com.credential.cubrism.view
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.databinding.ActivityMyscheduleBinding
 import com.credential.cubrism.view.adapter.CalListAdapter
