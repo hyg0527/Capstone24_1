@@ -13,8 +13,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaBinding
 import com.credential.cubrism.model.repository.PostRepository
@@ -23,11 +25,14 @@ import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class QnaActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQnaBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val postAdapter = PostAdapter()
     private lateinit var searchView: SearchView
@@ -37,6 +42,7 @@ class QnaActivity : AppCompatActivity() {
     private var refreshState = false
     private var searchQuery: String? = null
     private var favorites = false
+    private var myEmail: String? = null
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -180,6 +186,7 @@ class QnaActivity : AppCompatActivity() {
         postAdapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, QnaViewActivity::class.java)
             intent.putExtra("postId", item.postId)
+            intent.putExtra("myEmail", myEmail)
             startActivity(intent)
         }
 
@@ -199,6 +206,10 @@ class QnaActivity : AppCompatActivity() {
     private fun setupView() {
         postViewModel.getPostList(boardId, 0, 10, searchQuery)
         binding.swipeRefreshLayout.isRefreshing = true
+
+        lifecycleScope.launch {
+            myEmail = dataStore.getEmail().first()
+        }
     }
 
     private fun observeViewModel() {

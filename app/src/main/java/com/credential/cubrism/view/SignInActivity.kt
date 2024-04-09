@@ -11,9 +11,9 @@ import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
 import com.credential.cubrism.model.dto.SocialTokenDto
-import com.credential.cubrism.model.repository.JwtTokenRepository
+import com.credential.cubrism.model.repository.DataStoreRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
-import com.credential.cubrism.viewmodel.JwtTokenViewModel
+import com.credential.cubrism.viewmodel.DataStoreViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,7 +25,7 @@ import com.kakao.sdk.user.UserApiClient
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val jwtTokenViewModel: JwtTokenViewModel by viewModels { ViewModelFactory(JwtTokenRepository()) }
+    private val dataStoreViewModel: DataStoreViewModel by viewModels { ViewModelFactory(DataStoreRepository()) }
 
     private val googleAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         try {
@@ -172,8 +172,8 @@ class SignInActivity : AppCompatActivity() {
 
     // 로그인 성공
     private fun signInSuccess(accessToken: String, refreshToken: String) {
-        jwtTokenViewModel.saveAccessToken(accessToken)
-        jwtTokenViewModel.saveRefreshToken(refreshToken)
+        dataStoreViewModel.saveAccessToken(accessToken)
+        dataStoreViewModel.saveRefreshToken(refreshToken)
         setResult(RESULT_OK).also { finish() }
     }
 }

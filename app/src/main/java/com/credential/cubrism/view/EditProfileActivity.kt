@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
@@ -23,12 +24,14 @@ import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class EditProfileActivity : AppCompatActivity() {
     private val binding by lazy { ActivityEditProfileBinding.inflate(layoutInflater) }
 
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val userDataManager = MyApplication.getInstance().getUserDataManager()
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private lateinit var bottomProfileDialog: BottomSheetDialog
 
@@ -86,16 +89,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        userDataManager.getUserInfo()?.let { user ->
-            Glide.with(this).load(user.profileImage)
-                .error(R.drawable.profile)
-                .fallback(R.drawable.profile)
-                .dontAnimate()
-                .into(binding.imgProfile)
-            binding.editEmail.setText(user.email)
-            binding.editNickname.setText(user.nickname)
-        }
-
         val bottomSheetBinding = DialogProfilePickBinding.inflate(layoutInflater)
         bottomProfileDialog = BottomSheetDialog(this)
         bottomProfileDialog.setContentView(bottomSheetBinding.root)
@@ -119,6 +112,16 @@ class EditProfileActivity : AppCompatActivity() {
         // 회원 탈퇴
         binding.btnWithdrawal.setOnClickListener {
             // TODO: 회원탈퇴
+        }
+
+        lifecycleScope.launch {
+            Glide.with(this@EditProfileActivity).load(dataStore.getProfileImage().first())
+                .error(R.drawable.account_circle)
+                .fallback(R.drawable.account_circle)
+                .dontAnimate()
+                .into(binding.imgProfile)
+            binding.editEmail.setText(dataStore.getEmail().first())
+            binding.editNickname.setText(dataStore.getNickname().first())
         }
     }
 

@@ -15,7 +15,7 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private val jwtTokenRepository = MyApplication.getInstance().getJwtTokenRepository()
+private val dataStoreRepository = MyApplication.getInstance().getDataStoreRepository()
 
 object RetrofitClient {
     private var retrofit: Retrofit? = null
@@ -60,7 +60,7 @@ class RequestInterceptor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         // DataStore 에서 Access Token을 가져옴
         val accessToken = runBlocking {
-            jwtTokenRepository.getAccessToken().first()
+            dataStoreRepository.getAccessToken().first()
         }
 
         // 헤더에 Access Token 추가
@@ -73,9 +73,7 @@ class RequestInterceptor() : Interceptor {
 }
 
 // 응답을 가로챔 (Access Token 만료 시 재발급을 위해)
-class ResponseInterceptor() : Interceptor {
-    private val userDataManager = MyApplication.getInstance().getUserDataManager()
-
+class ResponseInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         // 응답을 받음
         val originalResponse = chain.proceed(chain.request())
@@ -90,8 +88,8 @@ class ResponseInterceptor() : Interceptor {
             // AccessToken이 만료되었을 경우
             if (errorMessage == "JWT 토큰이 만료되었습니다.") {
                 // DataStore에서 AccessToken과 RefreshToken을 가져옴
-                val accessToken = runBlocking { jwtTokenRepository.getAccessToken().first() }
-                val refreshToken = runBlocking { jwtTokenRepository.getRefreshToken().first() }
+                val accessToken = runBlocking { dataStoreRepository.getAccessToken().first() }
+                val refreshToken = runBlocking { dataStoreRepository.getRefreshToken().first() }
 
                 if (accessToken != null && refreshToken != null) {
                     // AccessToken과 RefreshToken을 이용해 AccessToken 재발급 요청
@@ -102,7 +100,7 @@ class ResponseInterceptor() : Interceptor {
                         if (response?.isSuccessful == true) { // AccessToken 재발급 성공 시
                             // DataStore에 새로 발급받은 AccessToken을 저장
                             val newAccessToken = response.body()?.accessToken?.let {
-                                jwtTokenRepository.saveAccessToken(it)
+                                dataStoreRepository.saveAccessToken(it)
                             }
 
                             // 새로 발급받은 AccessToken을 헤더에 추가
@@ -114,11 +112,13 @@ class ResponseInterceptor() : Interceptor {
                             chain.proceed(newRequest)
                         } else { // RefreshToken이 만료되었을 경우
                             // DataStore에 저장된 AccessToken과 RefreshToken을 삭제
-                            jwtTokenRepository.deleteAccessToken()
-                            jwtTokenRepository.deleteRefreshToken()
+                            dataStoreRepository.deleteAccessToken()
+                            dataStoreRepository.deleteRefreshToken()
 
-                            // UserDataManager에 저장되어 있는 유저 정보를 삭제
-                            userDataManager.clearUserInfo()
+                            // DataStore에 저장되어 있는 유저 정보를 삭제
+                            dataStoreRepository.deleteEmail()
+                            dataStoreRepository.deleteNickname()
+                            dataStoreRepository.deleteProfileImage()
                         }
                     }
                 }

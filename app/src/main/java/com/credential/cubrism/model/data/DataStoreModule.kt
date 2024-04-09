@@ -13,6 +13,10 @@ class DataStoreModule(private val context: Context) {
     private val accessTokenKey = stringPreferencesKey("access_token")
     private val refreshTokenKey = stringPreferencesKey("refresh_token")
 
+    private val emailKey = stringPreferencesKey("email")
+    private val nicknameKey = stringPreferencesKey("nickname")
+    private val profileImageKey = stringPreferencesKey("profile_image")
+
     // Access Token 저장
     suspend fun saveAccessToken(accessToken: String) {
         context.dataStore.edit { preferences ->
@@ -24,6 +28,13 @@ class DataStoreModule(private val context: Context) {
     fun getAccessToken(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
             prefs[accessTokenKey]
+        }
+    }
+
+    // Access Token 삭제
+    suspend fun deleteAccessToken() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(accessTokenKey)
         }
     }
 
@@ -41,17 +52,73 @@ class DataStoreModule(private val context: Context) {
         }
     }
 
-    // Access Token 삭제
-    suspend fun deleteAccessToken() {
-        context.dataStore.edit { preferences ->
-            preferences.remove(accessTokenKey)
-        }
-    }
-
     // Refresh Token 삭제
     suspend fun deleteRefreshToken() {
         context.dataStore.edit { preferences ->
             preferences.remove(refreshTokenKey)
+        }
+    }
+
+    // 이메일 저장
+    suspend fun saveEmail(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[emailKey] = email
+        }
+    }
+
+    // 이메일 불러오기
+    fun getEmail(): Flow<String?> {
+        return context.dataStore.data.map { prefs ->
+            prefs[emailKey]
+        }
+    }
+
+    // 이메일 삭제
+    suspend fun deleteEmail() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(emailKey)
+        }
+    }
+
+    // 닉네임 저장
+    suspend fun saveNickname(nickname: String) {
+        context.dataStore.edit { preferences ->
+            preferences[nicknameKey] = nickname
+        }
+    }
+
+    // 닉네임 불러오기
+    fun getNickname(): Flow<String?> {
+        return context.dataStore.data.map { prefs ->
+            prefs[nicknameKey]
+        }
+    }
+
+    // 닉네임 삭제
+    suspend fun deleteNickname() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(nicknameKey)
+        }
+    }
+
+    // 프로필 이미지 저장
+    suspend fun saveProfileImage(profileImage: String) {
+        context.dataStore.edit { preferences ->
+            preferences[profileImageKey] = profileImage
+        }
+    }
+
+    // 프로필 이미지 불러오기
+    fun getProfileImage(): Flow<String?> {
+        return context.dataStore.data.map { prefs ->
+            prefs[profileImageKey]
+        }
+    }
+
+    // 프로필 이미지 삭제
+    suspend fun deleteProfileImage() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(profileImageKey)
         }
     }
 }

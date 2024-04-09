@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
@@ -23,6 +24,8 @@ import com.credential.cubrism.databinding.FragmentMypageMystudyBinding
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MyPageFragment : Fragment() {
     private var _binding: FragmentMypageBinding? = null
@@ -55,7 +58,7 @@ class MyPageFragmentHome : Fragment() {
     private var _binding: FragmentMypageHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val userDataManager = MyApplication.getInstance().getUserDataManager()
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val myPageAdapter = MyPageAdapter()
 
@@ -86,14 +89,14 @@ class MyPageFragmentHome : Fragment() {
         super.onHiddenChanged(hidden)
 
         if (!hidden) {
-            userDataManager.getUserInfo()?.let { user ->
-                Glide.with(requireContext()).load(user.profileImage)
+            lifecycleScope.launch {
+                Glide.with(requireContext()).load(dataStore.getProfileImage().first())
                     .error(R.drawable.account_circle)
                     .fallback(R.drawable.account_circle)
                     .dontAnimate()
                     .into(binding.imgProfile)
-                binding.txtNickname.text = user.nickname
-                binding.txtEmail.text = user.email
+                binding.txtEmail.text = dataStore.getEmail().first()
+                binding.txtNickname.text = dataStore.getNickname().first()
             }
         }
     }
