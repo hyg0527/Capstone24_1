@@ -47,6 +47,22 @@ class PostRepository {
         })
     }
 
+    fun getFavoritePostList(boardId: Int, page: Int, limit: Int, callback: (ResultUtil<PostListDto>) -> Unit) {
+        postApiAuth.getFavoritePostList(boardId, page, limit).enqueue(object : Callback<PostListDto> {
+            override fun onResponse(call: Call<PostListDto>, response: Response<PostListDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<PostListDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
     fun getPostView(postId: Int, callback: (ResultUtil<PostViewDto>) -> Unit) {
         postApi.getPostView(postId).enqueue(object : Callback<PostViewDto> {
             override fun onResponse(call: Call<PostViewDto>, response: Response<PostViewDto>) {

@@ -59,6 +59,26 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
         }
     }
 
+    fun getFavoritePostList(boardId: Int, page: Int, limit: Int, refresh: Boolean = false) {
+        postRepository.getFavoritePostList(boardId, page, limit) { result ->
+            _isRefreshed.value = refresh
+
+            when (result) {
+                is ResultUtil.Success -> {
+                    if (refresh) {
+                        _postList.postValue(result.data.postList)
+                    } else {
+                        setLoading(true)
+                        _postList.postValue(_postList.value.orEmpty() + result.data.postList)
+                    }
+                    _page.postValue(result.data.page)
+                }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
+            }
+        }
+    }
+
     fun getPostView(postId: Int) {
         postRepository.getPostView(postId) { result ->
             _postView.postValue(result)

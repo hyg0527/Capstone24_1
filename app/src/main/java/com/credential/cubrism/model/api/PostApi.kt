@@ -43,6 +43,14 @@ interface PostApi {
 //        @Query("limit") limit: Int
 //    ): Call<PostListDto>
 
+    // 관심 자격증 게시글 목록
+    @GET("/posts/favorites")
+    fun getFavoritePostList(
+        @Query("board-id") boardId: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Call<PostListDto>
+
     // 댓글 추가
 //    @POST("/comment")
 //    fun addComment(@Body commentAddDto: CommentAddDto): Call<CommentAddDto>

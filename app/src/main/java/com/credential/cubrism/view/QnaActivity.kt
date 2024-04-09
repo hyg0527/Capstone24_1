@@ -36,6 +36,7 @@ class QnaActivity : AppCompatActivity() {
     private var loadingState = false
     private var refreshState = false
     private var searchQuery: String? = null
+    private var favorites = false
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -63,7 +64,17 @@ class QnaActivity : AppCompatActivity() {
         binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener {
+            if (!searchView.isIconified) {
+                postViewModel.getPostList(boardId, 0, 10, null, true)
+                binding.toolbar.collapseActionView()
+                searchView.setQuery("", false)
+                searchQuery = null
+                binding.swipeRefreshLayout.isRefreshing = true
+            } else {
+                finish()
+            }
+        }
 
         // 메뉴 추가
         addMenuProvider(object : MenuProvider {
@@ -78,11 +89,25 @@ class QnaActivity : AppCompatActivity() {
                         searchQuery = query
                         postViewModel.getPostList(boardId, 0, 10, query, true)
                         searchView.clearFocus()
+                        binding.tabLayout.getTabAt(0)?.select()
                         return false
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
                         return false
+                    }
+                })
+
+                searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                        return true
+                    }
+
+                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                        postViewModel.getPostList(boardId, 0, 10, null, true)
+                        searchQuery = null
+                        binding.swipeRefreshLayout.isRefreshing = true
+                        return true
                     }
                 })
 
@@ -104,12 +129,17 @@ class QnaActivity : AppCompatActivity() {
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.toolbar.collapseActionView()
                 when (tab?.position) {
                     0 -> {
                         // 전체 글 목록
+                        favorites = false
+                        postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
                     }
                     1 -> {
                         // 관심 자격증
+                        favorites = true
+                        postViewModel.getFavoritePostList(boardId, 0, 10, true)
                     }
                 }
             }
@@ -134,7 +164,13 @@ class QnaActivity : AppCompatActivity() {
                     if (!recyclerView.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !loadingState) {
                         postViewModel.page.value?.let { page ->
                             // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                            page.nextPage?.let { postViewModel.getPostList(boardId, it, 10, searchQuery) }
+                            page.nextPage?.let {
+                                if (favorites) {
+                                    postViewModel.getFavoritePostList(boardId, it, 10)
+                                } else {
+                                    postViewModel.getPostList(boardId, it, 10, searchQuery)
+                                }
+                            }
                         }
                     }
                 }
@@ -148,7 +184,11 @@ class QnaActivity : AppCompatActivity() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            postViewModel.getPostList(boardId, 0, 10, null, true)
+            if (favorites) {
+                postViewModel.getFavoritePostList(boardId, 0, 10, true)
+            } else {
+                postViewModel.getPostList(boardId, 0, 10, null, true)
+            }
             binding.toolbar.collapseActionView()
             searchView.setQuery("", false)
             searchQuery = null
