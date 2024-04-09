@@ -116,8 +116,6 @@ class QnaActivity : AppCompatActivity() {
                         return true
                     }
                 })
-
-                // TODO: searchview를 닫았을 때 리스트를 초기화하는 기능 추가
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -204,7 +202,7 @@ class QnaActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        postViewModel.getPostList(boardId, 0, 10, searchQuery)
+        postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
         binding.swipeRefreshLayout.isRefreshing = true
 
         lifecycleScope.launch {
