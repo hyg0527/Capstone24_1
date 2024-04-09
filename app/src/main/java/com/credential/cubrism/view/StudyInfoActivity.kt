@@ -63,6 +63,7 @@ class StudyInfoActivity : AppCompatActivity() {
                     Glide.with(this).load(groupInfo.adminProfileImage)
                         .error(R.drawable.profile_skyblue)
                         .fallback(R.drawable.profile_skyblue)
+                        .dontAnimate()
                         .into(binding.imgProfile)
                     binding.txtNickname.text = "  ${groupInfo.groupAdmin}  "
                     binding.txtGroupName.text = groupInfo.groupName
