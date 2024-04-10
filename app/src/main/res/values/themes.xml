@@ -11,9 +11,18 @@
         <item name="colorControlHighlight">@color/lightblue</item>
         <item name="elevationOverlayEnabled">false</item>
         <item name="homeAsUpIndicator">@drawable/arrow_left</item>
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialogTheme</item>
     </style>
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
+
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomRoundedBackgroundBottomSheet</item>
+    </style>
+
+    <style name="CustomRoundedBackgroundBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottomsheet_rounded_corner</item>
+    </style>
 
     <style name="StyleToolbar.Qna" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:background">@color/white</item>
