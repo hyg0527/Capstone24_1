@@ -22,11 +22,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imgThumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="false"
+                android:adjustViewBounds="true"
                 android:scaleType="centerCrop" />
 
         </androidx.cardview.widget.CardView>
