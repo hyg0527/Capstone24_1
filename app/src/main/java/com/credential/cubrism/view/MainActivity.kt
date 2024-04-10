@@ -5,12 +5,13 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
 import com.credential.cubrism.model.repository.UserRepository
+import com.credential.cubrism.view.utils.FragmentType
 import com.credential.cubrism.viewmodel.DataStoreViewModel
+import com.credential.cubrism.viewmodel.MainViewModel
 import com.credential.cubrism.viewmodel.UserViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
@@ -18,6 +19,7 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
+    private val mainViewModel: MainViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels { ViewModelFactory(UserRepository()) }
     private val dataStoreViewModel: DataStoreViewModel by viewModels { ViewModelFactory(MyApplication.getInstance().getDataStoreRepository()) }
 
@@ -39,66 +41,24 @@ class MainActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-        navigationSet()
-
         userViewModel.getUserInfo()
+
+        if (savedInstanceState == null) { setupFragment() }
+        setupBottomNav()
         observeViewModel()
     }
 
-    private val bottomNavItems = listOf(
-        MeowBottomNavigation.Model(1, R.drawable.home),
-        MeowBottomNavigation.Model(2, R.drawable.study),
-        MeowBottomNavigation.Model(3, R.drawable.calendar),
-        MeowBottomNavigation.Model(4, R.drawable.qualification)
-    )
-    private lateinit var currentFragment: Fragment
-    private var homeFragment: HomeFragment = HomeFragment()
-    private var studyFragment: StudyFragment = StudyFragment()
-    private var calFragment: CalFragment = CalFragment()
-    private var qualificationFragment: QualificationFragment = QualificationFragment()
+    private fun setupBottomNav() {
+        binding.bottomNavigationView.apply {
+            add(MeowBottomNavigation.Model(1, R.drawable.home))
+            add(MeowBottomNavigation.Model(2, R.drawable.study))
+            add(MeowBottomNavigation.Model(3, R.drawable.calendar))
+            add(MeowBottomNavigation.Model(4, R.drawable.qualification))
 
-    private fun navigationSet() {
-        binding.bottomNavigationView.show(1, true)
-
-        bottomNavItems.forEach {
-            binding.bottomNavigationView.add(it)
-        }
-        navigationInit()
-
-        binding.bottomNavigationView.setOnClickMenuListener {
-            when (it.id) {
-                1 -> showFragment(homeFragment)
-                2 -> showFragment(studyFragment)
-                3 -> showFragment(calFragment)
-                4 -> showFragment(qualificationFragment)
+            setOnClickMenuListener {
+                mainViewModel.setCurrentFragment(it)
             }
         }
-    }
-    private fun navigationInit() {
-        currentFragment = homeFragment
-        val fragmentList = listOf(homeFragment, studyFragment, calFragment, qualificationFragment)
-        val transaction = supportFragmentManager.beginTransaction()
-
-        for (fragment in fragmentList) {
-            transaction.add(R.id.fragmentContainerView, fragment)
-        }
-
-        for (fragment in listOf(studyFragment, calFragment, qualificationFragment)) {
-            transaction.hide(fragment)
-        }
-
-        transaction.commit()
-    }
-
-    private fun showFragment(fragment: Fragment) {
-        if (fragment != currentFragment) {
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .hide(currentFragment)
-                .show(fragment)
-                .commit()
-        }
-        currentFragment = fragment
     }
 
     private fun observeViewModel() {
@@ -110,6 +70,30 @@ class MainActivity : AppCompatActivity() {
                     dataStoreViewModel.saveProfileImage(image)
                 }
             }
+        }
+
+        mainViewModel.currentFragmentType.observe(this) { fragmentType ->
+            binding.bottomNavigationView.show(fragmentType.ordinal + 1, true)
+
+            val currentFragment = supportFragmentManager.findFragmentByTag(fragmentType.tag)
+            supportFragmentManager.beginTransaction().apply {
+                supportFragmentManager.fragments.forEach { fragment ->
+                    if (fragment == currentFragment)
+                        show(fragment)
+                    else
+                        hide(fragment)
+                }
+            }.commit()
+        }
+    }
+
+    private fun setupFragment() {
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.fragmentContainerView, HomeFragment(), FragmentType.HOME.tag)
+            add(R.id.fragmentContainerView, StudyFragment(), FragmentType.STUDY.tag)
+            add(R.id.fragmentContainerView, CalFragment(), FragmentType.CALENDAR.tag)
+            add(R.id.fragmentContainerView, QualificationFragment(), FragmentType.QUALIFICATION.tag)
+            commit()
         }
     }
 }
