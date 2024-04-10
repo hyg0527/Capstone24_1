@@ -99,12 +99,8 @@ class QnaPostingActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        postViewModel.addPost.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> { setResult(RESULT_OK).also { finish() } }
-                is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
-                is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
-            }
+        postViewModel.addPost.observe(this) {
+            setResult(RESULT_OK).also { finish() }
         }
 
         qualfiicationViewModel.qualificationList.observe(this) { result ->
@@ -116,6 +112,10 @@ class QnaPostingActivity : AppCompatActivity() {
                 is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
                 is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
             }
+        }
+
+        postViewModel.errorMessage.observe(this) {
+            it.getContentIfNotHandled()?.let { message -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
         }
     }
 }

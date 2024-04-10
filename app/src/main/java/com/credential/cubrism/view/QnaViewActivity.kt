@@ -2,6 +2,7 @@ package com.credential.cubrism.view
 
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaViewBinding
+import com.credential.cubrism.model.dto.CommentAddDto
 import com.credential.cubrism.model.repository.PostRepository
-import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.OnReplyClickListener
 import com.credential.cubrism.view.adapter.PostCommentAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -34,6 +35,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
         setupToolbar()
         setupRecyclerView()
+        setupView()
         observeViewModel()
         getPostView()
     }
@@ -62,37 +64,53 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             getPostView()
-            binding.swipeRefreshLayout.isRefreshing = true
+        }
+    }
+
+    private fun setupView() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+        binding.btnSend.setOnClickListener {
+            if (binding.editComment.text.trim().isEmpty()) {
+                Toast.makeText(this, "댓글을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                postViewModel.addComment(CommentAddDto(postId, binding.editComment.text.toString()))
+                binding.editComment.text.clear()
+                // 키보드 내리기
+                imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0)
+            }
         }
     }
 
     private fun observeViewModel() {
         postViewModel.postView.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> {
-                    val postView = result.data
-                    Glide.with(this).load(postView.profileImageUrl)
-                        .error(R.drawable.profil_image)
-                        .fallback(R.drawable.profil_image)
-                        .dontAnimate()
-                        .into(binding.imgProfile)
-                    binding.txtNickname.text = "  ${postView.nickname}  "
-                    binding.txtCategory.text = postView.category
-                    binding.txtTitle.text = postView.title
-                    binding.txtContent.text = postView.content.replace(" ", "\u00A0")
+            Glide.with(this).load(result.profileImageUrl)
+                .error(R.drawable.profil_image)
+                .fallback(R.drawable.profil_image)
+                .dontAnimate()
+                .into(binding.imgProfile)
+            binding.txtNickname.text = "  ${result.nickname}  "
+            binding.txtCategory.text = result.category
+            binding.txtTitle.text = result.title
+            binding.txtContent.text = result.content.replace(" ", "\u00A0")
 
-                    postCommentAdapter.setItemList(postView.comments)
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }
-                is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
-                is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
-            }
+            postCommentAdapter.setItemList(result.comments)
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
+        postViewModel.addComment.observe(this) {
+            getPostView()
+        }
+
+        postViewModel.errorMessage.observe(this) {
+            it.getContentIfNotHandled()?.let { message -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
         }
     }
 
     private fun getPostView() {
         if (postId != -1) {
             postViewModel.getPostView(postId)
+            binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 }
