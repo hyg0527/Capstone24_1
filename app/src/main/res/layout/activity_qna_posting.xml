@@ -156,7 +156,6 @@
         android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="정보처리기사"
         android:textColor="@color/blue"
         android:textSize="15dp"
         android:visibility="visible"
