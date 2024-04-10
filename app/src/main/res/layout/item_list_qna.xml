@@ -12,13 +12,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imgThumbnail"
-            android:layout_width="105dp"
-            android:layout_height="105dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
             android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imgThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="false"
+                android:scaleType="centerCrop" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/txtCategory"
@@ -31,7 +42,7 @@
             android:textColor="@color/blue"
             android:textSize="13dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imgThumbnail"
+            app:layout_constraintStart_toEndOf="@id/cardView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="0dp" />
 

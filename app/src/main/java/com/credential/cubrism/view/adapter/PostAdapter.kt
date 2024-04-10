@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.credential.cubrism.databinding.ItemListProgresBinding
 import com.credential.cubrism.databinding.ItemListQnaBinding
 import com.credential.cubrism.model.dto.PostList
@@ -62,12 +59,10 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(item: PostList) {
             if (item.imageUrl.isNullOrEmpty()) {
-                binding.imgThumbnail.visibility = View.GONE
+                binding.cardView.visibility = View.GONE
             } else {
-                binding.imgThumbnail.visibility = View.VISIBLE
-                val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(40))
+                binding.cardView.visibility = View.VISIBLE
                 Glide.with(binding.root).load(item.imageUrl)
-                    .apply(requestOptions)
                     .placeholder(ColorDrawable(Color.TRANSPARENT))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .sizeMultiplier(0.5f)
