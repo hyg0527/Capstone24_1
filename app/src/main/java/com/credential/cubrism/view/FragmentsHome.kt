@@ -3,18 +3,18 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
-import com.credential.cubrism.databinding.FragmentHomeNotificationBinding
 import com.credential.cubrism.databinding.FragmentHomeUiBinding
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.BannerData
@@ -80,20 +80,13 @@ class HomeUiFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
+        setupView()
+        observeViewModel()
+
         val tdlist = TodayData()
         val lcslist = LCSData()
 //        val bnlist = BannerData()
-
-
-        binding.backgroundImage.setImageResource(R.drawable.peopleimage_home)
-
-        binding.txtSignIn.setOnClickListener {
-            startForRegisterResult.launch(Intent(requireActivity(), SignInActivity::class.java))
-        }
-
-        binding.btnNotify.setOnClickListener { // 알림 화면 출력
-            changeFragment(parentFragment, NotifyFragment())
-        }
 
         val td_adapter = TodoAdapter(tdlist)
         val lcs_adapter = LicenseAdapter(lcslist)
@@ -133,6 +126,36 @@ class HomeUiFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar.title = ""
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+    }
+
+    private fun setupView() {
+        Glide.with(this).load(R.drawable.peopleimage_home).into(binding.backgroundImage)
+
+        binding.txtSignIn.setOnClickListener {
+            startForRegisterResult.launch(Intent(requireActivity(), SignInActivity::class.java))
+        }
+
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(requireActivity(), MyPageActivity::class.java))
+        }
+
+        binding.btnNoti.setOnClickListener {
+            startActivity(Intent(requireActivity(), NotiActivity::class.java))
+        }
+    }
+
+    private fun observeViewModel() {
+        userViewModel.userInfo.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                binding.btnProfile.visibility = View.VISIBLE
+                binding.btnNoti.visibility = View.VISIBLE
+            }
+        }
     }
 //
 //    override fun onResume() {
@@ -184,58 +207,5 @@ class HomeUiFragment : Fragment() {
 
     private fun BannerData(): ArrayList<BannerData> {
         return ArrayList()
-    }
-}
-
-// 알림 화면
-class NotifyFragment : Fragment() {
-    private var _binding: FragmentHomeNotificationBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentHomeNotificationBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    private var view: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        this.view = view
-
-        binding.btnBack.setOnClickListener {
-            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
-        }
-
-        handleBackStack(view, parentFragment)
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
-        }
-    }
-}
-
-// fragment 전환 함수
-private fun changeFragment(parentFragment: Fragment?, fragment: Fragment) {
-    (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-        .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-        .replace(R.id.fragmentContainerView, fragment)
-        .addToBackStack(null)
-        .commit()
-}
-
-// 백스택 호출 함수 선언
-private fun handleBackStack(v: View, parentFragment: Fragment?) {
-    v.isFocusableInTouchMode = true
-    v.requestFocus()
-    v.setOnKeyListener { _, keyCode, event ->
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
-            return@setOnKeyListener true
-        }
-        false
     }
 }

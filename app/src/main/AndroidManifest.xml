@@ -81,6 +81,12 @@
         <activity
             android:name=".view.MyScheduleListActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.NotiActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPageActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -49,15 +49,13 @@ class MainActivity : AppCompatActivity() {
         MeowBottomNavigation.Model(1, R.drawable.home),
         MeowBottomNavigation.Model(2, R.drawable.study),
         MeowBottomNavigation.Model(3, R.drawable.calendar),
-        MeowBottomNavigation.Model(4, R.drawable.qualification),
-        MeowBottomNavigation.Model(5, R.drawable.mypage)
+        MeowBottomNavigation.Model(4, R.drawable.qualification)
     )
     private lateinit var currentFragment: Fragment
     private var homeFragment: HomeFragment = HomeFragment()
     private var studyFragment: StudyFragment = StudyFragment()
     private var calFragment: CalFragment = CalFragment()
     private var qualificationFragment: QualificationFragment = QualificationFragment()
-    private var myPageFragment: MyPageFragment = MyPageFragment()
 
     private fun navigationSet() {
         binding.bottomNavigationView.show(1, true)
@@ -73,20 +71,19 @@ class MainActivity : AppCompatActivity() {
                 2 -> showFragment(studyFragment)
                 3 -> showFragment(calFragment)
                 4 -> showFragment(qualificationFragment)
-                5 -> showFragment(myPageFragment)
             }
         }
     }
     private fun navigationInit() {
         currentFragment = homeFragment
-        val fragmentList = listOf(homeFragment, studyFragment, calFragment, qualificationFragment, myPageFragment)
+        val fragmentList = listOf(homeFragment, studyFragment, calFragment, qualificationFragment)
         val transaction = supportFragmentManager.beginTransaction()
 
         for (fragment in fragmentList) {
             transaction.add(R.id.fragmentContainerView, fragment)
         }
 
-        for (fragment in listOf(studyFragment, calFragment, qualificationFragment, myPageFragment)) {
+        for (fragment in listOf(studyFragment, calFragment, qualificationFragment)) {
             transaction.hide(fragment)
         }
 
