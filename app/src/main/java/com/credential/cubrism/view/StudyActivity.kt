@@ -96,9 +96,7 @@ class StudyActivity : AppCompatActivity() {
         binding.func3Group.setOnClickListener {
             changeFragment(func3Fragment)
         }
-        binding.func4Group.setOnClickListener {
-            changeFragment(func4Fragment)
-        }
+
     }
 
     private fun changeFragment(fragment: Fragment) { // 프래그먼트 전환 함수
