@@ -55,9 +55,10 @@ class StudyGroupHomeFragment : Fragment() {
         goalListViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
         initGoalListView(view)
 
-        titleViewModel.editTextValue.observe(viewLifecycleOwner, Observer { value ->
-            binding.studyGroupTitle.text = value
-        })
+//        titleViewModel.editTextValue.observe(viewLifecycleOwner, Observer { value ->
+//
+//        }
+    //        )
     }
 
     override fun onDestroyView() {
