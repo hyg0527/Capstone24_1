@@ -1,5 +1,6 @@
 package com.credential.cubrism.model.service
 
+import android.util.Log
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
@@ -56,12 +57,13 @@ object RetrofitClient {
 }
 
 // 요청을 가로챔 (Access Token을 추가하기 위해)
-class RequestInterceptor() : Interceptor {
+class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        // DataStore 에서 Access Token을 가져옴
         val accessToken = runBlocking {
             dataStoreRepository.getAccessToken().first()
         }
+
+        Log.d("테스트", "[RequestInterceptor] AccessToken: $accessToken")
 
         // 헤더에 Access Token 추가
         val request = chain.request().newBuilder()
@@ -85,32 +87,41 @@ class ResponseInterceptor : Interceptor {
             // Body를 JSONObject로 변환 후 에러 메시지를 가져옴
             val errorMessage = JSONObject(responseBodyString).optString("message")
 
+            Log.d("테스트", "[ResponseInterceptor] ErrorMessage: $errorMessage")
+
             // AccessToken이 만료되었을 경우
             if (errorMessage == "JWT 토큰이 만료되었습니다.") {
                 // DataStore에서 AccessToken과 RefreshToken을 가져옴
                 val accessToken = runBlocking { dataStoreRepository.getAccessToken().first() }
                 val refreshToken = runBlocking { dataStoreRepository.getRefreshToken().first() }
 
+                Log.d("테스트", "[ResponseInterceptor] AccessToken: $accessToken")
+                Log.d("테스트", "[ResponseInterceptor] RefreshToken: $refreshToken")
+
                 if (accessToken != null && refreshToken != null) {
                     // AccessToken과 RefreshToken을 이용해 AccessToken 재발급 요청
-                    val call = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)?.reissueAccessToken("Bearer $accessToken", refreshToken)
+                    val response = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)?.reissueAccessToken("Bearer $accessToken", refreshToken)?.execute()
 
-                    runBlocking {
-                        val response = call?.execute()
-                        if (response?.isSuccessful == true) { // AccessToken 재발급 성공 시
-                            // DataStore에 새로 발급받은 AccessToken을 저장
-                            val newAccessToken = response.body()?.accessToken?.let {
-                                dataStoreRepository.saveAccessToken(it)
+                    if (response?.isSuccessful == true) { // AccessToken 재발급 성공 시
+                        response.body()?.accessToken?.let { newAccessToken ->
+                            Log.d("테스트", "[ResponseInterceptor] New AccessToken: $newAccessToken")
+                            runBlocking {
+                                dataStoreRepository.saveAccessToken(newAccessToken)
                             }
 
-                            // 새로 발급받은 AccessToken을 헤더에 추가
                             val newRequest = chain.request().newBuilder()
+                                .removeHeader("Authorization")
                                 .addHeader("Authorization", "Bearer $newAccessToken")
                                 .build()
 
-                            // 요청을 다시 보냄
-                            chain.proceed(newRequest)
-                        } else { // RefreshToken이 만료되었을 경우
+                            Log.d("테스트", "[ResponseInterceptor] New Request: $newRequest")
+
+                            return chain.proceed(newRequest)
+                        }
+                    } else { // RefreshToken이 만료되었을 경우
+                        Log.d("테스트", "RefreshToken 만료")
+
+                        runBlocking {
                             // DataStore에 저장된 AccessToken과 RefreshToken을 삭제
                             dataStoreRepository.deleteAccessToken()
                             dataStoreRepository.deleteRefreshToken()
