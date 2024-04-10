@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentStudyBinding
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.StudyGroupAdapter
@@ -29,14 +31,16 @@ class StudyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudyBinding.inflate(inflater, container, false)
+
+        setupRecyclerView()
+        setupView()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        setupView()
         observeViewModel()
     }
 
@@ -77,6 +81,8 @@ class StudyFragment : Fragment() {
     }
 
     private fun setupView() {
+        Glide.with(this).load(R.drawable.teamwork_amico).into(binding.imgBanner)
+
         studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting)
         binding.swipeRefreshLayout.isRefreshing = true
 

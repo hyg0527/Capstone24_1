@@ -71,11 +71,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgBanner"
                         android:layout_width="180dp"
                         android:layout_height="0dp"
-                        android:src="@drawable/teamwork_amico"
+                        android:adjustViewBounds="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
