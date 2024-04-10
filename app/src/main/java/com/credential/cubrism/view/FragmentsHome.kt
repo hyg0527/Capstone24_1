@@ -65,9 +65,16 @@ class HomeUiFragment : Fragment() {
 
     private val userViewModel: UserViewModel by activityViewModels()
 
-    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val startForRegisterResultSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             Toast.makeText(requireContext(), "로그인 성공!", Toast.LENGTH_SHORT).show()
+            userViewModel.getUserInfo()
+        }
+    }
+
+    private val startForRegisterResultLogOut = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(requireContext(), "로그아웃 성공!", Toast.LENGTH_SHORT).show()
             userViewModel.getUserInfo()
         }
     }
@@ -137,11 +144,11 @@ class HomeUiFragment : Fragment() {
         Glide.with(this).load(R.drawable.peopleimage_home).into(binding.backgroundImage)
 
         binding.txtSignIn.setOnClickListener {
-            startForRegisterResult.launch(Intent(requireActivity(), SignInActivity::class.java))
+            startForRegisterResultSignIn.launch(Intent(requireActivity(), SignInActivity::class.java))
         }
 
         binding.btnProfile.setOnClickListener {
-            startActivity(Intent(requireActivity(), MyPageActivity::class.java))
+            startForRegisterResultLogOut.launch(Intent(requireActivity(), MyPageActivity::class.java))
         }
 
         binding.btnNoti.setOnClickListener {
@@ -154,6 +161,13 @@ class HomeUiFragment : Fragment() {
             if (user != null) {
                 binding.btnProfile.visibility = View.VISIBLE
                 binding.btnNoti.visibility = View.VISIBLE
+                binding.txtSignIn.visibility = View.GONE
+                binding.txtArrow.visibility = View.GONE
+            } else {
+                binding.btnProfile.visibility = View.GONE
+                binding.btnNoti.visibility = View.GONE
+                binding.txtSignIn.visibility = View.VISIBLE
+                binding.txtArrow.visibility = View.VISIBLE
             }
         }
     }

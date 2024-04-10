@@ -30,6 +30,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _kakaoSignIn = MutableLiveData<ResultUtil<TokenDto>>()
     val kakaoSignIn: LiveData<ResultUtil<TokenDto>> = _kakaoSignIn
 
+    private val _logOut = MutableLiveData<ResultUtil<MessageDto>>()
+    val logOut: LiveData<ResultUtil<MessageDto>> = _logOut
+
     private val _editUserInfo = MutableLiveData<ResultUtil<MessageDto>>()
     val editUserInfo: LiveData<ResultUtil<MessageDto>> = _editUserInfo
 
@@ -66,6 +69,12 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     fun kakaoSignIn(socialTokenDto: SocialTokenDto) {
         authRepository.kakaoLogin(socialTokenDto) { result ->
             _kakaoSignIn.postValue(result)
+        }
+    }
+
+    fun logOut() {
+        authRepository.logOut { result ->
+            _logOut.postValue(result)
         }
     }
 

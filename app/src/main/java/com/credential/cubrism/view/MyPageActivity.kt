@@ -13,15 +13,20 @@ import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMyPageBinding
 import com.credential.cubrism.model.dto.MyPageDto
+import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.CalendarViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MyPageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMyPageBinding.inflate(layoutInflater) }
 
+    private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
     private val calendarViewModel: CalendarViewModel by viewModels()
 
@@ -39,6 +44,7 @@ class MyPageActivity : AppCompatActivity() {
 
         setupView()
         setupRecyclerView()
+        observeViewModel()
     }
 
     private fun setupView() {
@@ -68,6 +74,11 @@ class MyPageActivity : AppCompatActivity() {
         binding.layoutSchedule.setOnClickListener {
             startActivity(Intent(this, MyScheduleListActivity::class.java))
         }
+
+        // 로그아웃
+        binding.btnLogout.setOnClickListener {
+            authViewModel.logOut()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -92,6 +103,25 @@ class MyPageActivity : AppCompatActivity() {
 //                // Q&A 내역
 //                2 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
 //            }
+        }
+    }
+
+    private fun observeViewModel() {
+        authViewModel.logOut.observe(this) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    lifecycleScope.launch {
+                        dataStore.deleteAccessToken()
+                        dataStore.deleteRefreshToken()
+                        dataStore.deleteEmail()
+                        dataStore.deleteNickname()
+                        dataStore.deleteProfileImage()
+                    }
+                    setResult(RESULT_OK).also { finish() }
+                }
+                is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
+                is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 연결을 확인해주세요.", Toast.LENGTH_SHORT).show() }
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ import retrofit2.Response
 
 class AuthRepository {
     private val authApi: AuthApi = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)!!
+    private val authApiAuth: AuthApi = RetrofitClient.getRetrofitWithAuth()?.create(AuthApi::class.java)!!
 
     fun signUp(email: String, password: String, nickname: String, callback: (ResultUtil<MessageDto>) -> Unit) {
         authApi.signUp(SignUpDto(email, password, nickname)).enqueue(object : Callback<MessageDto> {
@@ -110,6 +111,22 @@ class AuthRepository {
             }
 
             override fun onFailure(call: Call<TokenDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun logOut(callback: (ResultUtil<MessageDto>) -> Unit) {
+        authApiAuth.logOut().enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })

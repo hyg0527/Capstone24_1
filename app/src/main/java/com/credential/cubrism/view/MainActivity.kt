@@ -103,14 +103,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         userViewModel.userInfo.observe(this) { user ->
-            dataStoreViewModel.saveEmail(user.email)
-            dataStoreViewModel.saveNickname(user.nickname)
-            user.profileImage?.let { dataStoreViewModel.saveProfileImage(it) }
-        }
-
-        userViewModel.errorMessage.observe(this) { event ->
-            event.getContentIfNotHandled()?.let { message ->
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            user?.let {
+                dataStoreViewModel.saveEmail(it.email)
+                dataStoreViewModel.saveNickname(it.nickname)
+                it.profileImage?.let { image ->
+                    dataStoreViewModel.saveProfileImage(image)
+                }
             }
         }
     }
