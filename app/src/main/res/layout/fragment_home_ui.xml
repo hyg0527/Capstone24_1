@@ -42,7 +42,7 @@
                 app:layout_constraintStart_toEndOf="@+id/imgLogo"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnNotify"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
