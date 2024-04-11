@@ -185,7 +185,7 @@ class QnaActivity : AppCompatActivity() {
             val intent = Intent(this, QnaViewActivity::class.java)
             intent.putExtra("postId", item.postId)
             intent.putExtra("myEmail", myEmail)
-            startActivity(intent)
+            startForRegisterResult.launch(intent)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {

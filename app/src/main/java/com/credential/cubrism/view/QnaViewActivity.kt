@@ -1,10 +1,13 @@
 package com.credential.cubrism.view
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
@@ -18,6 +21,9 @@ import com.credential.cubrism.view.utils.CommentState
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
+import com.skydoves.powermenu.MenuAnimation
+import com.skydoves.powermenu.PowerMenu
+import com.skydoves.powermenu.PowerMenuItem
 
 class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val binding by lazy { ActivityQnaViewBinding.inflate(layoutInflater) }
@@ -25,6 +31,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
     private lateinit var postCommentAdapter : PostCommentAdapter
+    private lateinit var powerMenu : PowerMenu
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
     private val myEmail by lazy { intent.getStringExtra("myEmail") }
@@ -33,9 +40,21 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     private var commentState = CommentState.ADD
     private var commentId = -1
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (powerMenu.isShowing) {
+                powerMenu.dismiss()
+            } else {
+                finish()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         setupToolbar()
         setupRecyclerView()
@@ -71,6 +90,43 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     }
 
     private fun setupView() {
+        powerMenu = PowerMenu.Builder(this)
+            .addItemList(listOf(
+                PowerMenuItem("수정", false),
+                PowerMenuItem("삭제", false)
+            ))
+            .setAnimation(MenuAnimation.DROP_DOWN)
+            .setMenuRadius(20f)
+            .setMenuShadow(10f)
+            .setMenuColor(Color.WHITE)
+            .setShowBackground(false)
+            .setLifecycleOwner(this)
+            .build()
+
+        powerMenu.setOnMenuItemClickListener { position, _ ->
+            when (position) {
+                0 -> {
+                    // TODO: 게시글 수정 액티비티로 이동
+                }
+                1 -> {
+                    AlertDialog.Builder(this).apply {
+                        setTitle("게시글 삭제")
+                        setMessage("게시글을 삭제하시겠습니까?")
+                        setNegativeButton("취소", null)
+                        setPositiveButton("삭제") { _, _ ->
+                            postViewModel.deletePost(postId)
+                        }
+                        show()
+                    }
+                }
+            }
+            powerMenu.dismiss()
+        }
+
+        binding.btnMenu.setOnClickListener {
+            powerMenu.showAsDropDown(binding.btnMenu)
+        }
+
         binding.btnSend.setOnClickListener {
             if (binding.editComment.text.trim().isEmpty()) {
                 Toast.makeText(this, "댓글을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -106,8 +162,14 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
             binding.txtTitle.text = result.title
             binding.txtContent.text = result.content.replace(" ", "\u00A0")
 
+            binding.btnMenu.visibility = if (result.email == myEmail) View.VISIBLE else View.GONE
+
             postCommentAdapter.setItemList(result.comments)
             binding.swipeRefreshLayout.isRefreshing = false
+        }
+
+        postViewModel.deletePost.observe(this) {
+            setResult(RESULT_OK).also { finish() }
         }
 
         postViewModel.addComment.observe(this) {

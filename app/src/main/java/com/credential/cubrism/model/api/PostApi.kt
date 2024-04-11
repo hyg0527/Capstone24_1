@@ -5,6 +5,7 @@ import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
+import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import retrofit2.Call
 import retrofit2.http.Body
@@ -21,12 +22,12 @@ interface PostApi {
     fun addPost(@Body postAddDto: PostAddDto): Call<MessageDto>
 
     // 게시글 삭제
-//    @DELETE("/post/{postId}")
-//    fun deletePost(@Path("postId") postId: Int): Call<MessageDto>
+    @DELETE("/post/{postId}")
+    fun deletePost(@Path("postId") postId: Int): Call<MessageDto>
 
     // 게시글 수정
-//    @PUT("/post/{postId}")
-//    fun updatePost(@Path("postId") postId: Int, @Body postUpdateDto: PostUpdateDto): Call<MessageDto>
+    @PUT("/post/{postId}")
+    fun updatePost(@Path("postId") postId: Int, @Body postUpdateDto: PostUpdateDto): Call<MessageDto>
 
     // 게시글 보기
     @GET("/post/{postId}")

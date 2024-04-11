@@ -6,6 +6,7 @@ import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
+import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
@@ -20,6 +21,38 @@ class PostRepository {
 
     fun addPost(postAddDto: PostAddDto, callback: (ResultUtil<MessageDto>) -> Unit) {
         postApiAuth.addPost(postAddDto).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun deletePost(postId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
+        postApiAuth.deletePost(postId).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun updatePost(postId: Int, postUpdateDto: PostUpdateDto, callback: (ResultUtil<MessageDto>) -> Unit) {
+        postApiAuth.updatePost(postId, postUpdateDto).enqueue(object : Callback<MessageDto> {
             override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }

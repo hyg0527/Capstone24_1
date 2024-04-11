@@ -4,13 +4,16 @@
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
         <item name="colorAccent">@color/lightblue</item>
+        <item name="colorSurface">@color/white</item>
+
+        <item name="android:colorBackground">@color/white</item>
+
         <item name="itemIconTint">@color/lightblue</item>
         <item name="itemBackground">@color/lightblue</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="android:colorBackground">@color/white</item>
         <item name="colorControlHighlight">@color/lightblue</item>
         <item name="elevationOverlayEnabled">false</item>
         <item name="homeAsUpIndicator">@drawable/arrow_left</item>
+
         <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialogTheme</item>
     </style>
 

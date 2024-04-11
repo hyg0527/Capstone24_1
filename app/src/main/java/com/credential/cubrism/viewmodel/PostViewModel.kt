@@ -10,6 +10,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostList
+import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
@@ -22,6 +23,12 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _addPost = MutableLiveData<MessageDto>()
     val addPost: LiveData<MessageDto> = _addPost
 
+    private val _deletePost = MutableLiveData<MessageDto>()
+    val deletePost: LiveData<MessageDto> = _deletePost
+
+    private val _updatePost = MutableLiveData<MessageDto>()
+    val updatePost: LiveData<MessageDto> = _updatePost
+
     private val _postView = MutableLiveData<PostViewDto>()
     val postView: LiveData<PostViewDto> = _postView
 
@@ -31,11 +38,11 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _addComment = MutableLiveData<MessageDto>()
     val addComment: LiveData<MessageDto> = _addComment
 
-    private val _updateComment = MutableLiveData<MessageDto>()
-    val updateComment: LiveData<MessageDto> = _updateComment
-
     private val _deleteComment = MutableLiveData<MessageDto>()
     val deleteComment: LiveData<MessageDto> = _deleteComment
+
+    private val _updateComment = MutableLiveData<MessageDto>()
+    val updateComment: LiveData<MessageDto> = _updateComment
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -51,11 +58,19 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     fun addPost(postAddDto: PostAddDto) {
         postRepository.addPost(postAddDto) { result ->
-            when (result) {
-                is ResultUtil.Success -> { _addPost.postValue(result.data) }
-                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
-                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
-            }
+            handleResult(result, _addPost, _errorMessage)
+        }
+    }
+
+    fun deletePost(postId: Int) {
+        postRepository.deletePost(postId) { result ->
+            handleResult(result, _deletePost, _errorMessage)
+        }
+    }
+
+    fun updatePost(postId: Int, postUpdateDto: PostUpdateDto) {
+        postRepository.updatePost(postId, postUpdateDto) { result ->
+            handleResult(result, _updatePost, _errorMessage)
         }
     }
 
@@ -111,31 +126,19 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     fun addComment(commentAddDto: CommentAddDto) {
         postRepository.addComment(commentAddDto) { result ->
-            when (result) {
-                is ResultUtil.Success -> { _addComment.postValue(result.data) }
-                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
-                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
-            }
-        }
-    }
-
-    fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto) {
-        postRepository.updateComment(commentId, commentUpdateDto) { result ->
-            when (result) {
-                is ResultUtil.Success -> { _updateComment.postValue(result.data) }
-                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
-                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
-            }
+            handleResult(result, _addComment, _errorMessage)
         }
     }
 
     fun deleteComment(commentId: Int) {
         postRepository.deleteComment(commentId) { result ->
-            when (result) {
-                is ResultUtil.Success -> { _deleteComment.postValue(result.data) }
-                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
-                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
-            }
+            handleResult(result, _deleteComment, _errorMessage)
+        }
+    }
+
+    fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto) {
+        postRepository.updateComment(commentId, commentUpdateDto) { result ->
+            handleResult(result, _updateComment, _errorMessage)
         }
     }
 
@@ -145,5 +148,13 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     fun setLoading(isLoading: Boolean) {
         _isLoading.value = isLoading
+    }
+
+    private fun handleResult(result: ResultUtil<MessageDto>, successLiveData: MutableLiveData<MessageDto>, errorLiveData: MutableLiveData<Event<String>>) {
+        when (result) {
+            is ResultUtil.Success -> { successLiveData.postValue(result.data) }
+            is ResultUtil.Error -> { errorLiveData.postValue(Event(result.error)) }
+            is ResultUtil.NetworkError -> { errorLiveData.postValue(Event("네트워크 오류가 발생했습니다.")) }
+        }
     }
 }
