@@ -2,6 +2,7 @@ package com.credential.cubrism.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
@@ -54,6 +55,7 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
         fun bind(item: Comments) {
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
+            binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
 
             binding.layout.setOnLongClickListener {
                 CommentDialog(item).show((context as AppCompatActivity).supportFragmentManager, "comment")
@@ -71,6 +73,8 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtNickname.text = item.nickname
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
+            binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
+
             binding.imgReplyTo.setOnClickListener {
                 listener.onReplyClick(item.nickname)
             }

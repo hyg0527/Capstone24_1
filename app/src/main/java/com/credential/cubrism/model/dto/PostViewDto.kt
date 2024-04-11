@@ -22,5 +22,6 @@ data class Comments(
     val content: String,
     val createdDate: String,
     val profileImageUrl: String?,
-    val isReply: Boolean
+    val isReply: Boolean,
+    val isUpdated: Boolean
 )
