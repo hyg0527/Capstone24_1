@@ -9,10 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.credential.cubrism.databinding.DialogCommentBinding
+import com.credential.cubrism.model.dto.Comments
 import com.credential.cubrism.view.adapter.CommentDialogAdapter
 import com.credential.cubrism.viewmodel.PostViewModel
 
-class CommentDialog : DialogFragment() {
+class CommentDialog(private val comment: Comments) : DialogFragment() {
     private var _binding: DialogCommentBinding? = null
     private val binding get() = _binding!!
 
@@ -54,7 +55,7 @@ class CommentDialog : DialogFragment() {
         commentDialogAdapter.apply {
             setItemList(listOf("수정", "삭제"))
             setOnItemClickListener { item, _ ->
-                postViewModel.setClickedItem(item)
+                postViewModel.setClickedItem(Pair(comment, item))
                 dismiss()
             }
         }

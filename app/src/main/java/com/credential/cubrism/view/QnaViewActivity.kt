@@ -1,22 +1,20 @@
 package com.credential.cubrism.view
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQnaViewBinding
 import com.credential.cubrism.model.dto.CommentAddDto
+import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.OnReplyClickListener
 import com.credential.cubrism.view.adapter.PostCommentAdapter
+import com.credential.cubrism.view.utils.CommentState
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -30,6 +28,10 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
     private val myEmail by lazy { intent.getStringExtra("myEmail") }
+    private val imm by lazy { getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager }
+
+    private var commentState = CommentState.ADD
+    private var commentId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,17 +71,26 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     }
 
     private fun setupView() {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-
         binding.btnSend.setOnClickListener {
             if (binding.editComment.text.trim().isEmpty()) {
                 Toast.makeText(this, "댓글을 입력해주세요.", Toast.LENGTH_SHORT).show()
-            } else {
-                postViewModel.addComment(CommentAddDto(postId, binding.editComment.text.toString()))
-                binding.editComment.text.clear()
-                // 키보드 내리기
-                imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0)
+                return@setOnClickListener
             }
+
+            when (commentState) {
+                CommentState.ADD -> postViewModel.addComment(CommentAddDto(postId, binding.editComment.text.toString()))
+                CommentState.UPDATE -> {
+                    if (commentId != -1) {
+                         postViewModel.updateComment(commentId, CommentUpdateDto(binding.editComment.text.toString()))
+                    }
+                }
+                CommentState.REPLY -> {}
+            }
+
+            commentId = -1
+            commentState = CommentState.ADD
+            binding.editComment.text.clear()
+            imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0) // 키보드 내리기
         }
     }
 
@@ -103,13 +114,30 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
             getPostView()
         }
 
+        postViewModel.updateComment.observe(this) {
+            getPostView()
+        }
+
+        postViewModel.deleteComment.observe(this) {
+            getPostView()
+        }
+
         postViewModel.clickedItem.observe(this) {
-            when (it) {
+            commentId = it.first.commentId
+            when (it.second) {
                 "수정" -> {
-                    Toast.makeText(this, "수정", Toast.LENGTH_SHORT).show()
+                    commentState = CommentState.UPDATE
+                    binding.editComment.setText(it.first.content)
+                    binding.editComment.setSelection(binding.editComment.text.length)
+                    binding.editComment.post {
+                        if (binding.editComment.isEnabled) {
+                            binding.editComment.requestFocus()
+                            imm.showSoftInput(binding.editComment, 0)
+                        }
+                    }
                 }
                 "삭제" -> {
-                    Toast.makeText(this, "삭제", Toast.LENGTH_SHORT).show()
+                    postViewModel.deleteComment(commentId)
                 }
             }
         }

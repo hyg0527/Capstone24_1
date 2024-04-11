@@ -1,14 +1,17 @@
 package com.credential.cubrism.model.api
 
 import com.credential.cubrism.model.dto.CommentAddDto
+import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
 import com.credential.cubrism.model.dto.PostViewDto
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -58,12 +61,12 @@ interface PostApi {
     fun addComment(@Body commentAddDto: CommentAddDto): Call<MessageDto>
 
     // 댓글 삭제
-//    @DELETE("/comment/{commentId}")
-//    fun deleteComment(@Path("commentId") commentId: Int): Call<MessageDto>
+    @DELETE("/comment/{commentId}")
+    fun deleteComment(@Path("commentId") commentId: Int): Call<MessageDto>
 
     // 댓글 수정
-//    @PUT("/comment/{commentId}")
-//    fun updateComment(@Path("commentId") commentId: Int, @Body commentUpdateDto: CommentUpdateDto): Call<MessageDto>
+    @PUT("/comment/{commentId}")
+    fun updateComment(@Path("commentId") commentId: Int, @Body commentUpdateDto: CommentUpdateDto): Call<MessageDto>
 
     // 대댓글 추가
 //    @POST("/reply")

@@ -56,9 +56,8 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtTime.text = convertDate(item.createdDate)
 
             binding.layout.setOnLongClickListener {
-                CommentDialog().show((context as AppCompatActivity).supportFragmentManager, "comment")
+                CommentDialog(item).show((context as AppCompatActivity).supportFragmentManager, "comment")
                 true
-
             }
         }
     }

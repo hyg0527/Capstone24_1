@@ -1,10 +1,12 @@
 package com.credential.cubrism.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.CommentAddDto
+import com.credential.cubrism.model.dto.CommentUpdateDto
+import com.credential.cubrism.model.dto.Comments
+import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostList
@@ -17,8 +19,8 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _page = MutableLiveData<PageDto>()
     val page: LiveData<PageDto> = _page
 
-    private val _addPost = MutableLiveData<PostAddDto>()
-    val addPost: LiveData<PostAddDto> = _addPost
+    private val _addPost = MutableLiveData<MessageDto>()
+    val addPost: LiveData<MessageDto> = _addPost
 
     private val _postView = MutableLiveData<PostViewDto>()
     val postView: LiveData<PostViewDto> = _postView
@@ -26,8 +28,14 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _postList = MutableLiveData<List<PostList>>()
     val postList: LiveData<List<PostList>> = _postList
 
-    private val _addComment = MutableLiveData<CommentAddDto>()
-    val addComment: LiveData<CommentAddDto> = _addComment
+    private val _addComment = MutableLiveData<MessageDto>()
+    val addComment: LiveData<MessageDto> = _addComment
+
+    private val _updateComment = MutableLiveData<MessageDto>()
+    val updateComment: LiveData<MessageDto> = _updateComment
+
+    private val _deleteComment = MutableLiveData<MessageDto>()
+    val deleteComment: LiveData<MessageDto> = _deleteComment
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -35,8 +43,8 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _isRefreshed = MutableLiveData<Boolean>()
     val isRefreshed: LiveData<Boolean> = _isRefreshed
 
-    private val _clickedItem = MutableLiveData<String>()
-    val clickedItem: LiveData<String> = _clickedItem
+    private val _clickedItem = MutableLiveData<Pair<Comments, String>>()
+    val clickedItem: LiveData<Pair<Comments, String>> = _clickedItem
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
@@ -44,7 +52,7 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     fun addPost(postAddDto: PostAddDto) {
         postRepository.addPost(postAddDto) { result ->
             when (result) {
-                is ResultUtil.Success -> { _addPost.postValue(postAddDto) }
+                is ResultUtil.Success -> { _addPost.postValue(result.data) }
                 is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
                 is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
             }
@@ -104,14 +112,34 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     fun addComment(commentAddDto: CommentAddDto) {
         postRepository.addComment(commentAddDto) { result ->
             when (result) {
-                is ResultUtil.Success -> { _addComment.postValue(commentAddDto) }
+                is ResultUtil.Success -> { _addComment.postValue(result.data) }
                 is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
                 is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
             }
         }
     }
 
-    fun setClickedItem(value: String) {
+    fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto) {
+        postRepository.updateComment(commentId, commentUpdateDto) { result ->
+            when (result) {
+                is ResultUtil.Success -> { _updateComment.postValue(result.data) }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
+            }
+        }
+    }
+
+    fun deleteComment(commentId: Int) {
+        postRepository.deleteComment(commentId) { result ->
+            when (result) {
+                is ResultUtil.Success -> { _deleteComment.postValue(result.data) }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
+            }
+        }
+    }
+
+    fun setClickedItem(value: Pair<Comments, String>) {
         _clickedItem.value = value
     }
 
