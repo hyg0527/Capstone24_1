@@ -1,5 +1,7 @@
 package com.credential.cubrism.view
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -40,11 +42,10 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
         getPostView()
     }
 
-    override fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String) {
+    override fun onReplyClick(nickname: String) {
         binding.txtReply.text = nickname
         binding.imgReply.visibility = View.VISIBLE
         binding.txtReply.visibility = View.VISIBLE
-        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.lightblue))
     }
 
     private fun setupToolbar() {
@@ -55,7 +56,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     }
 
     private fun setupRecyclerView() {
-        postCommentAdapter = PostCommentAdapter(myEmail, this)
+        postCommentAdapter = PostCommentAdapter(this@QnaViewActivity, myEmail, this)
         binding.recyclerView.apply {
             adapter = postCommentAdapter
             itemAnimator = null
@@ -100,6 +101,17 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
         postViewModel.addComment.observe(this) {
             getPostView()
+        }
+
+        postViewModel.clickedItem.observe(this) {
+            when (it) {
+                "수정" -> {
+                    Toast.makeText(this, "수정", Toast.LENGTH_SHORT).show()
+                }
+                "삭제" -> {
+                    Toast.makeText(this, "삭제", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         postViewModel.errorMessage.observe(this) {

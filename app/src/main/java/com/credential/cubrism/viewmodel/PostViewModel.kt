@@ -35,6 +35,9 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _isRefreshed = MutableLiveData<Boolean>()
     val isRefreshed: LiveData<Boolean> = _isRefreshed
 
+    private val _clickedItem = MutableLiveData<String>()
+    val clickedItem: LiveData<String> = _clickedItem
+
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
@@ -106,6 +109,10 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
                 is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
             }
         }
+    }
+
+    fun setClickedItem(value: String) {
+        _clickedItem.value = value
     }
 
     fun setLoading(isLoading: Boolean) {

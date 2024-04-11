@@ -1,8 +1,9 @@
 package com.credential.cubrism.view.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -10,18 +11,17 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListCommentMyBinding
 import com.credential.cubrism.databinding.ItemListCommentOthersBinding
 import com.credential.cubrism.model.dto.Comments
+import com.credential.cubrism.view.CommentDialog
 import com.credential.cubrism.view.diff.PostCommentDiffUtil
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface OnReplyClickListener {
-    fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String)
+    fun onReplyClick(nickname: String)
 }
 
-class PostCommentAdapter(private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostCommentAdapter(private val context: Context, private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
-
-    private var selectedViewHolder: RecyclerView.ViewHolder? = null
 
     companion object {
         private const val VIEW_TYPE_MY = 0
@@ -54,6 +54,12 @@ class PostCommentAdapter(private val myEmail: String?, private val listener: OnR
         fun bind(item: Comments) {
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
+
+            binding.layout.setOnLongClickListener {
+                CommentDialog().show((context as AppCompatActivity).supportFragmentManager, "comment")
+                true
+
+            }
         }
     }
 
@@ -67,9 +73,7 @@ class PostCommentAdapter(private val myEmail: String?, private val listener: OnR
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
             binding.imgReplyTo.setOnClickListener {
-                selectedViewHolder?.itemView?.setBackgroundColor(ContextCompat.getColor(it.context, android.R.color.transparent))
-                listener.onReplyClick(this, item.nickname)
-                selectedViewHolder = this
+                listener.onReplyClick(item.nickname)
             }
         }
     }
