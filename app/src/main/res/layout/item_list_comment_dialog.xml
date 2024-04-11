@@ -3,7 +3,5 @@
     android:id="@+id/textView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fontFamily="@font/digikyonb"
-    android:text="복사"
-    android:padding="16dp"
-    android:textSize="16dp" />
+    android:padding="12dp"
+    android:textSize="18dp" />
