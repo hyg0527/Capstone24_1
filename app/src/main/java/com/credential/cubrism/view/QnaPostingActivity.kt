@@ -6,13 +6,11 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
 import com.credential.cubrism.databinding.ActivityQnaPostingBinding
 import com.credential.cubrism.databinding.DialogCategoryBinding
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.repository.QualificationRepository
-import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.QualificationAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
@@ -24,7 +22,7 @@ class QnaPostingActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQnaPostingBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
-    private val qualfiicationViewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
+    private val qualificationViewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
 
     private val qualificationAdapter = QualificationAdapter()
     private lateinit var bottomSheetDialog: BottomSheetDialog
@@ -71,7 +69,7 @@ class QnaPostingActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        qualfiicationViewModel.getQualificationList()
+        qualificationViewModel.getQualificationList()
 
         binding.btnAdd.setOnClickListener {
             val title = binding.editTitle.text.toString()
@@ -99,23 +97,25 @@ class QnaPostingActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        postViewModel.addPost.observe(this) {
-            setResult(RESULT_OK).also { finish() }
-        }
+        postViewModel.apply {
+            addPost.observe(this@QnaPostingActivity) {
+                setResult(RESULT_OK).also { finish() }
+            }
 
-        qualfiicationViewModel.qualificationList.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> {
-                    binding.txtCategory.text = result.data.random().name
-                    qualificationAdapter.setItemList(result.data)
-                }
-                is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
-                is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
+            errorMessage.observe(this@QnaPostingActivity) {
+                it.getContentIfNotHandled()?.let { message -> Toast.makeText(this@QnaPostingActivity, message, Toast.LENGTH_SHORT).show() }
             }
         }
 
-        postViewModel.errorMessage.observe(this) {
-            it.getContentIfNotHandled()?.let { message -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+        qualificationViewModel.apply {
+            qualificationList.observe(this@QnaPostingActivity) { result ->
+                binding.txtCategory.text = result.random().name
+                qualificationAdapter.setItemList(result)
+            }
+
+            errorMessage.observe(this@QnaPostingActivity) { message ->
+                message.getContentIfNotHandled()?.let { Toast.makeText(this@QnaPostingActivity, it, Toast.LENGTH_SHORT).show() }
+            }
         }
     }
 }

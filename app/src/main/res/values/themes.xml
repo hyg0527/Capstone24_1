@@ -27,12 +27,6 @@
         <item name="android:background">@drawable/bottomsheet_rounded_corner</item>
     </style>
 
-    <style name="StyleToolbar.Qna" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:background">@color/white</item>
-        <item name="colorControlNormal">@color/blue</item>
-        <item name="android:drawableTint">@color/blue</item>
-    </style>
-
     <style name="StyleToolbar.EditProfile" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:background">@color/lightblue</item>
         <item name="actionMenuTextAppearance">@style/StyleMenu.EditProfile</item>

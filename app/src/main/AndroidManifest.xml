@@ -87,6 +87,12 @@
         <activity
             android:name=".view.MyPageActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.QualificationMiddleActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.QualificationDetailsActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
