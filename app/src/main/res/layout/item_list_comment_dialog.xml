@@ -3,5 +3,7 @@
     android:id="@+id/textView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:fontFamily="@font/godom"
     android:padding="12dp"
-    android:textSize="18dp" />
+    android:textSize="14dp" />

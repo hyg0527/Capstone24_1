@@ -42,7 +42,7 @@ class CommentDialog(private val comment: Comments) : DialogFragment() {
     private fun setupDialog() {
         dialog?.window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            attributes?.width = (context.resources.displayMetrics.widthPixels.times(0.65)).toInt()
+            attributes?.width = (context.resources.displayMetrics.widthPixels.times(0.55)).toInt()
         }
     }
 
