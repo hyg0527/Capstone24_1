@@ -93,6 +93,9 @@
         <activity
             android:name=".view.QualificationDetailsActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.QualificationSearchActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
