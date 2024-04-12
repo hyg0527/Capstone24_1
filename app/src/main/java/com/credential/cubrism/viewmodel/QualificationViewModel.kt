@@ -1,6 +1,5 @@
 package com.credential.cubrism.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,7 +30,6 @@ class QualificationViewModel(private val repository: QualificationRepository) : 
     fun getQualificationList() {
         repository.qualificationList { result ->
             handleResult(result, _qualificationList, _errorMessage)
-            Log.d("테스트", "getQualificationList: $result")
         }
     }
 
