@@ -21,7 +21,6 @@ import com.credential.cubrism.databinding.FragmentQualificationDetailsBinding
 import com.credential.cubrism.databinding.FragmentQualificationMajorfieldBinding
 import com.credential.cubrism.databinding.FragmentQualificationMiddlefieldBinding
 import com.credential.cubrism.databinding.FragmentQualificationSearchBinding
-
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.MajorFieldAdapter
@@ -79,7 +78,7 @@ class MajorFieldFragment : Fragment() {
         binding.recyclerView.apply {
             layoutManager = gridLayoutmanager
             adapter = majorFieldAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 80, 48, 48, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(0, 48, 48, 48, 0, 0, null))
             setHasFixedSize(true)
 
             setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
