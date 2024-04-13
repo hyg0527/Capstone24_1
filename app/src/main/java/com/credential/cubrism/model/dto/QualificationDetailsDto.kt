@@ -23,8 +23,8 @@ data class Schedule(
 )
 
 data class Fee(
-    val writtenFee: Int,
-    val practicalFee: Int
+    val writtenFee: Int?,
+    val practicalFee: Int?
 )
 
 data class File(

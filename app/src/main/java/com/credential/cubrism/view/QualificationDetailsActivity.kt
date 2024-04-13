@@ -72,8 +72,10 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
                 val items = mutableListOf<QualificationDetailsItem>()
 
-                items.add(QualificationDetailsItem(ItemType.HEADER, "수수료"))
-                items.add(QualificationDetailsItem(ItemType.FEE, result.fee))
+                if (result.fee.writtenFee != null || result.fee.practicalFee != null) {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "수수료"))
+                    items.add(QualificationDetailsItem(ItemType.FEE, result.fee))
+                }
 
                 result.tendency?.let {
                     items.add(QualificationDetailsItem(ItemType.HEADER, "출제 경향"))

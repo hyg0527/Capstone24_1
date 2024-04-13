@@ -12,6 +12,7 @@ import com.credential.cubrism.databinding.ItemListQdTextBinding
 import com.credential.cubrism.model.dto.Fee
 import com.credential.cubrism.model.dto.File
 import com.credential.cubrism.view.diff.QualificationDetailsDiffUtil
+import java.text.DecimalFormat
 
 enum class ItemType {
     HEADER, SCHEDULE, FEE, TENDENCY, STANDARD, QUESTION, ACQUISITION, BOOK
@@ -82,7 +83,10 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
 
     inner class FeeViewHolder(private val binding: ItemListQdTextBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Fee) {
-            binding.txtText.text = "필기 : ${item.writtenFee}원\n실기 : ${item.practicalFee}원"
+            val dec = DecimalFormat("#,###")
+            val writtenFee = if (item.writtenFee != null) "필기 : ${dec.format(item.writtenFee)}원" else ""
+            val practicalFee = if (item.practicalFee != null) "실기 : ${dec.format(item.practicalFee)}원" else ""
+            binding.txtText.text = if (writtenFee.isNotEmpty() && practicalFee.isNotEmpty()) "$writtenFee\n$practicalFee" else writtenFee.plus(practicalFee)
         }
     }
 
