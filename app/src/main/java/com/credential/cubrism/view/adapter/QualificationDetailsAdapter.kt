@@ -1,14 +1,19 @@
 package com.credential.cubrism.view.adapter
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ItemListQdBookBinding
 import com.credential.cubrism.databinding.ItemListQdFileBinding
 import com.credential.cubrism.databinding.ItemListQdHeaderBinding
 import com.credential.cubrism.databinding.ItemListQdTextBinding
+import com.credential.cubrism.model.dto.Book
 import com.credential.cubrism.model.dto.Fee
 import com.credential.cubrism.model.dto.File
 import com.credential.cubrism.view.diff.QualificationDetailsDiffUtil
@@ -26,6 +31,8 @@ data class QualificationDetailsItem(
 class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<QualificationDetailsItem>()
     private var onItemClickListener: ((Any, Int) -> Unit)? = null
+
+    private val dec = DecimalFormat("#,###")
 
     override fun getItemCount(): Int = itemList.size
 
@@ -52,7 +59,7 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
             4 -> StandardViewHolder(ItemListQdFileBinding.inflate(inflater, parent, false))
             5 -> QuestionViewHolder(ItemListQdFileBinding.inflate(inflater, parent, false))
             6 -> AcquisitionViewHolder(ItemListQdTextBinding.inflate(inflater, parent, false))
-            else -> BookViewHolder(ItemListQdTextBinding.inflate(inflater, parent, false))
+            else -> BookViewHolder(ItemListQdBookBinding.inflate(inflater, parent, false))
         }
     }
 
@@ -65,7 +72,7 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
             is StandardViewHolder -> holder.bind(itemList[position].data as File)
             is QuestionViewHolder -> holder.bind(itemList[position].data as File)
             is AcquisitionViewHolder -> holder.bind(itemList[position].data as String)
-            is BookViewHolder -> holder.bind(itemList[position].data as String)
+            is BookViewHolder -> holder.bind(itemList[position].data as Book)
         }
     }
 
@@ -83,7 +90,7 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
 
     inner class FeeViewHolder(private val binding: ItemListQdTextBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Fee) {
-            val dec = DecimalFormat("#,###")
+
             val writtenFee = if (item.writtenFee != null) "필기 : ${dec.format(item.writtenFee)}원" else ""
             val practicalFee = if (item.practicalFee != null) "실기 : ${dec.format(item.practicalFee)}원" else ""
             binding.txtText.text = if (writtenFee.isNotEmpty() && practicalFee.isNotEmpty()) "$writtenFee\n$practicalFee" else writtenFee.plus(practicalFee)
@@ -134,9 +141,30 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    inner class BookViewHolder(private val binding: ItemListQdTextBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
-            binding.txtText.text = item
+    inner class BookViewHolder(private val binding: ItemListQdBookBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(itemList[position].data, position)
+                }
+            }
+        }
+
+        fun bind(item: Book) {
+            Glide.with(binding.root)
+                .load(item.thumbnail)
+                .placeholder(ColorDrawable(Color.TRANSPARENT))
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .sizeMultiplier(0.7f)
+                .error(R.drawable.icon_book)
+                .fallback(R.drawable.icon_book)
+                .into(binding.imgThumbnail)
+            binding.txtTitle.text = item.title
+            binding.txtAuthors.text = "저자 : ${item.authors}"
+            binding.txtPublisher.text = "출판 : ${item.publisher}"
+            binding.txtPrice.text = "${dec.format(item.price)}원"
+            binding.txtDate.text = item.date
         }
     }
 

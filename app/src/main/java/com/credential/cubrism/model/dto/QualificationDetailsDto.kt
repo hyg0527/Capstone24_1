@@ -34,11 +34,11 @@ data class File(
 
 data class Book(
     val title: String,
-    val authors: String,
+    val authors: String?,
     val publisher: String,
     val date: String,
     val price: Int,
     val salePrice: Int?,
-    val thumbnail: String,
+    val thumbnail: String?,
     val url: String
 )

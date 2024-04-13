@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityQualificationDetailsBinding
+import com.credential.cubrism.model.dto.Book
 import com.credential.cubrism.model.dto.File
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.view.adapter.ItemType
@@ -61,6 +62,9 @@ class QualificationDetailsActivity : AppCompatActivity() {
                 is File -> {
                     Toast.makeText(this, item.filePath, Toast.LENGTH_SHORT).show()
                 }
+                is Book -> {
+                    Toast.makeText(this, item.url, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -95,6 +99,11 @@ class QualificationDetailsActivity : AppCompatActivity() {
                 result.acquisition?.let {
                     items.add(QualificationDetailsItem(ItemType.HEADER, "취득 방법"))
                     items.add(QualificationDetailsItem(ItemType.ACQUISITION, it))
+                }
+
+                if (result.books.isNotEmpty()) {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "추천 도서"))
+                    items.addAll(result.books.map { QualificationDetailsItem(ItemType.BOOK, it) })
                 }
 
                 qualificationDetailsAdapter.setItemList(items)
