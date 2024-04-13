@@ -54,7 +54,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             adapter = qualificationDetailsAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 32, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
         }
 
         qualificationDetailsAdapter.setOnItemClickListener { item, _ ->
@@ -75,6 +75,11 @@ class QualificationDetailsActivity : AppCompatActivity() {
                 binding.progressIndicator.hide()
 
                 val items = mutableListOf<QualificationDetailsItem>()
+
+                if (result.schedule.isNotEmpty()) {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "시험 일정"))
+                    items.addAll(result.schedule.map { QualificationDetailsItem(ItemType.SCHEDULE, it) })
+                }
 
                 if (result.fee.writtenFee != null || result.fee.practicalFee != null) {
                     items.add(QualificationDetailsItem(ItemType.HEADER, "수수료"))

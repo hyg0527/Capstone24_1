@@ -14,9 +14,9 @@ data class QualificationDetailsDto(
 
 data class Schedule(
     val category: String,
-    val writtenApp: String,
-    val writtenExam: String,
-    val writtenExamResult: String,
+    val writtenApp: String?,
+    val writtenExam: String?,
+    val writtenExamResult: String?,
     val practicalApp: String,
     val practicalExam: String,
     val practicalExamResult: String
