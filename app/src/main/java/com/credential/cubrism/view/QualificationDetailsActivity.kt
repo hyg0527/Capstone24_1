@@ -5,8 +5,11 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityQualificationDetailsBinding
+import com.credential.cubrism.model.dto.File
 import com.credential.cubrism.model.repository.QualificationRepository
-import com.credential.cubrism.view.adapter.StandardAdapter
+import com.credential.cubrism.view.adapter.ItemType
+import com.credential.cubrism.view.adapter.QualificationDetailsAdapter
+import com.credential.cubrism.view.adapter.QualificationDetailsItem
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.QualificationViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -16,7 +19,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
     private val qualificationViewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
 
-    private val standardAdapter = StandardAdapter()
+    private val qualificationDetailsAdapter = QualificationDetailsAdapter()
 
     private val qualificationName by lazy { intent.getStringExtra("qualificationName") }
     private val qualificationCode by lazy { intent.getStringExtra("qualificationCode") }
@@ -41,30 +44,58 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
     private fun setupView() {
         qualificationCode?.let {
+            binding.progressIndicator.show()
             qualificationViewModel.getQualificationDetails(it)
         }
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerStandard.apply {
-            adapter = standardAdapter
+        binding.recyclerView.apply {
+            adapter = qualificationDetailsAdapter
+            itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 32, 0, 0, 0, 0, null))
-            setHasFixedSize(true)
         }
 
-        standardAdapter.setOnItemClickListener { item, _ ->
-            Toast.makeText(this, item.filePath, Toast.LENGTH_SHORT).show()
+        qualificationDetailsAdapter.setOnItemClickListener { item, _ ->
+            when (item) {
+                is File -> {
+                    Toast.makeText(this, item.filePath, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
     private fun observeViewModel() {
         qualificationViewModel.apply {
             qualificationDetails.observe(this@QualificationDetailsActivity) { result ->
-                binding.txtFee.text = "필기 : ${result.fee.writtenFee}원\n실기 : ${result.fee.practicalFee}원" // 수수료
-                binding.txtTendency.text = result.tendency // 출제경향
-                binding.txtAcquistion.text = result.acquisition // 취득방법
+                binding.progressIndicator.hide()
 
-                standardAdapter.setItemList(result.standard)
+                val items = mutableListOf<QualificationDetailsItem>()
+
+                items.add(QualificationDetailsItem(ItemType.HEADER, "수수료"))
+                items.add(QualificationDetailsItem(ItemType.FEE, result.fee))
+
+                result.tendency?.let {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "출제 경향"))
+                    items.add(QualificationDetailsItem(ItemType.TENDENCY, it))
+                }
+
+                if (result.standard.isNotEmpty()) {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "출제 기준"))
+                    items.addAll(result.standard.map { QualificationDetailsItem(ItemType.STANDARD, it) })
+                }
+
+                if (result.question.isNotEmpty()) {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "공개 문제"))
+                    items.addAll(result.question.map { QualificationDetailsItem(ItemType.QUESTION, it) })
+                }
+
+                result.acquisition?.let {
+                    items.add(QualificationDetailsItem(ItemType.HEADER, "취득 방법"))
+                    items.add(QualificationDetailsItem(ItemType.ACQUISITION, it))
+                }
+
+                qualificationDetailsAdapter.setItemList(items)
             }
 
             errorMessage.observe(this@QualificationDetailsActivity) { message ->

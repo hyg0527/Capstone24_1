@@ -5,10 +5,10 @@ data class QualificationDetailsDto(
     val name: String,
     val schedule: List<Schedule>,
     val fee: Fee,
-    val tendency: String,
-    val standard: List<Standard>,
-    val question: List<Question>,
-    val acquisition: String,
+    val tendency: String?,
+    val standard: List<File>,
+    val question: List<File>,
+    val acquisition: String?,
     val books: List<Book>
 )
 
@@ -27,12 +27,7 @@ data class Fee(
     val practicalFee: Int
 )
 
-data class Standard(
-    val filePath: String,
-    val fileName: String
-)
-
-data class Question(
+data class File(
     val filePath: String,
     val fileName: String
 )
