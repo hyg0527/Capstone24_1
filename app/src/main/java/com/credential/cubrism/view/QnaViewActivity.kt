@@ -47,6 +47,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
         if (result.resultCode == Activity.RESULT_OK) {
             getPostView()
             binding.swipeRefreshLayout.isRefreshing = true
+            setResult(RESULT_OK)
         }
     }
 
