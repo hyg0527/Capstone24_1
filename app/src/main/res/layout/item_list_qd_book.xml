@@ -19,7 +19,6 @@
             android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:padding="8dp"
-            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,4:3"
             app:layout_constraintStart_toStartOf="parent"

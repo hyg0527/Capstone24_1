@@ -1,7 +1,5 @@
 package com.credential.cubrism.view.adapter
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -163,15 +161,14 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         fun bind(item: Book) {
             Glide.with(binding.root)
                 .load(item.thumbnail)
-                .placeholder(ColorDrawable(Color.TRANSPARENT))
+                .placeholder(R.color.lightblue)
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .sizeMultiplier(0.7f)
                 .error(R.drawable.icon_book)
                 .fallback(R.drawable.icon_book)
                 .into(binding.imgThumbnail)
             binding.txtTitle.text = item.title
-            binding.txtAuthors.text = "저자 : ${item.authors}"
-            binding.txtPublisher.text = "출판 : ${item.publisher}"
+            binding.txtAuthors.text = "저자 | ${item.authors}"
+            binding.txtPublisher.text = "출판 | ${item.publisher}"
             binding.txtPrice.text = "${dec.format(item.price)}원"
             binding.txtDate.text = item.date
         }
