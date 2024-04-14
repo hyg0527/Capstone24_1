@@ -18,19 +18,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/godom"
-            android:text="글 작성"
             android:textSize="23dp" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAdd"
-        android:layout_width="70dp"
+        android:layout_width="68dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/button_rounded_corner"
         android:fontFamily="@font/kopubdotumbold"
-        android:text="등록"
         android:textColor="@color/white"
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
@@ -96,19 +94,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutPhoto" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/editTitle"
-        style="@style/NoUnderlineEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@null"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="제목"
         android:inputType="text"
+        android:maxLines="1"
         android:paddingStart="20dp"
         android:paddingTop="15dp"
         android:paddingEnd="20dp"
         android:paddingBottom="15dp"
-        android:textColor="@color/blue"
         android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,19 +126,16 @@
 
     <TextView
         android:id="@+id/category"
-        style="@style/NoUnderlineEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:ellipsize="end"
         android:fontFamily="@font/kopubdotumbold"
-        android:maxLines="1"
         android:paddingStart="20dp"
         android:paddingTop="16dp"
         android:paddingEnd="4dp"
         android:paddingBottom="16dp"
         android:text="카테고리"
-        android:textColor="#A8A3AA"
+        android:textColor="#A9A8AA"
         android:textSize="18dp"
         app:layout_constraintEnd_toStartOf="@+id/txtCategory"
         app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +145,6 @@
         android:id="@+id/txtCategory"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_marginEnd="4dp"
         android:background="@drawable/button_rounded_corner_outline_b"
         android:fontFamily="@font/kopubdotumbold"
         android:gravity="center"
@@ -158,23 +152,23 @@
         android:paddingRight="15dp"
         android:textColor="@color/blue"
         android:textSize="15dp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/category"
         app:layout_constraintEnd_toStartOf="@+id/imgDropDown"
         app:layout_constraintStart_toEndOf="@+id/category"
         app:layout_constraintTop_toTopOf="@+id/category" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/imgDropDown"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:padding="16dp"
+        android:background="@android:color/transparent"
+        android:tint="#BBBBBB"
         app:layout_constraintBottom_toBottomOf="@+id/category"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/category"
-        app:srcCompat="@drawable/select" />
+        app:srcCompat="@drawable/icon_arrow_down" />
 
     <View
         android:id="@+id/view3"
@@ -187,25 +181,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/editContent"
-        style="@style/NoUnderlineEditText"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="32dp"
+        android:background="@null"
         android:fontFamily="@font/kopubdotumbold"
         android:gravity="top"
-        android:hint="내용이 들어가는 부분입니다."
+        android:hint="내용"
         android:inputType="none"
-        android:paddingStart="20dp"
-        android:paddingTop="30dp"
-        android:paddingEnd="20dp"
-        android:textColor="@color/blue"
-        android:textSize="15dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="32dp"
+        android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view3" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

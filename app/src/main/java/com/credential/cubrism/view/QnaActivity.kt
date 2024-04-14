@@ -60,10 +60,6 @@ class QnaActivity : AppCompatActivity() {
         setupRecyclerView()
         setupView()
         observeViewModel()
-
-        binding.floatingActionButton.setOnClickListener {
-            startForRegisterResult.launch(Intent(this, QnaPostingActivity::class.java))
-        }
     }
 
     private fun setupToolbar() {
@@ -207,6 +203,12 @@ class QnaActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             myEmail = dataStore.getEmail().first()
+        }
+
+        binding.floatingActionButton.setOnClickListener {
+            val intent = Intent(this, QnaPostingActivity::class.java)
+            intent.putExtra("postState", "add")
+            startForRegisterResult.launch(intent)
         }
     }
 

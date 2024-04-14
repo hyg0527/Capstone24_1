@@ -1,11 +1,14 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +42,13 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
 
     private var commentState = CommentState.ADD
     private var commentId = -1
+
+    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            getPostView()
+            binding.swipeRefreshLayout.isRefreshing = true
+        }
+    }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -106,7 +116,10 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
         powerMenu.setOnMenuItemClickListener { position, _ ->
             when (position) {
                 0 -> {
-                    // TODO: 게시글 수정 액티비티로 이동
+                    val intent = Intent(this, QnaPostingActivity::class.java)
+                    intent.putExtra("postState", "update")
+                    intent.putExtra("postId", postId)
+                    startForRegisterResult.launch(intent)
                 }
                 1 -> {
                     AlertDialog.Builder(this).apply {

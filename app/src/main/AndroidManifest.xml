@@ -54,8 +54,13 @@
             android:name=".view.QnaActivity"
             android:exported="true" />
         <activity
+            android:name=".view.QnaViewActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".view.QnaPostingActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.StudyInfoActivity"
             android:exported="true" />
@@ -65,10 +70,6 @@
         <activity
             android:name=".view.StudyManageActivity"
             android:exported="true" />
-        <activity
-            android:name=".view.QnaViewActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.PWFindActivity"
             android:exported="true" />
