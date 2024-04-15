@@ -1,8 +1,6 @@
 package com.credential.cubrism.view
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -31,6 +29,9 @@ import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
     private val binding by lazy { ActivityEditProfileBinding.inflate(layoutInflater) }
@@ -43,29 +44,20 @@ class EditProfileActivity : AppCompatActivity() {
 
     private var profileImage: String? = null
     private var preSignedUrl: String? = null
-
+    private var filePath: String? = null
+    private var fileName: String? = null
+    
+    // 이미지 크롭
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result !is CropImage.CancelledResult) {
-            val uriFilePath = result.getUriFilePath(this)
             val uriContent = result.uriContent
-            val fileName = uriContent?.lastPathSegment
 
-            Log.d("테스트", "uriFilePath: $uriFilePath")
-            Log.d("테스트", "uriContent: $uriContent")
-            Log.d("테스트", "fileName: $fileName")
+            filePath = result.getUriFilePath(this) // 파일 경로
+            fileName = uriContent?.lastPathSegment // 파일 이름
 
-            setProfileImage(uriContent)
+            Glide.with(this).load(uriContent).dontAnimate().into(binding.imgProfile)
+
             bottomProfileDialog.dismiss()
-
-            /*
-                TODO:
-                    이미지를 선택하면 Presigned URL을 요청해서
-                    S3에 이미지를 업로드하고 업로드된 이미지 URL을 받아와서
-                    프로필 변경 요청시 이미지 URL 포함
-             */
-            fileName?.let {
-                s3ViewModel.getPresignedUrl(listOf(PresignedUrlRequestDto("profile_images", it)))
-            }
         }
     }
 
@@ -90,10 +82,13 @@ class EditProfileActivity : AppCompatActivity() {
                 menuInflater.inflate(R.menu.edit_profile_menu, menu)
                 val editItem = menu.findItem(R.id.edit)
                 editItem.setOnMenuItemClickListener {
-//                    authViewModel.editUserInfo(
-//                        binding.editNickname.text.toString(),
-//                        프로필 사진
-//                    )
+                    binding.progressIndicator.show()
+                    // 2. PreSignedUrl 요청
+                    if (fileName != null)
+                        s3ViewModel.getPresignedUrl(listOf(PresignedUrlRequestDto("profile_images", fileName!!)))
+                    else
+                        authViewModel.editUserInfo(binding.editNickname.text.toString(), profileImage)
+
                     true
                 }
             }
@@ -109,16 +104,17 @@ class EditProfileActivity : AppCompatActivity() {
         bottomProfileDialog = BottomSheetDialog(this)
         bottomProfileDialog.setContentView(bottomSheetBinding.root)
 
-        // 프로필 이미지 선택
+        // 1. 프로필 이미지 선택
         bottomSheetBinding.apply {
             btnGallery.setOnClickListener {
                 cropImage.launch(
                     CropImageContractOptions(
                         uri = null,
                         cropImageOptions = CropImageOptions(
+                            // Camera와 Gallery를 모두 true로 설정하면 선택창 표시
                             imageSourceIncludeCamera = false,
                             imageSourceIncludeGallery = true,
-                            fixAspectRatio = true,
+                            fixAspectRatio = true, // 이미지 비율 고정 (1:1)
                             autoZoomEnabled = true,
                             cropShape = CropImageView.CropShape.OVAL,
                             activityBackgroundColor = ResourcesCompat.getColor(resources, R.color.black, theme)
@@ -160,7 +156,34 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun viewModelObserve() {
+        s3ViewModel.apply {
+            presignedUrl.observe(this@EditProfileActivity) { result ->
+                preSignedUrl = result.first().presignedUrl
+                profileImage = result.first().fileUrl
+
+                // 3. S3 버킷에 이미지 업로드
+                preSignedUrl?.let { url ->
+                    filePath?.let { path ->
+                        val requestBody = File(path).asRequestBody("image/*".toMediaTypeOrNull())
+                        s3ViewModel.uploadImage(url, requestBody)
+                    }
+                }
+            }
+
+            // 4. 유저 정보 수정
+            uploadImage.observe(this@EditProfileActivity) {
+                authViewModel.editUserInfo(binding.editNickname.text.toString(), profileImage)
+            }
+
+            errorMessage.observe(this@EditProfileActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         authViewModel.apply {
+            // 5. 유저 정보 수정 성공
             editUserInfo.observe(this@EditProfileActivity) {
                 setResult(RESULT_OK).also { finish() }
             }
@@ -171,25 +194,5 @@ class EditProfileActivity : AppCompatActivity() {
                 }
             }
         }
-
-        s3ViewModel.apply {
-            presignedUrl.observe(this@EditProfileActivity) { result ->
-                preSignedUrl = result.first().presignedUrl
-                Log.d("테스트", "preSignedUrl: $preSignedUrl")
-                Log.d("테스트", "fileUrl: ${result.first().fileUrl}")
-            }
-
-            errorMessage.observe(this@EditProfileActivity) { event ->
-                event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun setProfileImage(uri: Uri?) {
-        Glide.with(this).load(uri)
-            .dontAnimate()
-            .into(binding.imgProfile)
     }
 }

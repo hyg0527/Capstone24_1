@@ -133,7 +133,7 @@ class AuthRepository {
     }
 
     fun editUserInfo(userEditDto: UserEditDto, callback: (ResultUtil<MessageDto>) -> Unit) {
-        authApi.editUserInfo(userEditDto).enqueue(object : Callback<MessageDto> {
+        authApiAuth.editUserInfo(userEditDto).enqueue(object : Callback<MessageDto> {
             override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }

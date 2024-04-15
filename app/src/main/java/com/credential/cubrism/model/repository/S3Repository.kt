@@ -35,18 +35,22 @@ class S3Repository {
         })
     }
 
-    fun uploadImage(presignedUrl: String, requestBody: RequestBody) {
+    fun uploadImage(presignedUrl: String, requestBody: RequestBody, callback: (ResultUtil<ResponseBody>) -> Unit) {
         s3ApiXml.uploadImage(presignedUrl, requestBody).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
-                    // 성공
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
                 } else {
-                    // 실패
+                    response.errorBody()?.string()?.let {
+                        callback(ResultUtil.Error(it))
+                    }
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                // 실패
+                callback(ResultUtil.NetworkError())
             }
         })
     }

@@ -14,27 +14,32 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMyPageBinding
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.repository.UserRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.CalendarViewModel
+import com.credential.cubrism.viewmodel.DataStoreViewModel
+import com.credential.cubrism.viewmodel.UserViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MyPageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMyPageBinding.inflate(layoutInflater) }
 
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+    private val userViewModel: UserViewModel by viewModels { ViewModelFactory(UserRepository()) }
+    private val dataStoreViewModel: DataStoreViewModel by viewModels { ViewModelFactory(MyApplication.getInstance().getDataStoreRepository()) }
     private val calendarViewModel: CalendarViewModel by viewModels()
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val myPageAdapter = MyPageAdapter()
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             Toast.makeText(this, "내 정보를 수정했습니다.", Toast.LENGTH_SHORT).show()
+            userViewModel.getUserInfo()
         }
     }
 
@@ -48,16 +53,6 @@ class MyPageActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        lifecycleScope.launch {
-            Glide.with(this@MyPageActivity).load(dataStore.getProfileImage().first())
-                .error(R.drawable.account_circle)
-                .fallback(R.drawable.account_circle)
-                .dontAnimate()
-                .into(binding.imgProfile)
-            binding.txtEmail.text = dataStore.getEmail().first()
-            binding.txtNickname.text = dataStore.getNickname().first()
-        }
-
         // 정보 수정
         binding.layoutEdit.setOnClickListener {
             startForRegisterResult.launch(Intent(this, EditProfileActivity::class.java))
@@ -121,6 +116,34 @@ class MyPageActivity : AppCompatActivity() {
                 }
                 is ResultUtil.Error -> { Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show() }
                 is ResultUtil.NetworkError -> { Toast.makeText(this, "네트워크 연결을 확인해주세요.", Toast.LENGTH_SHORT).show() }
+            }
+        }
+
+        userViewModel.userInfo.observe(this) { user ->
+            user?.let {
+                dataStoreViewModel.saveEmail(it.email)
+                dataStoreViewModel.saveNickname(it.nickname)
+                it.profileImage?.let { image ->
+                    dataStoreViewModel.saveProfileImage(image)
+                }
+            }
+        }
+
+        dataStoreViewModel.apply {
+            email.observe(this@MyPageActivity) {
+                binding.txtEmail.text = it
+            }
+
+            nickname.observe(this@MyPageActivity) {
+                binding.txtNickname.text = it
+            }
+
+            profileImage.observe(this@MyPageActivity) {
+                Glide.with(this@MyPageActivity).load(it)
+                    .error(R.drawable.account_circle)
+                    .fallback(R.drawable.account_circle)
+                    .dontAnimate()
+                    .into(binding.imgProfile)
             }
         }
     }

@@ -1,11 +1,17 @@
 package com.credential.cubrism.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.credential.cubrism.model.repository.DataStoreRepository
 import kotlinx.coroutines.launch
 
 class DataStoreViewModel(private val dataStoreRepository: DataStoreRepository) : ViewModel() {
+    val email: LiveData<String?> = dataStoreRepository.getEmail().asLiveData()
+    val nickname: LiveData<String?> = dataStoreRepository.getNickname().asLiveData()
+    val profileImage: LiveData<String?> = dataStoreRepository.getProfileImage().asLiveData()
+
     fun saveAccessToken(token: String) {
         viewModelScope.launch {
             dataStoreRepository.saveAccessToken(token)
