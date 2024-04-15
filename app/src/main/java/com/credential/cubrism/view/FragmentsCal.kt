@@ -316,7 +316,6 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             else {
                 if (add.text.equals("+")) {
                     calendarViewModel.addDateMonth(data)
-                    println(calendarViewModel.calMonthList.value)
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
 //                    title.setText(""); info.setText(""); fullTime.isChecked = false
@@ -567,7 +566,6 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             second -= 1200
         }
 
-        println("first: " + first + "second: " + second)
         return Pair(first, second)
     }
 }
