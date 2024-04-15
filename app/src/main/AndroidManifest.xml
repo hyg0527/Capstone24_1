@@ -38,6 +38,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.canhub.cropper.CropImageActivity"
+            android:theme="@style/Theme.CropImage" />
+        <activity
             android:name=".view.SplashActivity"
             android:exported="true" />
         <activity

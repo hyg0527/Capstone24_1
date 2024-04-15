@@ -2,8 +2,8 @@ package com.credential.cubrism.view
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -12,15 +12,20 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityEditProfileBinding
 import com.credential.cubrism.databinding.DialogProfilePickBinding
 import com.credential.cubrism.model.repository.AuthRepository
-import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -34,6 +39,8 @@ class EditProfileActivity : AppCompatActivity() {
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private lateinit var bottomProfileDialog: BottomSheetDialog
+
+    private var profileImage: String? = null
 
     private val pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -50,6 +57,15 @@ class EditProfileActivity : AppCompatActivity() {
                     S3에 이미지를 업로드하고 업로드된 이미지 URL을 받아와서
                     프로필 변경 요청시 이미지 URL 포함
              */
+        }
+    }
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result !is CropImage.CancelledResult) {
+            val uriContent = result.uriContent
+//            val uriFilePath = result.getUriFilePath(this)
+            setProfileImage(uriContent)
+            bottomProfileDialog.dismiss()
         }
     }
 
@@ -94,14 +110,30 @@ class EditProfileActivity : AppCompatActivity() {
         bottomProfileDialog.setContentView(bottomSheetBinding.root)
 
         // 프로필 이미지 선택
-        bottomSheetBinding.btnGallery.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-            pickImagesLauncher.launch(intent)
-        }
-        // 기본 프로필 이미지로 변경
-        bottomSheetBinding.btnResetImage.setOnClickListener {
-            binding.imgProfile.setImageResource(R.drawable.profile)
-            bottomProfileDialog.dismiss()
+        bottomSheetBinding.apply {
+            btnGallery.setOnClickListener {
+                cropImage.launch(
+                    CropImageContractOptions(
+                        uri = null,
+                        cropImageOptions = CropImageOptions(
+                            imageSourceIncludeCamera = false,
+                            imageSourceIncludeGallery = true,
+                            fixAspectRatio = true,
+                            autoZoomEnabled = true,
+                            cropShape = CropImageView.CropShape.OVAL,
+                            activityBackgroundColor = ResourcesCompat.getColor(resources, R.color.black, theme)
+                        )
+                    )
+                )
+            }
+
+            // 기본 프로필 이미지로 변경
+            btnResetImage.setOnClickListener {
+                Glide.with(this@EditProfileActivity).load(R.drawable.profile)
+                    .dontAnimate()
+                    .into(binding.imgProfile)
+                bottomProfileDialog.dismiss()
+            }
         }
 
         // 프로필 이미지 변경
@@ -122,22 +154,30 @@ class EditProfileActivity : AppCompatActivity() {
                 .into(binding.imgProfile)
             binding.editEmail.setText(dataStore.getEmail().first())
             binding.editNickname.setText(dataStore.getNickname().first())
+
+            profileImage = dataStore.getProfileImage().first()
         }
     }
 
     private fun viewModelObserve() {
-        authViewModel.editUserInfo.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> {
-                    setResult(RESULT_OK).also { finish() }
-                }
-                is ResultUtil.Error -> {
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                }
-                is ResultUtil.NetworkError -> {
-                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
+        authViewModel.apply {
+            editUserInfo.observe(this@EditProfileActivity) {
+                setResult(RESULT_OK).also { finish() }
+            }
+
+            errorMessage.observe(this@EditProfileActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+
+    }
+
+    private fun setProfileImage(uri: Uri?) {
+        Glide.with(this).load(uri)
+            .dontAnimate()
+            .into(binding.imgProfile)
     }
 }

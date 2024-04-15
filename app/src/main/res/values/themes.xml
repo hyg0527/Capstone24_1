@@ -19,6 +19,10 @@
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
 
+    <style name="Theme.CropImage" parent="Base.Theme.AppCompat">
+        <item name="colorPrimary">@color/blue</item>
+    </style>
+
     <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomRoundedBackgroundBottomSheet</item>
     </style>

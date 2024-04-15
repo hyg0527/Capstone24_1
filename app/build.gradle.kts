@@ -92,6 +92,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.tickaroo.tikxml:retrofit-converter:0.9.0_11-SNAPSHOT")
     implementation("com.github.skydoves:powermenu:2.2.4")
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
 
     // 테스트
     testImplementation("junit:junit:4.13.2")

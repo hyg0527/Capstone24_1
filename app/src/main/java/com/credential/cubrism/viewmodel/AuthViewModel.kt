@@ -10,6 +10,7 @@ import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
+import com.credential.cubrism.viewmodel.utils.Event
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _signUp = MutableLiveData<ResultUtil<MessageDto>>()
@@ -33,8 +34,11 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _logOut = MutableLiveData<ResultUtil<MessageDto>>()
     val logOut: LiveData<ResultUtil<MessageDto>> = _logOut
 
-    private val _editUserInfo = MutableLiveData<ResultUtil<MessageDto>>()
-    val editUserInfo: LiveData<ResultUtil<MessageDto>> = _editUserInfo
+    private val _editUserInfo = MutableLiveData<MessageDto>()
+    val editUserInfo: LiveData<MessageDto> = _editUserInfo
+
+    private val _errorMessage = MutableLiveData<Event<String>>()
+    val errorMessage: LiveData<Event<String>> = _errorMessage
 
     fun signUp(email: String, password: String, nickname: String) {
         authRepository.signUp(email, password, nickname) { result ->
@@ -80,7 +84,15 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     fun editUserInfo(nickname: String, profileImage: String?) {
         authRepository.editUserInfo(UserEditDto(nickname, profileImage)) { result ->
-            _editUserInfo.postValue(result)
+            handleResult(result, _editUserInfo, _errorMessage)
+        }
+    }
+
+    private fun <T> handleResult(result: ResultUtil<T>, successLiveData: MutableLiveData<T>, errorLiveData: MutableLiveData<Event<String>>) {
+        when (result) {
+            is ResultUtil.Success -> { successLiveData.postValue(result.data) }
+            is ResultUtil.Error -> { errorLiveData.postValue(Event(result.error)) }
+            is ResultUtil.NetworkError -> { errorLiveData.postValue(Event("네트워크 오류가 발생했습니다.")) }
         }
     }
 }

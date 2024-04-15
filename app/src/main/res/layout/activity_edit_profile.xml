@@ -21,7 +21,7 @@
             android:fontFamily="@font/godom"
             android:text="내 정보 수정"
             android:textColor="#444444"
-            android:textSize="24dp" />
+            android:textSize="20dp" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -36,10 +36,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@+id/imgProfile"
         app:layout_constraintEnd_toEndOf="@+id/imgProfile"
         app:srcCompat="@drawable/editprofile" />
