@@ -15,11 +15,12 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface OnReplyClickListener {
-    fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String)
+    fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String, isShow: Boolean)
 }
 
 class PostCommentAdapter(private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
+    private var isShow = true
 
     private var selectedViewHolder: RecyclerView.ViewHolder? = null
 
@@ -68,7 +69,8 @@ class PostCommentAdapter(private val myEmail: String?, private val listener: OnR
             binding.txtTime.text = convertDate(item.createdDate)
             binding.imgReplyTo.setOnClickListener {
                 selectedViewHolder?.itemView?.setBackgroundColor(ContextCompat.getColor(it.context, android.R.color.transparent))
-                listener.onReplyClick(this, item.nickname)
+                listener.onReplyClick(this, item.nickname, isShow)
+                isShow = !isShow
                 selectedViewHolder = this
             }
         }

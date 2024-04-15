@@ -38,11 +38,21 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
         getPostView()
     }
 
-    override fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String) {
-        binding.txtReply.text = nickname
-        binding.imgReply.visibility = View.VISIBLE
-        binding.txtReply.visibility = View.VISIBLE
-        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.lightblue))
+    override fun onReplyClick(viewHolder: RecyclerView.ViewHolder, nickname: String, isShow: Boolean) {
+        if (isShow) {
+            binding.txtReply.text = nickname
+            binding.imgReply.visibility = View.VISIBLE
+            binding.txtReply.visibility = View.VISIBLE
+            binding.commentLayout.visibility = View.VISIBLE
+            binding.editComment.hint = "답글 입력"
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(this, R.color.lightblue))
+        }
+        else {
+            binding.imgReply.visibility = View.GONE
+            binding.txtReply.visibility = View.GONE
+            binding.commentLayout.visibility = View.GONE
+            binding.editComment.hint = "댓글 입력"
+        }
     }
 
     private fun setupToolbar() {
