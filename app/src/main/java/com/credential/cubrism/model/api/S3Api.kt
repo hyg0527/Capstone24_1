@@ -13,7 +13,7 @@ import retrofit2.http.Url
 interface S3Api {
     // Presigned URL 요청
     @POST("/s3/pre-signed-url")
-    fun getPresignedUrl(@Body presignedUrlRequestDto: List<PresignedUrlRequestDto>): Call<PresignedUrlDto>
+    fun getPresignedUrl(@Body presignedUrlRequestDto: List<PresignedUrlRequestDto>): Call<List<PresignedUrlDto>>
 
     // 이미지 업로드
     @PUT

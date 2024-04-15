@@ -15,9 +15,9 @@ class S3Repository {
     private val s3Api: S3Api = RetrofitClient.getRetrofitWithAuth()?.create(S3Api::class.java)!!
     private val s3ApiXml: S3Api = RetrofitClient.getRetrofitWithXml()?.create(S3Api::class.java)!!
 
-    fun getPresignedUrl(presignedUrlRequestDto: List<PresignedUrlRequestDto>, callback: (ResultUtil<PresignedUrlDto>) -> Unit) {
-        s3Api.getPresignedUrl(presignedUrlRequestDto).enqueue(object : Callback<PresignedUrlDto> {
-            override fun onResponse(call: Call<PresignedUrlDto>, response: Response<PresignedUrlDto>) {
+    fun getPresignedUrl(presignedUrlRequestDto: List<PresignedUrlRequestDto>, callback: (ResultUtil<List<PresignedUrlDto>>) -> Unit) {
+        s3Api.getPresignedUrl(presignedUrlRequestDto).enqueue(object : Callback<List<PresignedUrlDto>> {
+            override fun onResponse(call: Call<List<PresignedUrlDto>>, response: Response<List<PresignedUrlDto>>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
                         callback(ResultUtil.Success(it))
@@ -29,7 +29,7 @@ class S3Repository {
                 }
             }
 
-            override fun onFailure(call: Call<PresignedUrlDto>, t: Throwable) {
+            override fun onFailure(call: Call<List<PresignedUrlDto>>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })
