@@ -20,7 +20,7 @@ interface OnReplyClickListener {
 
 class PostCommentAdapter(private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
-    private var isShow = false
+    private var isShow = true
 
     private var selectedViewHolder: RecyclerView.ViewHolder? = null
 

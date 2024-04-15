@@ -3,7 +3,6 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +16,15 @@ import com.credential.cubrism.databinding.FragmentHomeBinding
 import com.credential.cubrism.databinding.FragmentHomeUiBinding
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.BannerData
+import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.LicenseAdapter
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
-import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
+import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.credential.cubrism.viewmodel.UserViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Timer
 import java.util.TimerTask
 
@@ -63,6 +65,7 @@ class HomeUiFragment : Fragment() {
     private val timer = Timer()
 
     private val userViewModel: UserViewModel by activityViewModels()
+    private val calendarViewModel: CalendarViewModel by activityViewModels()
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -79,7 +82,7 @@ class HomeUiFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tdlist = TodayData()
+        val tdList = filterItem(calendarViewModel.calMonthList.value ?: ArrayList())
         val lcslist = LCSData()
 //        val bnlist = BannerData()
 
@@ -94,7 +97,7 @@ class HomeUiFragment : Fragment() {
             startActivity(Intent(requireActivity(), NotificationActivity::class.java))
         }
 
-        val td_adapter = TodoAdapter(tdlist)
+        val td_adapter = TodoAdapter(tdList)
         val lcs_adapter = LicenseAdapter(lcslist)
         val bn_adapter = BannerAdapter()
 
@@ -133,14 +136,14 @@ class HomeUiFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    private fun TodayData(): ArrayList<TodayData> {
-        return ArrayList<TodayData>().apply {
-            add(TodayData(false, "미팅 준비하기!!"))
-            add(TodayData(true, "수업 듣기"))
-            add(TodayData(false, "친구랑 약속"))
-        }
-    }
+//
+//    private fun TodayData(): ArrayList<TodayData> {
+//        return ArrayList<TodayData>().apply {
+//            add(TodayData(false, "미팅 준비하기!!"))
+//            add(TodayData(true, "수업 듣기"))
+//            add(TodayData(false, "친구랑 약속"))
+//        }
+//    }
 
     private fun LCSData(): ArrayList<myLicenseData> {
         return ArrayList<myLicenseData>().apply {
@@ -150,7 +153,19 @@ class HomeUiFragment : Fragment() {
         }
     }
 
-    private fun BannerData(): ArrayList<BannerData> {
-        return ArrayList()
+    private fun getTodayData(): String {
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy - MM - dd")
+        return currentDate.format(formatter)
+    }
+
+    private fun filterItem(items: ArrayList<CalMonth>): ArrayList<CalMonth> {
+        val newList = ArrayList<CalMonth>()
+        for (item in items) {
+            if ((item.startTime ?: "").contains(getTodayData())) {
+                newList.add(item)
+            }
+        }
+        return newList
     }
 }
