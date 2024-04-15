@@ -19,7 +19,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.DialogScheduleAddBinding
 import com.credential.cubrism.databinding.DialogScheduleDatepickBinding
+import com.credential.cubrism.databinding.DialogScheduleInfoBinding
 import com.credential.cubrism.databinding.DialogTimePickBinding
 import com.credential.cubrism.databinding.FragmentCalBinding
 import com.credential.cubrism.view.adapter.CalListAdapter
@@ -236,25 +238,24 @@ interface AddDot {
     fun bringInfo(item: CalMonth?)
 }
 class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_add) {
-    private lateinit var startTime: TextView
-    private lateinit var endTime: TextView
-    private lateinit var txtCurrentDateAdd: TextView
-    private lateinit var txtCurrentDateAddEnd: TextView
-    private lateinit var calMonthViewModel: CalendarViewModel
+    private var _binding: DialogScheduleAddBinding? = null
+    private val binding get() = _binding!!
+
+    private val calendarViewModel: CalendarViewModel by activityViewModels()
     private var listener: AddDot? = null
 
     fun setAddListener(listener: AddDot) {
         this.listener = listener
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = DialogScheduleAddBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val receivedDate = arguments?.getString("date") ?: ""
-
-        startTime = view.findViewById(R.id.txtStartTime)
-        endTime = view.findViewById(R.id.txtEndTime)
-        txtCurrentDateAdd = view.findViewById(R.id.txtCurrentDateAdd)
-        txtCurrentDateAddEnd = view.findViewById(R.id.txtCurrentDateAddEnd)
 
         val title = view.findViewById<EditText>(R.id.editTextAddTitle)
         val fullTime = view.findViewById<CheckBox>(R.id.isFullCheck)
@@ -263,23 +264,22 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 
         fullTime.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                startTime.visibility = View.GONE
-                endTime.visibility = View.GONE
+                binding.txtStartTime.visibility = View.GONE
+                binding.txtEndTime.visibility = View.GONE
             } else {
-                startTime.visibility = View.VISIBLE
-                endTime.visibility = View.VISIBLE
+                binding.txtStartTime.visibility = View.VISIBLE
+                binding.txtEndTime.visibility = View.VISIBLE
             }
         }
 
-        txtCurrentDateAdd.text = receivedDate
-        txtCurrentDateAddEnd.text = receivedDate
+        binding.txtCurrentDateAdd.text = receivedDate
+        binding.txtCurrentDateAddEnd.text = receivedDate
 
         val dialogTitle = view.findViewById<TextView>(R.id.txtTitleAddScheduleModify) // 다이얼로그 타이틀
         val add = view.findViewById<TextView>(R.id.btnAddScheduleDialogModify) // 추가버튼(추가, 수정 동시기능)
 
         val modifiedData = arguments?.getParcelable<CalMonth>("scheduleFix")
         if (modifiedData != null) {          // 수정버튼을 호출한 경우 데이터 수정이 이루어지는 코드 작성
-            println("modified data: $modifiedData")
             dialogTitle.text = "일정 수정"      // 제목을 "일정 추가" -> "일정 수정"으로 교체
             add.text = "수정"                  // 버튼텍스트를 추가에서 수정으로 교체
             fullTime.isChecked = modifiedData.isFullTime // "종일" 항목을 체크하였는지 여부 설정
@@ -292,22 +292,20 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             splitDateTime(modifiedData.endTime.toString(), "end", modifiedData.isFullTime)
         }
 
-        startTime.setOnClickListener {
+        binding.txtStartTime.setOnClickListener {
             showTimePickDialog("start")
         }
-        endTime.setOnClickListener {
+        binding.txtEndTime.setOnClickListener {
             showTimePickDialog("end")
         }
-        txtCurrentDateAdd.setOnClickListener {
-            val currentDate = txtCurrentDateAdd.text.toString()
+        binding.txtCurrentDateAdd.setOnClickListener {
+            val currentDate = binding.txtCurrentDateAdd.text.toString()
             showDatePickDialog("start", currentDate)
         }
-        txtCurrentDateAddEnd.setOnClickListener {
-            val currentDate = txtCurrentDateAddEnd.text.toString()
+        binding.txtCurrentDateAddEnd.setOnClickListener {
+            val currentDate = binding.txtCurrentDateAddEnd.text.toString()
             showDatePickDialog("end", currentDate)
         }
-
-        calMonthViewModel = ViewModelProvider(requireActivity())[CalendarViewModel::class.java]
 
         add.setOnClickListener {
             val data = bringCurrentData(title, info, fullTime)
@@ -317,40 +315,43 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             }
             else {
                 if (add.text.equals("+")) {
-                    calMonthViewModel.addDateMonth(data)
-                    println(calMonthViewModel.calMonthList.value)
+                    calendarViewModel.addDateMonth(data)
+                    println(calendarViewModel.calMonthList.value)
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
 //                    title.setText(""); info.setText(""); fullTime.isChecked = false
                 }
                 else if (add.text.equals("수정")) {
-                    calMonthViewModel.deleteDateMonth(modifiedData!!)
-                    calMonthViewModel.addDateMonth(data)
+                    calendarViewModel.deleteDateMonth(modifiedData!!)
+                    calendarViewModel.addDateMonth(data)
                     Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
 //                    title.setText(""); info.setText(""); fullTime.isChecked = false
                 }
-                else {
-                    Toast.makeText(requireContext(), "일정 추가/수정 오류", Toast.LENGTH_SHORT).show()
-                }
+                else { Toast.makeText(requireContext(), "일정 추가/수정 오류", Toast.LENGTH_SHORT).show() }
 
                 dismiss()
             }
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     // 작성한 데이터를 리스트에 등록하기 위해 데이터를 리턴하는 함수
     private fun bringCurrentData(title: EditText, info: EditText, fullTime: CheckBox): CalMonth {
-        val currentDateStart = txtCurrentDateAdd.text.toString() // 위와 변수를 중복 선언한 이유는 값을 바로 가져 와야 하기 때문(animator 실습때와 동일)
-        val currentDateEnd = txtCurrentDateAddEnd.text.toString()
+        val currentDateStart = binding.txtCurrentDateAdd.text.toString() // 위와 변수를 중복 선언한 이유는 값을 바로 가져 와야 하기 때문(animator 실습때와 동일)
+        val currentDateEnd = binding.txtCurrentDateAddEnd.text.toString()
         val data: CalMonth
 
         if (fullTime.isChecked) { // 종일이 체크되어 있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
             data = CalMonth(title.text.toString(), "$currentDateStart 종일", "$currentDateEnd 종일",
                 info.text.toString(), fullTime.isChecked)
         }
-        else data = CalMonth(title.text.toString(), "$currentDateStart ${startTime.text}",
-            "$currentDateEnd ${endTime.text}", info.text.toString(), fullTime.isChecked)
+        else data = CalMonth(title.text.toString(), "$currentDateStart ${binding.txtStartTime.text}",
+            "$currentDateEnd ${binding.txtEndTime.text}", info.text.toString(), fullTime.isChecked)
 
         return data
     }
@@ -362,18 +363,18 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         if (!isChecked) {
             when (status) {
                 "start" -> {
-                    txtCurrentDateAdd.text = date
-                    startTime.text = time
+                    binding.txtCurrentDateAdd.text = date
+                    binding.txtStartTime.text = time
                 }
                 "end" -> {
-                    txtCurrentDateAddEnd.text = date
-                    endTime.text = time
+                    binding.txtCurrentDateAddEnd.text = date
+                    binding.txtEndTime.text = time
                 }
             }
         } else {
             when (status) {
-                "start" -> txtCurrentDateAdd.text = date
-                "end" -> txtCurrentDateAddEnd.text = date
+                "start" -> binding.txtCurrentDateAdd.text = date
+                "end" -> binding.txtCurrentDateAddEnd.text = date
             }
         }
     }
@@ -382,11 +383,11 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().layoutInflater
 
-        val binding = DialogTimePickBinding.inflate(inflater)
+        val bindingD = DialogTimePickBinding.inflate(inflater)
 
-        val noon = binding.pickNoon // 오전/오후 선택
-        val hour = binding.pickHour // 시간 선택
-        val minute = binding.pickMinute // 분 선택
+        val noon = bindingD.pickNoon // 오전/오후 선택
+        val hour = bindingD.pickHour // 시간 선택
+        val minute = bindingD.pickMinute // 분 선택
 
         noon.minValue = 0; noon.maxValue = 1
         hour.minValue = 1; hour.maxValue = 12
@@ -397,17 +398,18 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         minute.setFormatter { String.format("%02d", it) }
         noon.wrapSelectorWheel = false // 오전/오후 선택 부분만 순환 하지 않도록 설정
 
+
         builder.setTitle("시간 선택")
             .setPositiveButton("OK") { dialog, _ ->
                 val timeValue = timeValue(noon.value, hour.value, minute.value)
 
                 if (status == "start") {
-                    autoSetEndTime(timeValue, endTime.text.toString())
-                    startTime.text = timeValue
+                    autoSetEndTime(timeValue, binding.txtEndTime.text.toString())
+                    binding.txtStartTime.text = timeValue
                 }
                 else if (status == "end") {
-                    if (checkIfReversedTime(startTime.text.toString(), timeValue))
-                        endTime.text = timeValue
+                    if (checkIfReversedTime(binding.txtStartTime.text.toString(), timeValue))
+                        binding.txtEndTime.text = timeValue
                 }
                 dialog.dismiss()
             }
@@ -415,7 +417,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
                 dialog.dismiss()
             }
 
-        builder.setView(binding.root)
+        builder.setView(bindingD.root)
 
         val dialog = builder.create()
         dialog.show()
@@ -465,12 +467,12 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         val formattedDate = dateFormat.format(selectedDate)
 
         if (status == "start") {
-            if (checkIfReversed(formattedDate, txtCurrentDateAddEnd.text.toString(), status))
-                txtCurrentDateAdd.text = formattedDate
+            if (checkIfReversed(formattedDate, binding.txtCurrentDateAddEnd.text.toString(), status))
+                binding.txtCurrentDateAdd.text = formattedDate
         }
         else if (status == "end") {
-            if (checkIfReversed(txtCurrentDateAdd.text.toString(), formattedDate, status))
-                txtCurrentDateAddEnd.text = formattedDate
+            if (checkIfReversed(binding.txtCurrentDateAdd.text.toString(), formattedDate, status))
+                binding.txtCurrentDateAddEnd.text = formattedDate
         }
     }
 
@@ -482,12 +484,12 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
     private fun checkIfReversed(start: String, end: String, status: String): Boolean { // 시작날짜와 끝날짜가 서로가 서로보다 앞서거나 뒤서면 감지하는 함수
         val first = start.replace(" - ", "").toInt()
         val second = end.replace(" - ", "").toInt()
-        val (startT, endT) = timeTakeLast(startTime.text.toString(), endTime.text.toString())
+        val (startT, endT) = timeTakeLast(binding.txtStartTime.text.toString(), binding.txtEndTime.text.toString())
 
         return if (first > second || (first == second && startT > endT)) {
             if (status == "start") {
-                txtCurrentDateAdd.text = start // 끝날짜를 시작날짜와 같게 설정. (날짜선택을 제한적으로 하지 않게 하려는 배려)
-                txtCurrentDateAddEnd.text = start
+                binding.txtCurrentDateAdd.text = start // 끝날짜를 시작날짜와 같게 설정. (날짜선택을 제한적으로 하지 않게 하려는 배려)
+                binding.txtCurrentDateAddEnd.text = start
             }
             else if (status == "end") {
                 Toast.makeText(requireContext(), "날짜 설정 오류입니다.", Toast.LENGTH_SHORT).show()
@@ -498,7 +500,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
     }
 
     private fun getStartAndEndDates(): Pair<String, String> {
-        return Pair(txtCurrentDateAdd.text.toString(), txtCurrentDateAddEnd.text.toString())
+        return Pair(binding.txtCurrentDateAdd.text.toString(), binding.txtCurrentDateAddEnd.text.toString())
     }
 
     private fun autoSetEndTime(start: String, end: String) { // 시작 시간이 끝 시간 보다 나중 으로 설정 하면 자동 으로 끝 시간을 시작 시간의 정확히 한 시간 뒤로 설정하는 함수
@@ -513,11 +515,11 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
             val incrementedTime = time.plusHours(1)
             val resultEndTime = incrementedTime.format(formatter)
 
-            endTime.text = resultEndTime
+            binding.txtEndTime.text = resultEndTime
 
             if (resultEndTime.contains("오전 12:")) { // 자동 설정된 끝 시간이 오전 12시 이상 (다음 날로 넘어 가는 경우) 긑날짜 1일 증가.
                 val regex = Regex("(\\d{4} - \\d{2} - \\d{2})")
-                val text = txtCurrentDateAddEnd.text.toString()
+                val text = binding.txtCurrentDateAddEnd.text.toString()
 
                 val resultDateEnd = text.replace(regex) {
                     val date = it.groupValues[1]
@@ -529,7 +531,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
                     val modifiedDate = parsedDate.plusDays(1)
                     modifiedDate.format(DateTimeFormatter.ofPattern("yyyy - MM - dd"))
                 }
-                txtCurrentDateAddEnd.text = resultDateEnd
+                binding.txtCurrentDateAddEnd.text = resultDateEnd
             }
         }
     }
@@ -572,54 +574,58 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 
 // 일정 상세 화면 다이얼로그
 class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_info) {
-    private lateinit var calMonthViewModel: CalendarViewModel
-    private lateinit var start: TextView
-    private lateinit var end: TextView
+    private var _binding: DialogScheduleInfoBinding? = null
+    private val binding get() = _binding!!
+
+    private val calendarViewModel: CalendarViewModel by activityViewModels()
     private var listener: AddDot? = null
 
     fun setAddListener(listener: AddDot) {
         this.listener = listener
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = DialogScheduleInfoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val delete = view.findViewById<ImageView>(R.id.btnSchDeleteInfo)
-        val modify = view.findViewById<ImageView>(R.id.btnSchModifyInfo)
         val item = arguments?.getParcelable<CalMonth>("scheduleInfo")
-        calMonthViewModel = ViewModelProvider(requireActivity())[CalendarViewModel::class.java]
+        showInfo(item)
 
-        showInfo(view, item)
-
-        delete.setOnClickListener {
+        binding.btnSchDeleteInfo.setOnClickListener {
             deleteSchedule(item)
             dismiss()
         }
-        modify.setOnClickListener {
+        binding.btnSchModifyInfo.setOnClickListener {
             modifySchedule(item)
             dismiss()
         }
     }
 
-    private fun showInfo(v: View, item: CalMonth?) { // 일정 정보 출력 함수
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun showInfo(item: CalMonth?) { // 일정 정보 출력 함수
         if (item == null) return // null값 예외 처리
         else {
-            val title = v.findViewById<TextView>(R.id.txtSchTitleInfo)
-            start = v.findViewById(R.id.txtSchPeriodInfo)
-            end = v.findViewById(R.id.txtSchPeriodInfoEnd)
-            val description = v.findViewById<TextView>(R.id.txtSchDesInfo)
-
-            title.text = item.title
-            start.text = item.startTime
-            end.text = item.endTime
-            description.text = item.info
+            binding.apply {
+                txtSchTitleInfo.text = item.title
+                txtSchPeriodInfo.text = item.startTime
+                txtSchPeriodInfoEnd.text = item.endTime
+                txtSchDesInfo.text = item.info
+            }
         }
     }
 
     private fun deleteSchedule(selectedItem: CalMonth?) { // 일정 삭제 함수
         if (selectedItem == null) return
         else {
-            calMonthViewModel.deleteDateMonth(selectedItem)
+            calendarViewModel.deleteDateMonth(selectedItem)
             listener?.onAddDelete()
             Toast.makeText(requireContext(), "일정이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -627,9 +633,7 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedu
 
     private fun modifySchedule(item: CalMonth?) { // 일정 수정 함수
         if (item == null) return
-        else {
-            listener?.bringInfo(item)
-        }
+        else { listener?.bringInfo(item) }
     }
 }
 
