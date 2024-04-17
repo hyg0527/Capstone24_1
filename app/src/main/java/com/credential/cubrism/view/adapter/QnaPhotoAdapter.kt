@@ -1,34 +1,39 @@
 package com.credential.cubrism.view.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ItemListHomeTodaylistBinding
+import com.credential.cubrism.databinding.ItemPhotoQnaBinding
 
-class QnaPhotoAdapter(private val photoimg: ArrayList<Int>) : RecyclerView.Adapter<QnaPhotoAdapter.QnaPhotoViewHolder>() {
-    inner class QnaPhotoViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val photo = v.findViewById<ImageView>(R.id.qnaImage)
+class QnaPhotoAdapter(private val photoImg: ArrayList<Uri>) : RecyclerView.Adapter<QnaPhotoAdapter.QnaPhotoViewHolder>() {
+    inner class QnaPhotoViewHolder(val binding: ItemPhotoQnaBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Uri) {
+            binding.qnaImage.setImageURI(item)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QnaPhotoViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_photo_qna, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemPhotoQnaBinding.inflate(inflater, parent, false)
 
-        return QnaPhotoViewHolder(view)
+        return QnaPhotoViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
-        return photoimg.count()
+        return photoImg.count()
     }
 
     override fun onBindViewHolder(holder: QnaPhotoViewHolder, position: Int) {
-        holder.photo.setImageResource(photoimg[position])
+        holder.bind(photoImg[position])
     }
 
-    fun addItem(item: Int) {
-        photoimg.add(item)
+    fun addItem(item: Uri) {
+        photoImg.add(item)
         notifyDataSetChanged()
     }
 }

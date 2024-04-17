@@ -1,13 +1,20 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.databinding.ActivityQnaPostingBinding
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
+import com.credential.cubrism.view.adapter.QnaPhotoAdapter
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
@@ -15,16 +22,47 @@ class QnaPostingActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQnaPostingBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
-
     private val boardId = 1
+
+    private lateinit var photoAdapter: QnaPhotoAdapter
+    private var photoCount = 0
+    private val pickImagesLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) { // 이미지가 성공적으로 선택되었을 때의 처리
+                val data: Intent? = result.data
+                val selectedImageUri = data?.data // 선택된 이미지의 URI
+
+                if (photoCount >= 10) Toast.makeText(this, "사진은 10장까지 첨부 가능합니다.", Toast.LENGTH_SHORT).show()
+                else {
+                    photoAdapter.addItem(selectedImageUri!!)
+                    photoCount++
+                    binding.txtPhoto.text = "$photoCount/10"
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        initPhotoRecyclerView()
         setupToolbar()
         setupView()
         observeViewModel()
+        addPhoto()
+    }
+
+    private fun initPhotoRecyclerView() {
+        photoAdapter = QnaPhotoAdapter(ArrayList())
+        binding.recyclerView.adapter = photoAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun addPhoto() { // 사진 추가
+        binding.layoutPhoto.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+            pickImagesLauncher.launch(intent)
+        }
     }
 
     private fun setupToolbar() {
