@@ -1,34 +1,71 @@
 package com.credential.cubrism.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.credential.cubrism.R
+import com.bumptech.glide.Glide
+import com.credential.cubrism.databinding.ItemListQnaPhotoBinding
+import com.credential.cubrism.view.diff.StringListDiffUtil
 
-class QnaPhotoAdapter(private val photoimg: ArrayList<Int>) : RecyclerView.Adapter<QnaPhotoAdapter.QnaPhotoViewHolder>() {
-    inner class QnaPhotoViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val photo = v.findViewById<ImageView>(R.id.qnaImage)
+interface OnDeleteClickListener {
+    fun onDeleteClick(position: Int)
+}
+
+class QnaPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerView.Adapter<QnaPhotoAdapter.ViewHolder>() {
+    private var itemList = mutableListOf<String>()
+    private var onItemClickListener: ((String, Int) -> Unit)? = null
+
+    override fun getItemCount(): Int = itemList.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemListQnaPhotoBinding.inflate(inflater, parent, false)
+        return ViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QnaPhotoViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_photo_qna, parent, false)
-
-        return QnaPhotoViewHolder(view)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(itemList[position])
     }
 
-    override fun getItemCount(): Int {
-        return photoimg.count()
+    inner class ViewHolder(private val binding: ItemListQnaPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.imgPhoto.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(itemList[position], position)
+                }
+            }
+        }
+
+        fun bind(item: String) {
+            Glide.with(binding.root).load(item).into(binding.imgPhoto)
+
+            binding.btnDelete.setOnClickListener {
+                listener.onDeleteClick(adapterPosition)
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: QnaPhotoViewHolder, position: Int) {
-        holder.photo.setImageResource(photoimg[position])
+    fun setOnItemClickListener(listener: (String, Int) -> Unit) {
+        onItemClickListener = listener
     }
 
-    fun addItem(item: Int) {
-        photoimg.add(item)
-        notifyDataSetChanged()
+    fun setItemList(list: List<String>) {
+        val diffCallBack = StringListDiffUtil(itemList, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallBack)
+
+        itemList.clear()
+        itemList.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun getItemList(): List<String> {
+        return itemList
+    }
+
+    fun removeItem(position: Int) {
+        itemList.removeAt(position)
+        notifyItemRemoved(position)
     }
 }
