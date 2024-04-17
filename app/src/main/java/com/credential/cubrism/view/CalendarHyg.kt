@@ -88,20 +88,16 @@ class CalendarHyg {
                 val dateList = dateMap[month]?.toMutableList() ?: mutableListOf()
                 val lastDayOfMonth = getLastDayOfMonth(month)
 
-                if (month == startMonth && month == endMonth) {
-                    // 시작 월과 끝 월이 동일한 경우
+                if (month == startMonth && month == endMonth) { // 시작 월과 끝 월이 동일한 경우
                     for (i in startDate..endDate)
                         dateList.add(i)
-                } else if (month == startMonth) {
-                    // 시작 월 처리
+                } else if (month == startMonth) { // 시작 월 처리
                     for (i in startDate..lastDayOfMonth)
                         dateList.add(i)
-                } else if (month == endMonth) {
-                    // 끝 월 처리
+                } else if (month == endMonth) { // 끝 월 처리
                     for (i in 1..endDate)
                         dateList.add(i)
-                } else {
-                    // 그 외의 월 처리
+                } else { // 그 외의 월 처리
                     for (i in 1..lastDayOfMonth)
                         dateList.add(i)
                 }
@@ -134,14 +130,6 @@ class CalendarHyg {
         }
 
         return months
-    }
-
-    fun getYearMonth(): Pair<Int, Int> { // 오늘 날짜의 연, 월을 반환
-        val current = getInstance()
-        val getYear = current.get(Calendar.YEAR)
-        val getMonth = current.get(Calendar.MONTH) + 1
-
-        return Pair(getYear, getMonth)
     }
 
     fun getMonthInfoS(input: String): Pair<Int, Int> { // "April 2024"로 입력을 받으면, 월의 일 수, 1일의 시작 인덱스 반환
@@ -249,7 +237,7 @@ class CalendarHyg {
         callback(selectedReturn)
     }
 
-    fun selectedMonthToString(selectedMonth: Int): String { // 월에 해당하는 숫자를 영어로 변환
+    private fun selectedMonthToString(selectedMonth: Int): String { // 월에 해당하는 숫자를 영어로 변환
         return when (selectedMonth) {
             1 -> "January";  2 -> "February"; 3 -> "March"
             4 -> "April";    5 -> "May";     6 -> "June"

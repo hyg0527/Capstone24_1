@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.R
@@ -41,7 +39,7 @@ import java.util.Date
 import java.util.Locale
 
 
-class CalFragment : Fragment(R.layout.fragment_cal) {
+class CalFragment : Fragment() {
     private var _binding: FragmentCalBinding? = null
     private val binding get() = _binding!!
 
@@ -68,18 +66,18 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
             updateViewModel(adapter, date)
         }
 
-        val addFragment = CalScheduleAddFragment()
-        addFragment.setAddListener(object: AddDot {
-            override fun onAddDelete() { addDelSchedule(calendarAdapter, calHyg) }
-            override fun bringInfo(item: CalMonth?) {}
-        })
-
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
             override fun onAddDelete() { addDelSchedule(calendarAdapter, calHyg) }
             override fun bringInfo(item: CalMonth?) {
                 val bundle = Bundle()
                 bundle.putParcelable("scheduleFix", item) // 날짜 putString으로 dialogFragment에 보내기
+
+                val addFragment = CalScheduleAddFragment()
+                addFragment.setAddListener(object: AddDot {
+                    override fun onAddDelete() { addDelSchedule(calendarAdapter, calHyg) }
+                    override fun bringInfo(item: CalMonth?) {}
+                })
 
                 addFragment.arguments = bundle
                 addFragment.show(parentFragmentManager, "fixDialog") // 일정추가 dialog 호출
@@ -91,6 +89,12 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
             val text = getCurrentDate() // 월간 화면이 띄워져있으면 월간 화면의 현재 날짜를 putString으로 보내기
             val convertText = convertDateFormat(text)
 
+            val addFragment = CalScheduleAddFragment()
+            addFragment.setAddListener(object: AddDot {
+                override fun onAddDelete() { addDelSchedule(calendarAdapter, calHyg) }
+                override fun bringInfo(item: CalMonth?) {}
+            })
+
             bundle.putString("date", convertText) // 날짜 putString으로 dialogFragment에 보내기
             addFragment.arguments = bundle
             addFragment.show(parentFragmentManager, "openAddDialog") // 일정추가 dialog 호출
@@ -98,38 +102,26 @@ class CalFragment : Fragment(R.layout.fragment_cal) {
 
         binding.dateSelect.setOnClickListener {
             showDatePickDialog(calHyg, calendarAdapter, calendarViewModel.calMonthList.value) { date ->
-                updateViewModel(adapter, date)
+                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
             }
         }
         binding.preMonth.setOnClickListener {
             calHyg.setPreNextMonthCalendar(calendarAdapter, binding.txtYearMonth, binding.currentDate,
                 calendarViewModel.calMonthList.value, "pre") { date ->
-                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
+                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
             }
         }
         binding.nextMonth.setOnClickListener {
             calHyg.setPreNextMonthCalendar(calendarAdapter, binding.txtYearMonth, binding.currentDate,
                 calendarViewModel.calMonthList.value, "next") { date ->
-                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
+                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
             }
         }
         binding.btnToday.setOnClickListener {
             calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter,
                 calendarViewModel.calMonthList.value) { date ->
-                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
+                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
             }
-        }
-        binding.btnAddSchedule.setOnClickListener { // 일정 추가 dialog 호출
-            val bundle = Bundle()
-            val text = getCurrentDate()
-            val convertText = convertDateFormat(text)
-
-            bundle.putString("date", convertText) // 날짜 putString으로 dialogFragment에 보내기
-            addFragment.arguments = bundle
-            addFragment.show(parentFragmentManager, "openAddDialog") // 일정 추가 dialog 호출
         }
 
         calendarAdapter.setItemClickListener(object: DateMonthClickListener {
@@ -237,7 +229,7 @@ interface AddDot {
     fun onAddDelete()
     fun bringInfo(item: CalMonth?)
 }
-class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_add) {
+class CalScheduleAddFragment : BottomSheetDialogFragment() {
     private var _binding: DialogScheduleAddBinding? = null
     private val binding get() = _binding!!
 
@@ -248,7 +240,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
         this.listener = listener
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DialogScheduleAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -318,14 +310,12 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
                     calendarViewModel.addDateMonth(data)
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
-//                    title.setText(""); info.setText(""); fullTime.isChecked = false
                 }
                 else if (add.text.equals("수정")) {
                     calendarViewModel.deleteDateMonth(modifiedData!!)
                     calendarViewModel.addDateMonth(data)
                     Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
-//                    title.setText(""); info.setText(""); fullTime.isChecked = false
                 }
                 else { Toast.makeText(requireContext(), "일정 추가/수정 오류", Toast.LENGTH_SHORT).show() }
 
@@ -571,7 +561,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment(R.layout.dialog_schedul
 }
 
 // 일정 상세 화면 다이얼로그
-class CalScheduleInfoFragment : BottomSheetDialogFragment(R.layout.dialog_schedule_info) {
+class CalScheduleInfoFragment : BottomSheetDialogFragment() {
     private var _binding: DialogScheduleInfoBinding? = null
     private val binding get() = _binding!!
 
