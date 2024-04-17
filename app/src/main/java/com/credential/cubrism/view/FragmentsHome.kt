@@ -59,8 +59,6 @@ class HomeUiFragment : Fragment() {
     private var _binding: FragmentHomeUiBinding? = null
     private val binding get() = _binding!!
 
-//    private var view: View? = null
-//    private lateinit var tdlistviewModel: TodoViewModel
     private var currentPage = 0
     private val timer = Timer()
 
@@ -84,8 +82,6 @@ class HomeUiFragment : Fragment() {
 
         val tdList = filterItem(calendarViewModel.calMonthList.value ?: ArrayList())
         val lcslist = LCSData()
-//        val bnlist = BannerData()
-
 
         binding.backgroundImage.setImageResource(R.drawable.peopleimage_home)
 
@@ -113,6 +109,7 @@ class HomeUiFragment : Fragment() {
 
         binding.recyclerSchedule.adapter = td_adapter
         binding.recyclerQualification.adapter = lcs_adapter
+        isNoSchedule(td_adapter)
 
         binding.viewPager.apply {
             adapter = bn_adapter
@@ -136,14 +133,15 @@ class HomeUiFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-//
-//    private fun TodayData(): ArrayList<TodayData> {
-//        return ArrayList<TodayData>().apply {
-//            add(TodayData(false, "미팅 준비하기!!"))
-//            add(TodayData(true, "수업 듣기"))
-//            add(TodayData(false, "친구랑 약속"))
-//        }
-//    }
+
+    private fun isNoSchedule(todoAdapter: TodoAdapter) {
+        if (todoAdapter.itemCount == 0) {
+            binding.txtNoSchedule.visibility = View.VISIBLE
+        }
+        else {
+            binding.txtNoSchedule.visibility = View.VISIBLE
+        }
+    }
 
     private fun LCSData(): ArrayList<myLicenseData> {
         return ArrayList<myLicenseData>().apply {

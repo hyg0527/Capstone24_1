@@ -14,10 +14,14 @@ class CalendarViewModel : ViewModel() {
             endTime="2024 - 04 - 10 오전 02:00", info="일정1 입니다.", isFullTime=false))
         addDateMonth(CalMonth(title="일정2", startTime="2024 - 04 - 10 오전 01:00",
             endTime="2024 - 04 - 10 오전 02:00", info="일정2 입니다.", isFullTime=false))
-        addDateMonth(CalMonth(title="ios 중간고사", startTime="2024 - 04 - 22 오후 01:30",
+        addDateMonth(CalMonth(title="ios 중간 시험", startTime="2024 - 04 - 22 오후 01:30",
             endTime="2024 - 04 - 22 오후 03:00", info="ios 시험일", isFullTime=false))
-        addDateMonth(CalMonth(title="예비군 다음날", startTime="2024 - 04 - 17 종일",
-            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
+//        addDateMonth(CalMonth(title="예비군 다음날", startTime="2024 - 04 - 17 종일",
+//            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
+//        addDateMonth(CalMonth(title="예비군 다음날2", startTime="2024 - 04 - 17 종일",
+//            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
+//        addDateMonth(CalMonth(title="예비군 다음날3", startTime="2024 - 04 - 17 종일",
+//            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
     }
 
     fun addDateMonth(value: CalMonth) { // 추가
