@@ -2,12 +2,8 @@ package com.credential.cubrism.view.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.credential.cubrism.R
-import com.credential.cubrism.databinding.ItemListHomeTodaylistBinding
 import com.credential.cubrism.databinding.ItemPhotoQnaBinding
 
 class QnaPhotoAdapter(private val photoImg: ArrayList<Uri>) : RecyclerView.Adapter<QnaPhotoAdapter.QnaPhotoViewHolder>() {
