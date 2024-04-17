@@ -11,9 +11,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
 
-data class Goals(val name: String? = null, val time: String? = null, var num: Int? = null)
+data class Goals(val id: Int? = null, val name: String? = null, var num: Int? = null)
 
-class GoalAdapter(private val items: ArrayList<Goals>, val isList: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     inner class GoalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val name = v.findViewById<EditText>(R.id.editTextGoalTitle)
         val time = v.findViewById<TextView>(R.id.txtGoalTime)
@@ -80,7 +80,6 @@ class GoalAdapter(private val items: ArrayList<Goals>, val isList: Boolean) : Re
         when (holder) {
             is GoalViewHolder -> {
                 holder.name.setText(items[position].name)
-                holder.time.text = items[position].time
                 holder.num.text = "목표${items[position].num}"
             }
             is GoalListViewHolder -> {

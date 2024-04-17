@@ -84,6 +84,15 @@
         <activity
             android:name=".view.NotificationActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.MyPageCertManageActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPagePostActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPageStudyGroupApplyActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

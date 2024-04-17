@@ -24,7 +24,7 @@ class GoalListViewModel : ViewModel() {
     val goalList: LiveData<ArrayList<Goals>> get() = _goalList
 
     init {
-        addList(Goals("목표 1입니다.", "0시간 0분", 1))
+        addList(Goals(1, "목표 1입니다.", 1))
     }
     fun addList(value: Goals) {
         _goalList.value?.add(value)

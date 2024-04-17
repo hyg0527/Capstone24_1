@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,9 +39,9 @@ class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var goalListViewModel: GoalListViewModel
-    private lateinit var title: TextView
-    private val titleViewModel: TitleViewModel by activityViewModels()
+    private val goalListViewModel: GoalListViewModel by viewModels()
+//    private lateinit var title: TextView
+//    private val titleViewModel: TitleViewModel by activityViewModels()
     private var view: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -52,13 +53,7 @@ class StudyGroupHomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
 
-        goalListViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
-        initGoalListView(view)
-
-//        titleViewModel.editTextValue.observe(viewLifecycleOwner, Observer { value ->
-//
-//        }
-    //        )
+        initGoalListView()
     }
 
     override fun onDestroyView() {
@@ -66,13 +61,12 @@ class StudyGroupHomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun initGoalListView(v: View) {
+    private fun initGoalListView() {
         val items = goalListViewModel.goalList.value ?: ArrayList()
         val adapter = GoalAdapter(items, true)
 
         binding.goalRecyclerViewList.layoutManager = LinearLayoutManager(requireContext())
         binding.goalRecyclerViewList.adapter = adapter
-
     }
 }
 
@@ -133,7 +127,7 @@ class StudyGroupFunc3Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = initRecyclerViewStudyChat(view)
+        val adapter = initRecyclerViewStudyChat()
 
         binding.sendingBtn.setOnClickListener {
             val text = view.findViewById<EditText>(R.id.editTextSendMessage).text.toString()
@@ -146,7 +140,7 @@ class StudyGroupFunc3Fragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecyclerViewStudyChat(v: View): ChattingAdapter {
+    private fun initRecyclerViewStudyChat(): ChattingAdapter {
         val itemList = ArrayList<Chat>()
         val adapter = ChattingAdapter(itemList)
 
@@ -432,7 +426,6 @@ class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitl
         binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
         binding.btnTitleSubmit.setOnClickListener {
             titleViewModel.setEditTextValue(binding.editTextStudyTitleTxt.text.toString())
-            println("수정된 값" + titleViewModel.editTextValue.value)
 
             Toast.makeText(requireContext(), "소개글 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()

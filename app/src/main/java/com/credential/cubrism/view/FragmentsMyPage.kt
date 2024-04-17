@@ -3,14 +3,12 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -128,41 +126,19 @@ class MyPageFragmentHome : Fragment() {
 
         myPageAdapter.setItemList(listOf(
             MyPageDto("내가 작성한 글"),
-            MyPageDto("참여 중인 채팅방"),
-            MyPageDto("Q&A 내역")
+            MyPageDto("관심 자격증 관리"),
+            MyPageDto("스터디 그룹 신청 내역")
         ))
 
         myPageAdapter.setOnItemClickListener { _, position ->
-//            when (position) {
-//                // 내가 작성한 글
-//                0 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//                // 참여 중인 채팅방
-//                1 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//                // Q&A 내역
-//                2 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//            }
+            when (position) {
+                // 내가 작성한 글
+                0 -> startActivity(Intent(requireActivity(), MyPagePostActivity::class.java))
+                // 관심 자격증 관리
+                1 -> startActivity(Intent(requireActivity(), MyPageCertManageActivity::class.java))
+                // 스터디 그룹 신청 내역
+                2 -> startActivity(Intent(requireActivity(), MyPageStudyGroupApplyActivity::class.java))
+            }
         }
-    }
-}
-
-// fragment 전환 함수
-private fun changeFragmentMyStudy(parentFragment: Fragment?, fragment: Fragment) {
-    (parentFragment as MyPageFragment).childFragmentManager.beginTransaction()
-        .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-        .replace(R.id.fragmentContainerView, fragment)
-        .addToBackStack(null)
-        .commit()
-}
-
-// 백스택 호출 함수 선언
-private fun handleBackStack(v: View, parentFragmentManager: FragmentManager?) {
-    v.isFocusableInTouchMode = true
-    v.requestFocus()
-    v.setOnKeyListener { _, keyCode, event ->
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-            parentFragmentManager?.popBackStack()
-            return@setOnKeyListener true
-        }
-        false
     }
 }
