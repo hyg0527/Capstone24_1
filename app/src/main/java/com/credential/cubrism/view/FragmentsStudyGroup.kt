@@ -5,12 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,13 +16,9 @@ import com.credential.cubrism.databinding.ActivityAddstudyBinding
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
-import com.credential.cubrism.databinding.FragmentStudygroupFunc4Binding
-import com.credential.cubrism.databinding.FragmentStudygroupFunclistBinding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
-import com.credential.cubrism.databinding.FragmentStudygroupSettitleBinding
-import com.credential.cubrism.databinding.FragmentStudygroupTimerBinding
 import com.credential.cubrism.view.adapter.Chat
 import com.credential.cubrism.view.adapter.ChattingAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
@@ -33,15 +26,12 @@ import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
-import com.credential.cubrism.viewmodel.TitleViewModel
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
     private val goalListViewModel: GoalListViewModel by viewModels()
-//    private lateinit var title: TextView
-//    private val titleViewModel: TitleViewModel by activityViewModels()
     private var view: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -151,77 +141,6 @@ class StudyGroupFunc3Fragment : Fragment() {
     }
 }
 
-class StudyGroupFunc4Fragment : Fragment() {
-    private var _binding: FragmentStudygroupFunc4Binding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentStudygroupFunc4Binding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // 처음 화면을 fragment_studygroup_funclist 으로 설정
-        if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.studyGroupFunc4ContainerView, StudyGroupFuncListFragment())
-                .setReorderingAllowed(true)
-                .commit()
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}
-
-class StudyGroupFuncListFragment : Fragment() { // 4번째 리스트 출력 프래그먼트
-    private var _binding: FragmentStudygroupFunclistBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentStudygroupFunclistBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.txtTimerMenu.setOnClickListener { changeFragmentFunc4(parentFragment, StudyGroupTimerFragment()) }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun changeFragmentFunc4(parentFragment: Fragment?, fragment: Fragment) {
-        (parentFragment as StudyGroupFunc4Fragment).childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.studyGroupFunc4ContainerView, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-}
-
-class StudyGroupTimerFragment : Fragment() {
-    private var _binding: FragmentStudygroupTimerBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentStudygroupTimerBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}
-
 class StudyGroupManageFragment : Fragment() {
     private var _binding: FragmentStudygroupManagehomeBinding? = null
     private val binding get() = _binding!!
@@ -235,7 +154,7 @@ class StudyGroupManageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val title = arguments?.getString("titleName")
-        initList(view, title)
+        initList(title)
     }
 
     override fun onDestroyView() {
@@ -243,7 +162,7 @@ class StudyGroupManageFragment : Fragment() {
         _binding = null
     }
 
-    private fun initList(v: View, title: String?) {
+    private fun initList(title: String?) {
         val announceFragment = StudyGroupAnnounceFixFragment()
 
         val bundle = Bundle()
@@ -254,7 +173,6 @@ class StudyGroupManageFragment : Fragment() {
             manageAnnounce.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(announceFragment) }
             manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupGoalFragment()) }
             manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupDDayFragment()) }
-            manageTitle.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupSetTitleFragment()) }
         }
     }
 }
@@ -401,34 +319,105 @@ class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
     }
 }
 
-class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitle) {
-    private var _binding: FragmentStudygroupSettitleBinding? = null
-    private val binding get() = _binding!!
-    private val titleViewModel: TitleViewModel by activityViewModels()
+//class StudyGroupFunc4Fragment : Fragment() {
+//    private var _binding: FragmentStudygroupFunc4Binding? = null
+//    private val binding get() = _binding!!
+//
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+//        _binding = FragmentStudygroupFunc4Binding.inflate(inflater, container, false)
+//        return binding.root
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        // 처음 화면을 fragment_studygroup_funclist 으로 설정
+//        if (savedInstanceState == null) {
+//            childFragmentManager.beginTransaction()
+//                .replace(R.id.studyGroupFunc4ContainerView, StudyGroupFuncListFragment())
+//                .setReorderingAllowed(true)
+//                .commit()
+//        }
+//    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
+//}
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentStudygroupSettitleBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+//class StudyGroupFuncListFragment : Fragment() { // 4번째 리스트 출력 프래그먼트
+//    private var _binding: FragmentStudygroupFunclistBinding? = null
+//    private val binding get() = _binding!!
+//
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+//        _binding = FragmentStudygroupFunclistBinding.inflate(inflater, container, false)
+//        return binding.root
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        binding.txtTimerMenu.setOnClickListener { changeFragmentFunc4(parentFragment, StudyGroupTimerFragment()) }
+//    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
+//
+//    private fun changeFragmentFunc4(parentFragment: Fragment?, fragment: Fragment) {
+//        (parentFragment as StudyGroupFunc4Fragment).childFragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+//            .replace(R.id.studyGroupFunc4ContainerView, fragment)
+//            .addToBackStack(null)
+//            .commit()
+//    }
+//}
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+//class StudyGroupTimerFragment : Fragment() {
+//    private var _binding: FragmentStudygroupTimerBinding? = null
+//    private val binding get() = _binding!!
+//
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+//        _binding = FragmentStudygroupTimerBinding.inflate(inflater, container, false)
+//        return binding.root
+//    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
+//}
 
-        initView()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun initView() {
-        binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
-        binding.btnTitleSubmit.setOnClickListener {
-            titleViewModel.setEditTextValue(binding.editTextStudyTitleTxt.text.toString())
-
-            Toast.makeText(requireContext(), "소개글 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-            (activity as StudyManageActivity).popBackStackFragment()
-        }
-    }
-}
+//class StudyGroupSetTitleFragment : Fragment(R.layout.fragment_studygroup_settitle) {
+//    private var _binding: FragmentStudygroupSettitleBinding? = null
+//    private val binding get() = _binding!!
+//    private val titleViewModel: TitleViewModel by activityViewModels()
+//
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+//        _binding = FragmentStudygroupSettitleBinding.inflate(inflater, container, false)
+//        return binding.root
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        initView()
+//    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
+//
+//    private fun initView() {
+//        binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+//        binding.btnTitleSubmit.setOnClickListener {
+//            titleViewModel.setEditTextValue(binding.editTextStudyTitleTxt.text.toString())
+//
+//            Toast.makeText(requireContext(), "소개글 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+//            (activity as StudyManageActivity).popBackStackFragment()
+//        }
+//    }
+//}

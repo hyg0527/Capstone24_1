@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -31,55 +30,40 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutStudyGroup"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/func1" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/func2" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/func3" />
+
+        </com.google.android.material.tabs.TabLayout>
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/homeGroup" />
-
-        <ImageView
-            android:id="@+id/homeGroup"
-            android:layout_width="34dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/func1"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintEnd_toStartOf="@+id/func2Group"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="79dp" />
-
-        <ImageView
-            android:id="@+id/func2Group"
-            android:layout_width="34dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/func2"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintEnd_toStartOf="@+id/func3Group"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/homeGroup"
-            tools:layout_editor_absoluteY="79dp" />
-
-        <ImageView
-            android:id="@+id/func3Group"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/func3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/func2Group"
-            tools:layout_editor_absoluteY="79dp" />
+            app:layout_constraintTop_toBottomOf="@+id/tabLayoutStudyGroup" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
