@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +27,16 @@ import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
     private val goalListViewModel: GoalListViewModel by viewModels()
+    private val dDayViewModel: DDayViewModel by activityViewModels()
     private var view: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -44,11 +49,19 @@ class StudyGroupHomeFragment : Fragment() {
         this.view = view
 
         initGoalListView()
+        dDayInit()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun dDayInit() {
+        dDayViewModel.pairStringLiveData.observe(viewLifecycleOwner) { data ->
+            binding.goaltxt.text = data.first + "까지"
+            binding.ddaynumtext.text = data.second.toString()
+        }
     }
 
     private fun initGoalListView() {
@@ -65,7 +78,6 @@ class StudyGroupFunc2Fragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: StudyGroupRankAdapter
-    private lateinit var dDayViewModel: DDayViewModel
     private var view: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -77,7 +89,6 @@ class StudyGroupFunc2Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
 
-        dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
         initRankList(view)
     }
 
@@ -189,7 +200,7 @@ class StudyGroupAnnounceFixFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val title = arguments?.getString("titleName")
+//        val title = arguments?.getString("titleName")
         initPageInfo()
     }
 
@@ -243,7 +254,7 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 프래그먼트
         super.onViewCreated(view, savedInstanceState)
 
         goalViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
-        val adapter = initGoalRecyclerView(view)
+        val adapter = initGoalRecyclerView()
 
         binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
         binding.txtGoalSubmit.setOnClickListener {
@@ -268,7 +279,7 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 프래그먼트
         _binding = null
     }
 
-    private fun initGoalRecyclerView(v: View): GoalAdapter {
+    private fun initGoalRecyclerView(): GoalAdapter {
         val items = goalViewModel.goalList.value ?: ArrayList()
         val adapter = GoalAdapter(items, false)
 
@@ -279,10 +290,10 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 프래그먼트
     }
 }
 
-class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
+class StudyGroupDDayFragment : Fragment() {
     private var _binding: FragmentStudygroupDdayBinding? = null
     private val binding get() = _binding!!
-    private lateinit var dDayViewModel: DDayViewModel
+    private val dDayViewModel: DDayViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupDdayBinding.inflate(inflater, container, false)
@@ -291,8 +302,6 @@ class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        dDayViewModel = ViewModelProvider(requireActivity())[DDayViewModel::class.java]
         initView()
     }
 
@@ -302,20 +311,28 @@ class StudyGroupDDayFragment : Fragment(R.layout.fragment_studygroup_dday) {
     }
 
     private fun initView() {
-        val title = binding.editTextDdayTitle
-        val date = binding.txtDdayDate
+        val title = binding.editTextDdayTitle.text.toString()
+        val date = binding.txtDdayDate.text.toString()
 
         binding.btnDdaySubmit.setOnClickListener {
-            dDayViewModel.setPairString(Pair(title.text.toString(), date.text.toString()))
+            dDayViewModel.setDDay(Pair(title, calculateDays(date)))
+            println(calculateDays(date))
 
             Toast.makeText(requireContext(), "디데이를 등록하였습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()
         }
-        binding.btnResetDday.setOnClickListener {
-            title.setText("")
-            date.text = "2024년 00월 00일"
-            Toast.makeText(requireContext(), "디데이정보를 초기화하였습니다.", Toast.LENGTH_SHORT).show()
-        }
+        binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+    }
+
+    private fun calculateDays(date: String): Int {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val inputDate = LocalDate.parse(date, formatter)
+
+        // 날짜 차이 계산
+        val today = LocalDate.now()
+        val difference = ChronoUnit.DAYS.between(today, inputDate)
+
+        return difference.toInt()
     }
 }
 

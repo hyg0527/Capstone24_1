@@ -33,30 +33,14 @@ class GoalListViewModel : ViewModel() {
 }
 
 class DDayViewModel : ViewModel() {
-    private val _pairStringLiveData = MutableLiveData<Pair<String, String>>()
-    val pairStringLiveData: LiveData<Pair<String, String>> get() = _pairStringLiveData
-
-    // Pair<String, String> 값을 설정하는 함수
-    fun setPairString(pair: Pair<String, String>) {
-        _pairStringLiveData.value = pair
-    }
-}
-
-class TitleViewModel : ViewModel() {
-    // 초기값을 보관하는 변수
-    private val _initialValue = "스터디 환영글입니다."
-    private val _editTextValue = MutableLiveData<String>()
-
-    // LiveData를 통해 초기값을 전달하는 메서드
-    val editTextValue: LiveData<String> = _editTextValue
+    private val _pairStringLiveData = MutableLiveData<Pair<String, Int>>()
+    val pairStringLiveData: LiveData<Pair<String, Int>> get() = _pairStringLiveData
 
     init {
-        // 초기값을 LiveData에 설정
-        setEditTextValue(_initialValue)
+        setDDay(Pair("정보처리기사 시험", 11))
     }
-
-    // EditText의 값을 저장하는 메서드
-    fun setEditTextValue(value: String) {
-        _editTextValue.value = value
+    // Pair<String, String> 값을 설정하는 함수
+    fun setDDay(pair: Pair<String, Int>) {
+        _pairStringLiveData.value = pair
     }
 }
