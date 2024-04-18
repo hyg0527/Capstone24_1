@@ -335,13 +335,6 @@ class QualificationSearchFragment : Fragment() {
                 return false
             }
         })
-        // SearchView의 닫기 버튼 리스너 설정
-        binding.searchView.setOnCloseListener(object : SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                handleBackStack(view, parentFragment)
-                return false
-            }
-        })
 
         binding.btnBack.setOnClickListener {
             (parentFragment as QualificationFragment).childFragmentManager.popBackStack()
@@ -350,8 +343,6 @@ class QualificationSearchFragment : Fragment() {
         // 뒤로가기 이벤트 처리
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // SearchView의 Close 버튼 이벤트를 호출하여 "x" 표시를 누름
-                binding.searchView.onActionViewCollapsed()
                 handleBackStack(view, parentFragment)
             }
         }
