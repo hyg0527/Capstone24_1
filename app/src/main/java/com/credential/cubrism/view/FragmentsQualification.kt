@@ -104,10 +104,6 @@ class MajorFieldFragment : Fragment() {
         majorFieldAdapter.setOnItemClickListener { item, _ ->
             showMiddleFieldFragment(item.majorFieldName)
         }
-
-        binding.floatingActionButton.setOnClickListener {
-            showSearchFragment()
-        }
     }
 
     override fun onDestroy() {
@@ -128,13 +124,13 @@ class MajorFieldFragment : Fragment() {
             .commit()
     }
 
-    private fun showSearchFragment() {
-        (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.fragmentContainerView, QualificationSearchFragment())
-            .addToBackStack(null)
-            .commit()
-    }
+//    private fun showSearchFragment() {
+//        (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
+//            .replace(R.id.fragmentContainerView, QualificationSearchFragment())
+//            .addToBackStack(null)
+//            .commit()
+//    }
 }
 
 class MiddleFieldFragment : Fragment() {
@@ -278,113 +274,6 @@ class QualificationDetailsFragment : Fragment() {
             // Fragment가 다시 화면에 나타날 때의 작업 수행
             iView?.let { handleBackStack(it, parentFragment) }
         }
-    }
-}
-
-class QualificationSearchFragment : Fragment() {
-    private var _binding: FragmentQualificationSearchBinding? = null
-    private val binding get() = _binding!!
-
-    private val viewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
-    private lateinit var linearLayoutManager: LinearLayoutManager
-    private val qualificationAdapter = QualificationAdapter()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentQualificationSearchBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    private var sView: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.progressIndicator.show()
-
-        linearLayoutManager = LinearLayoutManager(context)
-        binding.recyclerView.apply {
-            layoutManager = linearLayoutManager
-            adapter = qualificationAdapter
-            itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.GRAY))
-            setHasFixedSize(true)
-        }
-
-        viewModel.getQualificationList()
-        viewModel.qualificationList.observe(viewLifecycleOwner) { result ->
-            binding.progressIndicator.hide()
-            when (result) {
-                is ResultUtil.Success -> { qualificationAdapter.setItemList(result.data) }
-                is ResultUtil.Error -> { Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show() }
-                is ResultUtil.NetworkError -> { Toast.makeText(requireContext(), "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show() }
-            }
-        }
-
-        qualificationAdapter.setOnItemClickListener { item, _ ->
-            showInfoFragmentSearch(item.name, item.code)
-            hideKeyboard(binding.root)
-        }
-
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                binding.searchView.clearFocus()
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                qualificationAdapter.filter.filter(newText)
-                return false
-            }
-        })
-
-        binding.btnBack.setOnClickListener {
-            (parentFragment as QualificationFragment).childFragmentManager.popBackStack()
-        }
-
-        // 뒤로가기 이벤트 처리
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                handleBackStack(view, parentFragment)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
-        sView = view
-        handleBackStack(view, parentFragment)
-        binding.searchView.clearFocus()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            sView?.let { handleBackStack(it, parentFragment) }
-        }
-    }
-
-    private fun showInfoFragmentSearch(qualificationName: String, qualificationCode: String) {
-        val fragment = QualificationDetailsFragment()
-        val bundle = Bundle()
-        bundle.putString("qualificationName", qualificationName)
-        bundle.putString("qualificationCode", qualificationCode)
-        fragment.arguments = bundle
-
-        (parentFragment as QualificationFragment).childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(R.id.fragmentContainerView, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    // 뷰에 포커스를 주고 키보드를 숨기는 함수
-    private fun hideKeyboard(view: View) {
-        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 

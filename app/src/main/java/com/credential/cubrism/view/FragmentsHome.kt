@@ -89,10 +89,6 @@ class HomeUiFragment : Fragment() {
             startForRegisterResult.launch(Intent(requireActivity(), SignInActivity::class.java))
         }
 
-        binding.btnNotify.setOnClickListener { // 알림 화면 출력
-            startActivity(Intent(requireActivity(), NotificationActivity::class.java))
-        }
-
         val td_adapter = TodoAdapter(tdList)
         val lcs_adapter = LicenseAdapter(lcslist)
         val bn_adapter = BannerAdapter()
