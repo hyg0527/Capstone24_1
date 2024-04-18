@@ -10,7 +10,7 @@ data class PostViewDto(
     val title: String,
     val content: String,
     val createdDate: String,
-    val images: List<String?>,
+    val images: List<String>,
     val comments: List<Comments>
 )
 

@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.credential.cubrism.databinding.ItemListQnaPhotoBinding
+import com.credential.cubrism.databinding.ItemListPostPhotoBinding
 import com.credential.cubrism.view.diff.StringListDiffUtil
 
 interface OnDeleteClickListener {
     fun onDeleteClick(position: Int)
 }
 
-class QnaPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerView.Adapter<QnaPhotoAdapter.ViewHolder>() {
+class PostPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerView.Adapter<PostPhotoAdapter.ViewHolder>() {
     private var itemList = mutableListOf<String>()
     private var onItemClickListener: ((String, Int) -> Unit)? = null
 
@@ -20,7 +20,7 @@ class QnaPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerVie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemListQnaPhotoBinding.inflate(inflater, parent, false)
+        val binding = ItemListPostPhotoBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
@@ -28,7 +28,7 @@ class QnaPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerVie
         holder.bind(itemList[position])
     }
 
-    inner class ViewHolder(private val binding: ItemListQnaPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemListPostPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.imgPhoto.setOnClickListener {
                 val position = adapterPosition

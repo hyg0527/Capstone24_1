@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.credential.cubrism.databinding.ItemListPostBinding
 import com.credential.cubrism.databinding.ItemListProgresBinding
-import com.credential.cubrism.databinding.ItemListQnaBinding
 import com.credential.cubrism.model.dto.PostList
 import com.credential.cubrism.view.diff.PostDiffUtil
 
@@ -31,7 +31,7 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
-            val binding = ItemListQnaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = ItemListPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             ViewHolder(binding)
         } else {
             val binding = ItemListProgresBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -47,7 +47,7 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class ViewHolder(private val binding: ItemListQnaBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemListPostBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
                 val position = adapterPosition

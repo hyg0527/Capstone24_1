@@ -63,14 +63,18 @@
             android:exported="true"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".view.QnaActivity"
+            android:name=".view.PostActivity"
             android:exported="true" />
         <activity
-            android:name=".view.QnaViewActivity"
+            android:name=".view.PostViewActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.QnaPostingActivity"
+            android:name=".view.PostAddActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".view.PostUpdateActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan" />
         <activity

@@ -14,7 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
-import com.credential.cubrism.databinding.ActivityQnaViewBinding
+import com.credential.cubrism.databinding.ActivityPostViewBinding
 import com.credential.cubrism.model.dto.CommentAddDto
 import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.repository.PostRepository
@@ -28,8 +28,8 @@ import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
 
-class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
-    private val binding by lazy { ActivityQnaViewBinding.inflate(layoutInflater) }
+class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
+    private val binding by lazy { ActivityPostViewBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
@@ -88,7 +88,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
     }
 
     private fun setupRecyclerView() {
-        postCommentAdapter = PostCommentAdapter(this@QnaViewActivity, myEmail, this)
+        postCommentAdapter = PostCommentAdapter(this@PostViewActivity, myEmail, this)
         binding.recyclerView.apply {
             adapter = postCommentAdapter
             itemAnimator = null
@@ -117,8 +117,7 @@ class QnaViewActivity : AppCompatActivity(), OnReplyClickListener {
         powerMenu.setOnMenuItemClickListener { position, _ ->
             when (position) {
                 0 -> {
-                    val intent = Intent(this, QnaPostingActivity::class.java)
-                    intent.putExtra("postState", "update")
+                    val intent = Intent(this, PostUpdateActivity::class.java)
                     intent.putExtra("postId", postId)
                     startForRegisterResult.launch(intent)
                 }

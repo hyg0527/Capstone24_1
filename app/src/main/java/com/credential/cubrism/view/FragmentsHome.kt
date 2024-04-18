@@ -101,7 +101,7 @@ class HomeUiFragment : Fragment() {
 
         bn_adapter.setBannerListener(object: QnaBannerEnterListener {
             override fun onBannerClicked() {
-                startActivity(Intent(requireActivity(), QnaActivity::class.java))
+                startActivity(Intent(requireActivity(), PostActivity::class.java))
             }
 
             override fun onBannerStudyClicked() {

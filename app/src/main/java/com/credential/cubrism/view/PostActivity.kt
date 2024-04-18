@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
-import com.credential.cubrism.databinding.ActivityQnaBinding
+import com.credential.cubrism.databinding.ActivityPostBinding
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.PostAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -28,8 +28,8 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class QnaActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityQnaBinding.inflate(layoutInflater) }
+class PostActivity : AppCompatActivity() {
+    private val binding by lazy { ActivityPostBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
@@ -178,7 +178,7 @@ class QnaActivity : AppCompatActivity() {
         }
 
         postAdapter.setOnItemClickListener { item, _ ->
-            val intent = Intent(this, QnaViewActivity::class.java)
+            val intent = Intent(this, PostViewActivity::class.java)
             intent.putExtra("postId", item.postId)
             intent.putExtra("myEmail", myEmail)
             startForRegisterResult.launch(intent)
@@ -206,7 +206,7 @@ class QnaActivity : AppCompatActivity() {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            val intent = Intent(this, QnaPostingActivity::class.java)
+            val intent = Intent(this, PostAddActivity::class.java)
             intent.putExtra("postState", "add")
             startForRegisterResult.launch(intent)
         }
@@ -214,24 +214,24 @@ class QnaActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         postViewModel.apply {
-            postList.observe(this@QnaActivity) {
+            postList.observe(this@PostActivity) {
                 postAdapter.setItemList(it ?: emptyList())
                 binding.swipeRefreshLayout.isRefreshing = false
                 setLoading(false)
                 if (refreshState) binding.recyclerView.scrollToPosition(0)
             }
 
-            isLoading.observe(this@QnaActivity) {
+            isLoading.observe(this@PostActivity) {
                 postAdapter.setLoading(it)
                 loadingState = it
             }
 
-            isRefreshed.observe(this@QnaActivity) {
+            isRefreshed.observe(this@PostActivity) {
                 refreshState = it
             }
 
-            errorMessage.observe(this@QnaActivity) {
-                it.getContentIfNotHandled()?.let { message -> Toast.makeText(this@QnaActivity, message, Toast.LENGTH_SHORT).show() }
+            errorMessage.observe(this@PostActivity) {
+                it.getContentIfNotHandled()?.let { message -> Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show() }
             }
         }
     }
