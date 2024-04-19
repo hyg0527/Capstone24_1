@@ -21,6 +21,7 @@ import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.OnReplyClickListener
 import com.credential.cubrism.view.adapter.PostCommentAdapter
+import com.credential.cubrism.view.adapter.PostImageAdapter
 import com.credential.cubrism.view.utils.CommentState
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
@@ -35,8 +36,8 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
     private lateinit var postCommentAdapter : PostCommentAdapter
+    private val postImageAdapter = PostImageAdapter()
     private lateinit var powerMenu : PowerMenu
-
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
     private val myEmail by lazy { intent.getStringExtra("myEmail") }
@@ -97,10 +98,16 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
 
     private fun setupRecyclerView() {
         postCommentAdapter = PostCommentAdapter(this@PostViewActivity, myEmail, this)
-        binding.recyclerView.apply {
+        binding.recyclerComment.apply {
             adapter = postCommentAdapter
             itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+        }
+
+        binding.recyclerImage.apply {
+            adapter = postImageAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 28, 0, 0, null))
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -190,6 +197,8 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
                 binding.btnMenu.visibility = if (result.email == myEmail) View.VISIBLE else View.GONE
 
                 postCommentAdapter.setItemList(result.comments)
+                postImageAdapter.setItemList(result.images)
+
                 binding.swipeRefreshLayout.isRefreshing = false
             }
 
