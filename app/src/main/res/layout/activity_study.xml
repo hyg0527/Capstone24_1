@@ -30,60 +30,41 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutStudyGroup"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/func1" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/func2" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/func3" />
+
+        </com.google.android.material.tabs.TabLayout>
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/homeGroup" />
+            app:layout_constraintTop_toBottomOf="@+id/tabLayoutStudyGroup" />
 
-        <ImageView
-            android:id="@+id/homeGroup"
-            android:layout_width="34dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/func1"
-            app:layout_constraintEnd_toStartOf="@+id/func2Group"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-        <ImageView
-            android:id="@+id/func2Group"
-            android:layout_width="34dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/func2"
-            app:layout_constraintEnd_toStartOf="@+id/func3Group"
-            app:layout_constraintStart_toEndOf="@+id/homeGroup"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-        <ImageView
-            android:id="@+id/func3Group"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/func3"
-            app:layout_constraintEnd_toStartOf="@+id/func4Group"
-            app:layout_constraintStart_toEndOf="@+id/func2Group"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-        <ImageView
-            android:id="@+id/func4Group"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="11dp"
-            android:background="@drawable/func4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/func3Group"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -92,7 +73,8 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:menu="@menu/study_drawer_menu"
-        app:headerLayout="@layout/drawer_header"/>
+        app:headerLayout="@layout/drawer_header" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

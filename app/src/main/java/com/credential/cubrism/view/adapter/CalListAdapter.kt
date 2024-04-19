@@ -149,10 +149,6 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         items.add(item)
     }
 
-    fun removeItem(item: CalMonth) {
-        items.remove(item)
-    }
-
     fun clearItem() {
         items.clear()
     }

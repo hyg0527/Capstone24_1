@@ -36,7 +36,7 @@
             android:lineSpacingExtra="8dp"
             android:fontFamily="@font/godom"
             android:textColor="@color/blue"
-            android:text="오늘의 일정은 이거랑 저거랑 요거랑 전부 합치면" />
+            android:text="오늘의 일정이 없습니다." />
 
 
     </LinearLayout>

@@ -1,13 +1,16 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyManageBinding
+import com.credential.cubrism.viewmodel.DDayViewModel
 
 class StudyManageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyManageBinding.inflate(layoutInflater) }
+    private val dDayViewModel: DDayViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
