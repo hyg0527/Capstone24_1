@@ -3,33 +3,54 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
-import com.credential.cubrism.databinding.FragmentHomeNotificationBinding
-import com.credential.cubrism.databinding.FragmentHomeUiBinding
 import com.credential.cubrism.view.adapter.BannerAdapter
-import com.credential.cubrism.view.adapter.BannerData
+import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.LicenseAdapter
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
-import com.credential.cubrism.view.adapter.TodayData
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
+import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.credential.cubrism.viewmodel.UserViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Timer
 import java.util.TimerTask
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val userViewModel: UserViewModel by activityViewModels()
+    private val calendarViewModel: CalendarViewModel by activityViewModels()
+
+    private var currentPage = 0
+    private val timer = Timer()
+
+    private val startForRegisterResultSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(requireContext(), "로그인 성공!", Toast.LENGTH_SHORT).show()
+            userViewModel.getUserInfo()
+        }
+    }
+
+    private val startForRegisterResultLogOut = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(requireContext(), "로그아웃 성공!", Toast.LENGTH_SHORT).show()
+            userViewModel.getUserInfo()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -39,69 +60,20 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 처음 화면을 fragment_home_ui로 설정
-        if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainerView.id, HomeUiFragment())
-                .setReorderingAllowed(true)
-                .commit()
-        }
-    }
+        setupToolbar()
+        setupView()
+        observeViewModel()
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}
+        val tdList = filterItem(calendarViewModel.calMonthList.value ?: ArrayList())
+        val lcslist = lcsData()
 
-class HomeUiFragment : Fragment() {
-    private var _binding: FragmentHomeUiBinding? = null
-    private val binding get() = _binding!!
+        val tdAdapter = TodoAdapter(tdList)
+        val lcsAdapter = LicenseAdapter(lcslist)
+        val bnAdapter = BannerAdapter()
 
-//    private var view: View? = null
-//    private lateinit var tdlistviewModel: TodoViewModel
-    private var currentPage = 0
-    private val timer = Timer()
-
-    private val userViewModel: UserViewModel by activityViewModels()
-
-    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            Toast.makeText(requireContext(), "로그인 성공!", Toast.LENGTH_SHORT).show()
-            userViewModel.getUserInfo()
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentHomeUiBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val tdlist = TodayData()
-        val lcslist = LCSData()
-//        val bnlist = BannerData()
-
-
-        binding.backgroundImage.setImageResource(R.drawable.peopleimage_home)
-
-        binding.txtSignIn.setOnClickListener {
-            startForRegisterResult.launch(Intent(requireActivity(), SignInActivity::class.java))
-        }
-
-        binding.btnNotify.setOnClickListener { // 알림 화면 출력
-            changeFragment(parentFragment, NotifyFragment())
-        }
-
-        val td_adapter = TodoAdapter(tdlist)
-        val lcs_adapter = LicenseAdapter(lcslist)
-        val bn_adapter = BannerAdapter()
-
-        bn_adapter.setBannerListener(object: QnaBannerEnterListener {
+        bnAdapter.setBannerListener(object: QnaBannerEnterListener {
             override fun onBannerClicked() {
-                startActivity(Intent(requireActivity(), QnaActivity::class.java))
+                startActivity(Intent(requireActivity(), PostActivity::class.java))
             }
 
             override fun onBannerStudyClicked() {
@@ -109,11 +81,12 @@ class HomeUiFragment : Fragment() {
             }
         })
 
-        binding.recyclerSchedule.adapter = td_adapter
-        binding.recyclerQualification.adapter = lcs_adapter
+        binding.recyclerSchedule.adapter = tdAdapter
+        binding.recyclerQualification.adapter = lcsAdapter
+        isNoSchedule(tdAdapter)
 
         binding.viewPager.apply {
-            adapter = bn_adapter
+            adapter = bnAdapter
             orientation = ViewPager2.ORIENTATION_HORIZONTAL
         }
 
@@ -121,7 +94,7 @@ class HomeUiFragment : Fragment() {
         timer.schedule(object : TimerTask() {
             override fun run() {
                 activity?.runOnUiThread {
-                    if (currentPage == bn_adapter.itemCount) {
+                    if (currentPage == bnAdapter.itemCount) {
                         currentPage = 0
                     }
                     binding.viewPager.setCurrentItem(currentPage++, true)
@@ -134,47 +107,54 @@ class HomeUiFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        // Fragment가 다시 보일 때 타이머 시작
-//        startTimer()
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        // Fragment가 숨겨질 때 타이머 중지
-//        stopTimer()
-//    }
-//
-//    private fun startTimer() {
-//        timer = Timer()
-//        timer?.schedule(object : TimerTask() {
-//            override fun run() {
-//                activity?.runOnUiThread {
-//                    if (currentPage == adapter.itemCount) {
-//                        currentPage = 0
-//                    }
-//                    viewPager.setCurrentItem(currentPage++, true)
-//                }
-//            }
-//        }, 3000, 3000) // 3초마다 실행, 첫 실행까지 3초 대기
-//    }
-//
-//    private fun stopTimer() {
-//        timer?.cancel()
-//        timer = null
-//    }
 
-    private fun TodayData(): ArrayList<TodayData> {
-        return ArrayList<TodayData>().apply {
-            add(TodayData(false, "미팅 준비하기!!"))
-            add(TodayData(true, "수업 듣기"))
-            add(TodayData(false, "친구랑 약속"))
+    private fun setupToolbar() {
+        binding.toolbar.title = ""
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+    }
+
+    private fun setupView() {
+        Glide.with(this).load(R.drawable.peopleimage_home).into(binding.backgroundImage)
+
+        binding.txtSignIn.setOnClickListener {
+            startForRegisterResultSignIn.launch(Intent(requireActivity(), SignInActivity::class.java))
+        }
+
+        binding.btnProfile.setOnClickListener {
+            startForRegisterResultLogOut.launch(Intent(requireActivity(), MyPageActivity::class.java))
+        }
+
+        binding.btnNoti.setOnClickListener {
+            startActivity(Intent(requireActivity(), NotiActivity::class.java))
         }
     }
 
-    private fun LCSData(): ArrayList<myLicenseData> {
+    private fun observeViewModel() {
+        userViewModel.userInfo.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                binding.btnProfile.visibility = View.VISIBLE
+                binding.btnNoti.visibility = View.VISIBLE
+                binding.txtSignIn.visibility = View.GONE
+                binding.txtArrow.visibility = View.GONE
+            } else {
+                binding.btnProfile.visibility = View.GONE
+                binding.btnNoti.visibility = View.GONE
+                binding.txtSignIn.visibility = View.VISIBLE
+                binding.txtArrow.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun isNoSchedule(todoAdapter: TodoAdapter) {
+        if (todoAdapter.itemCount == 0) {
+            binding.txtNoSchedule.visibility = View.VISIBLE
+        }
+        else {
+            binding.txtNoSchedule.visibility = View.VISIBLE
+        }
+    }
+
+    private fun lcsData(): ArrayList<myLicenseData> {
         return ArrayList<myLicenseData>().apply {
             add(myLicenseData("정보처리기사"))
             add(myLicenseData("한식조리기능사"))
@@ -182,60 +162,19 @@ class HomeUiFragment : Fragment() {
         }
     }
 
-    private fun BannerData(): ArrayList<BannerData> {
-        return ArrayList()
-    }
-}
-
-// 알림 화면
-class NotifyFragment : Fragment() {
-    private var _binding: FragmentHomeNotificationBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentHomeNotificationBinding.inflate(inflater, container, false)
-        return binding.root
+    private fun getTodayData(): String {
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy - MM - dd")
+        return currentDate.format(formatter)
     }
 
-    private var view: View? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        this.view = view
-
-        binding.btnBack.setOnClickListener {
-            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
+    private fun filterItem(items: ArrayList<CalMonth>): ArrayList<CalMonth> {
+        val newList = ArrayList<CalMonth>()
+        for (item in items) {
+            if ((item.startTime ?: "").contains(getTodayData())) {
+                newList.add(item)
+            }
         }
-
-        handleBackStack(view, parentFragment)
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            // Fragment가 다시 화면에 나타날 때의 작업 수행
-            view?.let { handleBackStack(it, parentFragment) }
-        }
-    }
-}
-
-// fragment 전환 함수
-private fun changeFragment(parentFragment: Fragment?, fragment: Fragment) {
-    (parentFragment as HomeFragment).childFragmentManager.beginTransaction()
-        .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-        .replace(R.id.fragmentContainerView, fragment)
-        .addToBackStack(null)
-        .commit()
-}
-
-// 백스택 호출 함수 선언
-private fun handleBackStack(v: View, parentFragment: Fragment?) {
-    v.isFocusableInTouchMode = true
-    v.requestFocus()
-    v.setOnKeyListener { _, keyCode, event ->
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-            (parentFragment as HomeFragment).childFragmentManager.popBackStack()
-            return@setOnKeyListener true
-        }
-        false
+        return newList
     }
 }

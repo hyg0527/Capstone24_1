@@ -6,7 +6,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.credential.cubrism.databinding.ItemDialogSearchBinding
+import com.credential.cubrism.databinding.ItemListQualificationBinding
 import com.credential.cubrism.model.dto.QualificationListDto
 import com.credential.cubrism.view.diff.QualificationDiffUtil
 
@@ -19,7 +19,7 @@ class QualificationAdapter : RecyclerView.Adapter<QualificationAdapter.ViewHolde
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemDialogSearchBinding.inflate(inflater, parent, false)
+        val binding = ItemListQualificationBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
@@ -27,7 +27,7 @@ class QualificationAdapter : RecyclerView.Adapter<QualificationAdapter.ViewHolde
         holder.bind(filteredItemList[position])
     }
 
-    inner class ViewHolder(private val binding: ItemDialogSearchBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemListQualificationBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
                 val position = adapterPosition

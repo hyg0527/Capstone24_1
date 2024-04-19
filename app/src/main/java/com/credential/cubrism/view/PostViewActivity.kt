@@ -75,9 +75,9 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
     }
 
     override fun onReplyClick(nickname: String) {
+        binding.layoutReply.visibility = View.VISIBLE
         binding.txtReply.text = nickname
-        binding.imgReply.visibility = View.VISIBLE
-        binding.txtReply.visibility = View.VISIBLE
+        binding.editComment.hint = "답글 입력"
     }
 
     private fun setupToolbar() {
@@ -141,7 +141,7 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         }
 
         binding.btnSend.setOnClickListener {
-            if (binding.editComment.text.trim().isEmpty()) {
+            if (binding.editComment.text?.trim()?.isEmpty() == true) {
                 Toast.makeText(this, "댓글을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -158,7 +158,8 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
 
             commentId = -1
             commentState = CommentState.ADD
-            binding.editComment.text.clear()
+            binding.editComment.text?.clear()
+            binding.editComment.clearFocus()
             imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0) // 키보드 내리기
         }
     }
@@ -203,7 +204,9 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
                 "수정" -> {
                     commentState = CommentState.UPDATE
                     binding.editComment.setText(it.first.content)
-                    binding.editComment.setSelection(binding.editComment.text.length)
+                    binding.editComment.text?.length?.let { selection ->
+                        binding.editComment.setSelection(selection)
+                    }
                     binding.editComment.post {
                         if (binding.editComment.isEnabled) {
                             binding.editComment.requestFocus()

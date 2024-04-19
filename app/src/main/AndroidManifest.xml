@@ -114,9 +114,6 @@
             android:name=".view.QualificationSearchActivity"
             android:exported="true" />
         <activity
-            android:name=".view.NotificationActivity"
-            android:exported="true" />
-        <activity
             android:name=".view.MyPageCertManageActivity"
             android:exported="true" />
         <activity

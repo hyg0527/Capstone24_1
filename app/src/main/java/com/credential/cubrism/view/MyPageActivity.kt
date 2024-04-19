@@ -85,19 +85,19 @@ class MyPageActivity : AppCompatActivity() {
 
         myPageAdapter.setItemList(listOf(
             MyPageDto("내가 작성한 글"),
-            MyPageDto("참여 중인 채팅방"),
-            MyPageDto("Q&A 내역")
+            MyPageDto("관심 자격증 관리"),
+            MyPageDto("스터디 그룹 신청 내역")
         ))
 
         myPageAdapter.setOnItemClickListener { _, position ->
-//            when (position) {
-//                // 내가 작성한 글
-//                0 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//                // 참여 중인 채팅방
-//                1 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//                // Q&A 내역
-//                2 -> startActivity(Intent(requireActivity(), OOOActivity::class.java))
-//            }
+            when (position) {
+                // 내가 작성한 글
+                0 -> startActivity(Intent(this, MyPagePostActivity::class.java))
+                // 관심 자격증 관리
+                1 -> startActivity(Intent(this, MyPageCertManageActivity::class.java))
+                // 스터디 그룹 신청 내역
+                2 -> startActivity(Intent(this, MyPageStudyGroupApplyActivity::class.java))
+            }
         }
     }
 

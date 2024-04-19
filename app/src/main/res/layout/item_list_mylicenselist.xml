@@ -4,19 +4,19 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/yellowpin"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/yellow_pin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/yellow_pin" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="110dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:layout_marginLeft="12dp"
         android:shadowColor="@color/blue"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="25dp"
@@ -53,16 +53,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imgTheme"
                 android:layout_width="100dp"
                 android:layout_height="55dp"
-                android:src="@drawable/license_theme"
                 app:layout_constraintBottom_toTopOf="@+id/txtQualificationName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtStudying"
-                app:layout_constraintVertical_bias="0.3" />
+                app:layout_constraintVertical_bias="0.3"
+                app:srcCompat="@drawable/license_theme" />
 
             <TextView
                 android:id="@+id/txtQualificationName"
