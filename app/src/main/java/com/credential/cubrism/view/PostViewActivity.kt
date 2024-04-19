@@ -17,6 +17,7 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityPostViewBinding
 import com.credential.cubrism.model.dto.CommentAddDto
 import com.credential.cubrism.model.dto.CommentUpdateDto
+import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.OnReplyClickListener
 import com.credential.cubrism.view.adapter.PostCommentAdapter
@@ -35,6 +36,7 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
 
     private lateinit var postCommentAdapter : PostCommentAdapter
     private lateinit var powerMenu : PowerMenu
+
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
     private val myEmail by lazy { intent.getStringExtra("myEmail") }
@@ -74,10 +76,16 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         getPostView()
     }
 
-    override fun onReplyClick(nickname: String) {
+    override fun onReplyClick(nickname: String, commentId: Int) {
+        commentState = CommentState.REPLY
+        this.commentId = commentId
+
         binding.layoutReply.visibility = View.VISIBLE
         binding.txtReply.text = nickname
         binding.editComment.hint = "답글 입력"
+
+        binding.editComment.requestFocus()
+        imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun setupToolbar() {
@@ -149,79 +157,89 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
             when (commentState) {
                 CommentState.ADD -> postViewModel.addComment(CommentAddDto(postId, binding.editComment.text.toString()))
                 CommentState.UPDATE -> {
-                    if (commentId != -1) {
+                    if (commentId != -1)
                          postViewModel.updateComment(commentId, CommentUpdateDto(binding.editComment.text.toString()))
-                    }
                 }
-                CommentState.REPLY -> {}
+                CommentState.REPLY -> {
+                    if (commentId != -1)
+                        postViewModel.addReply(ReplyAddDto(commentId, binding.editComment.text.toString()))
+                }
             }
 
-            commentId = -1
-            commentState = CommentState.ADD
-            binding.editComment.text?.clear()
-            binding.editComment.clearFocus()
-            imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0) // 키보드 내리기
+            clearComment()
+        }
+
+        binding.btnCancel.setOnClickListener {
+            clearComment()
         }
     }
 
     private fun observeViewModel() {
-        postViewModel.postView.observe(this) { result ->
-            Glide.with(this).load(result.profileImageUrl)
-                .error(R.drawable.profil_image)
-                .fallback(R.drawable.profil_image)
-                .dontAnimate()
-                .into(binding.imgProfile)
-            binding.txtNickname.text = "  ${result.nickname}  "
-            binding.txtCategory.text = result.category
-            binding.txtTitle.text = result.title
-            binding.txtContent.text = result.content.replace(" ", "\u00A0")
+        postViewModel.apply {
+            postView.observe(this@PostViewActivity) { result ->
+                Glide.with(this@PostViewActivity).load(result.profileImageUrl)
+                    .error(R.drawable.profil_image)
+                    .fallback(R.drawable.profil_image)
+                    .dontAnimate()
+                    .into(binding.imgProfile)
+                binding.txtNickname.text = "  ${result.nickname}  "
+                binding.txtCategory.text = result.category
+                binding.txtTitle.text = result.title
+                binding.txtContent.text = result.content.replace(" ", "\u00A0")
 
-            binding.btnMenu.visibility = if (result.email == myEmail) View.VISIBLE else View.GONE
+                binding.btnMenu.visibility = if (result.email == myEmail) View.VISIBLE else View.GONE
 
-            postCommentAdapter.setItemList(result.comments)
-            binding.swipeRefreshLayout.isRefreshing = false
-        }
+                postCommentAdapter.setItemList(result.comments)
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
 
-        postViewModel.deletePost.observe(this) {
-            setResult(RESULT_OK).also { finish() }
-        }
+            deletePost.observe(this@PostViewActivity) {
+                setResult(RESULT_OK).also { finish() }
+            }
 
-        postViewModel.addComment.observe(this) {
-            getPostView()
-        }
+            addComment.observe(this@PostViewActivity) {
+                getPostView()
+            }
 
-        postViewModel.updateComment.observe(this) {
-            getPostView()
-        }
+            updateComment.observe(this@PostViewActivity) {
+                getPostView()
+            }
 
-        postViewModel.deleteComment.observe(this) {
-            getPostView()
-        }
+            deleteComment.observe(this@PostViewActivity) {
+                getPostView()
+            }
 
-        postViewModel.clickedItem.observe(this) {
-            commentId = it.first.commentId
-            when (it.second) {
-                "수정" -> {
-                    commentState = CommentState.UPDATE
-                    binding.editComment.setText(it.first.content)
-                    binding.editComment.text?.length?.let { selection ->
-                        binding.editComment.setSelection(selection)
-                    }
-                    binding.editComment.post {
-                        if (binding.editComment.isEnabled) {
-                            binding.editComment.requestFocus()
-                            imm.showSoftInput(binding.editComment, 0)
+            addReply.observe(this@PostViewActivity) {
+                getPostView()
+            }
+
+            clickedItem.observe(this@PostViewActivity) {
+                commentId = it.first.commentId
+                when (it.second) {
+                    "수정" -> {
+                        commentState = CommentState.UPDATE
+                        binding.editComment.setText(it.first.content)
+                        binding.editComment.text?.length?.let { selection ->
+                            binding.editComment.setSelection(selection)
+                        }
+                        binding.editComment.post {
+                            if (binding.editComment.isEnabled) {
+                                binding.editComment.requestFocus()
+                                imm.showSoftInput(binding.editComment, 0)
+                            }
                         }
                     }
-                }
-                "삭제" -> {
-                    postViewModel.deleteComment(commentId)
+                    "삭제" -> {
+                        postViewModel.deleteComment(commentId)
+                    }
                 }
             }
-        }
 
-        postViewModel.errorMessage.observe(this) {
-            it.getContentIfNotHandled()?.let { message -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+            errorMessage.observe(this@PostViewActivity) {
+                it.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@PostViewActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -230,5 +248,17 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
             postViewModel.getPostView(postId)
             binding.swipeRefreshLayout.isRefreshing = true
         }
+    }
+
+    private fun clearComment() {
+        commentState = CommentState.ADD
+        commentId = -1
+
+        binding.layoutReply.visibility = View.GONE
+        binding.editComment.text?.clear()
+        binding.editComment.hint = "답글 입력"
+
+        binding.editComment.clearFocus()
+        imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0) // 키보드 내리기
     }
 }

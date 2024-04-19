@@ -8,6 +8,7 @@ import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
+import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
 import org.json.JSONObject
@@ -149,6 +150,22 @@ class PostRepository {
 
     fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto, callback: (ResultUtil<MessageDto>) -> Unit) {
         postApiAuth.updateComment(commentId, commentUpdateDto).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun addReply(replyAddDto: ReplyAddDto, callback: (ResultUtil<MessageDto>) -> Unit) {
+        postApiAuth.addReply(replyAddDto).enqueue(object : Callback<MessageDto> {
             override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }

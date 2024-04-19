@@ -7,6 +7,7 @@ import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
+import com.credential.cubrism.model.dto.ReplyAddDto
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -70,8 +71,8 @@ interface PostApi {
     fun updateComment(@Path("commentId") commentId: Int, @Body commentUpdateDto: CommentUpdateDto): Call<MessageDto>
 
     // 대댓글 추가
-//    @POST("/reply")
-//    fun addReply(@Body replyAddDto: ReplyAddDto): Call<MessageDto>
+    @POST("/reply")
+    fun addReply(@Body replyAddDto: ReplyAddDto): Call<MessageDto>
 
     // 대댓글 삭제
 //    @DELETE("/reply/{replyId}")
