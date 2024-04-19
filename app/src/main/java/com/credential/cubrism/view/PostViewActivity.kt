@@ -113,6 +113,12 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         binding.swipeRefreshLayout.setOnRefreshListener {
             getPostView()
         }
+
+        postImageAdapter.setOnItemClickListener { item, _ ->
+            val intent = Intent(this, PhotoViewActivity::class.java)
+            intent.putExtra("imageUrl", item)
+            startActivity(intent)
+        }
     }
 
     private fun setupView() {

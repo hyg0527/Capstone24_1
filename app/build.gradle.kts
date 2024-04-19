@@ -96,6 +96,7 @@ dependencies {
     implementation("com.github.skydoves:powermenu:2.2.4")
     implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation("io.github.ParkSangGwon:tedimagepicker:1.5.0")
+    implementation("com.github.MikeOrtiz:TouchImageView:3.6")
 
     // 테스트
     testImplementation("junit:junit:4.13.2")
