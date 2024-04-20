@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
 }
 
 val properties = Properties().apply {
@@ -66,6 +67,8 @@ fun getApi(propertyKey: String): String {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation("com.google.firebase:firebase-analytics")
     // androidx
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -96,6 +99,7 @@ dependencies {
     implementation("com.github.skydoves:powermenu:2.2.4")
     implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation("io.github.ParkSangGwon:tedimagepicker:1.5.0")
+    implementation("com.google.firebase:firebase-messaging")
 
     // 테스트
     testImplementation("junit:junit:4.13.2")

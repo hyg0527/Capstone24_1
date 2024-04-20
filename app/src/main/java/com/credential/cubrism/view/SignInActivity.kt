@@ -2,16 +2,22 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.BuildConfig
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
+import com.credential.cubrism.model.dto.FcmTokenRequest
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.repository.DataStoreRepository
+import com.credential.cubrism.model.service.RetrofitClient
+import com.credential.cubrism.model.service.YourService
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.DataStoreViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -19,8 +25,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
@@ -36,6 +49,7 @@ class SignInActivity : AppCompatActivity() {
             }
         } catch (_: ApiException) { }
     }
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,5 +189,60 @@ class SignInActivity : AppCompatActivity() {
         dataStoreViewModel.saveAccessToken(accessToken)
         dataStoreViewModel.saveRefreshToken(refreshToken)
         setResult(RESULT_OK).also { finish() }
+
+//        var myEmail: String? = null
+//
+//        lifecycleScope.launch {
+//            while (true) {
+//                myEmail = dataStore.getEmail().first()
+//                Log.d("FCM", "Fetched email: $myEmail") // 추가된 로그
+//                if (myEmail != null) {
+//                    Log.d("FCM", "Email break: $myEmail")
+//                    break
+//                }
+//                Log.d("FCM", "Waiting for email...")
+//                delay(3000) // 3초 동안 기다림
+//            }
+//
+//            Log.d("FCM", "Email: $myEmail")
+//
+//            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//                if (!task.isSuccessful) {
+//                    Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+//                    return@addOnCompleteListener
+//                }
+//
+//                // Get new FCM registration token
+//                val token = task.result
+//
+//                // Log and toast
+//                Log.d("FCM", "FCM token send!!!: $token")
+//                Log.d("FCM", "myEmail: $myEmail")
+//
+//                // 서버에 토큰을 전송
+//                val request = FcmTokenRequest(token!!)
+//                val service = RetrofitClient.getRetrofitWithAuth()?.create(YourService::class.java)
+//                if (service != null) {
+//                    val call = service.updateFcmToken(myEmail ?: return@addOnCompleteListener, request)
+//                    call.enqueue(object : Callback<Void> {
+//                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+//                            if (response.isSuccessful) {
+//                                Log.d("FCM", "Token sent to server successfully.")
+//                            } else {
+//                                Log.w("FCM", "Failed to send token to server.")
+//                            }
+//                        }
+//
+//                        override fun onFailure(call: Call<Void>, t: Throwable) {
+//                            Log.e("FCM", "Error occurred while sending token to server.", t)
+//                        }
+//                    })
+//                } else {
+//                    Log.e("FCM", "Service creation failed.")
+//                }
+//            }
+//        }
+        // FCM 토큰을 가져와서 서버에 전송
+
     }
 }
