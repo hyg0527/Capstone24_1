@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface OnReplyClickListener {
-    fun onReplyClick(nickname: String)
+    fun onReplyClick(nickname: String, commentId: Int)
 }
 
 class PostCommentAdapter(private val context: Context, private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -76,7 +76,7 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
 
             binding.imgReplyTo.setOnClickListener {
-                listener.onReplyClick(item.nickname)
+                listener.onReplyClick(item.nickname, item.commentId)
             }
         }
     }

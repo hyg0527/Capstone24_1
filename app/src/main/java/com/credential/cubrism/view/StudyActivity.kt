@@ -1,6 +1,8 @@
 package com.credential.cubrism.view
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyBinding
+import com.google.android.material.tabs.TabLayout
 
 class StudyActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyBinding.inflate(layoutInflater) }
@@ -17,7 +20,6 @@ class StudyActivity : AppCompatActivity() {
     private val homeFragment = StudyGroupHomeFragment()
     private val func2Fragment = StudyGroupFunc2Fragment()
     private val func3Fragment = StudyGroupFunc3Fragment()
-    private val func4Fragment = StudyGroupFunc4Fragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,13 +75,13 @@ class StudyActivity : AppCompatActivity() {
 
     private fun navigationInit() {
         currentFragment = homeFragment
-        val fragmentList = listOf(homeFragment, func2Fragment, func3Fragment, func4Fragment)
+        val fragmentList = listOf(homeFragment, func2Fragment, func3Fragment)
         val transaction = supportFragmentManager.beginTransaction()
 
         for (fragment in fragmentList) {
             transaction.add(binding.fragmentContainerView.id, fragment)
         }
-        for (fragment in listOf(func2Fragment, func3Fragment, func4Fragment)) {
+        for (fragment in listOf(func2Fragment, func3Fragment)) {
             transaction.hide(fragment)
         }
 
@@ -87,18 +89,29 @@ class StudyActivity : AppCompatActivity() {
     }
 
     private fun menuSetUp() { // 상단 프래그먼트 메뉴 이동 버튼 설정
-        binding.homeGroup.setOnClickListener {
-            changeFragment(homeFragment)
+        for (tabIndex in 1..2) {
+            val tab = binding.tabLayoutStudyGroup.getTabAt(tabIndex)
+            tab?.icon?.setColorFilter(Color.parseColor("#BFBFBF"), PorterDuff.Mode.SRC_IN)
         }
-        binding.func2Group.setOnClickListener {
-            changeFragment(func2Fragment)
-        }
-        binding.func3Group.setOnClickListener {
-            changeFragment(func3Fragment)
-        }
-        binding.func4Group.setOnClickListener {
-            changeFragment(func4Fragment)
-        }
+
+        binding.tabLayoutStudyGroup.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                // 선택된 탭의 아이콘 색상을 변경
+                p0?.icon?.setColorFilter(resources.getColor(R.color.blue), PorterDuff.Mode.SRC_IN)
+
+                when (p0?.position) {
+                    0 -> changeFragment(homeFragment)
+                    1 -> changeFragment(func2Fragment)
+                    2 -> changeFragment(func3Fragment)
+                }
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                p0?.icon?.setColorFilter(Color.parseColor("#BFBFBF"), PorterDuff.Mode.SRC_IN)
+            }
+
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
+        })
     }
 
     private fun changeFragment(fragment: Fragment) { // 프래그먼트 전환 함수

@@ -99,6 +99,7 @@ dependencies {
     implementation("com.github.skydoves:powermenu:2.2.4")
     implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation("io.github.ParkSangGwon:tedimagepicker:1.5.0")
+    implementation("io.getstream:photoview:1.0.1")
     implementation("com.google.firebase:firebase-messaging")
 
     // 테스트

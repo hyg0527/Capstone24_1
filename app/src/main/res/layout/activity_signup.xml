@@ -4,32 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/backBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:foreground="@android:color/transparent"
-        android:padding="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_left" />
-
-    <TextView
-        android:id="@+id/txtMySchedule"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="3dp"
-        android:fontFamily="@font/godom"
-        android:gravity="center_vertical"
-        android:text="회원 가입"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/backBtn"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/backBtn"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/godom"
+            android:text="회원 가입"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressIndicator"
@@ -39,17 +31,17 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backBtn" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:trackColor="@color/white" />
 
-    <EditText
-        android:id="@+id/registerName"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/editNickname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="70dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/edittext_rounded_corner"
-        android:ems="10"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="사용자명"
         android:inputType="text"
@@ -58,30 +50,29 @@
         android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <EditText
-        android:id="@+id/registerEmail"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/editEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/edittext_rounded_corner"
-        android:ems="10"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="아이디 (이메일)"
         android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:textSize="17dp"
-        app:layout_constraintEnd_toStartOf="@+id/requestCodeBtn"
+        app:layout_constraintEnd_toStartOf="@+id/btnRequest"
         app:layout_constraintHorizontal_weight="7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerName" />
+        app:layout_constraintTop_toBottomOf="@+id/editNickname" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/requestCodeBtn"
+        android:id="@+id/btnRequest"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="30dp"
@@ -91,34 +82,33 @@
         android:textColor="#FFFFFF"
         android:textSize="17dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/registerEmail"
+        app:layout_constraintBottom_toBottomOf="@+id/editEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintStart_toEndOf="@+id/registerEmail"
-        app:layout_constraintTop_toTopOf="@+id/registerEmail" />
+        app:layout_constraintStart_toEndOf="@+id/editEmail"
+        app:layout_constraintTop_toTopOf="@+id/editEmail" />
 
-    <EditText
-        android:id="@+id/emailCode"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/editCode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/edittext_rounded_corner"
-        android:ems="10"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="인증 번호 입력"
         android:inputType="number"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:textSize="17dp"
-        app:layout_constraintEnd_toStartOf="@+id/verifyCodeBtn"
+        app:layout_constraintEnd_toStartOf="@+id/btnVerify"
         app:layout_constraintHorizontal_weight="7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/verifyCodeBtn"
+        android:id="@+id/btnVerify"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="30dp"
@@ -128,14 +118,14 @@
         android:textColor="#FFFFFF"
         android:textSize="17dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/emailCode"
+        app:layout_constraintBottom_toBottomOf="@+id/editCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintStart_toEndOf="@+id/emailCode"
-        app:layout_constraintTop_toTopOf="@+id/emailCode" />
+        app:layout_constraintStart_toEndOf="@+id/editCode"
+        app:layout_constraintTop_toTopOf="@+id/editCode" />
 
     <TextView
-        android:id="@+id/countDown"
+        android:id="@+id/txtTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -146,12 +136,12 @@
         android:textColor="@color/red2"
         android:textSize="12dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/emailCode"
-        app:layout_constraintEnd_toEndOf="@+id/emailCode"
-        app:layout_constraintTop_toTopOf="@+id/emailCode" />
+        app:layout_constraintBottom_toBottomOf="@id/editCode"
+        app:layout_constraintEnd_toEndOf="@+id/editCode"
+        app:layout_constraintTop_toTopOf="@+id/editCode" />
 
     <TextView
-        android:id="@+id/isvalidCode"
+        android:id="@+id/txtVerify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -163,17 +153,16 @@
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailCode" />
+        app:layout_constraintTop_toBottomOf="@+id/editCode" />
 
-    <EditText
-        android:id="@+id/registerPassword"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/editPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/edittext_rounded_corner"
-        android:ems="10"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="비밀번호"
         android:inputType="textPassword"
@@ -182,17 +171,16 @@
         android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isvalidCode" />
+        app:layout_constraintTop_toBottomOf="@+id/txtVerify" />
 
-    <EditText
-        android:id="@+id/registerPWConfirm"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/editPasswordConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/edittext_rounded_corner"
-        android:ems="10"
         android:fontFamily="@font/kopubdotumbold"
         android:hint="비밀번호 확인"
         android:inputType="textPassword"
@@ -201,7 +189,7 @@
         android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/editPassword" />
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -215,10 +203,10 @@
         android:textColor="#777777"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerPWConfirm" />
+        app:layout_constraintTop_toBottomOf="@+id/editPasswordConfirm" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/registerBtn"
+        android:id="@+id/btnSignUp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"

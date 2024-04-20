@@ -152,10 +152,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFragment() {
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.fragmentContainerView, HomeFragment(), FragmentType.HOME.tag)
-            add(R.id.fragmentContainerView, StudyFragment(), FragmentType.STUDY.tag)
-            add(R.id.fragmentContainerView, CalFragment(), FragmentType.CALENDAR.tag)
-            add(R.id.fragmentContainerView, QualificationFragment(), FragmentType.QUALIFICATION.tag)
+            add(binding.fragmentContainerView.id, HomeFragment(), FragmentType.HOME.tag)
+            add(binding.fragmentContainerView.id, StudyFragment(), FragmentType.STUDY.tag)
+            add(binding.fragmentContainerView.id, CalFragment(), FragmentType.CALENDAR.tag)
+            add(binding.fragmentContainerView.id, QualificationFragment(), FragmentType.QUALIFICATION.tag)
             commit()
         }
     }

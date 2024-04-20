@@ -12,6 +12,7 @@ import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostList
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
+import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -43,6 +44,9 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     private val _updateComment = MutableLiveData<MessageDto>()
     val updateComment: LiveData<MessageDto> = _updateComment
+
+    private val _addReply = MutableLiveData<MessageDto>()
+    val addReply: LiveData<MessageDto> = _addReply
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -139,6 +143,12 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto) {
         postRepository.updateComment(commentId, commentUpdateDto) { result ->
             handleResult(result, _updateComment, _errorMessage)
+        }
+    }
+
+    fun addReply(replyAddDto: ReplyAddDto) {
+        postRepository.addReply(replyAddDto) { result ->
+            handleResult(result, _addReply, _errorMessage)
         }
     }
 
