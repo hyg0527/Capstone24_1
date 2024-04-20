@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.CalendarView
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
@@ -29,6 +29,8 @@ import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
 import com.credential.cubrism.view.adapter.ScheduleClickListener
 import com.credential.cubrism.viewmodel.CalendarViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -175,15 +177,14 @@ class CalFragment : Fragment() {
     }
 
     private fun convertDateFormat(input: String): String { // 날짜 형식 변환 함수
-        try {
+        return try {
             val inputFormat = SimpleDateFormat("yyyy년 M월 d일", Locale.getDefault())
             val outputFormat = SimpleDateFormat("yyyy - MM - dd", Locale.getDefault())
 
-            val inputDate = inputFormat.parse(input)
-            return outputFormat.format(inputDate)
+            outputFormat.format(inputFormat.parse(input)!!)
         } catch (e: Exception) {
             e.printStackTrace()
-            return input
+            input
         }
     }
 
@@ -247,12 +248,25 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomSheetBehavior = (dialog as? BottomSheetDialog)?.behavior
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        initDialog()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initDialog() {
         val receivedDate = arguments?.getString("date") ?: ""
 
-        val title = view.findViewById<EditText>(R.id.editTextAddTitle)
-        val fullTime = view.findViewById<CheckBox>(R.id.isFullCheck)
-        val info = view.findViewById<EditText>(R.id.editTxtSchInfoFix)
-        title.setText(""); info.setText("")
+        val title = binding.editTextAddTitle
+        val fullTime = binding.isFullCheck
+        val info = binding.editTxtSchInfoFix
 
         fullTime.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -267,8 +281,8 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
         binding.txtCurrentDateAdd.text = receivedDate
         binding.txtCurrentDateAddEnd.text = receivedDate
 
-        val dialogTitle = view.findViewById<TextView>(R.id.txtTitleAddScheduleModify) // 다이얼로그 타이틀
-        val add = view.findViewById<TextView>(R.id.btnAddScheduleDialogModify) // 추가버튼(추가, 수정 동시기능)
+        val dialogTitle = binding.txtTitleAddScheduleModify // 다이얼로그 타이틀
+        val add = binding.btnAddScheduleDialogModify // 추가버튼(추가, 수정 동시기능)
 
         val modifiedData = arguments?.getParcelable<CalMonth>("scheduleFix")
         if (modifiedData != null) {          // 수정버튼을 호출한 경우 데이터 수정이 이루어지는 코드 작성
@@ -322,11 +336,6 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
                 dismiss()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     // 작성한 데이터를 리스트에 등록하기 위해 데이터를 리턴하는 함수
