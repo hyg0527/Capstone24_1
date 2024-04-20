@@ -1,9 +1,9 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -67,8 +67,6 @@ class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
         addImageList.removeAt(position)
         postPhotoAdapter.removeItem(position)
         binding.txtPhotoCount.text = "${postPhotoAdapter.itemCount}/10"
-
-        Log.d("테스트", "addImageList[delete] : $addImageList")
     }
 
     private fun setupToolbar() {
@@ -110,8 +108,12 @@ class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
             setHasFixedSize(true)
         }
 
-        postPhotoAdapter.setOnItemClickListener { item, position ->
-            // 이미지 확대
+        postPhotoAdapter.setOnItemClickListener { _, position ->
+            val intent = Intent(this, PhotoViewActivity::class.java)
+            intent.putStringArrayListExtra("url", postPhotoAdapter.getItemList() as ArrayList<String>)
+            intent.putExtra("position", position)
+            intent.putExtra("download", false)
+            startActivity(intent)
         }
     }
 
@@ -139,8 +141,6 @@ class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
                         val fileName = getFileNameFromUri(this, uri)
                         addImageList.add(fileName.toString())
                     }
-
-                    Log.d("테스트", "addImageList[add] : $addImageList")
                 }
         }
 
@@ -149,7 +149,7 @@ class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
             bottomSheetDialog.show()
         }
 
-        // 게시글 등록 및 수정
+        // 게시글 등록
         binding.btnAdd.setOnClickListener {
             val title = binding.editTitle.text.toString()
             val content = binding.editContent.text.toString()

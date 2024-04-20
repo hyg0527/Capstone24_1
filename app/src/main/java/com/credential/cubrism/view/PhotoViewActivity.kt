@@ -19,6 +19,7 @@ class PhotoViewActivity : AppCompatActivity() {
 
     private val imageUrl by lazy { intent.getStringArrayListExtra("url") }
     private val position by lazy { intent.getIntExtra("position", 0) }
+    private val download by lazy { intent.getBooleanExtra("download", false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,23 +35,25 @@ class PhotoViewActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.photo_download_menu, menu)
-            }
+        if (download) {
+            addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.photo_download_menu, menu)
+                }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.download -> {
-                        imageUrl?.let {
-                            val url = it[binding.viewPager.currentItem]
-                            Toast.makeText(this@PhotoViewActivity, url, Toast.LENGTH_SHORT).show()
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    when (menuItem.itemId) {
+                        R.id.download -> {
+                            imageUrl?.let {
+                                val url = it[binding.viewPager.currentItem]
+                                Toast.makeText(this@PhotoViewActivity, url, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
+                    return false
                 }
-                return false
-            }
-        })
+            })
+        }
     }
 
     private fun setupViewPager() {

@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -10,7 +11,6 @@ import androidx.core.widget.addTextChangedListener
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityPostingBinding
 import com.credential.cubrism.databinding.DialogCategoryBinding
-import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PresignedUrlRequestDto
 import com.credential.cubrism.model.repository.PostRepository
@@ -19,6 +19,7 @@ import com.credential.cubrism.model.repository.S3Repository
 import com.credential.cubrism.view.adapter.OnDeleteClickListener
 import com.credential.cubrism.view.adapter.PostPhotoAdapter
 import com.credential.cubrism.view.adapter.QualificationAdapter
+import com.credential.cubrism.view.utils.FileNameFromUri
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.QualificationViewModel
@@ -49,6 +50,7 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
     private val postId by lazy { intent.getIntExtra("postId", -1) }
 
     private val boardId = 1
+    private var previousList = mutableListOf<String>()
     private var addImageList = mutableListOf<String>()
     private var deleteImageList = mutableListOf<String>()
     private var presignedUrlList = mutableListOf<String>()
@@ -66,8 +68,16 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
     }
 
     override fun onDeleteClick(position: Int) {
-//        addImageList.removeAt(position)
-//        deleteImageList.add
+        // previousList에 있는 이미지를 삭제할 경우 deleteImageList에 추가, 없을 경우 addImageList에서 삭제
+        val item = postPhotoAdapter.getItemList()[position]
+        val itemName = FileNameFromUri.getFileNameFromUri(this, Uri.parse(item)).toString()
+
+        if (previousList.contains(item)) {
+            deleteImageList.add(item)
+        } else {
+            addImageList.remove(itemName)
+        }
+
         postPhotoAdapter.removeItem(position)
         binding.txtPhotoCount.text = "${postPhotoAdapter.itemCount}/10"
     }
@@ -111,8 +121,12 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
             setHasFixedSize(true)
         }
 
-        postPhotoAdapter.setOnItemClickListener { item, position ->
-            // 이미지 확대
+        postPhotoAdapter.setOnItemClickListener { _, position ->
+            val intent = Intent(this, PhotoViewActivity::class.java)
+            intent.putStringArrayListExtra("url", postPhotoAdapter.getItemList() as ArrayList<String>)
+            intent.putExtra("position", position)
+            intent.putExtra("download", false)
+            startActivity(intent)
         }
     }
 
@@ -130,19 +144,19 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
         binding.layoutPhoto.setOnClickListener {
             TedImagePicker.with(this)
                 .title("사진 선택")
-                .max(10, "사진은 최대 10장까지 선택 가능합니다.")
+                .max(10 - postPhotoAdapter.itemCount, "사진은 최대 10장까지 선택 가능합니다.")
                 .buttonBackground(R.drawable.button_rounded_corner)
                 .showCameraTile(false)
                 .mediaType(MediaType.IMAGE)
-//                .selectedUri(postPhotoAdapter.getItemList().map { Uri.parse(it) }) // 이미지 선택 시 기존 선택한 이미지 유지
                 .startMultiImage { uriList ->
-//                    postPhotoAdapter.setItemList(uriList.map { it.toString() })
+                    val previousList = postPhotoAdapter.getItemList()
+                    postPhotoAdapter.setItemList(previousList + uriList.map { it.toString() })
                     binding.txtPhotoCount.text = "${postPhotoAdapter.itemCount}/10"
 
-//                    uriList.map { uri ->
-//                        val fileName = FileNameFromUri.getFileNameFromUri(this, uri)
-//                        addImageList.add(fileName.toString())
-//                    }
+                    uriList.map { uri ->
+                        val fileName = FileNameFromUri.getFileNameFromUri(this, uri)
+                        addImageList.add(fileName.toString())
+                    }
                 }
         }
 
@@ -151,7 +165,7 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
             bottomSheetDialog.show()
         }
 
-        // 게시글 등록 및 수정
+        // 게시글 수정
         binding.btnAdd.setOnClickListener {
             val title = binding.editTitle.text.toString()
             val content = binding.editContent.text.toString()
@@ -172,7 +186,7 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
             if (addImageList.isNotEmpty()) { // 선택한 이미지가 있으면 PresignedUrl 요청
                 s3ViewModel.getPresignedUrl(addImageList.map { PresignedUrlRequestDto("post_images", it) })
             } else {
-                postViewModel.updatePost(postId, PostUpdateDto(title, content, category, s3UrlList, deleteImageList))
+                postViewModel.updatePost(postId, PostUpdateDto(title, content, category, emptyList(), deleteImageList))
             }
         }
     }
@@ -188,6 +202,8 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
                 binding.editContent.setText(it.content)
                 binding.txtCategory.text = it.category
                 postPhotoAdapter.setItemList(it.images)
+                previousList.addAll(it.images)
+                binding.txtPhotoCount.text = "${postPhotoAdapter.itemCount}/10"
             }
 
             errorMessage.observe(this@PostUpdateActivity) { event ->
@@ -218,7 +234,8 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
                 presignedUrlList.addAll(result.map { it.presignedUrl }).also {
                     CoroutineScope(Dispatchers.Main).launch {
                         val jobs = presignedUrlList.mapIndexed { index, url ->
-                            val uri = Uri.parse(postPhotoAdapter.getItemList()[index])
+                            val filteredList = postPhotoAdapter.getItemList().filterNot { it in previousList }
+                            val uri = Uri.parse(filteredList[index])
                             val inputStream = contentResolver.openInputStream(uri) // Content Provider에 접근하여 Uri로부터 InputStream을 가져옴
 
                             inputStream?.readBytes()?.toRequestBody("image/*".toMediaTypeOrNull())?.let { requestBody ->
@@ -235,7 +252,7 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
 
                         // 모든 이미지 업로드 완료 시 게시글 등록
                         if (uploadedImageCount.get() == addImageList.size) {
-                            postViewModel.addPost(PostAddDto(binding.editTitle.text.toString(), binding.editContent.text.toString(), boardId, binding.txtCategory.text.toString(), s3UrlList))
+                            postViewModel.updatePost(postId, PostUpdateDto(binding.editTitle.text.toString(), binding.editContent.text.toString(), binding.txtCategory.text.toString(), s3UrlList, deleteImageList))
                         }
                     }
                 }

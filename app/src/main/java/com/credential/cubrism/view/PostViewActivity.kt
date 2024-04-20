@@ -118,6 +118,7 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
             val intent = Intent(this, PhotoViewActivity::class.java)
             intent.putStringArrayListExtra("url", postImageAdapter.getItemList())
             intent.putExtra("position", position)
+            intent.putExtra("download", true)
             startActivity(intent)
         }
     }
