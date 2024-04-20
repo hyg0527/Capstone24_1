@@ -5,18 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.credential.cubrism.databinding.ItemListPostImageBinding
+import com.credential.cubrism.databinding.PagePhotoBinding
 import com.credential.cubrism.view.diff.StringListDiffUtil
 
-class PostImageAdapter : RecyclerView.Adapter<PostImageAdapter.ViewHolder>() {
+class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
     private var itemList = mutableListOf<String>()
-    private var onItemClickListener: ((String, Int) -> Unit)? = null
 
     override fun getItemCount(): Int = itemList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemListPostImageBinding.inflate(inflater, parent, false)
+        val binding = PagePhotoBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
@@ -24,23 +23,12 @@ class PostImageAdapter : RecyclerView.Adapter<PostImageAdapter.ViewHolder>() {
         holder.bind(itemList[position])
     }
 
-    inner class ViewHolder(private val binding: ItemListPostImageBinding) : RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.imgPhoto.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onItemClickListener?.invoke(itemList[position], position)
-                }
-            }
-        }
-
+    inner class ViewHolder(private val binding: PagePhotoBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
-            Glide.with(binding.root).load(item).into(binding.imgPhoto)
+            Glide.with(binding.root)
+                .load(item)
+                .into(binding.imgPhoto)
         }
-    }
-
-    fun setOnItemClickListener(listener: (String, Int) -> Unit) {
-        onItemClickListener = listener
     }
 
     fun setItemList(list: List<String>) {
@@ -50,9 +38,5 @@ class PostImageAdapter : RecyclerView.Adapter<PostImageAdapter.ViewHolder>() {
         itemList.clear()
         itemList.addAll(list)
         diffResult.dispatchUpdatesTo(this)
-    }
-
-    fun getItemList(): ArrayList<String> {
-        return itemList as ArrayList<String>
     }
 }

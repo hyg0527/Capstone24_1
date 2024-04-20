@@ -114,9 +114,10 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
             getPostView()
         }
 
-        postImageAdapter.setOnItemClickListener { item, _ ->
+        postImageAdapter.setOnItemClickListener { _, position ->
             val intent = Intent(this, PhotoViewActivity::class.java)
-            intent.putExtra("imageUrl", item)
+            intent.putStringArrayListExtra("url", postImageAdapter.getItemList())
+            intent.putExtra("position", position)
             startActivity(intent)
         }
     }

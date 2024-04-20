@@ -1,23 +1,31 @@
 package com.credential.cubrism.view
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
+import androidx.core.view.MenuProvider
+import androidx.viewpager2.widget.ViewPager2
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityPhotoViewBinding
+import com.credential.cubrism.view.adapter.PhotoAdapter
 
 class PhotoViewActivity : AppCompatActivity() {
     private val binding by lazy { ActivityPhotoViewBinding.inflate(layoutInflater) }
 
-    private val imageUrl by lazy { intent.getStringExtra("imageUrl") }
+    private val photoAdapter = PhotoAdapter()
+
+    private val imageUrl by lazy { intent.getStringArrayListExtra("url") }
+    private val position by lazy { intent.getIntExtra("position", 0) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         setupToolbar()
-        setupView()
+        setupViewPager()
     }
 
     private fun setupToolbar() {
@@ -25,14 +33,42 @@ class PhotoViewActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
+
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.photo_download_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.download -> {
+                        imageUrl?.let {
+                            val url = it[binding.viewPager.currentItem]
+                            Toast.makeText(this@PhotoViewActivity, url, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                return false
+            }
+        })
     }
 
-    private fun setupView() {
+    private fun setupViewPager() {
         imageUrl?.let {
-            Glide.with(this)
-                .load(it)
-                .placeholder(ColorDrawable(Color.TRANSPARENT))
-                .into(binding.imgPhoto)
+            binding.viewPager.apply {
+                adapter = photoAdapter
+                photoAdapter.setItemList(it)
+                offscreenPageLimit = it.size
+                setCurrentItem(position, false)
+            }
+            binding.txtCount.text = "${position + 1} / ${imageUrl?.size}"
         }
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.txtCount.text = "${position + 1} / ${imageUrl?.size}"
+            }
+        })
     }
 }
