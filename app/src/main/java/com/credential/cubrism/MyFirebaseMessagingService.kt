@@ -1,6 +1,6 @@
 package com.credential.cubrism
 
-import android.util.Log
+import com.credential.cubrism.view.utils.Notification
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+    private lateinit var notification: Notification
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -22,14 +23,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        val notification: RemoteMessage.Notification? = remoteMessage.getNotification()
-        if (notification != null) {
-            Log.d("테스트", "알림 Title: " + notification.title)
-            Log.d("테스트", "알림 Body: " + notification.body)
+        notification = Notification(applicationContext)
+
+        remoteMessage.data.let { data ->
+            val title = data["title"] ?: ""
+            val body = data["body"] ?: ""
 
             // TODO: 알림 띄우기
+            notification.deliverNotification(title, body)
 
             // TODO: Room에 알림 저장하기
+
         }
     }
 }

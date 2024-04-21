@@ -1,10 +1,15 @@
 package com.credential.cubrism.view
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
@@ -42,9 +47,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        private const val POST_NOTIFICATIONS_CODE = 0
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        checkPermission()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
@@ -107,6 +118,12 @@ class MainActivity : AppCompatActivity() {
             add(binding.fragmentContainerView.id, CalFragment(), FragmentType.CALENDAR.tag)
             add(binding.fragmentContainerView.id, QualificationFragment(), FragmentType.QUALIFICATION.tag)
             commit()
+        }
+    }
+
+    private fun checkPermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && PackageManager.PERMISSION_DENIED == ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), POST_NOTIFICATIONS_CODE)
         }
     }
 }
