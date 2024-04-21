@@ -1,5 +1,5 @@
 package com.credential.cubrism.model.dto
 
-data class FcmTokenRequest(
+data class FcmTokenDto(
     val fcmToken: String
 )

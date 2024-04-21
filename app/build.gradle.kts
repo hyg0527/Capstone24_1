@@ -67,8 +67,6 @@ fun getApi(propertyKey: String): String {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
-    implementation("com.google.firebase:firebase-analytics")
     // androidx
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -84,6 +82,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.android.gms:play-services-auth:21.1.0")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
 
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.10.0")
@@ -100,7 +99,6 @@ dependencies {
     implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation("io.github.ParkSangGwon:tedimagepicker:1.5.0")
     implementation("io.getstream:photoview:1.0.1")
-    implementation("com.google.firebase:firebase-messaging")
 
     // 테스트
     testImplementation("junit:junit:4.13.2")

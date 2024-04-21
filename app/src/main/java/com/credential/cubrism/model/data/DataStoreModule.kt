@@ -13,6 +13,8 @@ class DataStoreModule(private val context: Context) {
     private val accessTokenKey = stringPreferencesKey("access_token")
     private val refreshTokenKey = stringPreferencesKey("refresh_token")
 
+    private val fcmTokenKey = stringPreferencesKey("fcm_token")
+
     private val emailKey = stringPreferencesKey("email")
     private val nicknameKey = stringPreferencesKey("nickname")
     private val profileImageKey = stringPreferencesKey("profile_image")
@@ -56,6 +58,27 @@ class DataStoreModule(private val context: Context) {
     suspend fun deleteRefreshToken() {
         context.dataStore.edit { preferences ->
             preferences.remove(refreshTokenKey)
+        }
+    }
+
+    // FCM Token 저장
+    suspend fun saveFcmToken(fcmToken: String) {
+        context.dataStore.edit { preferences ->
+            preferences[fcmTokenKey] = fcmToken
+        }
+    }
+
+    // FCM Token 불러오기
+    fun getFcmToken(): Flow<String?> {
+        return context.dataStore.data.map { prefs ->
+            prefs[fcmTokenKey]
+        }
+    }
+
+    // FCM Token 삭제
+    suspend fun deleteFcmToken() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(fcmTokenKey)
         }
     }
 

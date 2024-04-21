@@ -30,6 +30,18 @@ class DataStoreRepository {
         return dataStore.getRefreshToken()
     }
 
+    suspend fun saveFcmToken(token: String) {
+        dataStore.saveFcmToken(token)
+    }
+
+    fun getFcmToken(): Flow<String?> {
+        return dataStore.getFcmToken()
+    }
+
+    suspend fun deleteFcmToken() {
+        dataStore.deleteFcmToken()
+    }
+
     suspend fun saveEmail(email: String) {
         dataStore.saveEmail(email)
     }

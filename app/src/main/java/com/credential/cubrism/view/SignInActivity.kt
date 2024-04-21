@@ -3,23 +3,16 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.BuildConfig
-import com.credential.cubrism.MyApplication
-import com.credential.cubrism.model.repository.AuthRepository
-import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.databinding.ActivitySigninBinding
-import com.credential.cubrism.model.dto.FcmTokenRequest
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
+import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.DataStoreRepository
-import com.credential.cubrism.model.service.RetrofitClient
-import com.credential.cubrism.model.service.YourService
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.DataStoreViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -27,15 +20,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
@@ -51,7 +37,6 @@ class SignInActivity : AppCompatActivity() {
             }
         } catch (_: ApiException) { }
     }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
