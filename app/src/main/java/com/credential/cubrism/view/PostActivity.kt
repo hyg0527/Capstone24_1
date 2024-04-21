@@ -130,16 +130,22 @@ class PostActivity : AppCompatActivity() {
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.toolbar.collapseActionView()
-                when (tab?.position) {
-                    0 -> {
-                        // 전체 글 목록
-                        favorites = false
-                        postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
-                    }
-                    1 -> {
-                        // 관심 자격증
-                        favorites = true
-                        postViewModel.getFavoritePostList(boardId, 0, 10, true)
+
+                if (myEmail == null) {
+                    Toast.makeText(this@PostActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                    binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
+                } else {
+                    when (tab?.position) {
+                        0 -> {
+                            // 전체 글 목록
+                            favorites = false
+                            postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
+                        }
+                        1 -> {
+                            // 관심 자격증
+                            favorites = true
+                            postViewModel.getFavoritePostList(boardId, 0, 10, true)
+                        }
                     }
                 }
             }
