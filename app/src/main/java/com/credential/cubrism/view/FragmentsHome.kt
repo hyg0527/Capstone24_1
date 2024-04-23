@@ -10,18 +10,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
+import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.LicenseAdapter
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.view.adapter.myLicenseData
+import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.CalendarViewModel
-import com.credential.cubrism.viewmodel.UserViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Timer
@@ -31,21 +35,24 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels { ViewModelFactory(AuthRepository()) }
     private val calendarViewModel: CalendarViewModel by activityViewModels()
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private var currentPage = 0
     private val timer = Timer()
 
+    // 로그인 성공
     private val startForRegisterResultSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            userViewModel.getUserInfo()
+            authViewModel.getUserInfo()
         }
     }
 
+    // 로그아웃 성공
     private val startForRegisterResultLogOut = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            userViewModel.getUserInfo()
+            authViewModel.getUserInfo()
         }
     }
 
@@ -113,22 +120,26 @@ class HomeFragment : Fragment() {
     private fun setupView() {
         Glide.with(this).load(R.drawable.peopleimage_home).into(binding.backgroundImage)
 
+        // 로그인
         binding.txtSignIn.setOnClickListener {
             startForRegisterResultSignIn.launch(Intent(requireActivity(), SignInActivity::class.java))
         }
 
+        // 프로필
         binding.btnProfile.setOnClickListener {
             startForRegisterResultLogOut.launch(Intent(requireActivity(), MyPageActivity::class.java))
         }
 
+        // 알림
         binding.btnNoti.setOnClickListener {
             startActivity(Intent(requireActivity(), NotiActivity::class.java))
         }
     }
 
     private fun observeViewModel() {
-        userViewModel.userInfo.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
+        // DataStore에 이메일이 저장되어 있는지 확인 (로그인 상태)
+        dataStore.getEmail().asLiveData().observe(viewLifecycleOwner) { email ->
+            if (email != null) {
                 binding.btnProfile.visibility = View.VISIBLE
                 binding.btnNoti.visibility = View.VISIBLE
                 binding.txtSignIn.visibility = View.GONE

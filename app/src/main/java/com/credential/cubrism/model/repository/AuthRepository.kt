@@ -9,6 +9,7 @@ import com.credential.cubrism.model.dto.SignUpDto
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
+import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
 import org.json.JSONObject
@@ -127,6 +128,26 @@ class AuthRepository {
             }
 
             override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun getUserInfo(callback: (ResultUtil<UserInfoDto>) -> Unit) {
+        authApiAuth.getUserInfo().enqueue(object : Callback<UserInfoDto> {
+            override fun onResponse(call: Call<UserInfoDto>, response: Response<UserInfoDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let {
+                        callback(ResultUtil.Error(JSONObject(it).optString("message")))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserInfoDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })

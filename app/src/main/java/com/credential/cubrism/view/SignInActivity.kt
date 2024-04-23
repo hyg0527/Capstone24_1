@@ -7,14 +7,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.BuildConfig
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivitySigninBinding
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.repository.AuthRepository
-import com.credential.cubrism.model.repository.DataStoreRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
-import com.credential.cubrism.viewmodel.DataStoreViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,12 +22,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.launch
 
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val dataStoreViewModel: DataStoreViewModel by viewModels { ViewModelFactory(DataStoreRepository()) }
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
+    // 구글 로그인 실행
     private val googleAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         try {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -38,13 +40,14 @@ class SignInActivity : AppCompatActivity() {
         } catch (_: ApiException) { }
     }
 
+    // 회원가입 후 해당 계정으로 로그인
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data
-            val email = data?.getStringExtra("email")
-            val password = data?.getStringExtra("password")
+            val email = data?.getStringExtra("email") ?: ""
+            val password = data?.getStringExtra("password") ?: ""
 
-            signIn(email ?: "", password ?: "")
+            signIn(email, password)
         }
     }
 
@@ -151,11 +154,14 @@ class SignInActivity : AppCompatActivity() {
     }
 
     // 로그인 성공
-    private fun signInSuccess(tokenDto : TokenDto) {
-        if (tokenDto.accessToken != null && tokenDto.refreshToken != null) {
-            dataStoreViewModel.saveAccessToken(tokenDto.accessToken)
-            dataStoreViewModel.saveRefreshToken(tokenDto.refreshToken)
-            setResult(RESULT_OK).also { finish() }
+    private fun signInSuccess(dto : TokenDto) {
+        if (dto.accessToken != null && dto.refreshToken != null) {
+            lifecycleScope.launch {
+                dataStore.saveAccessToken(dto.accessToken)
+                dataStore.saveRefreshToken(dto.refreshToken)
+
+                setResult(RESULT_OK).also { finish() }
+            }
         }
     }
 }

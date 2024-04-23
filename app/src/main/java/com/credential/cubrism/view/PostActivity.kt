@@ -13,7 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
@@ -25,8 +25,6 @@ import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayout
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class PostActivity : AppCompatActivity() {
     private val binding by lazy { ActivityPostBinding.inflate(layoutInflater) }
@@ -207,10 +205,6 @@ class PostActivity : AppCompatActivity() {
         postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
         binding.swipeRefreshLayout.isRefreshing = true
 
-        lifecycleScope.launch {
-            myEmail = dataStore.getEmail().first()
-        }
-
         binding.floatingActionButton.setOnClickListener {
             val intent = Intent(this, PostAddActivity::class.java)
             intent.putExtra("postState", "add")
@@ -236,8 +230,17 @@ class PostActivity : AppCompatActivity() {
                 refreshState = it
             }
 
-            errorMessage.observe(this@PostActivity) {
-                it.getContentIfNotHandled()?.let { message -> Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show() }
+            errorMessage.observe(this@PostActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dataStore.getEmail().asLiveData().observe(this) { email ->
+            myEmail = email
+            if (email == null) {
+                binding.floatingActionButton.hide()
             }
         }
     }

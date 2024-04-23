@@ -1,11 +1,9 @@
 package com.credential.cubrism.model.repository
 
-import com.credential.cubrism.MyApplication
+import com.credential.cubrism.model.data.DataStoreModule
 import kotlinx.coroutines.flow.Flow
 
-class DataStoreRepository {
-    private val dataStore = MyApplication.getInstance().getDataStore()
-
+class DataStoreRepository(private val dataStore: DataStoreModule) {
     suspend fun saveAccessToken(token: String) {
         dataStore.saveAccessToken(token)
     }

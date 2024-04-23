@@ -1,6 +1,7 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -9,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
@@ -27,8 +28,6 @@ import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.S3ViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
@@ -80,20 +79,20 @@ class EditProfileActivity : AppCompatActivity() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.edit_profile_menu, menu)
-                val editItem = menu.findItem(R.id.edit)
-                editItem.setOnMenuItemClickListener {
-                    binding.progressIndicator.show()
-                    // 2. PreSignedUrl 요청
-                    if (fileName != null)
-                        s3ViewModel.getPresignedUrl(listOf(PresignedUrlRequestDto("profile_images", fileName!!)))
-                    else
-                        authViewModel.editUserInfo(binding.editNickname.text.toString(), profileImage)
-
-                    true
-                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.edit -> {
+                        binding.progressIndicator.show()
+
+                        // 2. PreSignedUrl 요청
+                        if (fileName != null)
+                            s3ViewModel.getPresignedUrl(listOf(PresignedUrlRequestDto("profile_images", fileName!!)))
+                        else
+                            authViewModel.editUserInfo(binding.editNickname.text.toString(), profileImage)
+                    }
+                }
                 return false
             }
         })
@@ -125,9 +124,11 @@ class EditProfileActivity : AppCompatActivity() {
 
             // 기본 프로필 이미지로 변경
             btnResetImage.setOnClickListener {
-                Glide.with(this@EditProfileActivity).load(R.drawable.profile)
+                Glide.with(this@EditProfileActivity)
+                    .load(R.drawable.profile)
                     .dontAnimate()
                     .into(binding.imgProfile)
+                profileImage = null
                 bottomProfileDialog.dismiss()
             }
         }
@@ -140,18 +141,6 @@ class EditProfileActivity : AppCompatActivity() {
         // 회원 탈퇴
         binding.btnWithdrawal.setOnClickListener {
             // TODO: 회원탈퇴
-        }
-
-        lifecycleScope.launch {
-            Glide.with(this@EditProfileActivity).load(dataStore.getProfileImage().first())
-                .error(R.drawable.account_circle)
-                .fallback(R.drawable.account_circle)
-                .dontAnimate()
-                .into(binding.imgProfile)
-            binding.editEmail.setText(dataStore.getEmail().first())
-            binding.editNickname.setText(dataStore.getNickname().first())
-
-            profileImage = dataStore.getProfileImage().first()
         }
     }
 
@@ -192,6 +181,27 @@ class EditProfileActivity : AppCompatActivity() {
                 event.getContentIfNotHandled()?.let { message ->
                     Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+
+        dataStore.apply {
+            getEmail().asLiveData().observe(this@EditProfileActivity) { email ->
+                binding.editEmail.setText(email)
+            }
+
+            getNickname().asLiveData().observe(this@EditProfileActivity) { nickname ->
+                binding.editNickname.setText(nickname)
+            }
+
+            getProfileImage().asLiveData().observe(this@EditProfileActivity) { image ->
+                Log.d("테스트", "프로필 이미지: $image")
+                Glide.with(this@EditProfileActivity).load(image)
+                    .error(R.drawable.profile)
+                    .fallback(R.drawable.profile)
+                    .dontAnimate()
+                    .into(binding.imgProfile)
+
+                profileImage = image
             }
         }
     }

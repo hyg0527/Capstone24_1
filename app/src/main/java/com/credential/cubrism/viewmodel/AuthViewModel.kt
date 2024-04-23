@@ -9,6 +9,7 @@ import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
+import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -32,8 +33,11 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _kakaoLogIn = MutableLiveData<TokenDto>()
     val kakaoLogIn: LiveData<TokenDto> = _kakaoLogIn
 
-    private val _logOut = MutableLiveData<ResultUtil<MessageDto>>()
-    val logOut: LiveData<ResultUtil<MessageDto>> = _logOut
+    private val _logOut = MutableLiveData<MessageDto>()
+    val logOut: LiveData<MessageDto> = _logOut
+
+    private val _getUserInfo = MutableLiveData<UserInfoDto>()
+    val getUserInfo: LiveData<UserInfoDto> = _getUserInfo
 
     private val _editUserInfo = MutableLiveData<MessageDto>()
     val editUserInfo: LiveData<MessageDto> = _editUserInfo
@@ -82,7 +86,13 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     fun logOut() {
         authRepository.logOut { result ->
-            _logOut.postValue(result)
+            handleResult(result, _logOut, _errorMessage)
+        }
+    }
+
+    fun getUserInfo() {
+        authRepository.getUserInfo { result ->
+            handleResult(result, _getUserInfo, _errorMessage)
         }
     }
 
