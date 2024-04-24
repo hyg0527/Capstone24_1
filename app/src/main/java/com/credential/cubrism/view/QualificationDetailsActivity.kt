@@ -1,9 +1,11 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.credential.cubrism.databinding.ActivityQualificationDetailsBinding
 import com.credential.cubrism.model.dto.Book
 import com.credential.cubrism.model.dto.File
@@ -63,7 +65,16 @@ class QualificationDetailsActivity : AppCompatActivity() {
                     Toast.makeText(this, item.filePath, Toast.LENGTH_SHORT).show()
                 }
                 is Book -> {
-                    Toast.makeText(this, item.url, Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Intent.ACTION_VIEW, item.url.toUri())
+
+                    val packageManager = packageManager
+                    val activities = packageManager.queryIntentActivities(intent, 0)
+                    val isIntentSafe = activities.isNotEmpty()
+
+                    if (isIntentSafe)
+                        startActivity(intent)
+                    else
+                        Toast.makeText(this, "해당 URL을 열 수 있는 앱이 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
