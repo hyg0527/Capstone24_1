@@ -177,7 +177,7 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
                 }
                 CommentState.REPLY -> {
                     if (commentId != -1)
-                        postViewModel.addReply(ReplyAddDto(commentId, binding.editComment.text.toString()))
+                        postViewModel.addReply(ReplyAddDto(postId, commentId, binding.editComment.text.toString()))
                 }
             }
 
@@ -273,7 +273,7 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
 
         binding.layoutReply.visibility = View.GONE
         binding.editComment.text?.clear()
-        binding.editComment.hint = "답글 입력"
+        binding.editComment.hint = "댓글 입력"
 
         binding.editComment.clearFocus()
         imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0) // 키보드 내리기

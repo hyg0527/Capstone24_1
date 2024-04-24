@@ -73,12 +73,4 @@ interface PostApi {
     // 대댓글 추가
     @POST("/reply")
     fun addReply(@Body replyAddDto: ReplyAddDto): Call<MessageDto>
-
-    // 대댓글 삭제
-//    @DELETE("/reply/{replyId}")
-//    fun deleteReply(@Path("replyId") replyId: Int): Call<MessageDto>
-
-    // 대댓글 수정
-//    @PUT("/reply/{replyId}")
-//    fun updateReply(@Path("replyId") replyId: Int, @Body replyUpdateDto: ReplyUpdateDto): Call<MessageDto>
 }
