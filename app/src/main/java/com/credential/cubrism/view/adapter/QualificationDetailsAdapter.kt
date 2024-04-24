@@ -200,6 +200,7 @@ class QualificationDetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         return when (item.fileName.substringAfterLast('.')) {
             "pdf" -> R.drawable.icon_pdf
             "hwp" -> R.drawable.icon_hwp
+            "hwpx" -> R.drawable.icon_hwp
             "zip" -> R.drawable.icon_zip
             else -> R.drawable.icon_etc
         }
