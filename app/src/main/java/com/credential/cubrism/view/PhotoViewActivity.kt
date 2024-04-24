@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -134,21 +135,25 @@ class PhotoViewActivity : AppCompatActivity() {
 
     // 현재 날짜 및 시간으로 파일 이름 설정
     private fun createFileName(url: String): String {
-        val format = Uri.parse(url).getQueryParameter("format")?.lowercase() ?: "jpg"
+        val format = url.substringAfterLast(".")
         val date = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         return "$date.$format"
     }
 
     // 파일 확장자 설정
-    private fun determineMimeType(url: String): String = when (Uri.parse(url).getQueryParameter("format")?.lowercase()) {
-        "jpg" -> "image/jpg"
-        "jpeg" -> "image/jpeg"
-        "png" -> "image/png"
-        "webp" -> "image/webp"
-        "gif" -> "image/gif"
-        "bmp" -> "image/bmp"
-        "svg" -> "image/svg+xml"
-        else -> "image/jpeg"
+    private fun determineMimeType(url: String): String {
+        val format = url.substringAfterLast(".").lowercase()
+
+        return when (format) {
+            "jpg" -> "image/jpg"
+            "jpeg" -> "image/jpeg"
+            "png" -> "image/png"
+            "webp" -> "image/webp"
+            "gif" -> "image/gif"
+            "bmp" -> "image/bmp"
+            "svg" -> "image/svg+xml"
+            else -> ""
+        }
     }
 
     // 다운로드 매니저로 이미지 다운로드
