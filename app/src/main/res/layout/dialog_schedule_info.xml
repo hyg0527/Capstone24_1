@@ -140,6 +140,7 @@
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/godom"
                 android:text="0000 - 00 - 00  오전 10:30"
+                android:textColor="#453C3C"
                 android:textSize="18dp" />
         </LinearLayout>
 
@@ -148,16 +149,16 @@
 
     <TextView
         android:id="@+id/daylongtxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_width="10dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="90dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="@font/godom"
-        android:layout_marginStart="100dp"
         android:text="~"
         android:textColor="#453C3C"
         android:textSize="18dp"
-        app:layout_constraintStart_toStartOf="@+id/dateLayout"
-        app:layout_constraintBottom_toBottomOf="@+id/dateLayout" />
+        app:layout_constraintBottom_toBottomOf="@+id/dateLayout"
+        app:layout_constraintStart_toStartOf="@+id/dateLayout" />
 
     <TextView
         android:id="@+id/textView30"
@@ -189,6 +190,9 @@
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:fontFamily="@font/godom"
+        android:textSize="18dp"
+        android:textColor="#453C3C"
         android:lines="10"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
