@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter
 
 class NotiAdapter : RecyclerView.Adapter<NotiAdapter.ViewHolder>() {
     private var itemList = mutableListOf<NotiEntity>()
+    private var onItemClickListener: ((NotiEntity, Int) -> Unit)? = null
 
     override fun getItemCount(): Int = itemList.size
 
@@ -25,11 +26,24 @@ class NotiAdapter : RecyclerView.Adapter<NotiAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(private val binding: ItemListNotiBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(itemList[position], position)
+                }
+            }
+        }
+
         fun bind(item: NotiEntity) {
             binding.txtTitle.text = item.title
             binding.txtBody.text = item.body.replace(" ", "\u00A0")
             binding.txtDate.text = item.date.format(DateTimeFormatter.ofPattern("M/dd HH:mm"))
         }
+    }
+
+    fun setOnItemClickListener(listener: (NotiEntity, Int) -> Unit) {
+        onItemClickListener = listener
     }
 
     fun setItemList(list: List<NotiEntity>) {
