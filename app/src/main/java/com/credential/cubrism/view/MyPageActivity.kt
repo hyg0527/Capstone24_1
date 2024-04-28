@@ -15,6 +15,7 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMyPageBinding
 import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.repository.NotiRepository
 import com.credential.cubrism.view.adapter.MyPageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.AuthViewModel
@@ -28,6 +29,7 @@ class MyPageActivity : AppCompatActivity() {
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
     private val calendarViewModel: CalendarViewModel by viewModels()
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+    private val notificationRepository = NotiRepository(MyApplication.getInstance().getNotiDao())
 
     private val myPageAdapter = MyPageAdapter()
 
@@ -106,6 +108,7 @@ class MyPageActivity : AppCompatActivity() {
                     dataStore.deleteEmail()
                     dataStore.deleteNickname()
                     dataStore.deleteProfileImage()
+                    notificationRepository.deleteAllNoties()
 
                     setResult(RESULT_OK).also { finish() }
                 }

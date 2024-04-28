@@ -7,4 +7,6 @@ class NotiRepository(private val notiDao: NotiDao) {
     fun getAllNoties() = notiDao.getAllNoties()
 
     suspend fun insertNoti(dto: NotiEntity) = notiDao.insertNoti(dto)
+
+    suspend fun deleteAllNoties() = notiDao.deleteAllNoties()
 }

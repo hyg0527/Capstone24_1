@@ -13,4 +13,7 @@ interface NotiDao {
 
     @Insert
     suspend fun insertNoti(dto: NotiEntity)
+
+    @Query("DELETE FROM noti")
+    suspend fun deleteAllNoties()
 }

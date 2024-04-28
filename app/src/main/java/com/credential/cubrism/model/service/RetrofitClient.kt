@@ -4,6 +4,7 @@ import android.util.Log
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
+import com.credential.cubrism.model.repository.NotiRepository
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import kotlinx.coroutines.flow.first
@@ -17,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+private val notificationRepository = NotiRepository(MyApplication.getInstance().getNotiDao())
 
 object RetrofitClient {
     private var retrofit: Retrofit? = null
@@ -130,6 +132,9 @@ class ResponseInterceptor : Interceptor {
                             dataStore.deleteEmail()
                             dataStore.deleteNickname()
                             dataStore.deleteProfileImage()
+
+                            // Room에 저장된 알림 삭제
+                            notificationRepository.deleteAllNoties()
                         }
                     }
                 }
