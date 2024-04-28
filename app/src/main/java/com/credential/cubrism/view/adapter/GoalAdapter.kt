@@ -16,7 +16,7 @@ data class Goals(val id: Int? = null, val name: String? = null, var num: Int? = 
 class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     inner class GoalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val name = v.findViewById<EditText>(R.id.editTextGoalTitle)
-        val time = v.findViewById<TextView>(R.id.txtGoalTime)
+       // val time = v.findViewById<TextView>(R.id.txtGoalTime)
         val num = v.findViewById<TextView>(R.id.txtGoalCount)
         val removeBtn = v.findViewById<ImageButton>(R.id.closeBtn2)
 
