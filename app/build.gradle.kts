@@ -4,13 +4,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.kapt")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-}
-
-val properties = Properties().apply {
-    load(FileInputStream(rootProject.file("local.properties")))
 }
 
 android {
@@ -53,10 +48,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-    }
 }
 
 fun getApi(propertyKey: String): String {
@@ -89,8 +80,8 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
 
     // retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.10.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.10.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
     // 기타
     implementation("com.kakao.sdk:v2-user:2.20.1")
