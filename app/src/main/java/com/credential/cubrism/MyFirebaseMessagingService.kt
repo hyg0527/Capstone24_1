@@ -39,13 +39,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.data.let { data ->
             val title = data["title"] ?: ""
             val body = data["body"] ?: ""
+            val type: Pair<String, String> = data["type"]?.split("|")?.let {
+                if (it.size == 2) Pair(it[0], it[1]) else null
+            } ?: Pair("", "")
 
             // 알림 띄우기
             notification.deliverNotification(title, body)
 
             //  Room에 알림 저장하기
             coroutineScope.launch {
-                notificationRepository.insertNoti(NotiEntity(title = title, body = body))
+                notificationRepository.insertNoti(NotiEntity(title = title, body = body, type = type.first, id = type.second))
             }
         }
     }
