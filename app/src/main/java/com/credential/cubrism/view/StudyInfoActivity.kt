@@ -1,6 +1,7 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -56,7 +57,7 @@ class StudyInfoActivity : AppCompatActivity() {
                 // TODO: 해당 스터디 그룹으로 이동
             } else {
                 studyGroupViewModel.requestJoin(studyGroupId)
-                binding.progressIndicator.show()
+                binding.progressIndicator.visibility = View.VISIBLE
             }
         }
     }
@@ -73,8 +74,8 @@ class StudyInfoActivity : AppCompatActivity() {
         studyGroupViewModel.apply {
             studyGroupInfo.observe(this@StudyInfoActivity) { group ->
                 Glide.with(this@StudyInfoActivity).load(group.adminProfileImage)
-                    .error(R.drawable.profile_skyblue)
-                    .fallback(R.drawable.profile_skyblue)
+                    .error(R.drawable.profile)
+                    .fallback(R.drawable.profile)
                     .dontAnimate()
                     .into(binding.imgProfile)
                 binding.txtNickname.text = "  ${group.groupAdmin}  "
@@ -103,13 +104,13 @@ class StudyInfoActivity : AppCompatActivity() {
 
             requestJoin.observe(this@StudyInfoActivity) {
                 Toast.makeText(this@StudyInfoActivity, "가입 요청이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
             }
 
             errorMessage.observe(this@StudyInfoActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     Toast.makeText(this@StudyInfoActivity, message, Toast.LENGTH_SHORT).show()
-                    binding.progressIndicator.hide()
+                    binding.progressIndicator.visibility = View.GONE
                 }
             }
         }

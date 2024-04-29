@@ -2,6 +2,7 @@ package com.credential.cubrism.model.api
 
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
+import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupListDto
 import retrofit2.Call
 import retrofit2.http.GET
@@ -25,6 +26,10 @@ interface StudyGroupApi {
     // 스터디 그룹 정보
     @GET("/studygroup/{groupId}")
     fun getStudyGroupInfo(@Path("groupId") groupId: Int): Call<StudyGroupInfoDto>
+
+    // 스터디 그룹 가입 신청 목록
+    @GET("/studygroup/join/list")
+    fun getJoinRequestList(): Call<List<StudyGroupJoinListDto>>
 
     // 스터디 그룹 가입 요청
     @POST("/studygroup/join/{groupId}")
