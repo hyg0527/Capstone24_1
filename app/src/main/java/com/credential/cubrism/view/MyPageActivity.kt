@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMyPageBinding
-import com.credential.cubrism.model.dto.MyPageDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.NotiRepository
 import com.credential.cubrism.view.adapter.MyPageAdapter
@@ -81,9 +80,9 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         myPageAdapter.setItemList(listOf(
-            MyPageDto("내가 작성한 글"),
-            MyPageDto("관심 자격증 관리"),
-            MyPageDto("스터디 그룹 신청 내역")
+            "내가 작성한 글",
+            "관심 자격증 관리",
+            "스터디 그룹 신청 내역"
         ))
 
         myPageAdapter.setOnItemClickListener { _, position ->
