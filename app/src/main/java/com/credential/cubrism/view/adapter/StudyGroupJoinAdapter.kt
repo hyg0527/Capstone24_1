@@ -29,8 +29,14 @@ class StudyGroupJoinAdapter : RecyclerView.Adapter<StudyGroupJoinAdapter.ViewHol
     }
 
     inner class ViewHolder(private val binding: ItemListStudyJoinBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val tagAdapter = StudyGroupTagAdapter(1)
+
         init {
-            binding.recyclerView.addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+            binding.recyclerView.apply {
+                adapter = tagAdapter
+                setRecycledViewPool(viewPool)
+                addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+            }
         }
 
         fun bind(item: StudyGroupJoinListDto) {
@@ -38,13 +44,7 @@ class StudyGroupJoinAdapter : RecyclerView.Adapter<StudyGroupJoinAdapter.ViewHol
             binding.txtGroupDescription.text = item.groupDescription
             val dateTime = LocalDateTime.parse(item.requestDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
             binding.txtDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-
-            val tagAdapter = StudyGroupTagAdapter(1)
-            binding.recyclerView.apply {
-                adapter = tagAdapter
-                setRecycledViewPool(viewPool)
-                tagAdapter.setItemList(item.tags)
-            }
+            tagAdapter.setItemList(item.tags)
         }
     }
 
