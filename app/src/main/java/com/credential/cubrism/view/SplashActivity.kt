@@ -14,11 +14,13 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.lotti.speed = 1.5f
         splashScreenLoad()
     }
 
     private fun splashScreenLoad() {
-        // 5초 딜레이 후에 다른 액티비티 호출
+        // 5초 딜레이 후에 MainActivity 호출
         val handlerThread = HandlerThread("HandlerThread")
         handlerThread.start()
         val handler = Handler(handlerThread.looper)
@@ -27,6 +29,6 @@ class SplashActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        }, 7000)
+        }, 5000)
     }
 }
