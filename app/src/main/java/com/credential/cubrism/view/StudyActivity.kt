@@ -36,24 +36,11 @@ class StudyActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // 네비게이션 드로어 메뉴 아이템 선택 시 처리할 리스너 등록
-        binding.navigation.setNavigationItemSelectedListener { menuItem ->
-            // 선택한 메뉴 아이템에 따라 처리
-            when (menuItem.itemId) {
-                R.id.nav_item1 -> {
-                    // 첫 번째 메뉴 아이템 선택 시 수행할 작업
-                    true
-                }
-                R.id.nav_item2 -> {
-                    // 두 번째 메뉴 아이템 선택 시 수행할 작업
-                    true
-                }
-                else -> false
-            }
-        }
-
         navigationInit()
         menuSetUp()
+
+        var count = 5 // 참가자 인원수
+        drawerInit(count)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -86,6 +73,13 @@ class StudyActivity : AppCompatActivity() {
         }
 
         transaction.commit()
+    }
+
+    private fun drawerInit(count: Int) { // 참가자명 drawer에 표시
+        val menu = binding.navigation.menu
+
+        for (i in 1..count) { menu.add(R.id.groupList, Menu.NONE, Menu.NONE, "참가자 $i") }
+        for (i in 1..count) { menu.getItem(i - 1).isEnabled = false }
     }
 
     private fun menuSetUp() { // 상단 프래그먼트 메뉴 이동 버튼 설정

@@ -288,6 +288,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
         if (modifiedData != null) {          // 수정버튼을 호출한 경우 데이터 수정이 이루어지는 코드 작성
             dialogTitle.text = "일정 수정"      // 제목을 "일정 추가" -> "일정 수정"으로 교체
             add.text = "수정"                  // 버튼텍스트를 추가에서 수정으로 교체
+            add.textSize = 18.0f
             fullTime.isChecked = modifiedData.isFullTime // "종일" 항목을 체크하였는지 여부 설정
 
             title.setText(modifiedData.title.toString()) // 수정시킬 데이터를 불러오는 부분

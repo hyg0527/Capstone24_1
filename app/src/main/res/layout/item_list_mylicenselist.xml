@@ -17,6 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="10dp"
         android:shadowColor="@color/blue"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="25dp"
@@ -29,7 +31,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <View
                 android:id="@+id/view"
