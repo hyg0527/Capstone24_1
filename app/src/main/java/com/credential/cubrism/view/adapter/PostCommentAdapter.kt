@@ -1,10 +1,8 @@
 package com.credential.cubrism.view.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,16 +10,19 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListCommentMyBinding
 import com.credential.cubrism.databinding.ItemListCommentOthersBinding
 import com.credential.cubrism.model.dto.Comments
-import com.credential.cubrism.view.CommentDialog
 import com.credential.cubrism.view.diff.PostCommentDiffUtil
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-interface OnReplyClickListener {
+interface PostCommentReplyClickListener {
     fun onReplyClick(nickname: String, commentId: Int)
 }
 
-class PostCommentAdapter(private val context: Context, private val myEmail: String?, private val listener: OnReplyClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+interface PostCommentLongClickListener {
+    fun onLongClick(item: Comments)
+}
+
+class PostCommentAdapter(private val myEmail: String?, private val replyListener: PostCommentReplyClickListener, private val commentListener: PostCommentLongClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
 
     companion object {
@@ -58,7 +59,7 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
 
             binding.layout.setOnLongClickListener {
-                CommentDialog(item).show((context as AppCompatActivity).supportFragmentManager, "comment")
+                commentListener.onLongClick(item)
                 true
             }
         }
@@ -76,7 +77,7 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
 
             binding.imgReplyTo.setOnClickListener {
-                listener.onReplyClick(item.nickname, item.commentId)
+                replyListener.onReplyClick(item.nickname, item.commentId)
             }
         }
     }

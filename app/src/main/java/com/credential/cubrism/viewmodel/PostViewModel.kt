@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.CommentAddDto
 import com.credential.cubrism.model.dto.CommentUpdateDto
-import com.credential.cubrism.model.dto.Comments
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.PostAddDto
@@ -57,9 +56,6 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     private val _isRefreshed = MutableLiveData<Boolean>()
     val isRefreshed: LiveData<Boolean> = _isRefreshed
-
-    private val _clickedItem = MutableLiveData<Pair<Comments, String>>()
-    val clickedItem: LiveData<Pair<Comments, String>> = _clickedItem
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
@@ -173,10 +169,6 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
         postRepository.addReply(replyAddDto) { result ->
             handleResult(result, _addReply, _errorMessage)
         }
-    }
-
-    fun setClickedItem(value: Pair<Comments, String>) {
-        _clickedItem.value = value
     }
 
     fun setLoading(isLoading: Boolean) {

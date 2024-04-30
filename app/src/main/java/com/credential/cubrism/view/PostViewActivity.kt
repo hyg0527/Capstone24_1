@@ -15,36 +15,46 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityPostViewBinding
+import com.credential.cubrism.databinding.DialogMenuBinding
 import com.credential.cubrism.model.dto.CommentAddDto
 import com.credential.cubrism.model.dto.CommentUpdateDto
+import com.credential.cubrism.model.dto.Comments
+import com.credential.cubrism.model.dto.MenuDto
 import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.repository.PostRepository
-import com.credential.cubrism.view.adapter.OnReplyClickListener
+import com.credential.cubrism.view.adapter.MenuAdapter
 import com.credential.cubrism.view.adapter.PostCommentAdapter
+import com.credential.cubrism.view.adapter.PostCommentLongClickListener
+import com.credential.cubrism.view.adapter.PostCommentReplyClickListener
 import com.credential.cubrism.view.adapter.PostImageAdapter
 import com.credential.cubrism.view.utils.CommentState
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
 
-class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
+class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, PostCommentLongClickListener {
     private val binding by lazy { ActivityPostViewBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
     private lateinit var postCommentAdapter : PostCommentAdapter
     private val postImageAdapter = PostImageAdapter()
-    private lateinit var powerMenu : PowerMenu
+    private val menuAdapter = MenuAdapter()
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
     private val myEmail by lazy { intent.getStringExtra("myEmail") }
     private val imm by lazy { getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager }
 
+    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private lateinit var powerMenu : PowerMenu
+
     private var commentState = CommentState.ADD
-    private var commentId = -1
+    private var commentId: Int? = null
+    private var comment: String? = null
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -71,6 +81,7 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         setupToolbar()
+        setupBottomSheetDialog()
         setupRecyclerView()
         setupView()
         observeViewModel()
@@ -89,6 +100,12 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
     }
 
+    override fun onLongClick(item: Comments) {
+        commentId = item.commentId
+        comment = item.content
+        bottomSheetDialog.show()
+    }
+
     private fun setupToolbar() {
         binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
@@ -96,8 +113,59 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
+    private fun setupBottomSheetDialog() {
+        val bottomSheetBinding = DialogMenuBinding.inflate(layoutInflater)
+        bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+        val menuList: List<MenuDto> = listOf(
+            MenuDto(R.drawable.icon_edit2, "수정하기"),
+            MenuDto(R.drawable.icon_delete2, "삭제하기")
+        )
+
+        menuAdapter.setItemList(menuList)
+
+        bottomSheetBinding.recyclerView.apply {
+            adapter = menuAdapter
+            itemAnimator = null
+            setHasFixedSize(true)
+        }
+
+        menuAdapter.setOnItemClickListener { item, _ ->
+            when (item.text) {
+                "수정하기" -> {
+                    commentState = CommentState.UPDATE
+                    binding.editComment.setText(comment)
+                    binding.editComment.text?.length?.let { selection ->
+                        binding.editComment.setSelection(selection)
+                    }
+                    binding.editComment.post {
+                        if (binding.editComment.isEnabled) {
+                            binding.editComment.requestFocus()
+                            imm.showSoftInput(binding.editComment, 0)
+                        }
+                    }
+                }
+                "삭제하기" -> {
+                    AlertDialog.Builder(this).apply {
+                        setTitle("댓글 삭제")
+                        setMessage("댓글을 삭제하시겠습니까?")
+                        setNegativeButton("취소", null)
+                        setPositiveButton("삭제") { _, _ ->
+                            commentId?.let {
+                                postViewModel.deleteComment(it)
+                            }
+                        }
+                        show()
+                    }
+                }
+            }
+            bottomSheetDialog.dismiss()
+        }
+    }
+
     private fun setupRecyclerView() {
-        postCommentAdapter = PostCommentAdapter(this@PostViewActivity, myEmail, this)
+        postCommentAdapter = PostCommentAdapter(myEmail, this, this)
         binding.recyclerComment.apply {
             adapter = postCommentAdapter
             itemAnimator = null
@@ -172,12 +240,14 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
             when (commentState) {
                 CommentState.ADD -> postViewModel.addComment(CommentAddDto(postId, binding.editComment.text.toString()))
                 CommentState.UPDATE -> {
-                    if (commentId != -1)
-                         postViewModel.updateComment(commentId, CommentUpdateDto(binding.editComment.text.toString()))
+                    commentId?.let {
+                        postViewModel.updateComment(it, CommentUpdateDto(binding.editComment.text.toString()))
+                    }
                 }
                 CommentState.REPLY -> {
-                    if (commentId != -1)
-                        postViewModel.addReply(ReplyAddDto(postId, commentId, binding.editComment.text.toString()))
+                    commentId?.let {
+                        postViewModel.addReply(ReplyAddDto(postId, it, binding.editComment.text.toString()))
+                    }
                 }
             }
 
@@ -228,28 +298,6 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
 
             addReply.observe(this@PostViewActivity) {
                 getPostView()
-            }
-
-            clickedItem.observe(this@PostViewActivity) {
-                commentId = it.first.commentId
-                when (it.second) {
-                    "수정" -> {
-                        commentState = CommentState.UPDATE
-                        binding.editComment.setText(it.first.content)
-                        binding.editComment.text?.length?.let { selection ->
-                            binding.editComment.setSelection(selection)
-                        }
-                        binding.editComment.post {
-                            if (binding.editComment.isEnabled) {
-                                binding.editComment.requestFocus()
-                                imm.showSoftInput(binding.editComment, 0)
-                            }
-                        }
-                    }
-                    "삭제" -> {
-                        postViewModel.deleteComment(commentId)
-                    }
-                }
             }
 
             errorMessage.observe(this@PostViewActivity) {
