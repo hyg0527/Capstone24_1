@@ -68,12 +68,6 @@ class PostMyAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
         fun bind(item: PostMyList) {
-            Glide.with(binding.root).load(item.profileImage)
-                .error(R.drawable.profile)
-                .fallback(R.drawable.profile)
-                .dontAnimate()
-                .into(binding.imgProfile)
-
             Glide.with(binding.root).apply {
                 load(item.profileImage)
                     .error(R.drawable.profile)
