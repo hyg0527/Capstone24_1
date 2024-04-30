@@ -193,8 +193,8 @@ class PostViewActivity : AppCompatActivity(), OnReplyClickListener {
         postViewModel.apply {
             postView.observe(this@PostViewActivity) { result ->
                 Glide.with(this@PostViewActivity).load(result.profileImageUrl)
-                    .error(R.drawable.profil_image)
-                    .fallback(R.drawable.profil_image)
+                    .error(R.drawable.profile_blue)
+                    .fallback(R.drawable.profile_blue)
                     .dontAnimate()
                     .into(binding.imgProfile)
                 binding.txtNickname.text = "  ${result.nickname}  "

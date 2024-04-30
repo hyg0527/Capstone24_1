@@ -74,8 +74,8 @@ class StudyInfoActivity : AppCompatActivity() {
         studyGroupViewModel.apply {
             studyGroupInfo.observe(this@StudyInfoActivity) { group ->
                 Glide.with(this@StudyInfoActivity).load(group.adminProfileImage)
-                    .error(R.drawable.profile)
-                    .fallback(R.drawable.profile)
+                    .error(R.drawable.profile_skyblue)
+                    .fallback(R.drawable.profile_skyblue)
                     .dontAnimate()
                     .into(binding.imgProfile)
                 binding.txtNickname.text = "  ${group.groupAdmin}  "
