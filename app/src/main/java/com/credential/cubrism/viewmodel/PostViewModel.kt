@@ -112,12 +112,17 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
         }
     }
 
-    fun getMyPostList(page: Int, limit: Int) {
+    fun getMyPostList(page: Int, limit: Int, refresh: Boolean = false) {
         postRepository.getMyPostList(page, limit) { result ->
             when (result) {
                 is ResultUtil.Success -> {
-                    setLoading(true)
-                    _myPostList.postValue(_myPostList.value.orEmpty() + result.data.postList)
+                    if (refresh) {
+                        _myPostList.postValue(result.data.postList)
+                    } else {
+                        setLoading(true)
+                        _myPostList.postValue(_myPostList.value.orEmpty() + result.data.postList)
+                    }
+
                     _page.postValue(result.data.page)
                 }
                 is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }

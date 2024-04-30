@@ -1,11 +1,14 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +42,12 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
     private var myEmail: String? = null
     private var postId: Int? = null
 
+    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            postViewModel.getMyPostList(0, 10, true)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -48,7 +57,7 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
         setupRecyclerView()
         observeViewModel()
 
-        postViewModel.getMyPostList(0, 10)
+        postViewModel.getMyPostList(0, 10, true)
     }
 
     override fun onMenuClick(postId: Int) {
@@ -84,12 +93,25 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
         menuAdapter.setOnItemClickListener { item, _ ->
             when (item.text) {
                 "수정하기" -> {
-
+                    postId?.let {
+                        val intent = Intent(this, PostUpdateActivity::class.java)
+                        intent.putExtra("postId", it)
+                        startForRegisterResult.launch(intent)
+                    }
                 }
                 "삭제하기" -> {
-
+                    AlertDialog.Builder(this).apply {
+                        setTitle("게시글 삭제")
+                        setMessage("게시글을 삭제하시겠습니까?")
+                        setNegativeButton("취소", null)
+                        setPositiveButton("삭제") { _, _ ->
+                            postId?.let { postViewModel.deletePost(it) }
+                        }
+                        show()
+                    }
                 }
             }
+            bottomSheetDialog.dismiss()
         }
     }
 
@@ -136,6 +158,10 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
                     postMyAdapter.setItemList(it)
                 }
                 setLoading(false)
+            }
+
+            deletePost.observe(this@MyPagePostActivity) {
+                postViewModel.getMyPostList(0, 10, true)
             }
 
             isLoading.observe(this@MyPagePostActivity) {
