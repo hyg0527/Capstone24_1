@@ -11,33 +11,49 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMypageMypostBinding
+import com.credential.cubrism.databinding.DialogMenuBinding
+import com.credential.cubrism.model.dto.MenuDto
 import com.credential.cubrism.model.repository.PostRepository
+import com.credential.cubrism.view.adapter.MenuAdapter
+import com.credential.cubrism.view.adapter.PostMenuClickListener
 import com.credential.cubrism.view.adapter.PostMyAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class MyPagePostActivity : AppCompatActivity() {
+class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
     private val binding by lazy { ActivityMypageMypostBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
-    private val postMyAdapter = PostMyAdapter()
+    private lateinit var postMyAdapter : PostMyAdapter
+    private val menuAdapter = MenuAdapter()
+
+    private lateinit var bottomSheetDialog: BottomSheetDialog
 
     private var loadingState = false
     private var myEmail: String? = null
+    private var postId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         setupToolbar()
+        setupBottomSheetDialog()
         setupRecyclerView()
         observeViewModel()
 
         postViewModel.getMyPostList(0, 10)
+    }
+
+    override fun onMenuClick(postId: Int) {
+        this.postId = postId
+        bottomSheetDialog.show()
     }
 
     private fun setupToolbar() {
@@ -46,8 +62,40 @@ class MyPagePostActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
+    
+    private fun setupBottomSheetDialog() {
+        val bottomSheetBinding = DialogMenuBinding.inflate(layoutInflater)
+        bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+        
+        val menuList: List<MenuDto> = listOf(
+            MenuDto(R.drawable.icon_edit2, "수정하기"),
+            MenuDto(R.drawable.icon_delete2, "삭제하기")
+        )
+
+        menuAdapter.setItemList(menuList)
+
+        bottomSheetBinding.recyclerView.apply {
+            adapter = menuAdapter
+            itemAnimator = null
+            setHasFixedSize(true)
+        }
+
+        menuAdapter.setOnItemClickListener { item, _ ->
+            when (item.text) {
+                "수정하기" -> {
+
+                }
+                "삭제하기" -> {
+
+                }
+            }
+        }
+    }
 
     private fun setupRecyclerView() {
+        postMyAdapter = PostMyAdapter(this)
+
         binding.recyclerView.apply {
             adapter = postMyAdapter
             itemAnimator = null

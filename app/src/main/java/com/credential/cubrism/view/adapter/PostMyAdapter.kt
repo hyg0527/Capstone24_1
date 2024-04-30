@@ -13,7 +13,11 @@ import com.credential.cubrism.model.dto.PostMyList
 import com.credential.cubrism.view.diff.PostMyDiffUtil
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
-class PostMyAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+interface PostMenuClickListener {
+    fun onMenuClick(postId: Int)
+}
+
+class PostMyAdapter(private val listener: PostMenuClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<PostMyList>()
     private var onItemClickListener: ((PostMyList, Int) -> Unit)? = null
 
@@ -86,6 +90,10 @@ class PostMyAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.txtDate.text = item.createdDate
             binding.txtCommentCount.text = item.commentCount.toString()
             postImageAdapter.setItemList(item.images)
+
+            binding.imgMenu.setOnClickListener {
+                listener.onMenuClick(item.postId)
+            }
         }
     }
 
@@ -104,6 +112,10 @@ class PostMyAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         itemList.clear()
         itemList.addAll(list)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun getItemList(): List<PostMyList> {
+        return itemList
     }
 
     fun setLoading(isLoading: Boolean) {
