@@ -5,6 +5,7 @@ import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
+import com.credential.cubrism.model.dto.PostMyListDto
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.dto.ReplyAddDto
@@ -44,11 +45,11 @@ interface PostApi {
     ): Call<PostListDto>
 
     // 내 게시글 목록
-//    @GET("/posts/my")
-//    fun getMyPostList(
-//        @Query("page") page: Int,
-//        @Query("limit") limit: Int
-//    ): Call<PostListDto>
+    @GET("/posts/my")
+    fun getMyPostList(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Call<PostMyListDto>
 
     // 관심 자격증 게시글 목록
     @GET("/posts/favorites")

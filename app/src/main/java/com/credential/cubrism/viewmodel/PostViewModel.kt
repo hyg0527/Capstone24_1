@@ -10,6 +10,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostList
+import com.credential.cubrism.model.dto.PostMyList
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.dto.ReplyAddDto
@@ -35,6 +36,9 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     private val _postList = MutableLiveData<List<PostList>>()
     val postList: LiveData<List<PostList>> = _postList
+
+    private val _myPostList = MutableLiveData<List<PostMyList>>()
+    val myPostList: LiveData<List<PostMyList>> = _myPostList
 
     private val _addComment = MutableLiveData<MessageDto>()
     val addComment: LiveData<MessageDto> = _addComment
@@ -100,6 +104,20 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
                         setLoading(true)
                         _postList.postValue(_postList.value.orEmpty() + result.data.postList)
                     }
+                    _page.postValue(result.data.page)
+                }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
+            }
+        }
+    }
+
+    fun getMyPostList(page: Int, limit: Int) {
+        postRepository.getMyPostList(page, limit) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    setLoading(true)
+                    _myPostList.postValue(_myPostList.value.orEmpty() + result.data.postList)
                     _page.postValue(result.data.page)
                 }
                 is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }

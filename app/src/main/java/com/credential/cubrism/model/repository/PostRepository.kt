@@ -6,6 +6,7 @@ import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
+import com.credential.cubrism.model.dto.PostMyListDto
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.dto.ReplyAddDto
@@ -95,6 +96,22 @@ class PostRepository {
             }
 
             override fun onFailure(call: Call<PostListDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun getMyPostList(page: Int, limit: Int, callback: (ResultUtil<PostMyListDto>) -> Unit) {
+        postApiAuth.getMyPostList(page, limit).enqueue(object : Callback<PostMyListDto> {
+            override fun onResponse(call: Call<PostMyListDto>, response: Response<PostMyListDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<PostMyListDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })
