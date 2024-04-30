@@ -1,10 +1,13 @@
 package com.credential.cubrism.view.adapter
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.credential.cubrism.databinding.ItemListPostImageBinding
 import com.credential.cubrism.view.diff.StringListDiffUtil
 
@@ -35,7 +38,12 @@ class PostImageAdapter : RecyclerView.Adapter<PostImageAdapter.ViewHolder>() {
         }
 
         fun bind(item: String) {
-            Glide.with(binding.root).load(item).into(binding.imgPhoto)
+            Glide.with(binding.root)
+                .load(item)
+                .placeholder(ColorDrawable(Color.TRANSPARENT))
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .sizeMultiplier(0.7f)
+                .into(binding.imgPhoto)
         }
     }
 
