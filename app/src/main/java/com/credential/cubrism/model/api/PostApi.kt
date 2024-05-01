@@ -5,8 +5,10 @@ import com.credential.cubrism.model.dto.CommentUpdateDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostListDto
+import com.credential.cubrism.model.dto.PostMyListDto
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
+import com.credential.cubrism.model.dto.ReplyAddDto
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -43,11 +45,11 @@ interface PostApi {
     ): Call<PostListDto>
 
     // 내 게시글 목록
-//    @GET("/posts/my")
-//    fun getMyPostList(
-//        @Query("page") page: Int,
-//        @Query("limit") limit: Int
-//    ): Call<PostListDto>
+    @GET("/posts/my")
+    fun getMyPostList(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Call<PostMyListDto>
 
     // 관심 자격증 게시글 목록
     @GET("/posts/favorites")
@@ -70,14 +72,6 @@ interface PostApi {
     fun updateComment(@Path("commentId") commentId: Int, @Body commentUpdateDto: CommentUpdateDto): Call<MessageDto>
 
     // 대댓글 추가
-//    @POST("/reply")
-//    fun addReply(@Body replyAddDto: ReplyAddDto): Call<MessageDto>
-
-    // 대댓글 삭제
-//    @DELETE("/reply/{replyId}")
-//    fun deleteReply(@Path("replyId") replyId: Int): Call<MessageDto>
-
-    // 대댓글 수정
-//    @PUT("/reply/{replyId}")
-//    fun updateReply(@Path("replyId") replyId: Int, @Body replyUpdateDto: ReplyUpdateDto): Call<MessageDto>
+    @POST("/reply")
+    fun addReply(@Body replyAddDto: ReplyAddDto): Call<MessageDto>
 }

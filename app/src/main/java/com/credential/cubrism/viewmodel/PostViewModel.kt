@@ -10,8 +10,10 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.PostAddDto
 import com.credential.cubrism.model.dto.PostList
+import com.credential.cubrism.model.dto.PostMyList
 import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
+import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -35,6 +37,9 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _postList = MutableLiveData<List<PostList>>()
     val postList: LiveData<List<PostList>> = _postList
 
+    private val _myPostList = MutableLiveData<List<PostMyList>>()
+    val myPostList: LiveData<List<PostMyList>> = _myPostList
+
     private val _addComment = MutableLiveData<MessageDto>()
     val addComment: LiveData<MessageDto> = _addComment
 
@@ -43,6 +48,9 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     private val _updateComment = MutableLiveData<MessageDto>()
     val updateComment: LiveData<MessageDto> = _updateComment
+
+    private val _addReply = MutableLiveData<MessageDto>()
+    val addReply: LiveData<MessageDto> = _addReply
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -104,6 +112,20 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
         }
     }
 
+    fun getMyPostList(page: Int, limit: Int) {
+        postRepository.getMyPostList(page, limit) { result ->
+            when (result) {
+                is ResultUtil.Success -> {
+                    setLoading(true)
+                    _myPostList.postValue(_myPostList.value.orEmpty() + result.data.postList)
+                    _page.postValue(result.data.page)
+                }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
+            }
+        }
+    }
+
     fun getFavoritePostList(boardId: Int, page: Int, limit: Int, refresh: Boolean = false) {
         postRepository.getFavoritePostList(boardId, page, limit) { result ->
             _isRefreshed.value = refresh
@@ -139,6 +161,12 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto) {
         postRepository.updateComment(commentId, commentUpdateDto) { result ->
             handleResult(result, _updateComment, _errorMessage)
+        }
+    }
+
+    fun addReply(replyAddDto: ReplyAddDto) {
+        postRepository.addReply(replyAddDto) { result ->
+            handleResult(result, _addReply, _errorMessage)
         }
     }
 

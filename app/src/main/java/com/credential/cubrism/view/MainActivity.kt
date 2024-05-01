@@ -1,27 +1,39 @@
 package com.credential.cubrism.view
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
-import com.credential.cubrism.model.repository.UserRepository
+import com.credential.cubrism.model.dto.FcmTokenDto
+import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.repository.FcmRepository
 import com.credential.cubrism.view.utils.FragmentType
-import com.credential.cubrism.viewmodel.DataStoreViewModel
+import com.credential.cubrism.viewmodel.AuthViewModel
+import com.credential.cubrism.viewmodel.FcmViewModel
 import com.credential.cubrism.viewmodel.MainViewModel
-import com.credential.cubrism.viewmodel.UserViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val mainViewModel: MainViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels { ViewModelFactory(UserRepository()) }
-    private val dataStoreViewModel: DataStoreViewModel by viewModels { ViewModelFactory(MyApplication.getInstance().getDataStoreRepository()) }
+    private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
+    private val fcmViewModel: FcmViewModel by viewModels { ViewModelFactory(FcmRepository()) }
+
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private var backPressedTime: Long = 0
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -35,13 +47,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        private const val POST_NOTIFICATIONS_CODE = 0
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        checkPermission()
+
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-        userViewModel.getUserInfo()
+        authViewModel.getUserInfo()
 
         if (savedInstanceState == null) { setupFragment() }
         setupBottomNav()
@@ -62,12 +80,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        userViewModel.userInfo.observe(this) { user ->
-            user?.let {
-                dataStoreViewModel.saveEmail(it.email)
-                dataStoreViewModel.saveNickname(it.nickname)
-                it.profileImage?.let { image ->
-                    dataStoreViewModel.saveProfileImage(image)
+        // 서버에서 유저 정보를 가져오면
+        authViewModel.getUserInfo.observe(this) { user ->
+            lifecycleScope.launch {
+                // DataStore에 유저 정보를 저장
+                dataStore.apply {
+                    saveEmail(user.email)
+                    saveNickname(user.nickname)
+                    saveProfileImage(user.profileImage ?: "")
+
+                    // 서버로 FCM 토큰 전송
+                    getFcmToken().first()?.let { token ->
+                        fcmViewModel.updateFcmToken(FcmTokenDto(token))
+                    }
                 }
             }
         }
@@ -75,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.currentFragmentType.observe(this) { fragmentType ->
             binding.bottomNavigationView.show(fragmentType.ordinal + 1, true)
 
+            // 선택한 Fragment만 보여주고 나머지는 숨김 처리
             val currentFragment = supportFragmentManager.findFragmentByTag(fragmentType.tag)
             supportFragmentManager.beginTransaction().apply {
                 supportFragmentManager.fragments.forEach { fragment ->
@@ -88,12 +114,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFragment() {
+        // Fragment 초기화
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.fragmentContainerView, HomeFragment(), FragmentType.HOME.tag)
-            add(R.id.fragmentContainerView, StudyFragment(), FragmentType.STUDY.tag)
-            add(R.id.fragmentContainerView, CalFragment(), FragmentType.CALENDAR.tag)
-            add(R.id.fragmentContainerView, QualificationFragment(), FragmentType.QUALIFICATION.tag)
+            add(binding.fragmentContainerView.id, HomeFragment(), FragmentType.HOME.tag)
+            add(binding.fragmentContainerView.id, StudyFragment(), FragmentType.STUDY.tag)
+            add(binding.fragmentContainerView.id, CalFragment(), FragmentType.CALENDAR.tag)
+            add(binding.fragmentContainerView.id, QualificationFragment(), FragmentType.QUALIFICATION.tag)
             commit()
+        }
+    }
+
+    private fun checkPermission() {
+        // 알림 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && PackageManager.PERMISSION_DENIED == ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), POST_NOTIFICATIONS_CODE)
         }
     }
 }

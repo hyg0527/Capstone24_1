@@ -4,6 +4,7 @@ import android.util.Log
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
+import com.credential.cubrism.model.repository.NotiRepository
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import kotlinx.coroutines.flow.first
@@ -16,7 +17,8 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private val dataStoreRepository = MyApplication.getInstance().getDataStoreRepository()
+private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+private val notificationRepository = NotiRepository(MyApplication.getInstance().getNotiDao())
 
 object RetrofitClient {
     private var retrofit: Retrofit? = null
@@ -60,7 +62,7 @@ object RetrofitClient {
 class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val accessToken = runBlocking {
-            dataStoreRepository.getAccessToken().first()
+            dataStore.getAccessToken().first()
         }
 
         Log.d("테스트", "[RequestInterceptor] AccessToken: $accessToken")
@@ -92,8 +94,8 @@ class ResponseInterceptor : Interceptor {
             // AccessToken이 만료되었을 경우
             if (errorMessage == "JWT 토큰이 만료되었습니다.") {
                 // DataStore에서 AccessToken과 RefreshToken을 가져옴
-                val accessToken = runBlocking { dataStoreRepository.getAccessToken().first() }
-                val refreshToken = runBlocking { dataStoreRepository.getRefreshToken().first() }
+                val accessToken = runBlocking { dataStore.getAccessToken().first() }
+                val refreshToken = runBlocking { dataStore.getRefreshToken().first() }
 
                 Log.d("테스트", "[ResponseInterceptor] AccessToken: $accessToken")
                 Log.d("테스트", "[ResponseInterceptor] RefreshToken: $refreshToken")
@@ -106,7 +108,7 @@ class ResponseInterceptor : Interceptor {
                         response.body()?.accessToken?.let { newAccessToken ->
                             Log.d("테스트", "[ResponseInterceptor] New AccessToken: $newAccessToken")
                             runBlocking {
-                                dataStoreRepository.saveAccessToken(newAccessToken)
+                                dataStore.saveAccessToken(newAccessToken)
                             }
 
                             val newRequest = chain.request().newBuilder()
@@ -123,13 +125,16 @@ class ResponseInterceptor : Interceptor {
 
                         runBlocking {
                             // DataStore에 저장된 AccessToken과 RefreshToken을 삭제
-                            dataStoreRepository.deleteAccessToken()
-                            dataStoreRepository.deleteRefreshToken()
+                            dataStore.deleteAccessToken()
+                            dataStore.deleteRefreshToken()
 
                             // DataStore에 저장되어 있는 유저 정보를 삭제
-                            dataStoreRepository.deleteEmail()
-                            dataStoreRepository.deleteNickname()
-                            dataStoreRepository.deleteProfileImage()
+                            dataStore.deleteEmail()
+                            dataStore.deleteNickname()
+                            dataStore.deleteProfileImage()
+
+                            // Room에 저장된 알림 삭제
+                            notificationRepository.deleteAllNoties()
                         }
                     }
                 }

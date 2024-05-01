@@ -1,11 +1,9 @@
 package com.credential.cubrism.model.repository
 
-import com.credential.cubrism.MyApplication
+import com.credential.cubrism.model.data.DataStoreModule
 import kotlinx.coroutines.flow.Flow
 
-class DataStoreRepository {
-    private val dataStore = MyApplication.getInstance().getDataStore()
-
+class DataStoreRepository(private val dataStore: DataStoreModule) {
     suspend fun saveAccessToken(token: String) {
         dataStore.saveAccessToken(token)
     }
@@ -28,6 +26,18 @@ class DataStoreRepository {
 
     fun getRefreshToken(): Flow<String?> {
         return dataStore.getRefreshToken()
+    }
+
+    suspend fun saveFcmToken(token: String) {
+        dataStore.saveFcmToken(token)
+    }
+
+    fun getFcmToken(): Flow<String?> {
+        return dataStore.getFcmToken()
+    }
+
+    suspend fun deleteFcmToken() {
+        dataStore.deleteFcmToken()
     }
 
     suspend fun saveEmail(email: String) {

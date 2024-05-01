@@ -1,19 +1,20 @@
 package com.credential.cubrism.view
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.BuildConfig
-import com.credential.cubrism.model.repository.AuthRepository
-import com.credential.cubrism.model.utils.ResultUtil
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivitySigninBinding
 import com.credential.cubrism.model.dto.SocialTokenDto
-import com.credential.cubrism.model.repository.DataStoreRepository
+import com.credential.cubrism.model.dto.TokenDto
+import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
-import com.credential.cubrism.viewmodel.DataStoreViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -21,12 +22,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.launch
 
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val dataStoreViewModel: DataStoreViewModel by viewModels { ViewModelFactory(DataStoreRepository()) }
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
+    // 구글 로그인 실행
     private val googleAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         try {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -37,91 +40,74 @@ class SignInActivity : AppCompatActivity() {
         } catch (_: ApiException) { }
     }
 
+    // 회원가입 후 해당 계정으로 로그인
+    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val email = data?.getStringExtra("email") ?: ""
+            val password = data?.getStringExtra("password") ?: ""
+
+            signIn(email, password)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModelObserver()
+        setupView()
+        observeViewModel()
+    }
 
-        binding.closeBtn.setOnClickListener {
+    private fun setupView() {
+        binding.btnClose.setOnClickListener {
             finish()
         }
 
-        binding.loginButton.setOnClickListener {
-            signIn()
+        binding.btnSignIn.setOnClickListener {
+            val email = binding.editEmail.text.toString()
+            val password = binding.editPassword.text.toString()
+
+            signIn(email, password)
         }
 
-        binding.googleSymbol.setOnClickListener {
+        binding.imgGoogle.setOnClickListener {
             val googleSignInClient = getGoogleClient()
             val signInIntent = googleSignInClient.signInIntent
             googleAuthLauncher.launch(signInIntent)
         }
 
-        binding.kakaoSymbol.setOnClickListener {
+        binding.imgKakao.setOnClickListener {
             kakaoLogin()
         }
 
-        binding.signUp2.setOnClickListener {
+        binding.txtSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
+            startForRegisterResult.launch(intent)
         }
 
-        binding.forgotEmail.setOnClickListener {
+        binding.txtForgotPassword.setOnClickListener {
             startActivity(Intent(this, PWFindActivity::class.java))
         }
     }
 
-    private fun viewModelObserver() {
-        authViewModel.signIn.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> {
-                    val accessToken = result.data.accessToken
-                    val refreshToken = result.data.refreshToken
-
-                    if (accessToken != null && refreshToken != null)
-                        signInSuccess(accessToken, refreshToken)
-                }
-                is ResultUtil.Error -> {
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                }
-                is ResultUtil.NetworkError -> {
-                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
-                }
+    private fun observeViewModel() {
+        authViewModel.apply {
+            signIn.observe(this@SignInActivity) {
+                signInSuccess(it)
             }
-        }
 
-        authViewModel.googleSignIn.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> {
-                    val accessToken = result.data.accessToken
-                    val refreshToken = result.data.refreshToken
-
-                    if (accessToken != null && refreshToken != null)
-                        signInSuccess(accessToken, refreshToken)
-                }
-                is ResultUtil.Error -> {
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                }
-                is ResultUtil.NetworkError -> {
-                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
-                }
+            googleLogIn.observe(this@SignInActivity) {
+                signInSuccess(it)
             }
-        }
 
-        authViewModel.kakaoSignIn.observe(this) { result ->
-            when (result) {
-                is ResultUtil.Success -> {
-                    val accessToken = result.data.accessToken
-                    val refreshToken = result.data.refreshToken
+            kakaoLogIn.observe(this@SignInActivity) {
+                signInSuccess(it)
+            }
 
-                    if (accessToken != null && refreshToken != null)
-                        signInSuccess(accessToken, refreshToken)
-                }
-                is ResultUtil.Error -> {
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                }
-                is ResultUtil.NetworkError -> {
-                    Toast.makeText(this, result.networkError, Toast.LENGTH_SHORT).show()
+            errorMessage.observe(this@SignInActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@SignInActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -137,10 +123,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     // 이메일 로그인
-    private fun signIn() {
-        val email = binding.loginEmail.text.toString()
-        val password = binding.loginPassword.text.toString()
-
+    private fun signIn(email: String, password: String) {
         authViewModel.signIn(email, password)
     }
 
@@ -171,9 +154,14 @@ class SignInActivity : AppCompatActivity() {
     }
 
     // 로그인 성공
-    private fun signInSuccess(accessToken: String, refreshToken: String) {
-        dataStoreViewModel.saveAccessToken(accessToken)
-        dataStoreViewModel.saveRefreshToken(refreshToken)
-        setResult(RESULT_OK).also { finish() }
+    private fun signInSuccess(dto : TokenDto) {
+        if (dto.accessToken != null && dto.refreshToken != null) {
+            lifecycleScope.launch {
+                dataStore.saveAccessToken(dto.accessToken)
+                dataStore.saveRefreshToken(dto.refreshToken)
+
+                setResult(RESULT_OK).also { finish() }
+            }
+        }
     }
 }

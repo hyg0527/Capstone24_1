@@ -9,5 +9,6 @@ data class StudyGroupInfoDto(
     val currentMembers: Int,
     val maxMembers: Int,
     val tags: List<String>,
+    val members: List<String>,
     val recruiting: Boolean
 )

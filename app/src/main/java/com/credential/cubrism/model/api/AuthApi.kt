@@ -57,6 +57,9 @@ interface AuthApi {
     @POST("/auth/signup/email/verify")
     fun emailVerify(@Body emailVerifyDto: EmailVerifyDto): Call<MessageDto>
 
+    @POST("/auth/users/password")
+    fun resetPassword(@Body emailVerifyRequestDto: EmailVerifyRequestDto): Call<MessageDto>
+
     // Access Token 재발급
     @POST("/auth/token/access")
     fun reissueAccessToken(@Header("AccessToken") accessToken: String, @Header("RefreshToken") refreshToken: String): Call<TokenDto>

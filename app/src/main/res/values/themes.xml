@@ -5,6 +5,7 @@
         <item name="colorPrimaryDark">@color/blue</item>
         <item name="colorAccent">@color/lightblue</item>
         <item name="colorSurface">@color/white</item>
+        <item name="colorOutlineVariant">@color/lightblue</item>
 
         <item name="android:colorBackground">@color/white</item>
 
@@ -41,6 +42,11 @@
         <item name="android:textColor">@color/blue</item>
         <item name="android:textSize">20dp</item>
         <item name="android:fontFamily">@font/godom</item>
+    </style>
+
+    <style name="StyleToolbar.Photo" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/blue</item>
+        <item name="homeAsUpIndicator">@drawable/icon_close_white</item>
     </style>
 
     <style name="StyleTabLayout" parent="TextAppearance.Design.Tab">

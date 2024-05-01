@@ -1,9 +1,9 @@
 package com.credential.cubrism.view.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.credential.cubrism.model.dto.MyPageDto
+import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 
-class MyPageDiffUtil(private val oldList: List<MyPageDto>, private val newList: List<MyPageDto>) : DiffUtil.Callback() {
+class StudyGroupJoinDiffUtil(private val oldList: List<StudyGroupJoinListDto>, private val newList: List<StudyGroupJoinListDto>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }
@@ -13,7 +13,7 @@ class MyPageDiffUtil(private val oldList: List<MyPageDto>, private val newList: 
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].title == newList[newItemPosition].title
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

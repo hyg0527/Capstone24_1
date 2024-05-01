@@ -1,13 +1,18 @@
 package com.credential.cubrism
 
 import android.app.Application
+import androidx.room.Room
+import com.credential.cubrism.model.dao.NotiDao
 import com.credential.cubrism.model.data.DataStoreModule
+import com.credential.cubrism.model.database.NotiDatabase
 import com.credential.cubrism.model.repository.DataStoreRepository
 import com.kakao.sdk.common.KakaoSdk
 
 class MyApplication : Application() {
-    private lateinit var dataStore: DataStoreModule
+    private lateinit var dataStoreModule: DataStoreModule
     private lateinit var dataStoreRepository: DataStoreRepository
+
+    private lateinit var notiDatabase: NotiDatabase
 
     companion object {
         private lateinit var myApplication: MyApplication
@@ -16,13 +21,18 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         myApplication = this
-        dataStore = DataStoreModule(this)
-        dataStoreRepository = DataStoreRepository()
+
+        dataStoreModule = DataStoreModule(this)
+        dataStoreRepository = DataStoreRepository(dataStoreModule)
+
+        notiDatabase = Room.databaseBuilder(applicationContext, NotiDatabase::class.java, "Cubrism").build()
+
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
     }
 
-    fun getDataStore(): DataStoreModule = dataStore
-
     fun getDataStoreRepository(): DataStoreRepository = dataStoreRepository
+
+    fun getNotiDao(): NotiDao = notiDatabase.notiDao()
 }

@@ -3,11 +3,13 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.credential.cubrism.model.dto.EmailVerifyRequestDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
+import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -22,20 +24,26 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _emailVerify = MutableLiveData<ResultUtil<MessageDto>>()
     val emailVerify: LiveData<ResultUtil<MessageDto>> = _emailVerify
 
-    private val _signIn = MutableLiveData<ResultUtil<TokenDto>>()
-    val signIn: LiveData<ResultUtil<TokenDto>> = _signIn
+    private val _signIn = MutableLiveData<TokenDto>()
+    val signIn: LiveData<TokenDto> = _signIn
 
-    private val _googleSignIn = MutableLiveData<ResultUtil<TokenDto>>()
-    val googleSignIn: LiveData<ResultUtil<TokenDto>> = _googleSignIn
+    private val _googleLogIn = MutableLiveData<TokenDto>()
+    val googleLogIn: LiveData<TokenDto> = _googleLogIn
 
-    private val _kakaoSignIn = MutableLiveData<ResultUtil<TokenDto>>()
-    val kakaoSignIn: LiveData<ResultUtil<TokenDto>> = _kakaoSignIn
+    private val _kakaoLogIn = MutableLiveData<TokenDto>()
+    val kakaoLogIn: LiveData<TokenDto> = _kakaoLogIn
 
-    private val _logOut = MutableLiveData<ResultUtil<MessageDto>>()
-    val logOut: LiveData<ResultUtil<MessageDto>> = _logOut
+    private val _logOut = MutableLiveData<MessageDto>()
+    val logOut: LiveData<MessageDto> = _logOut
+
+    private val _getUserInfo = MutableLiveData<UserInfoDto>()
+    val getUserInfo: LiveData<UserInfoDto> = _getUserInfo
 
     private val _editUserInfo = MutableLiveData<MessageDto>()
     val editUserInfo: LiveData<MessageDto> = _editUserInfo
+
+    private val _resetPassword = MutableLiveData<MessageDto>()
+    val resetPassword: LiveData<MessageDto> = _resetPassword
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
@@ -60,31 +68,43 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     fun signIn(email: String, password: String) {
         authRepository.signIn(SignInDto(email, password)) { result ->
-            _signIn.postValue(result)
+            handleResult(result, _signIn, _errorMessage)
         }
     }
 
     fun googleSignIn(socialTokenDto: SocialTokenDto) {
         authRepository.googleLogin(socialTokenDto) { result ->
-            _googleSignIn.postValue(result)
+            handleResult(result, _googleLogIn, _errorMessage)
         }
     }
 
     fun kakaoSignIn(socialTokenDto: SocialTokenDto) {
         authRepository.kakaoLogin(socialTokenDto) { result ->
-            _kakaoSignIn.postValue(result)
+            handleResult(result, _kakaoLogIn, _errorMessage)
         }
     }
 
     fun logOut() {
         authRepository.logOut { result ->
-            _logOut.postValue(result)
+            handleResult(result, _logOut, _errorMessage)
+        }
+    }
+
+    fun getUserInfo() {
+        authRepository.getUserInfo { result ->
+            handleResult(result, _getUserInfo, _errorMessage)
         }
     }
 
     fun editUserInfo(nickname: String, profileImage: String?) {
         authRepository.editUserInfo(UserEditDto(nickname, profileImage)) { result ->
             handleResult(result, _editUserInfo, _errorMessage)
+        }
+    }
+
+    fun resetPassword(emailDto: EmailVerifyRequestDto) {
+        authRepository.resetPassword(emailDto) { result ->
+            handleResult(result, _resetPassword, _errorMessage)
         }
     }
 

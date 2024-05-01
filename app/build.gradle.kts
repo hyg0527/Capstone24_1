@@ -4,11 +4,9 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.kapt")
-}
-
-val properties = Properties().apply {
-    load(FileInputStream(rootProject.file("local.properties")))
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -17,6 +15,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        dataBinding = true
         buildConfig = true
     }
 
@@ -51,10 +50,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-    }
 }
 
 fun getApi(propertyKey: String): String {
@@ -67,24 +62,28 @@ fun getApi(propertyKey: String): String {
 
 dependencies {
     // androidx
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     // google
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.android.gms:play-services-auth:21.1.0")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
 
     // retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.10.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.10.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
     // 기타
     implementation("com.kakao.sdk:v2-user:2.20.1")
@@ -96,6 +95,7 @@ dependencies {
     implementation("com.github.skydoves:powermenu:2.2.4")
     implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation("io.github.ParkSangGwon:tedimagepicker:1.5.0")
+    implementation("io.getstream:photoview:1.0.1")
 
     // 테스트
     testImplementation("junit:junit:4.13.2")

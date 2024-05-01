@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListMypageBinding
-import com.credential.cubrism.model.dto.MyPageDto
-import com.credential.cubrism.view.diff.MyPageDiffUtil
+import com.credential.cubrism.view.diff.StringListDiffUtil
 
 class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
-    private var itemList = mutableListOf<MyPageDto>()
-    private var onItemClickListener: ((MyPageDto, Int) -> Unit)? = null
+    private var itemList = mutableListOf<String>()
+    private var onItemClickListener: ((String, Int) -> Unit)? = null
 
     override fun getItemCount(): Int = itemList.size
 
@@ -34,17 +33,17 @@ class MyPageAdapter : RecyclerView.Adapter<MyPageAdapter.ViewHolder>() {
             }
         }
 
-        fun bind(item: MyPageDto) {
-            binding.txtTitle.text = item.title
+        fun bind(item: String) {
+            binding.txtTitle.text = item
         }
     }
 
-    fun setOnItemClickListener(listener: (MyPageDto, Int) -> Unit) {
+    fun setOnItemClickListener(listener: (String, Int) -> Unit) {
         onItemClickListener = listener
     }
 
-    fun setItemList(list: List<MyPageDto>) {
-        val diffCallBack = MyPageDiffUtil(itemList, list)
+    fun setItemList(list: List<String>) {
+        val diffCallBack = StringListDiffUtil(itemList, list)
         val diffResult = DiffUtil.calculateDiff(diffCallBack)
 
         itemList.clear()

@@ -48,6 +48,8 @@ class StudyGroupAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class ViewHolder(private val binding: ItemListStudyBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val tagAdapter = StudyGroupTagAdapter(1)
+
         init {
             itemView.setOnClickListener {
                 val position = adapterPosition
@@ -55,7 +57,12 @@ class StudyGroupAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     onItemClickListener?.invoke(itemList[position], position)
                 }
             }
-            binding.recyclerView.addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+
+            binding.recyclerView.apply {
+                adapter = tagAdapter
+                setRecycledViewPool(viewPool)
+                addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+            }
         }
 
         fun bind(item: GroupList) {
@@ -71,12 +78,7 @@ class StudyGroupAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 binding.txtIsNotRecruiting.visibility = View.VISIBLE
             }
 
-            val tagAdapter = StudyGroupTagAdapter(1)
-            binding.recyclerView.apply {
-                adapter = tagAdapter
-                setRecycledViewPool(viewPool)
-                tagAdapter.setItemList(item.tags)
-            }
+            tagAdapter.setItemList(item.tags)
         }
     }
 
