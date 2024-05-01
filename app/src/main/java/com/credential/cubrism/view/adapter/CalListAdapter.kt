@@ -56,10 +56,10 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
     }
 
     inner class CalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val title = v.findViewById<TextView>(R.id.txtCalMonthTitle)
-        val timeStart = v.findViewById<TextView>(R.id.timeStart)
-        val timeEnd = v.findViewById<TextView>(R.id.timeEnd)
-        val info = v.findViewById<TextView>(R.id.txtCalMonthInfo)
+//        val title = v.findViewById<TextView>(R.id.txtCalMonthTitle)
+//        val timeStart = v.findViewById<TextView>(R.id.timeStart)
+//        val timeEnd = v.findViewById<TextView>(R.id.timeEnd)
+//        val info = v.findViewById<TextView>(R.id.txtCalMonthInfo)
         init {
             v.setOnClickListener {
                 val position = adapterPosition
@@ -81,10 +81,10 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: CalViewHolder, position: Int) {
-        holder.title.text = items[position].title
-        holder.timeStart.text = convertStartEndTxt(items[position].startTime)
-        holder.timeEnd.text = convertStartEndTxt(items[position].endTime)
-        holder.info.text = items[position].info
+//        holder.title.text = items[position].title
+//        holder.timeStart.text = convertStartEndTxt(items[position].startTime)
+//        holder.timeEnd.text = convertStartEndTxt(items[position].endTime)
+//        holder.info.text = items[position].info
     }
 
     private fun convertStartEndTxt(inputString: String?): String {
