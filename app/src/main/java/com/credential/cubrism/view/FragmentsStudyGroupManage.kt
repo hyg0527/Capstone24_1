@@ -114,7 +114,7 @@ class StudyGroupAnnounceFixFragment : Fragment() { // 게시글 정보 수정
 class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     private var _binding: FragmentStudygroupGoalBinding? = null
     private val binding get() = _binding!!
-    private lateinit var goalViewModel: GoalListViewModel
+    private val goalListViewModel: GoalListViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupGoalBinding.inflate(inflater, container, false)
@@ -124,13 +124,12 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        goalViewModel = ViewModelProvider(requireActivity())[GoalListViewModel::class.java]
         val adapter = initGoalRecyclerView()
 
         binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
         binding.txtGoalSubmit.setOnClickListener {
             for (item in adapter.getItem()) {
-                goalViewModel.addList(item)
+                goalListViewModel.addList(item)
             }
 
             Toast.makeText(requireContext(), "목표 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
@@ -151,7 +150,7 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     }
 
     private fun initGoalRecyclerView(): GoalAdapter {
-        val items = goalViewModel.goalList.value ?: ArrayList()
+        val items = goalListViewModel.goalList.value ?: ArrayList()
         val adapter = GoalAdapter(items, false)
 
         binding.goalRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -187,7 +186,6 @@ class StudyGroupDDayFragment : Fragment() { // 디데이 설정 화면
 
         binding.btnDdaySubmit.setOnClickListener {
             dDayViewModel.setDDay(Pair(title, calculateDays(date)))
-            println(calculateDays(date))
 
             Toast.makeText(requireContext(), "디데이를 등록하였습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()
@@ -207,7 +205,7 @@ class StudyGroupDDayFragment : Fragment() { // 디데이 설정 화면
     }
 }
 
-class StudyGroupAcceptFragment : Fragment() { // 신청관리 화면
+class StudyGroupAcceptFragment : Fragment() { // 신청 관리 화면
     private var _binding: FragmentStudygroupManageacceptBinding? = null
     private val binding get() = _binding!!
 

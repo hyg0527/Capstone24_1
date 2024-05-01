@@ -26,7 +26,7 @@ class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val goalListViewModel: GoalListViewModel by viewModels()
+    private val goalListViewModel: GoalListViewModel by activityViewModels()
     private val dDayViewModel: DDayViewModel by activityViewModels()
     private var view: View? = null
 

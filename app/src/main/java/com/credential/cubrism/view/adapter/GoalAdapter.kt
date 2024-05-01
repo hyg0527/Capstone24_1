@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListGoalBinding
 import com.credential.cubrism.databinding.ItemListGoalshowBinding
 
@@ -26,8 +28,12 @@ class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boole
     inner class GoalListViewHolder(val binding: ItemListGoalshowBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.btnGoalStart.setOnClickListener {
-                Toast.makeText(itemView.context, "학습을 시작합니다.", Toast.LENGTH_SHORT).show()
-                binding.btnGoalStart.visibility = View.GONE
+                Toast.makeText(itemView.context, "\'${items[adapterPosition].name}\'을 달성하였습니다!", Toast.LENGTH_SHORT).show()
+                binding.btnGoalStart.isEnabled = false
+                binding.btnGoalStart.text = "학습완료"
+
+                val color = ContextCompat.getColor(itemView.context, R.color.gray)
+                binding.btnGoalStart.setBackgroundColor(color)
                 notifyDataSetChanged()
             }
         }
