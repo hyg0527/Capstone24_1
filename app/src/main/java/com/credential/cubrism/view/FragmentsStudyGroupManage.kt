@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.databinding.ActivityAddstudyBinding
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
@@ -15,6 +15,7 @@ import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
 import com.credential.cubrism.view.adapter.GoalAdapter
+import com.credential.cubrism.view.adapter.JoinAcceptAdapter
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
 import java.time.LocalDate
@@ -218,10 +219,25 @@ class StudyGroupAcceptFragment : Fragment() { // 신청 관리 화면
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnBack.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+        initData()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun initData() {
+        val items = ArrayList<String>().apply {
+            add("참가자 6"); add("참가자 7"); add("참가자 8")
+        }
+        val adapter = JoinAcceptAdapter(items)
+
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter
+
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerView.context, layoutManager.orientation)
+        binding.recyclerView.addItemDecoration(dividerItemDecoration)
     }
 }
