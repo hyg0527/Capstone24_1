@@ -3,11 +3,8 @@ package com.credential.cubrism.view.adapter
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListScheduleBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat

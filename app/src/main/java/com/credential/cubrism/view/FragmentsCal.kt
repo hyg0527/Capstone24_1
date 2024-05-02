@@ -29,7 +29,6 @@ import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
 import com.credential.cubrism.view.adapter.ScheduleClickListener
 import com.credential.cubrism.viewmodel.CalendarViewModel
-import com.credential.cubrism.viewmodel.ScheduleViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
