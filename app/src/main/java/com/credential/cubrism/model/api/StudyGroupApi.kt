@@ -1,10 +1,12 @@
 package com.credential.cubrism.model.api
 
 import com.credential.cubrism.model.dto.MessageDto
+import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupListDto
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -12,8 +14,8 @@ import retrofit2.http.Query
 
 interface StudyGroupApi {
     // 스터디 그룹 생성
-//    @POST("/studygroup")
-//    fun createStudyGroup(@Body studyGroupCreateDto: StudyGroupCreateDto): Call<StudyGroupCreateDto>
+    @POST("/studygroup")
+    fun createStudyGroup(@Body studyGroupCreateDto: StudyGroupCreateDto): Call<MessageDto>
 
     // 스터디 그룹 삭제
 //    @DELETE("/studygroup/{groupId}")

@@ -2,6 +2,7 @@ package com.credential.cubrism.model.repository
 
 import com.credential.cubrism.model.api.StudyGroupApi
 import com.credential.cubrism.model.dto.MessageDto
+import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupListDto
@@ -15,6 +16,24 @@ import retrofit2.Response
 class StudyGroupRepository {
     private val studyGroupApi: StudyGroupApi = RetrofitClient.getRetrofit()?.create(StudyGroupApi::class.java)!!
     private val studyGroupApiAuth: StudyGroupApi = RetrofitClient.getRetrofitWithAuth()?.create(StudyGroupApi::class.java)!!
+
+    fun createStudyGroup(studyGroupCreateDto: StudyGroupCreateDto, callback: (ResultUtil<MessageDto>) -> Unit) {
+        studyGroupApiAuth.createStudyGroup(studyGroupCreateDto).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
 
     fun studyGroupList(page: Int, limit: Int, recruiting: Boolean, callback: (ResultUtil<StudyGroupListDto>) -> Unit) {
         studyGroupApi.getStudyGroupList(page, limit, recruiting).enqueue(object : Callback<StudyGroupListDto> {

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
+import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
@@ -15,6 +16,9 @@ import com.credential.cubrism.viewmodel.utils.Event
 class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewModel() {
     private val _page = MutableLiveData<PageDto>()
     val page: LiveData<PageDto> = _page
+
+    private val _createGroup = MutableLiveData<MessageDto>()
+    val createGroup: LiveData<MessageDto> = _createGroup
 
     private val _studyGroupList = MutableLiveData<List<GroupList>>()
     val studyGroupList: LiveData<List<GroupList>> = _studyGroupList
@@ -33,6 +37,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
+
+    fun createStudyGroup(studyGroupCreateDto: StudyGroupCreateDto) {
+        repository.createStudyGroup(studyGroupCreateDto) { result ->
+            handleResult(result, _createGroup, _errorMessage)
+        }
+    }
 
     fun getStudyGroupList(page: Int, limit: Int, recruiting: Boolean, refresh: Boolean = false) {
         repository.studyGroupList(page, limit, recruiting) { result ->
