@@ -211,29 +211,29 @@ class StudyGroupAnnounceFixFragment : Fragment() {
 
     private fun initPageInfo() {
         binding.apply {
-            txtTitle.text = "게시글 정보 수정"
-            btnCreate.text = "수정하기"
-            switchHide.visibility = View.VISIBLE
-
-            btnBack.setOnClickListener {
-                (activity as StudyManageActivity).popBackStackFragment()
-            }
-            switchHide.setOnCheckedChangeListener { _, isChecked ->
-                when (isChecked) {
-                    true -> layoutBody.visibility = View.GONE
-                    false -> layoutBody.visibility = View.VISIBLE
-                }
-            }
-            btnCreate.setOnClickListener {// 수정 버튼 클릭
-                if (switchHide.isEnabled) {
-
-                    Toast.makeText(requireContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-                else {
-
-                    Toast.makeText(requireContext(), "게시글이 수정되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
+//            txtTitle.text = "게시글 정보 수정"
+//            btnCreate.text = "수정하기"
+//            switchHide.visibility = View.VISIBLE
+//
+//            btnBack.setOnClickListener {
+//                (activity as StudyManageActivity).popBackStackFragment()
+//            }
+//            switchHide.setOnCheckedChangeListener { _, isChecked ->
+//                when (isChecked) {
+//                    true -> layoutBody.visibility = View.GONE
+//                    false -> layoutBody.visibility = View.VISIBLE
+//                }
+//            }
+//            btnCreate.setOnClickListener {// 수정 버튼 클릭
+//                if (switchHide.isEnabled) {
+//
+//                    Toast.makeText(requireContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//                else {
+//
+//                    Toast.makeText(requireContext(), "게시글이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//            }
 
         }
     }
