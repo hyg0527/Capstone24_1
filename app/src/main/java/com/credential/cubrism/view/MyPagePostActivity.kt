@@ -101,7 +101,6 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
                 }
                 "삭제하기" -> {
                     AlertDialog.Builder(this).apply {
-                        setTitle("게시글 삭제")
                         setMessage("게시글을 삭제하시겠습니까?")
                         setNegativeButton("취소", null)
                         setPositiveButton("삭제") { _, _ ->
