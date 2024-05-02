@@ -102,7 +102,8 @@ class MainActivity : AppCompatActivity() {
 
             // 선택한 Fragment만 보여주고 나머지는 숨김 처리
             val currentFragment = supportFragmentManager.findFragmentByTag(fragmentType.tag)
-            supportFragmentManager.beginTransaction().apply {
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out).apply {
                 supportFragmentManager.fragments.forEach { fragment ->
                     if (fragment == currentFragment)
                         show(fragment)

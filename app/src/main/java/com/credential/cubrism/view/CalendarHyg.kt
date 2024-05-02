@@ -74,7 +74,7 @@ class CalendarHyg {
         return daysList
     }
 
-    private fun checkFormat(values: ArrayList<CalMonth>): ArrayList<CalMonth> {
+    fun checkFormat(values: ArrayList<CalMonth>): ArrayList<CalMonth> {
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
         val dateFormatterOutput = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
         val dateFormatterOutputAllDay = SimpleDateFormat("yyyy - MM - dd 종일", Locale.getDefault())

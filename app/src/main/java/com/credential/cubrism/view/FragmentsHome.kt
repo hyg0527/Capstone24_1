@@ -172,7 +172,7 @@ class HomeFragment : Fragment() {
 
     private fun getTodayData(): String {
         val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy - MM - dd")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return currentDate.format(formatter)
     }
 

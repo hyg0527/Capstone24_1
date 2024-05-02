@@ -21,7 +21,9 @@ class MyScheduleListActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        binding.myScheduleView.adapter = CalListAdapter(calendarViewModel.calMonthList.value ?: ArrayList())
+        val itemData = CalendarHyg().checkFormat(calendarViewModel.calMonthList.value ?: ArrayList())
+
+        binding.myScheduleView.adapter = CalListAdapter(itemData)
         binding.myScheduleView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
 }
