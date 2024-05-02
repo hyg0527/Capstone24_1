@@ -8,6 +8,7 @@
         <item name="colorOutlineVariant">@color/lightblue</item>
 
         <item name="android:colorBackground">@color/white</item>
+        <item name="android:textColorHighlight">@color/lightblue</item>
 
         <item name="itemIconTint">@color/lightblue</item>
         <item name="itemBackground">@color/lightblue</item>
