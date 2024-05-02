@@ -11,9 +11,6 @@ class TodoAdapter(private val items: ArrayList<CalMonth>) : RecyclerView.Adapter
     inner class TodoViewHolder(val binding: ItemListHomeTodaylistBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CalMonth) {
             binding.todaySchedule.text = item.title
-            binding.todayCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                binding.todayCheckBox.isChecked = isChecked
-            }
         }
     }
 

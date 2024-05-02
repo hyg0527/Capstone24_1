@@ -14,7 +14,7 @@ class CalendarViewModel : ViewModel() {
             title="일정1", content="내용1", allDay=false))
         addDateMonth(CalMonth(startDate="2024-04-03T00:00", endDate="2024-04-03T00:00",
             title="일정2", content="내용2", allDay=true))
-        addDateMonth(CalMonth(startDate="2024-05-02T00:00", endDate="2024-05-02T00:00",
+        addDateMonth(CalMonth(startDate="2024-05-03T00:00", endDate="2024-05-03T00:00",
             title="일정3", content="내용3", allDay=true))
         /*
         { "scheduleId": 1, "startDate": "2024-03-31T17:00", "endDate": "2024-04-01T17:00",
