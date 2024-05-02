@@ -22,11 +22,25 @@ class MyPageCertManageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val layouts = listOf(binding.layoutCert1, binding.layoutCert2, binding.layoutCert3)
+        val deleteButtons = listOf(binding.btnDelete1, binding.btnDelete2, binding.btnDelete3)
+
         binding.backBtn.setOnClickListener { finish() }
         binding.btnApply.setOnClickListener {
             Toast.makeText(this, "변경 사항을 저장했습니다.", Toast.LENGTH_SHORT).show()
             finish()
         }
+
+        deleteButtons.forEachIndexed { index, button ->
+            button.setOnClickListener {
+                layouts[index].visibility = View.GONE
+                if (layouts.all { it.visibility == View.GONE }) {
+                    binding.noCert.visibility = View.VISIBLE
+                }
+            }
+        }
+
+
 
     }
 }
