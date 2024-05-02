@@ -29,6 +29,7 @@ import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
 import com.credential.cubrism.view.adapter.ScheduleClickListener
 import com.credential.cubrism.viewmodel.CalendarViewModel
+import com.credential.cubrism.viewmodel.ScheduleViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -289,14 +290,14 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
             dialogTitle.text = "일정 수정"      // 제목을 "일정 추가" -> "일정 수정"으로 교체
             add.text = "수정"                  // 버튼텍스트를 추가에서 수정으로 교체
             add.textSize = 18.0f
-            fullTime.isChecked = modifiedData.isFullTime // "종일" 항목을 체크하였는지 여부 설정
+            fullTime.isChecked = modifiedData.allDay // "종일" 항목을 체크하였는지 여부 설정
 
             title.setText(modifiedData.title.toString()) // 수정시킬 데이터를 불러오는 부분
-            info.setText(modifiedData.info)
+            info.setText(modifiedData.content)
 
             // 시작시간, 끝시간 날짜 시간부분 분리하여 각각의 textview에 저장
-            splitDateTime(modifiedData.startTime.toString(), "start", modifiedData.isFullTime)
-            splitDateTime(modifiedData.endTime.toString(), "end", modifiedData.isFullTime)
+            splitDateTime(modifiedData.startDate.toString(), "start", modifiedData.allDay)
+            splitDateTime(modifiedData.endDate.toString(), "end", modifiedData.allDay)
         }
 
         binding.txtStartTime.setOnClickListener {
@@ -346,11 +347,11 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
         val data: CalMonth
 
         if (fullTime.isChecked) { // 종일이 체크되어 있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
-            data = CalMonth(title.text.toString(), "$currentDateStart 종일", "$currentDateEnd 종일",
+            data = CalMonth("$currentDateStart 종일", "$currentDateEnd 종일", title.text.toString(),
                 info.text.toString(), fullTime.isChecked)
         }
-        else data = CalMonth(title.text.toString(), "$currentDateStart ${binding.txtStartTime.text}",
-            "$currentDateEnd ${binding.txtEndTime.text}", info.text.toString(), fullTime.isChecked)
+        else data = CalMonth("$currentDateStart ${binding.txtStartTime.text}",
+            "$currentDateEnd ${binding.txtEndTime.text}", title.text.toString(), info.text.toString(), fullTime.isChecked)
 
         return data
     }
@@ -612,10 +613,10 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment() {
         if (item == null) return // null값 예외 처리
         else {
             binding.apply {
+                txtSchPeriodInfo.text = item.startDate
+                txtSchPeriodInfoEnd.text = item.endDate
                 txtSchTitleInfo.text = item.title
-                txtSchPeriodInfo.text = item.startTime
-                txtSchPeriodInfoEnd.text = item.endTime
-                txtSchDesInfo.text = item.info
+                txtSchDesInfo.text = item.content
             }
         }
     }

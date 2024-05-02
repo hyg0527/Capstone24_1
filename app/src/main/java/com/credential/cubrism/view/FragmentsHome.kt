@@ -179,7 +179,7 @@ class HomeFragment : Fragment() {
     private fun filterItem(items: ArrayList<CalMonth>): ArrayList<CalMonth> {
         val newList = ArrayList<CalMonth>()
         for (item in items) {
-            if ((item.startTime ?: "").contains(getTodayData())) {
+            if ((item.startDate ?: "").contains(getTodayData())) {
                 newList.add(item)
             }
         }

@@ -15,8 +15,8 @@ interface ScheduleClickListener {
     fun onItemClick(item: CalMonth)
 }
 
-data class CalMonth(val title: String? = null, val startTime: String? = null,
-                    val endTime: String? = null, val info: String? = null, val isFullTime: Boolean) : Parcelable {
+data class CalMonth(val startDate: String? = null, val endDate: String? = null,
+                    val title: String? = null, val content: String? = null, val allDay: Boolean) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -27,10 +27,10 @@ data class CalMonth(val title: String? = null, val startTime: String? = null,
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
-        parcel.writeString(startTime)
-        parcel.writeString(endTime)
-        parcel.writeString(info)
-        parcel.writeByte(if (isFullTime) 1 else 0)
+        parcel.writeString(startDate)
+        parcel.writeString(endDate)
+        parcel.writeString(content)
+        parcel.writeByte(if (allDay) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -82,9 +82,9 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: CalViewHolder, position: Int) {
         holder.title.text = items[position].title
-        holder.timeStart.text = convertStartEndTxt(items[position].startTime)
-        holder.timeEnd.text = convertStartEndTxt(items[position].endTime)
-        holder.info.text = items[position].info
+        holder.timeStart.text = convertStartEndTxt(items[position].startDate)
+        holder.timeEnd.text = convertStartEndTxt(items[position].endDate)
+        holder.info.text = items[position].content
     }
 
     private fun convertStartEndTxt(inputString: String?): String {
@@ -129,13 +129,13 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         var realDateEnd = ""
         val dateToInt = date.replace(" - ", "").toInt()
 
-        if ((item.startTime ?: "").contains("종일") || (item.endTime ?: "").contains("종일")) {
-            realDateStart = item.startTime?.substringBefore(" 종일")?.trim() ?: ""
-            realDateEnd = item.endTime?.substringBefore(" 종일")?.trim() ?: ""
+        if ((item.startDate ?: "").contains("종일") || (item.endDate ?: "").contains("종일")) {
+            realDateStart = item.startDate?.substringBefore(" 종일")?.trim() ?: ""
+            realDateEnd = item.endDate?.substringBefore(" 종일")?.trim() ?: ""
         }
-        else if ((item.startTime ?: "").contains("오")  || (item.endTime ?: "").contains("오")) {
-            realDateStart = item.startTime?.substringBefore(" 오")?.trim() ?: ""
-            realDateEnd = item.endTime?.substringBefore(" 오")?.trim() ?: ""
+        else if ((item.startDate ?: "").contains("오")  || (item.endDate ?: "").contains("오")) {
+            realDateStart = item.startDate?.substringBefore(" 오")?.trim() ?: ""
+            realDateEnd = item.endDate?.substringBefore(" 오")?.trim() ?: ""
         }
         else return Triple(0,0,0)
 

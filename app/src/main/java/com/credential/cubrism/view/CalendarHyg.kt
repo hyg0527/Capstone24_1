@@ -75,12 +75,12 @@ class CalendarHyg {
     private fun extractListInfo(dataS: ArrayList<CalMonth>): Map<String, List<Int>> { // 월별 일정이 추가된 날을 형식에 맞도록 반환
         val dateMap: MutableMap<String, List<Int>> = mutableMapOf()
 
-        for (data in dataS) { // 예외 처리 필요
-            val startMonth = data.startTime!!.substring(0, 9)
-            val endMonth = data.endTime!!.substring(0, 9)
+        for (data in dataS) {
+            val startMonth = data.startDate!!.substring(0, 9)
+            val endMonth = data.endDate!!.substring(0, 9)
 
-            val startDate = data.startTime.substring(12, 14).toInt()
-            val endDate = data.endTime.substring(12, 14).toInt()
+            val startDate = data.startDate.substring(12, 14).toInt()
+            val endDate = data.endDate.substring(12, 14).toInt()
 
             println(getMonthsBetween(startMonth, endMonth))
             val months = getMonthsBetween(startMonth, endMonth)
