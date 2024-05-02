@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.credential.cubrism.R
@@ -52,9 +54,24 @@ class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
     private var presignedUrlList = mutableListOf<String>()
     private var s3UrlList = mutableListOf<String>()
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            AlertDialog.Builder(this@PostAddActivity).apply {
+                setMessage("게시글 작성을 취소하시겠습니까?")
+                setNegativeButton("취소", null)
+                setPositiveButton("확인") { _, _ ->
+                    finish()
+                }
+                show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         setupToolbar()
         setupBottomSheetDialog()

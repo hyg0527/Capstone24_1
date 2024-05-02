@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.credential.cubrism.R
@@ -49,16 +51,30 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
 
     private val postId by lazy { intent.getIntExtra("postId", -1) }
 
-    private val boardId = 1
     private var previousList = mutableListOf<String>()
     private var addImageList = mutableListOf<String>()
     private var deleteImageList = mutableListOf<String>()
     private var presignedUrlList = mutableListOf<String>()
     private var s3UrlList = mutableListOf<String>()
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            AlertDialog.Builder(this@PostUpdateActivity).apply {
+                setMessage("게시글 수정을 취소하시겠습니까?")
+                setNegativeButton("취소", null)
+                setPositiveButton("확인") { _, _ ->
+                    finish()
+                }
+                show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         setupToolbar()
         setupBottomSheetDialog()
