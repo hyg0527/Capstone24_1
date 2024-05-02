@@ -66,11 +66,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (powerMenu.isShowing) {
-                powerMenu.dismiss()
-            } else {
-                finish()
-            }
+            backPress()
         }
     }
 
@@ -110,7 +106,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener { backPress() }
     }
 
     private fun setupBottomSheetDialog() {
@@ -148,7 +144,6 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 }
                 "삭제하기" -> {
                     AlertDialog.Builder(this).apply {
-                        setTitle("댓글 삭제")
                         setMessage("댓글을 삭제하시겠습니까?")
                         setNegativeButton("취소", null)
                         setPositiveButton("삭제") { _, _ ->
@@ -214,7 +209,6 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 }
                 1 -> {
                     AlertDialog.Builder(this).apply {
-                        setTitle("게시글 삭제")
                         setMessage("게시글을 삭제하시겠습니까?")
                         setNegativeButton("취소", null)
                         setPositiveButton("삭제") { _, _ ->
@@ -325,5 +319,22 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
 
         binding.editComment.clearFocus()
         imm.hideSoftInputFromWindow(binding.editComment.windowToken, 0) // 키보드 내리기
+    }
+
+    private fun backPress() {
+        if (powerMenu.isShowing) {
+            powerMenu.dismiss()
+        } else if (binding.editComment.text?.isNotEmpty() == true || commentState == CommentState.REPLY || commentState == CommentState.UPDATE) {
+            AlertDialog.Builder(this).apply {
+                setMessage("댓글 작성을 취소하시겠습니까?")
+                setNegativeButton("취소", null)
+                setPositiveButton("확인") { _, _ ->
+                    clearComment()
+                }
+                show()
+            }
+        } else {
+            finish()
+        }
     }
 }
