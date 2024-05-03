@@ -3,6 +3,7 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.model.repository.FcmRepository
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.repository.QualificationRepository
@@ -21,6 +22,7 @@ class ViewModelFactory(private val repository: Any) : ViewModelProvider.Factory 
             S3ViewModel::class.java -> S3ViewModel(repository as S3Repository) as T
             FcmViewModel::class.java -> FcmViewModel(repository as FcmRepository) as T
             ScheduleViewModel::class.java -> ScheduleViewModel(repository as ScheduleRepository) as T
+            FavoriteViewModel::class.java -> FavoriteViewModel(repository as FavoriteRepository) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
