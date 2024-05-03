@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface PostCommentReplyClickListener {
-    fun onReplyClick(nickname: String, commentId: Int)
+    fun onReplyClick(nickname: String?, commentId: Int)
 }
 
 interface PostCommentLongClickListener {
@@ -71,13 +71,15 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
                 .error(R.drawable.profil_image)
                 .fallback(R.drawable.profil_image)
                 .into(binding.imgProfile)
-            binding.txtNickname.text = item.nickname
+            binding.txtNickname.text = item.nickname ?: "(알수없음)"
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
-
-            binding.imgReplyTo.setOnClickListener {
-                replyListener.onReplyClick(item.nickname, item.commentId)
+            binding.imgReplyTo.apply {
+                visibility = if (item.email == null) View.GONE else View.VISIBLE
+                setOnClickListener {
+                    replyListener.onReplyClick(item.nickname, item.commentId)
+                }
             }
         }
     }

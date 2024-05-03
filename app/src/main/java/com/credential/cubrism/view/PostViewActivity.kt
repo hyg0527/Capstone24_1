@@ -84,16 +84,18 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         getPostView()
     }
 
-    override fun onReplyClick(nickname: String, commentId: Int) {
-        commentState = CommentState.REPLY
-        this.commentId = commentId
+    override fun onReplyClick(nickname: String?, commentId: Int) {
+        nickname?.let {
+            commentState = CommentState.REPLY
+            this.commentId = commentId
 
-        binding.layoutReply.visibility = View.VISIBLE
-        binding.txtReply.text = nickname
-        binding.editComment.hint = "답글 입력"
+            binding.layoutReply.visibility = View.VISIBLE
+            binding.txtReply.text = it
+            binding.editComment.hint = "답글 입력"
 
-        binding.editComment.requestFocus()
-        imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
+            binding.editComment.requestFocus()
+            imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     override fun onLongClick(item: Comments) {
@@ -261,7 +263,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                     .fallback(R.drawable.profile_blue)
                     .dontAnimate()
                     .into(binding.imgProfile)
-                binding.txtNickname.text = "  ${result.nickname}  "
+                binding.txtNickname.text = "  ${result.nickname ?: "(알수없음)"}  "
                 binding.txtCategory.text = result.category
                 binding.txtTitle.text = result.title
                 binding.txtContent.text = result.content.replace(" ", "\u00A0")
