@@ -3,7 +3,7 @@ package com.credential.cubrism.model.dto
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class ChatResponse(
+data class ChatResponseDto(
     val id: UUID,
     val userId: UUID,
     val username: String,

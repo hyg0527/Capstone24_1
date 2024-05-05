@@ -1,6 +1,7 @@
-package com.credential.cubrism.model
+package com.credential.cubrism.model.service
 
-import com.credential.cubrism.model.dto.ChatRequest
+import com.credential.cubrism.BuildConfig
+import com.credential.cubrism.model.dto.ChatRequestDto
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -8,18 +9,13 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
 import org.json.JSONObject
-import java.io.FileInputStream
-import java.util.Properties
 
 class StompClient {
     private val client = OkHttpClient()
     private var webSocket: WebSocket? = null
-    private val properties = Properties().apply {
-        load(FileInputStream("local.properties"))
-    }
-    private val springUrl = properties.getProperty("SPRING_URL")
+    private val springUrl = BuildConfig.SPRING_URL
     private val serverUrl = springUrl.replace("http://", "ws://").run {
-        if (this.endsWith("/")) this + "ws" else this + "/ws"
+        if (this.endsWith("/")) "${this}ws" else "${this}/ws"
     }
 
     fun connect() {
@@ -51,9 +47,9 @@ class StompClient {
         webSocket?.close(1000, null)
     }
 
-    fun sendMessage(studygroupId: Long, chatRequest: ChatRequest) {
+    fun sendMessage(studygroupId: Long, chatRequestDto: ChatRequestDto) {
         val gson = Gson()
-        val chatRequestJson = gson.toJson(chatRequest)
+        val chatRequestJson = gson.toJson(chatRequestDto)
 
         val stompMessage = JSONObject()
         stompMessage.put("destination", "/app/sendmessage/$studygroupId")

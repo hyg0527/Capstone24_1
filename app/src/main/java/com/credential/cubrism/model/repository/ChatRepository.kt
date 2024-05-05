@@ -1,7 +1,7 @@
 package com.credential.cubrism.model.repository
 
-import com.credential.cubrism.model.api.ChatApi
-import com.credential.cubrism.model.dto.ChatResponse
+import com.credential.cubrism.model.api.StudyGroupApi
+import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
 import org.json.JSONObject
@@ -10,13 +10,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ChatRepository {
-    private val chatApi: ChatApi = RetrofitClient.getRetrofit()?.create(ChatApi::class.java)!!
-    private val chatApiAuth: ChatApi = RetrofitClient.getRetrofitWithAuth()?.create(ChatApi::class.java)!!
+    private val studyGroupApi: StudyGroupApi = RetrofitClient.getRetrofitWithAuth()?.create(StudyGroupApi::class.java)!!
 
 
-    fun getChattingList(studygroupId: Long, callback: (ResultUtil<List<ChatResponse>>) -> Unit) {
-        chatApiAuth.getChattingList(studygroupId).enqueue(object : Callback<List<ChatResponse>> {
-            override fun onResponse(call: Call<List<ChatResponse>>, response: Response<List<ChatResponse>>) {
+    fun getChattingList(studygroupId: Long, callback: (ResultUtil<List<ChatResponseDto>>) -> Unit) {
+        studyGroupApi.getChattingList(studygroupId).enqueue(object : Callback<List<ChatResponseDto>> {
+            override fun onResponse(call: Call<List<ChatResponseDto>>, response: Response<List<ChatResponseDto>>) {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
                 } else {
@@ -24,7 +23,7 @@ class ChatRepository {
                 }
             }
 
-            override fun onFailure(call: Call<List<ChatResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<List<ChatResponseDto>>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })

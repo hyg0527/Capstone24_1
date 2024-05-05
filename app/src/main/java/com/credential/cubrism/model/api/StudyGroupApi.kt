@@ -1,5 +1,6 @@
 package com.credential.cubrism.model.api
 
+import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
@@ -83,4 +84,7 @@ interface StudyGroupApi {
     // 스터디 그룹 목표 정보
 //    @GET("/studygroup/goal/{goalId}")
 //    fun getGoalInfo(@Path("goalId") goalId: Int): Call<StudyGroupGoalInfo>
+
+    @GET("/studygroup/{studygroupId}/chats")
+    fun getChattingList(@Path("studygroupId") studygroupId: Long): Call<List<ChatResponseDto>>
 }
