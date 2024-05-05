@@ -42,6 +42,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _editUserInfo = MutableLiveData<MessageDto>()
     val editUserInfo: LiveData<MessageDto> = _editUserInfo
 
+    private val _withdrawal = MutableLiveData<MessageDto>()
+    val withdrawal: LiveData<MessageDto> = _withdrawal
+
     private val _resetPassword = MutableLiveData<MessageDto>()
     val resetPassword: LiveData<MessageDto> = _resetPassword
 
@@ -93,6 +96,12 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     fun getUserInfo() {
         authRepository.getUserInfo { result ->
             handleResult(result, _getUserInfo, _errorMessage)
+        }
+    }
+
+    fun withdrawal() {
+        authRepository.withdrawal { result ->
+            handleResult(result, _withdrawal, _errorMessage)
         }
     }
 

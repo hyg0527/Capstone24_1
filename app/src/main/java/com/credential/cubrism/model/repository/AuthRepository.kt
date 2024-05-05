@@ -169,6 +169,22 @@ class AuthRepository {
         })
     }
 
+    fun withdrawal(callback: (ResultUtil<MessageDto>) -> Unit) {
+        authApiAuth.withdrawal().enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
     fun resetPassword(emailDto: EmailVerifyRequestDto, callback: (ResultUtil<MessageDto>) -> Unit) {
         authApi.resetPassword(emailDto).enqueue(object : Callback<MessageDto> {
             override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {

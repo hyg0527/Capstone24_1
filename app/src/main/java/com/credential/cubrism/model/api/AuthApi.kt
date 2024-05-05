@@ -11,6 +11,7 @@ import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -46,8 +47,8 @@ interface AuthApi {
     fun editUserInfo(@Body userEditDto: UserEditDto): Call<MessageDto>
 
     // 회원 탈퇴
-//    @DELETE("/auth/users")
-//    fun withdrawal(): Call<MessageDto>
+    @DELETE("/auth/users")
+    fun withdrawal(): Call<MessageDto>
 
     // 이메일 인증 번호 요청
     @POST("/auth/signup/email/request")

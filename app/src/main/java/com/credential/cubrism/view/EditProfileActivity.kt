@@ -1,16 +1,17 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
@@ -28,6 +29,7 @@ import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.S3ViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
@@ -140,7 +142,14 @@ class EditProfileActivity : AppCompatActivity() {
 
         // 회원 탈퇴
         binding.btnWithdrawal.setOnClickListener {
-            // TODO: 회원탈퇴
+            AlertDialog.Builder(this).apply {
+                setMessage("탈퇴 시 모든 정보가 삭제됩니다. 정말 탈퇴하시겠습니까?")
+                setNegativeButton("취소", null)
+                setPositiveButton("확인") { _, _ ->
+                    authViewModel.withdrawal()
+                }
+                show()
+            }
         }
     }
 
@@ -177,6 +186,18 @@ class EditProfileActivity : AppCompatActivity() {
                 setResult(RESULT_OK).also { finish() }
             }
 
+            withdrawal.observe(this@EditProfileActivity) {
+                lifecycleScope.launch {
+                    dataStore.deleteAccessToken()
+                    dataStore.deleteRefreshToken()
+                    dataStore.deleteEmail()
+                    dataStore.deleteNickname()
+                    dataStore.deleteProfileImage()
+
+                    setResult(RESULT_OK).also { finish() }
+                }
+            }
+
             errorMessage.observe(this@EditProfileActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
@@ -194,14 +215,13 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
             getProfileImage().asLiveData().observe(this@EditProfileActivity) { image ->
-                Log.d("테스트", "프로필 이미지: $image")
                 Glide.with(this@EditProfileActivity).load(image)
                     .error(R.drawable.profile)
                     .fallback(R.drawable.profile)
                     .dontAnimate()
                     .into(binding.imgProfile)
 
-                profileImage = image
+                profileImage = image?.ifBlank { null }
             }
         }
     }

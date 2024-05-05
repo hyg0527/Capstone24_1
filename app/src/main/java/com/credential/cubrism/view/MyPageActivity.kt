@@ -3,7 +3,6 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +33,6 @@ class MyPageActivity : AppCompatActivity() {
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, "내 정보를 수정했습니다.", Toast.LENGTH_SHORT).show()
             authViewModel.getUserInfo()
         }
     }
@@ -126,7 +124,8 @@ class MyPageActivity : AppCompatActivity() {
 
             errorMessage.observe(this@MyPageActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@MyPageActivity, message, Toast.LENGTH_SHORT).show()
+                    if (message == "JWT 토큰이 잘못되었습니다.")
+                        setResult(RESULT_OK).also { finish() }
                 }
             }
         }
