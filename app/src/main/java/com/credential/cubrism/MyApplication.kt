@@ -3,7 +3,6 @@ package com.credential.cubrism
 import android.app.Application
 import androidx.room.Room
 import com.credential.cubrism.model.dao.NotiDao
-import com.credential.cubrism.model.dao.QualDao
 import com.credential.cubrism.model.data.DataStoreModule
 import com.credential.cubrism.model.database.NotiDatabase
 import com.credential.cubrism.model.repository.DataStoreRepository
@@ -36,6 +35,4 @@ class MyApplication : Application() {
     fun getDataStoreRepository(): DataStoreRepository = dataStoreRepository
 
     fun getNotiDao(): NotiDao = notiDatabase.notiDao()
-
-    fun getQualDao(): QualDao = qualDatabase.qualDao()
 }
