@@ -13,9 +13,7 @@ class PostCommentDiffUtil(private val oldList: List<Comments>, private val newLi
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldList = oldList[oldItemPosition]
-        val newList = newList[newItemPosition]
-        return oldList.commentId == newList.commentId && oldList.parentId == newList.parentId
+        return oldList[oldItemPosition].commentId == newList[newItemPosition].commentId
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

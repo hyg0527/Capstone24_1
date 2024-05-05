@@ -9,24 +9,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_rounded_corner_outline_b"
-        android:paddingStart="12dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="8dp"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgReply"
             android:layout_width="24dp"
             android:layout_height="20dp"
-            android:src="@drawable/reply_btn"
+            android:layout_marginTop="4dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/txtMessage"
             app:layout_constraintEnd_toStartOf="@+id/txtReply"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txtMessage" />
+            app:layout_constraintTop_toTopOf="@+id/txtMessage"
+            app:srcCompat="@drawable/reply_btn" />
 
         <TextView
             android:id="@+id/txtReply"
@@ -47,10 +45,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/kopubdotummedium"
             android:maxWidth="200dp"
-            android:paddingStart="8dp"
-            android:paddingTop="2dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="2dp"
+            android:paddingVertical="2dp"
+            android:paddingHorizontal="8dp"
             android:textColor="@color/black"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"

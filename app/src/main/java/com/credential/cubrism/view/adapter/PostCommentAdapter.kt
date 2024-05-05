@@ -58,6 +58,14 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
             binding.txtTime.text = convertDate(item.createdDate)
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
 
+            if (item.replyTo != null) {
+                binding.imgReply.visibility = View.VISIBLE
+                binding.txtReply.apply {
+                    visibility = View.VISIBLE
+                    text = item.replyToNickname ?: "(알수없음)"
+                }
+            }
+
             binding.layout.setOnLongClickListener {
                 commentListener.onLongClick(item)
                 true
@@ -75,6 +83,13 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
+            if (item.replyTo != null) {
+                binding.imgReply.visibility = View.VISIBLE
+                binding.txtReply.apply {
+                    visibility = View.VISIBLE
+                    text = item.replyToNickname ?: "(알수없음)"
+                }
+            }
             binding.imgReplyTo.apply {
                 visibility = if (item.email == null) View.GONE else View.VISIBLE
                 setOnClickListener {

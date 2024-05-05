@@ -16,12 +16,12 @@ data class PostViewDto(
 
 data class Comments(
     val commentId: Int,
-    val parentId: Int?,
+    val replyTo: Int?,
+    val replyToNickname: String?,
     val nickname: String?,
     val email: String?,
     val content: String,
     val createdDate: String,
     val profileImageUrl: String?,
-    val isReply: Boolean,
     val isUpdated: Boolean
 )
