@@ -135,6 +135,7 @@
                 android:inputType="text"
                 android:textColor="@color/blue"
                 android:textSize="16dp"
+                android:maxLength="12"
                 app:layout_constraintBottom_toBottomOf="@+id/txtTag"
                 app:layout_constraintEnd_toStartOf="@+id/btnAddTag"
                 app:layout_constraintStart_toStartOf="@+id/editName"
