@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) { setupFragment() }
         setupBottomNav()
         observeViewModel()
+
     }
 
     private fun setupBottomNav() {
