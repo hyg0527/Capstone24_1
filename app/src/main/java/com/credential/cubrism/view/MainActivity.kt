@@ -15,14 +15,19 @@ import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
 import com.credential.cubrism.model.dto.FcmTokenDto
+import com.credential.cubrism.model.entity.QualEntity
 import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.model.repository.FcmRepository
+import com.credential.cubrism.model.repository.QualRepository
 import com.credential.cubrism.view.utils.FragmentType
 import com.credential.cubrism.viewmodel.AuthViewModel
+import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.FcmViewModel
 import com.credential.cubrism.viewmodel.MainViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -32,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
     private val fcmViewModel: FcmViewModel by viewModels { ViewModelFactory(FcmRepository()) }
+    private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
+    private val qualRepository = QualRepository(MyApplication.getInstance().getQualDao())
 
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
@@ -60,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         authViewModel.getUserInfo()
+        favoriteViewModel.getFavoriteList()
 
         if (savedInstanceState == null) { setupFragment() }
         setupBottomNav()
@@ -110,6 +118,14 @@ class MainActivity : AppCompatActivity() {
                         hide(fragment)
                 }
             }.commit()
+        }
+
+        favoriteViewModel.favoriteList.observe(this) { favoriteList ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                favoriteList.map {
+                    qualRepository.insertQual(QualEntity(it.code, it.name))
+                }
+            }
         }
     }
 
