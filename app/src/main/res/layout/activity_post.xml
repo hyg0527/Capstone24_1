@@ -21,7 +21,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/godom"
                 android:text="Q&amp;A 게시판"
-                android:textColor="@color/blue"
                 android:textSize="22dp" />
 
         </androidx.appcompat.widget.Toolbar>
