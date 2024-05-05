@@ -1,10 +1,10 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityAddstudyBinding
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
@@ -20,13 +21,18 @@ import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
-import com.credential.cubrism.view.adapter.Chat
-import com.credential.cubrism.view.adapter.ChattingAdapter
+import com.credential.cubrism.model.dto.ChatResponseDto
+import com.credential.cubrism.model.repository.ChatRepository
+import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
+import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -120,6 +126,12 @@ class StudyGroupFunc3Fragment : Fragment() {
     private var _binding: FragmentStudygroupFunc3Binding? = null
     private val binding get() = _binding!!
 
+    private lateinit var chatAdapter: ChatAdapter
+    private lateinit var chatViewModel: ChatViewModel
+
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+    private lateinit var myEmail : String
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
         return binding.root
@@ -128,12 +140,24 @@ class StudyGroupFunc3Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = initRecyclerViewStudyChat()
+        val chatRepository = ChatRepository()
+        val factory = ViewModelFactory(chatRepository)
+        chatViewModel = ViewModelProvider(this, factory).get(ChatViewModel::class.java)
 
-        binding.sendingBtn.setOnClickListener {
-            val text = view.findViewById<EditText>(R.id.editTextSendMessage).text.toString()
-            adapter.addItem(Chat(null, null, text))
+        chatAdapter = initRecyclerViewStudyChat()
+
+        chatViewModel.chatList.observe(viewLifecycleOwner) { chatList ->
+            chatAdapter.itemList = chatList.toMutableList()
+            chatAdapter.notifyDataSetChanged()
         }
+
+//        binding.sendingBtn.setOnClickListener {
+//            val text = view.findViewById<EditText>(R.id.editTextSendMessage).text.toString()
+//            chatAdapter.addItem(Chat(null, null, text))
+//        }
+
+        val studygroupId: Long = 100
+        chatViewModel.getChattingList(studygroupId)
     }
 
     override fun onDestroyView() {
@@ -141,13 +165,19 @@ class StudyGroupFunc3Fragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecyclerViewStudyChat(): ChattingAdapter {
-        val itemList = ArrayList<Chat>()
-        val adapter = ChattingAdapter(itemList)
+    private fun initRecyclerViewStudyChat(): ChatAdapter {
+        val localItemList = ArrayList<ChatResponseDto>()
 
+        runBlocking {
+            myEmail = dataStore.getEmail().first() ?: " "
+        }
+
+        Log.d("이메일 테스트", "myEmail: $myEmail")
+        val adapter = ChatAdapter(myEmail).apply {
+            itemList = localItemList
+        }
         binding.studyGroupChatView.layoutManager = LinearLayoutManager(requireContext())
         binding.studyGroupChatView.adapter = adapter
-
         return adapter
     }
 }

@@ -8,6 +8,8 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ChatRepository {
     private val studyGroupApi: StudyGroupApi = RetrofitClient.getRetrofitWithAuth()?.create(StudyGroupApi::class.java)!!
@@ -17,7 +19,12 @@ class ChatRepository {
         studyGroupApi.getChattingList(studygroupId).enqueue(object : Callback<List<ChatResponseDto>> {
             override fun onResponse(call: Call<List<ChatResponseDto>>, response: Response<List<ChatResponseDto>>) {
                 if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
+                    response.body()?.let {
+                        val sortedChatList = it.sortedBy { chat ->
+                            LocalDateTime.parse(chat.createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.[SSSSSS][SSSSS][SSSS][SSS][SS][S]"))
+                        }
+                        callback(ResultUtil.Success(sortedChatList))
+                    }
                 } else {
                     response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
                 }

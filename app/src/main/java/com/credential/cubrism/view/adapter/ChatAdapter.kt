@@ -1,7 +1,6 @@
 package com.credential.cubrism.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,7 +11,7 @@ import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 
 class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var itemList = mutableListOf<ChatResponseDto>()
+    public var itemList = mutableListOf<ChatResponseDto>()
 
     companion object {
         private const val VIEW_TYPE_MY = 0
@@ -44,7 +43,7 @@ class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerV
     inner class MyViewHolder(private val binding: ItemListCommentMyBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatResponseDto) {
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
-            binding.txtTime.text = convertDateTimeFormat(item.createdAt, "YYYY-MM-DD'T'HH:mm:ss", "M.d HH:mm:ss") // 임시 형식
+            binding.txtTime.text = convertDateTimeFormat(item.createdAt, "yyyy-MM-dd'T'HH:mm:ss.[SSSSSS][SSSSS][SSSS][SSS][SS][S]", "M.d HH:mm:ss") // 임시 형식
         }
     }
 
@@ -56,7 +55,9 @@ class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerV
                 .into(binding.imgProfile)
             binding.txtNickname.text = item.username ?: "(알수없음)"
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
-            binding.txtTime.text = convertDateTimeFormat(item.createdAt, "YYYY-MM-DD'T'HH:mm:ss", "M.d HH:mm:ss") // 임시 형식
+            binding.txtTime.text = convertDateTimeFormat(item.createdAt, "yyyy-MM-dd'T'HH:mm:ss.[SSSSSS][SSSSS][SSSS][SSS][SS][S]", "M.d HH:mm:ss") // 임시 형식
         }
     }
+
+
 }
