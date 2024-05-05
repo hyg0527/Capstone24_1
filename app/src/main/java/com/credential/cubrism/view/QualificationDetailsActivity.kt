@@ -5,17 +5,21 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQualificationDetailsBinding
 import com.credential.cubrism.model.dto.Book
 import com.credential.cubrism.model.dto.File
@@ -26,6 +30,9 @@ import com.credential.cubrism.view.adapter.QualificationDetailsItem
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.QualificationViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
+import com.skydoves.powermenu.MenuAnimation
+import com.skydoves.powermenu.PowerMenu
+import com.skydoves.powermenu.PowerMenuItem
 
 class QualificationDetailsActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQualificationDetailsBinding.inflate(layoutInflater) }
@@ -37,15 +44,28 @@ class QualificationDetailsActivity : AppCompatActivity() {
     private val qualificationName by lazy { intent.getStringExtra("qualificationName") }
     private val qualificationCode by lazy { intent.getStringExtra("qualificationCode") }
 
+    private lateinit var powerMenu : PowerMenu
+
     private var fileUrl: String? = null
 
     companion object {
         private const val WRITE_EXTERNAL_STORAGE_PERMISSION_CODE = 1
     }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (powerMenu.isShowing)
+                powerMenu.dismiss()
+            else
+                finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         setupToolbar()
         setupView()
@@ -80,6 +100,30 @@ class QualificationDetailsActivity : AppCompatActivity() {
             binding.progressIndicator.show()
             qualificationViewModel.getQualificationDetails(it)
         }
+
+        powerMenu = PowerMenu.Builder(this)
+            .addItemList(listOf(PowerMenuItem("관심 자격증 추가", false)))
+            .setAnimation(MenuAnimation.DROP_DOWN)
+            .setMenuRadius(20f)
+            .setMenuShadow(10f)
+            .setMenuColor(Color.WHITE)
+            .setTextSize(14)
+            .setShowBackground(false)
+            .setLifecycleOwner(this)
+            .build()
+
+        powerMenu.setOnMenuItemClickListener { position, _ ->
+            when (position) {
+                0 -> {
+
+                }
+            }
+            powerMenu.dismiss()
+        }
+
+        binding.btnMenu.setOnClickListener {
+            powerMenu.showAsDropDown(binding.btnMenu)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -93,7 +137,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
             when (item) {
                 is File -> {
                     fileUrl = "https://www.q-net.or.kr/crf011.do?id=crf01106&gSite=Q&gId=&filePath=${item.filePath}&fileName=${item.fileName}"
-                    Log.d("테스트", "fileUrl: $fileUrl")
+
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                         checkStoragePermission()
                     } else {
@@ -119,7 +163,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
     private fun observeViewModel() {
         qualificationViewModel.apply {
             qualificationDetails.observe(this@QualificationDetailsActivity) { result ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
 
                 val items = mutableListOf<QualificationDetailsItem>()
 

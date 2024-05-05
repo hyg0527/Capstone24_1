@@ -20,15 +20,15 @@
             android:layout_gravity="center"
             android:textSize="20dp" />
 
-        <androidx.appcompat.widget.AppCompatToggleButton
-            android:id="@+id/btnFavorite"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/toggle_button_star"
-            android:textOff=""
-            android:textOn="" />
+            android:layout_marginEnd="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="2dp"
+            app:srcCompat="@drawable/menu_dot" />
 
     </androidx.appcompat.widget.Toolbar>
 
