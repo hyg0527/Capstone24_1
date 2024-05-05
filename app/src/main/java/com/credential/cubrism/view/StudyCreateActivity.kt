@@ -58,6 +58,8 @@ class StudyCreateActivity : AppCompatActivity(), TagDeleteClickListener {
             binding.editTag.text?.let {
                 if (it.contains(" ")) {
                     Toast.makeText(this, "태그에 공백을 포함할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                } else if (it.length > 12) {
+                    Toast.makeText(this, "태그는 12자까지 가능합니다.", Toast.LENGTH_SHORT).show()
                 } else if (it.isNotEmpty()) {
                     studyGroupTagAdapter2.addItem(it.toString())
                     binding.editTag.text?.clear()
@@ -78,6 +80,11 @@ class StudyCreateActivity : AppCompatActivity(), TagDeleteClickListener {
 
             if (maxMembers == null || maxMembers <= 1) {
                 Toast.makeText(this, "스터디 그룹 인원 수를 2명 이상 입력하세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (studyGroupTagAdapter2.getItemSize() > 5) {
+                Toast.makeText(this, "태그는 5개까지 가능합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

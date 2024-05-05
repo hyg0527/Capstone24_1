@@ -46,4 +46,8 @@ class StudyGroupTagAdapter2(private val listener: TagDeleteClickListener) : Recy
     fun getItemList(): List<String> {
         return itemList
     }
+
+    fun getItemSize(): Int {
+        return itemList.size
+    }
 }
