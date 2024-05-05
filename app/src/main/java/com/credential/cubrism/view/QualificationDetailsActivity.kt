@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,15 +18,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityQualificationDetailsBinding
 import com.credential.cubrism.model.dto.Book
+import com.credential.cubrism.model.dto.FavoriteAddDto
 import com.credential.cubrism.model.dto.File
+import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.view.adapter.ItemType
 import com.credential.cubrism.view.adapter.QualificationDetailsAdapter
 import com.credential.cubrism.view.adapter.QualificationDetailsItem
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.QualificationViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.skydoves.powermenu.MenuAnimation
@@ -38,6 +39,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQualificationDetailsBinding.inflate(layoutInflater) }
 
     private val qualificationViewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
+    private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
 
     private val qualificationDetailsAdapter = QualificationDetailsAdapter()
 
@@ -115,7 +117,9 @@ class QualificationDetailsActivity : AppCompatActivity() {
         powerMenu.setOnMenuItemClickListener { position, _ ->
             when (position) {
                 0 -> {
-
+                    qualificationCode?.let {
+                        favoriteViewModel.addFavorite(FavoriteAddDto(it))
+                    }
                 }
             }
             powerMenu.dismiss()
@@ -205,8 +209,22 @@ class QualificationDetailsActivity : AppCompatActivity() {
                 qualificationDetailsAdapter.setItemList(items)
             }
 
-            errorMessage.observe(this@QualificationDetailsActivity) { message ->
-                message.getContentIfNotHandled()?.let { Toast.makeText(this@QualificationDetailsActivity, it, Toast.LENGTH_SHORT).show() }
+            errorMessage.observe(this@QualificationDetailsActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        favoriteViewModel.apply {
+            addFavorite.observe(this@QualificationDetailsActivity) {
+                Toast.makeText(this@QualificationDetailsActivity, it.message, Toast.LENGTH_SHORT).show()
+            }
+
+            errorMessage.observe(this@QualificationDetailsActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
