@@ -38,16 +38,16 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
         }
 
         fun bind(item: ScheduleListDto) {
-            binding.txtTitle.text = item.title
-            binding.txtContent.text = item.content
-
-            binding.txtDate.text = if (item.allDay) {
-                convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd")
-            } else {
-                val startDateTime = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a")
-                val endDateTime = item.endDate?.let { convertDateTimeFormat(it, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a") }
-                "$startDateTime\n~\n$endDateTime"
-            }
+//            binding.txtTitle.text = item.title
+//            binding.txtContent.text = item.content
+//
+//            binding.txtDate.text = if (item.allDay) {
+//                convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd")
+//            } else {
+//                val startDateTime = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a")
+//                val endDateTime = item.endDate?.let { convertDateTimeFormat(it, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a") }
+//                "$startDateTime\n~\n$endDateTime"
+//            }
         }
     }
 
