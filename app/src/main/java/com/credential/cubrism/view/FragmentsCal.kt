@@ -71,12 +71,7 @@ class CalFragment : Fragment() {
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
             override fun onAddDelete(item: CalMonth?) {
-                if (item != null) {
-                    val itemNew = adapter.revertFormat(item)
-                    println("itemNew: $itemNew")
-                    calendarViewModel.deleteDateMonth(itemNew)
-                }
-                addDelSchedule(calendarAdapter, calHyg)
+                addDelSchedule(item, adapter, calendarAdapter, calHyg)
             }
             override fun bringInfo(item: CalMonth?) {
                 val bundle = Bundle()
@@ -85,12 +80,7 @@ class CalFragment : Fragment() {
                 val addFragment = CalScheduleAddFragment()
                 addFragment.setAddListener(object: AddDot {
                     override fun onAddDelete(item: CalMonth?) {
-                        if (item != null) {
-                            val itemNew = adapter.revertFormat(item)
-                            println("itemNew: $itemNew")
-                            calendarViewModel.deleteDateMonth(itemNew)
-                        }
-                        addDelSchedule(calendarAdapter, calHyg)
+                        addDelSchedule(item, adapter, calendarAdapter, calHyg)
                     }
                     override fun bringInfo(item: CalMonth?) {}
                 })
@@ -108,12 +98,7 @@ class CalFragment : Fragment() {
             val addFragment = CalScheduleAddFragment()
             addFragment.setAddListener(object: AddDot {
                 override fun onAddDelete(item: CalMonth?) {
-                    if (item != null) {
-                        val itemNew = adapter.revertFormat(item)
-                        println("itemNew: $itemNew")
-                        calendarViewModel.deleteDateMonth(itemNew)
-                    }
-                    addDelSchedule(calendarAdapter, calHyg)
+                    addDelSchedule(item, adapter, calendarAdapter, calHyg)
                 }
                 override fun bringInfo(item: CalMonth?) {}
             })
@@ -188,13 +173,21 @@ class CalFragment : Fragment() {
         return binding.currentDate.text.toString()
     }
 
-    private fun addDelSchedule(adapter: CalendarAdapter, calHyg: CalendarHyg) {
+    private fun addDelSchedule(item: CalMonth?, listAdapter: CalListAdapter, calAdapter: CalendarAdapter, calHyg: CalendarHyg) {
+        if (item != null) {
+            val itemNew = listAdapter.revertFormat(item)
+            calendarViewModel.deleteDateMonth(itemNew)
+        }
+        for (itemS in (calendarViewModel.calMonthList.value ?: ArrayList())) {
+            println("list: $itemS")
+        }
+
         val pickTxt = binding.txtYearMonth.text.toString()
         val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
 
         val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
-        adapter.updateCalendar(monthUpdateList)
-        adapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
+        calAdapter.updateCalendar(monthUpdateList)
+        calAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
     }
 
     private fun convertDateFormat(input: String): String { // 날짜 형식 변환 함수
@@ -346,10 +339,8 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
                     calendarViewModel.addDateMonth(data)
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
-                    println(data)
                 }
                 else if (add.text.equals("수정")) {
-//                    calendarViewModel.deleteDateMonth(modifiedData!!)
                     calendarViewModel.addDateMonth(data)
                     Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete(modifiedData!!)
@@ -366,13 +357,6 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
         val currentDateStart = binding.txtCurrentDateAdd.text.toString().replace(" - ", "-")
         val currentDateEnd = binding.txtCurrentDateAddEnd.text.toString().replace(" - ", "-")
         val data: CalMonth
-
-//        if (fullTime.isChecked) { // 종일이 체크되어 있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
-//            data = CalMonth("$currentDateStart 종일", "$currentDateEnd 종일", title.text.toString(),
-//                info.text.toString(), fullTime.isChecked)
-//        }
-//        else data = CalMonth("$currentDateStart ${binding.txtStartTime.text}",
-//            "$currentDateEnd ${binding.txtEndTime.text}", title.text.toString(), info.text.toString(), fullTime.isChecked)
 
         val times = timeTakeLast(binding.txtStartTime.text.toString(), binding.txtEndTime.text.toString())
 
@@ -632,7 +616,6 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val item = arguments?.getParcelable<CalMonth>("scheduleInfo")
-        println("scheduleInfo: $item")
         showInfo(item)
 
         binding.btnSchDeleteInfo.setOnClickListener {

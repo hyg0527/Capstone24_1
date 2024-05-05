@@ -134,7 +134,7 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
 
             if (value.allDay) {
                 startDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.startDate ?: "") ?: "")
-                endDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.startDate ?: "") ?: "")
+                endDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.endDate ?: "") ?: "")
             }
             else {
                 startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate ?: "") ?: "")
