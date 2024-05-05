@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.R
@@ -22,6 +24,7 @@ import com.credential.cubrism.databinding.DialogScheduleDatepickBinding
 import com.credential.cubrism.databinding.DialogScheduleInfoBinding
 import com.credential.cubrism.databinding.DialogTimePickBinding
 import com.credential.cubrism.databinding.FragmentCalBinding
+import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.view.adapter.CalListAdapter
 import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.CalendarAdapter
@@ -29,6 +32,8 @@ import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
 import com.credential.cubrism.view.adapter.ScheduleClickListener
 import com.credential.cubrism.viewmodel.CalendarViewModel
+import com.credential.cubrism.viewmodel.ScheduleViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -46,6 +51,7 @@ class CalFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val calendarViewModel: CalendarViewModel by activityViewModels()
+    private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalBinding.inflate(inflater, container, false)
@@ -55,6 +61,15 @@ class CalFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initCalendarSchedule()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initCalendarSchedule() {
         val calHyg = CalendarHyg()
         // viewmodel 호출. 일정 추가기능을 livedata로 구현.
         val adapter = initScheduleList()
@@ -99,6 +114,7 @@ class CalFragment : Fragment() {
             addFragment.setAddListener(object: AddDot {
                 override fun onAddDelete(item: CalMonth?) {
                     addDelSchedule(item, adapter, calendarAdapter, calHyg)
+                    println("observe: " + scheduleViewModel.scheduleList.value)
                 }
                 override fun bringInfo(item: CalMonth?) {}
             })
@@ -162,11 +178,6 @@ class CalFragment : Fragment() {
                 infoFragment.show(parentFragmentManager, "scheduleInfo")
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun getCurrentDate(): String {  // 월간 프래그먼트의 현재 날짜 getter 함수 (일정 추가 dialog에 날짜 표시에 활용됨)
@@ -600,7 +611,6 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment() {
     private var _binding: DialogScheduleInfoBinding? = null
     private val binding get() = _binding!!
 
-    private val calendarViewModel: CalendarViewModel by activityViewModels()
     private var listener: AddDot? = null
 
     fun setAddListener(listener: AddDot) {
@@ -648,7 +658,6 @@ class CalScheduleInfoFragment : BottomSheetDialogFragment() {
     private fun deleteSchedule(selectedItem: CalMonth?) { // 일정 삭제 함수
         if (selectedItem == null) return
         else {
-//            calendarViewModel.deleteDateMonth(selectedItem)
             listener?.onAddDelete(selectedItem)
             Toast.makeText(requireContext(), "일정이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
         }

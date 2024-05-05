@@ -64,4 +64,10 @@
     <style name="testtt" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_rounded_corner_lightblue</item>
     </style>
+
+    <style name="CalenderViewCustom" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorControlActivated">@color/blue</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+    </style>
+
 </resources>
