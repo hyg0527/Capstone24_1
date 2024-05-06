@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         setupBottomNav()
         observeViewModel()
 
+        binding.transparentView.setOnClickListener {  }
     }
 
     private fun setupBottomNav() {
