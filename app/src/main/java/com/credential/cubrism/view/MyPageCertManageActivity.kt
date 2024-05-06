@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.databinding.ActivityMypageCertmanageBinding
 import com.credential.cubrism.view.adapter.MyPageCertAdapter
-import com.credential.cubrism.view.adapter.myCertData
 import com.credential.cubrism.viewmodel.CertListViewModel
 
 class MyPageCertManageActivity : AppCompatActivity() {

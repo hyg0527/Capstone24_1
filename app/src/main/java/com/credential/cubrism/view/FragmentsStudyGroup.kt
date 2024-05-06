@@ -61,6 +61,10 @@ class StudyGroupHomeFragment : Fragment() {
 
         binding.goalRecyclerViewList.layoutManager = LinearLayoutManager(requireContext())
         binding.goalRecyclerViewList.adapter = adapter
+
+        if (items.isEmpty()) {
+            binding.textView50.visibility = View.VISIBLE
+        }
     }
 }
 
