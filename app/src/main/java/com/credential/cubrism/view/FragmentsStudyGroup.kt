@@ -1,16 +1,15 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
@@ -30,12 +29,11 @@ import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -131,65 +129,29 @@ class StudyGroupFunc3Fragment : Fragment() {
     private var _binding: FragmentStudygroupFunc3Binding? = null
     private val binding get() = _binding!!
 
+    private val chatViewModel: ChatViewModel by activityViewModels { ViewModelFactory(ChatRepository()) }
+    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var chatViewModel: ChatViewModel
     private lateinit var stompClient: StompClient
 
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
-    private lateinit var myEmail : String
-
-    var studygroupId: Long = 100 //임의로 설정함. 나중에 수정
+    private var studygroupId: Long = 100 //임의로 설정함. 나중에 수정
+    private var myEmail: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
+
+        stompClient = StompClient()
+        stompClient.connect()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        stompClient = StompClient()
-        stompClient.connect()
-
-        val chatRepository = ChatRepository()
-        val factory = ViewModelFactory(chatRepository)
-
-        chatViewModel = ViewModelProvider(this, factory).get(ChatViewModel::class.java)
-
-        chatAdapter = initRecyclerViewStudyChat()
-
-        chatViewModel.chatList.observe(viewLifecycleOwner) { chatList ->
-            chatAdapter.itemList = chatList.toMutableList()
-            chatAdapter.notifyDataSetChanged()
-        }
-
-//        binding.sendingBtn.setOnClickListener {
-//            val text = view.findViewById<EditText>(R.id.editTextSendMessage).text.toString()
-//            chatAdapter.addItem(Chat(null, null, text))
-//        }
-
-        binding.sendingBtn.setOnClickListener {
-            val text = binding.editTextSendMessage.text.toString()
-            if (text.isNotEmpty()) {
-                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
-                val chatItem = ChatResponseDto(
-                    id = UUID.randomUUID(),
-                    email = myEmail,
-                    username = null,
-                    profileImgUrl = null,
-                    createdAt = currentTime,
-                    content = text
-                )
-                chatAdapter.itemList.add(chatItem)
-                chatAdapter.notifyDataSetChanged()
-                binding.editTextSendMessage.text.clear()
-
-                stompClient.sendMessage(studygroupId, ChatRequestDto(myEmail, text))
-            }
-        }
-
-
-        chatViewModel.getChattingList(studygroupId)
+        setupView()
+        observeViewModel()
     }
 
     override fun onDestroyView() {
@@ -198,20 +160,60 @@ class StudyGroupFunc3Fragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecyclerViewStudyChat(): ChatAdapter {
-        val localItemList = ArrayList<ChatResponseDto>()
+    private fun setupView() {
+        chatViewModel.getChattingList(studygroupId)
 
-        runBlocking {
-            myEmail = dataStore.getEmail().first() ?: " "
+        binding.btnSend.setOnClickListener {
+            val text = binding.editMessage.text.toString()
+
+            myEmail?.let {
+                if (text.isNotEmpty()) {
+                    val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
+                    val chatItem = ChatResponseDto(
+                        id = UUID.randomUUID(),
+                        email = it,
+                        username = null,
+                        profileImgUrl = null,
+                        createdAt = currentTime,
+                        content = text
+                    )
+                    chatAdapter.addItem(chatItem)
+                    binding.editMessage.text?.clear()
+                    binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+
+                    stompClient.sendMessage(studygroupId, ChatRequestDto(it, text))
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView(myEmail: String) {
+        chatAdapter = ChatAdapter(myEmail)
+
+        binding.recyclerView.apply {
+            adapter = chatAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+        }
+    }
+
+    private fun observeViewModel() {
+        chatViewModel.apply {
+            chatList.observe(viewLifecycleOwner) {
+                chatAdapter.setItemList(it)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
-        Log.d("이메일 테스트", "myEmail: $myEmail")
-        val adapter = ChatAdapter(myEmail).apply {
-            itemList = localItemList
+        dataStore.getEmail().asLiveData().observe(viewLifecycleOwner) { email ->
+            setupRecyclerView(email ?: "")
+            myEmail = email
         }
-        binding.studyGroupChatView.layoutManager = LinearLayoutManager(requireContext())
-        binding.studyGroupChatView.adapter = adapter
-        return adapter
     }
 }
 
