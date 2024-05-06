@@ -62,6 +62,8 @@ class CalFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initCalendarSchedule()
+        scheduleViewModel.getScheduleList(null, null)
+
     }
 
     override fun onDestroyView() {
@@ -81,6 +83,20 @@ class CalFragment : Fragment() {
 
         calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, calendarViewModel.calMonthList.value) { date ->
             updateViewModel(adapter, date)
+        }
+
+        scheduleViewModel.apply {
+            scheduleList.observe(viewLifecycleOwner) {
+//                scheduleAdapter.setItemList(it)
+//                adapter.addItem(it)
+                println("it: " + it)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         val infoFragment = CalScheduleInfoFragment()

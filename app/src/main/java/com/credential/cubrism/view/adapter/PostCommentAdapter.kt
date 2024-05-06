@@ -56,6 +56,7 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
+            binding.txtReply.visibility = if (item.isReply) View.VISIBLE else View.GONE
 
             binding.layout.setOnLongClickListener {
                 CommentDialog(item).show((context as AppCompatActivity).supportFragmentManager, "comment")
@@ -74,6 +75,7 @@ class PostCommentAdapter(private val context: Context, private val myEmail: Stri
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             binding.txtTime.text = convertDate(item.createdDate)
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
+            binding.txtReply.visibility = if (item.isReply) View.VISIBLE else View.GONE
 
             binding.imgReplyTo.setOnClickListener {
                 listener.onReplyClick(item.nickname, item.commentId)
