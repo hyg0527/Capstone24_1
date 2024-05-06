@@ -9,7 +9,11 @@ import com.credential.cubrism.view.diff.StringListDiffUtil
 
 data class myCertData(val name: String? = null, var num: Int? = null)
 
+interface ItemDeleteListener {
+    fun onItemDeleted(itemCount: Int)
+}
 class MyPageCertAdapter(private val items: ArrayList<myCertData>) : RecyclerView.Adapter<MyPageCertAdapter.ViewHolder>() {
+    private var itemDeleteListener: ItemDeleteListener? = null
     private var itemList = mutableListOf<String>()
 
     override fun getItemCount(): Int = items.size
@@ -24,6 +28,10 @@ class MyPageCertAdapter(private val items: ArrayList<myCertData>) : RecyclerView
         holder.bind(items[position])
     }
 
+    fun setItemDeleteListener(listener: ItemDeleteListener) {
+        itemDeleteListener = listener
+    }
+
     inner class ViewHolder(val binding: ItemListMypageCertBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.btnDelete.setOnClickListener {
@@ -33,6 +41,8 @@ class MyPageCertAdapter(private val items: ArrayList<myCertData>) : RecyclerView
 
                 rearrangeItem(items)
                 notifyDataSetChanged()
+
+                (binding.root.context as? ItemDeleteListener)?.onItemDeleted(items.size)
             }
         }
         fun bind(item: myCertData) {

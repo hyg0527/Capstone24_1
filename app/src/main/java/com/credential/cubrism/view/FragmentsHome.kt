@@ -164,9 +164,9 @@ class HomeFragment : Fragment() {
 
     private fun lcsData(): ArrayList<myLicenseData> {
         return ArrayList<myLicenseData>().apply {
-            add(myLicenseData("정보처리기사"))
-            add(myLicenseData("한식조리기능사"))
-            add(myLicenseData("직업상담사1급"))
+//            add(myLicenseData("정보처리기사"))
+//            add(myLicenseData("한식조리기능사"))
+//            add(myLicenseData("직업상담사1급"))
         }
     }
 

@@ -1,94 +1,86 @@
 package com.credential.cubrism.view.adapter
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ItemLicenseDefaultBinding
+import com.credential.cubrism.databinding.ItemListMylicenselistBinding
 
 
-data class myLicenseData(val myLCStxt: String? = null) :Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString()
-    ) {
-    }
+data class myLicenseData(val myLCStxt: String? = null)
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(myLCStxt)
-    }
+class LicenseAdapter(private val items: ArrayList<myLicenseData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    inner class LCSViewHolder(val binding: ItemListMylicenselistBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: myLicenseData) {
+            val position = adapterPosition
+            binding.apply {
+                txtQualificationName.text = item.myLCStxt
+                view.background = ResourcesCompat.getDrawable(itemView.resources, R.color.blue, null)
+                yellowpin.setImageResource(R.drawable.yellow_pin)
 
-    companion object CREATOR : Parcelable.Creator<myLicenseData> {
-        override fun createFromParcel(parcel: Parcel): myLicenseData {
-            return myLicenseData(parcel)
+                // 배경색을 번갈아서 출력
+                if ((position + 1) % 2 == 0) {
+                    view.background = ResourcesCompat.getDrawable(itemView.resources, R.color.mdblue, null)
+                } else {
+                    view.background = ResourcesCompat.getDrawable(itemView.resources, R.color.blue, null)
+                }
+
+                // pin의 색을 번갈아서 출력
+                if ((position + 1) % 3 == 0) {
+                    yellowpin.setImageResource(R.drawable.red_pin)
+                } else if ((position + 1) % 3 == 1) {
+                    yellowpin.setImageResource(R.drawable.yellow_pin)
+                } else {
+                    yellowpin.setImageResource(R.drawable.green_pin)
+                }
+            }
         }
-
-        override fun newArray(size: Int): Array<myLicenseData?> {
-            return arrayOfNulls(size)
-        }
     }
 
-}
-
-
-class LicenseAdapter(private val items: ArrayList<myLicenseData>) : RecyclerView.Adapter<LicenseAdapter.LCSViewHolder>() {
-
-    inner class LCSViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val myLCStxt = v.findViewById<TextView>(R.id.txtQualificationName)
-        val myLCSimage = v.findViewById<View>(R.id.view)
-        val myLCSpin = v.findViewById<ImageView>(R.id.yellowpin)
+    inner class EmptyViewHolder(val binding: ItemLicenseDefaultBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind() {}
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LCSViewHolder {
+    companion object {
+        private const val ITEM_TYPE_NORMAL = 0
+        private const val ITEM_TYPE_EMPTY = 1
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.item_list_mylicenselist, parent, false)
-        return LCSViewHolder(view)
+
+        return when (viewType) {
+            ITEM_TYPE_NORMAL -> {
+                val binding = ItemListMylicenselistBinding.inflate(layoutInflater, parent, false)
+                LCSViewHolder(binding)
+            }
+            ITEM_TYPE_EMPTY -> {
+                val binding = ItemLicenseDefaultBinding.inflate(layoutInflater, parent, false)
+                EmptyViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
     override fun getItemCount(): Int {
-        return items.count()
+        return if (items.isEmpty()) 1 else items.size
     }
 
-    override fun onBindViewHolder(holder: LCSViewHolder, position: Int) {
-
-        holder.myLCStxt.text = items[position].myLCStxt
-        holder.myLCSimage.background = ResourcesCompat.getDrawable(holder.itemView.resources, R.color.blue, null)
-        holder.myLCSpin.setImageResource(R.drawable.yellow_pin)
-
-        // 배경색을 번갈아서 출력
-        if ((position + 1) % 2 == 0) {
-            holder.myLCSimage.background = ResourcesCompat.getDrawable(holder.itemView.resources, R.color.mdblue, null)
-        } else {
-            holder.myLCSimage.background = ResourcesCompat.getDrawable(holder.itemView.resources, R.color.blue, null)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is LCSViewHolder -> {
+                holder.bind(items[position])
+            }
+            is EmptyViewHolder -> {
+                holder.bind()
+            }
         }
-
-        // pin의 색을 번갈아서 출력
-        if ((position + 1) % 3 == 0) {
-            holder.myLCSpin.setImageResource(R.drawable.red_pin)
-        } else if ((position + 1) % 3 == 1) {
-            holder.myLCSpin.setImageResource(R.drawable.yellow_pin)
-        } else {
-            holder.myLCSpin.setImageResource(R.drawable.green_pin)
-        }
-
-
-
     }
 
-
-    fun addItem(item: myLicenseData) {
-        items.add(item)
-    }
-
-    fun clearItem() {
-        items.clear()
+    override fun getItemViewType(position: Int): Int {
+        return if (items.isEmpty()) ITEM_TYPE_EMPTY else ITEM_TYPE_NORMAL
     }
 }
