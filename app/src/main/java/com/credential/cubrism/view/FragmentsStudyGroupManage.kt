@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.credential.cubrism.databinding.ActivityAddstudyBinding
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
@@ -45,71 +44,13 @@ class StudyGroupManageFragment : Fragment() { // 관리 홈화면
     }
 
     private fun initList(title: String?) {
-        val announceFragment = StudyGroupAnnounceFixFragment()
-
-        val bundle = Bundle()
-        bundle.putString("titleName", title)
-        announceFragment.arguments = bundle
 
         binding.apply {
-            manageAnnounce.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(announceFragment) }
             manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupGoalFragment()) }
             manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupDDayFragment()) }
             manageAccept.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupAcceptFragment()) }
         }
     }
-}
-
-class StudyGroupAnnounceFixFragment : Fragment() { // 게시글 정보 수정
-    private var _binding: ActivityAddstudyBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = ActivityAddstudyBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        val title = arguments?.getString("titleName")
-        initPageInfo()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun initPageInfo() {
-        binding.apply {
-            txtTitle.text = "게시글 정보 수정"
-            btnCreate.text = "수정하기"
-            switchHide.visibility = View.VISIBLE
-
-            btnBack.setOnClickListener {
-                (activity as StudyManageActivity).popBackStackFragment()
-            }
-            switchHide.setOnCheckedChangeListener { _, isChecked ->
-                when (isChecked) {
-                    true -> layoutBody.visibility = View.GONE
-                    false -> layoutBody.visibility = View.VISIBLE
-                }
-            }
-            btnCreate.setOnClickListener {// 수정 버튼 클릭
-                if (switchHide.isEnabled) {
-
-                    Toast.makeText(requireContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-                else {
-
-                    Toast.makeText(requireContext(), "게시글이 수정되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        }
-    }
-
 }
 
 class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
