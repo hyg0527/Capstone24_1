@@ -8,7 +8,6 @@ import okhttp3.Request
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
-import org.json.JSONObject
 
 class StompClient {
     private val client = OkHttpClient()
@@ -51,9 +50,12 @@ class StompClient {
         val gson = Gson()
         val chatRequestJson = gson.toJson(chatRequestDto)
 
-        val stompMessage = JSONObject()
-        stompMessage.put("destination", "/app/sendmessage/$studygroupId")
-        stompMessage.put("body", JSONObject(chatRequestJson))
-        webSocket?.send(stompMessage.toString())
+        val stompMessage = "SEND\n" +
+                "destination:/app/sendmessage/$studygroupId\n" +
+                "\n" +
+                chatRequestJson +
+                "\u0000"
+
+        webSocket?.send(stompMessage)
     }
 }

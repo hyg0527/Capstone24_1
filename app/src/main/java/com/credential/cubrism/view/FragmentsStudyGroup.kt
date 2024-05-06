@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,8 +22,10 @@ import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
+import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.repository.ChatRepository
+import com.credential.cubrism.model.service.StompClient
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.Rank
@@ -34,8 +37,10 @@ import com.credential.cubrism.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
@@ -128,9 +133,12 @@ class StudyGroupFunc3Fragment : Fragment() {
 
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var chatViewModel: ChatViewModel
+    private lateinit var stompClient: StompClient
 
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
     private lateinit var myEmail : String
+
+    var studygroupId: Long = 100 //임의로 설정함. 나중에 수정
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
@@ -140,8 +148,12 @@ class StudyGroupFunc3Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        stompClient = StompClient()
+        stompClient.connect()
+
         val chatRepository = ChatRepository()
         val factory = ViewModelFactory(chatRepository)
+
         chatViewModel = ViewModelProvider(this, factory).get(ChatViewModel::class.java)
 
         chatAdapter = initRecyclerViewStudyChat()
@@ -156,12 +168,33 @@ class StudyGroupFunc3Fragment : Fragment() {
 //            chatAdapter.addItem(Chat(null, null, text))
 //        }
 
-        val studygroupId: Long = 100
+        binding.sendingBtn.setOnClickListener {
+            val text = binding.editTextSendMessage.text.toString()
+            if (text.isNotEmpty()) {
+                val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
+                val chatItem = ChatResponseDto(
+                    id = UUID.randomUUID(),
+                    email = myEmail,
+                    username = null,
+                    profileImgUrl = null,
+                    createdAt = currentTime,
+                    content = text
+                )
+                chatAdapter.itemList.add(chatItem)
+                chatAdapter.notifyDataSetChanged()
+                binding.editTextSendMessage.text.clear()
+
+                stompClient.sendMessage(studygroupId, ChatRequestDto(myEmail, text))
+            }
+        }
+
+
         chatViewModel.getChattingList(studygroupId)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        stompClient.disconnect()
         _binding = null
     }
 
