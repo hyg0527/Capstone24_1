@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +24,7 @@ import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
+import java.net.URL
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
@@ -109,9 +112,27 @@ class StudyGroupFunc2Fragment : Fragment() {
 
     private fun goToCBT() { // 자격증 기출문제 홈페이지 이동 함수
         val url = "https://m.comcbt.com/"
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(url)
-        startActivity(intent)
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.setMessage("외부 링크로 이동하시겠습니까?")
+            .setPositiveButton("이동") { _, _ ->
+                openCBTLink(Uri.parse(url))
+            }
+            .setNegativeButton("취소") { _, _ -> }
+            .show()
+    }
+
+    private fun openCBTLink(url: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, url)
+        val packageManager = requireContext().packageManager
+        val activities = packageManager.queryIntentActivities(intent, 0)
+        val isIntentSafe = activities.isNotEmpty()
+
+        if (isIntentSafe) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(requireContext(), "해당 URL을 열 수 있는 앱이 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
