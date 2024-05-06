@@ -1,6 +1,5 @@
 package com.credential.cubrism.view
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -106,8 +105,10 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             joinList.observe(this@MyPageStudyGroupApplyActivity) {
-                if (it.isNotEmpty())
-                    binding.txtNoJoin.visibility = View.GONE
+                if (it.isEmpty())
+                    binding.txtNoJoin.visibility = View.VISIBLE
+
+                binding.progressIndicator.hide()
                 studyGroupJoinAdapter.setItemList(it)
             }
 
