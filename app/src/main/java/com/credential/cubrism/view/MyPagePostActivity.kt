@@ -152,10 +152,11 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
     private fun observeViewModel() {
         postViewModel.apply {
             myPostList.observe(this@MyPagePostActivity) {
-                if (it.isNotEmpty()) {
-                    binding.txtNoPost.visibility = View.GONE
-                    postMyAdapter.setItemList(it)
-                }
+                if (it.isEmpty())
+                    binding.txtNoPost.visibility = View.VISIBLE
+
+                binding.progressIndicator.hide()
+                postMyAdapter.setItemList(it)
                 setLoading(false)
             }
 
