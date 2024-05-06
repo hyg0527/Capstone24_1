@@ -141,9 +141,6 @@ class StudyGroupFunc3Fragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
 
-        stompClient = StompClient()
-        stompClient.connect()
-
         return binding.root
     }
 
@@ -168,16 +165,6 @@ class StudyGroupFunc3Fragment : Fragment() {
 
             myEmail?.let {
                 if (text.isNotEmpty()) {
-                    val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
-                    val chatItem = ChatResponseDto(
-                        id = UUID.randomUUID(),
-                        email = it,
-                        username = null,
-                        profileImgUrl = null,
-                        createdAt = currentTime,
-                        content = text
-                    )
-                    chatAdapter.addItem(chatItem)
                     binding.editMessage.text?.clear()
                     binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
 
@@ -189,7 +176,9 @@ class StudyGroupFunc3Fragment : Fragment() {
 
     private fun setupRecyclerView(myEmail: String) {
         chatAdapter = ChatAdapter(myEmail)
-
+        stompClient = StompClient()
+        stompClient.chatAdapter = chatAdapter
+        stompClient.connect(studygroupId)
         binding.recyclerView.apply {
             adapter = chatAdapter
             itemAnimator = null

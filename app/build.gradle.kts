@@ -97,6 +97,14 @@ dependencies {
     implementation("io.github.ParkSangGwon:tedimagepicker:1.5.0")
     implementation("io.getstream:photoview:1.0.1")
 
+    // stomp
+    implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+
+    //rx
+    implementation("io.reactivex.rxjava2:rxjava:2.2.19")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+
+
     // 테스트
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
