@@ -64,8 +64,6 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) { setupFragment() }
         setupBottomNav()
         observeViewModel()
-
-        binding.transparentView.setOnClickListener {  }
     }
 
     private fun setupBottomNav() {
@@ -79,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.setCurrentFragment(it)
             }
         }
+        binding.transparentView.setOnClickListener {}
     }
 
     private fun observeViewModel() {

@@ -1,5 +1,7 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
@@ -85,6 +86,7 @@ class StudyGroupFunc2Fragment : Fragment() {
         this.view = view
 
         initRankList(view)
+        binding.button.setOnClickListener { goToCBT() }
     }
 
     override fun onDestroyView() {
@@ -103,6 +105,13 @@ class StudyGroupFunc2Fragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
+    }
+
+    private fun goToCBT() { // 자격증 기출문제 홈페이지 이동 함수
+        val url = "https://m.comcbt.com/"
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
