@@ -4,17 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListStudyJoinBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.view.diff.StudyGroupJoinDiffUtil
-import com.credential.cubrism.view.utils.ItemDecoratorDivider
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 
-class StudyGroupJoinAdapter : RecyclerView.Adapter<StudyGroupJoinAdapter.ViewHolder>() {
+interface GroupJoinMenuClickListener {
+    fun onMenuClick(memberId: String)
+}
+
+class StudyGroupJoinAdapter(private val listener: GroupJoinMenuClickListener) : RecyclerView.Adapter<StudyGroupJoinAdapter.ViewHolder>() {
     private var itemList = mutableListOf<StudyGroupJoinListDto>()
-
-    private val viewPool = RecyclerView.RecycledViewPool()
 
     override fun getItemCount(): Int = itemList.size
 
@@ -29,22 +31,23 @@ class StudyGroupJoinAdapter : RecyclerView.Adapter<StudyGroupJoinAdapter.ViewHol
     }
 
     inner class ViewHolder(private val binding: ItemListStudyJoinBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val tagAdapter = StudyGroupTagAdapter(1)
-
-        init {
-            binding.recyclerView.apply {
-                adapter = tagAdapter
-                setRecycledViewPool(viewPool)
-                addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
-            }
-        }
-
         fun bind(item: StudyGroupJoinListDto) {
-            binding.txtGruopName.text = item.groupName
-            binding.txtGroupDescription.text = item.groupDescription
-            val dateTime = LocalDateTime.parse(item.requestDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-            binding.txtDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            tagAdapter.setItemList(item.tags)
+            Glide.with(binding.root).apply {
+                load(item.groupAdminProfileImage)
+                    .error(R.drawable.profile)
+                    .fallback(R.drawable.profile)
+                    .into(binding.imgProfile)
+
+                load(R.drawable.menu_dot).into(binding.imgMenu)
+            }
+
+            binding.txtNickname.text = item.groupAdmin
+            binding.txtGroupName.text = item.groupName
+            binding.txtDate.text = convertDateTimeFormat(item.requestDate, "yyyy-MM-dd'T'HH:mm:ss", "M/d HH:mm")
+
+            binding.imgMenu.setOnClickListener {
+                listener.onMenuClick(item.memberId)
+            }
         }
     }
 
