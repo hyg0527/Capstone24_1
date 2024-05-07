@@ -1,6 +1,7 @@
 package com.credential.cubrism.model.service
 
 import android.util.Log
+import com.auth0.android.jwt.JWT
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
@@ -64,6 +65,27 @@ class RequestInterceptor : Interceptor {
         val accessToken = runBlocking {
             dataStore.getAccessToken().first()
         }
+
+//        val refreshToken = runBlocking {
+//            dataStore.getRefreshToken().first()?.let { JWT(it) }
+//        }
+//
+//        // Refresh Token의 만료 기간이 2일 이내로 남았으면
+//        if ((refreshToken?.expiresAt?.time ?: (0 - System.currentTimeMillis())) < 2 * 24 * 60 * 60 * 1000) {
+//            // Refresh Token 재발급 요청
+//            val response = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)?.reissueRefreshToken()?.execute()
+//
+//            if (response?.isSuccessful == true) { // RefreshToken 재발급 성공 시
+//                response.body()?.refreshToken?.let { newRefreshToken ->
+//                    Log.d("테스트", "[RequestInterceptor] New RefreshToken: $newRefreshToken")
+//
+//                    runBlocking {
+//                        // 새로 발급받은 RefreshToken을 DataStore에 저장
+//                        dataStore.saveRefreshToken(newRefreshToken)
+//                    }
+//                }
+//            }
+//        }
 
         Log.d("테스트", "[RequestInterceptor] AccessToken: $accessToken")
 
