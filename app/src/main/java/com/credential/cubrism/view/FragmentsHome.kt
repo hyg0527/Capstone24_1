@@ -41,6 +41,7 @@ class HomeFragment : Fragment() {
 
     private var currentPage = 0
     private val timer = Timer()
+    private var loggedIn = false
 
     // 로그인 성공
     private val startForRegisterResultSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -122,7 +123,8 @@ class HomeFragment : Fragment() {
 
         // 로그인
         binding.txtSignIn.setOnClickListener {
-            startForRegisterResultSignIn.launch(Intent(requireActivity(), SignInActivity::class.java))
+            if (!loggedIn)
+                startForRegisterResultSignIn.launch(Intent(requireActivity(), SignInActivity::class.java))
         }
 
         // 프로필
@@ -137,18 +139,20 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        // DataStore에 이메일이 저장되어 있는지 확인 (로그인 상태)
-        dataStore.getEmail().asLiveData().observe(viewLifecycleOwner) { email ->
-            if (email != null) {
+        // DataStore에 닉네임이 저장되어 있는지 확인 (로그인 상태)
+        dataStore.getNickname().asLiveData().observe(viewLifecycleOwner) { nickname ->
+            if (nickname != null) {
                 binding.btnProfile.visibility = View.VISIBLE
                 binding.btnNoti.visibility = View.VISIBLE
-                binding.txtSignIn.visibility = View.GONE
+                binding.txtSignIn.text = "${nickname}님 환영합니다."
                 binding.txtArrow.visibility = View.GONE
+                loggedIn = true
             } else {
                 binding.btnProfile.visibility = View.GONE
                 binding.btnNoti.visibility = View.GONE
-                binding.txtSignIn.visibility = View.VISIBLE
+                binding.txtSignIn.text = "로그인 하세요"
                 binding.txtArrow.visibility = View.VISIBLE
+                loggedIn = false
             }
         }
     }
