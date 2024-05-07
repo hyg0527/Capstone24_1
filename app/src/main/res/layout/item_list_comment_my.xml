@@ -9,23 +9,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_rounded_corner_outline_b"
-        android:paddingVertical="8dp"
         android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgReply"
+            android:layout_width="24dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/txtReply"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txtMessage"
+            app:srcCompat="@drawable/reply_btn" />
 
         <TextView
             android:id="@+id/txtReply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="@font/kopubdotumbold"
+            android:maxWidth="62dp"
+            android:maxLines="1"
             android:textColor="@color/blue"
             android:textSize="12dp"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/imgReply"
+            app:layout_constraintEnd_toStartOf="@+id/txtMessage"
+            app:layout_constraintStart_toEndOf="@+id/imgReply"
+            app:layout_constraintTop_toTopOf="@+id/imgReply" />
 
         <TextView
             android:id="@+id/txtMessage"
@@ -33,13 +48,13 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/kopubdotummedium"
             android:maxWidth="200dp"
-            android:paddingVertical="2dp"
             android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
             android:textColor="@color/black"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtReply" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

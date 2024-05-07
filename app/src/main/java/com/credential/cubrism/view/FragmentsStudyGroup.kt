@@ -1,36 +1,34 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
-import com.credential.cubrism.databinding.ActivityAddstudyBinding
-import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
-import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
-import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
-import com.credential.cubrism.view.adapter.Chat
-import com.credential.cubrism.view.adapter.ChattingAdapter
+import com.credential.cubrism.model.dto.ChatRequestDto
+import com.credential.cubrism.model.repository.ChatRepository
+import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import com.credential.cubrism.viewmodel.ViewModelFactory
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null

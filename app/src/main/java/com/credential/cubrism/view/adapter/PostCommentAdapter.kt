@@ -59,9 +59,10 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
 
             if (item.replyTo != null) {
+                binding.imgReply.visibility = View.VISIBLE
                 binding.txtReply.apply {
                     visibility = View.VISIBLE
-                    text = if (item.replyToNickname == null) "Re: (알수없음)" else "Re: ${item.replyToNickname}"
+                    text = item.replyToNickname ?: "(알수없음)"
                 }
             }
 
@@ -83,9 +84,10 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
             binding.txtTime.text = convertDate(item.createdDate)
             binding.txtUpdated.visibility = if (item.isUpdated) View.VISIBLE else View.GONE
             if (item.replyTo != null) {
+                binding.imgReply.visibility = View.VISIBLE
                 binding.txtReply.apply {
                     visibility = View.VISIBLE
-                   text = if (item.replyToNickname == null) "Re: (알수없음)" else "Re: ${item.replyToNickname}"
+                    text = item.replyToNickname ?: "(알수없음)"
                 }
             }
             binding.imgReplyTo.apply {
