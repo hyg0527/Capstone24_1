@@ -10,21 +10,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
 import com.credential.cubrism.model.repository.AuthRepository
+import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.CalMonth
-import com.credential.cubrism.view.adapter.LicenseAdapter
+import com.credential.cubrism.view.adapter.FavoriteAdapter2
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodoAdapter
-import com.credential.cubrism.view.adapter.myLicenseData
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.CalendarViewModel
+import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -37,7 +40,10 @@ class HomeFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by activityViewModels { ViewModelFactory(AuthRepository()) }
     private val calendarViewModel: CalendarViewModel by activityViewModels()
+    private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+
+    private val favoriteAdapter2 = FavoriteAdapter2()
 
     private var currentPage = 0
     private val timer = Timer()
@@ -47,6 +53,7 @@ class HomeFragment : Fragment() {
     private val startForRegisterResultSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             authViewModel.getUserInfo()
+            favoriteViewModel.getFavoriteList()
         }
     }
 
@@ -54,6 +61,7 @@ class HomeFragment : Fragment() {
     private val startForRegisterResultLogOut = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             authViewModel.getUserInfo()
+            favoriteViewModel.getFavoriteList()
         }
     }
 
@@ -67,13 +75,12 @@ class HomeFragment : Fragment() {
 
         setupToolbar()
         setupView()
+        setupRecyclerView()
         observeViewModel()
 
         val tdList = filterItem(calendarViewModel.calMonthList.value ?: ArrayList())
-        val lcslist = lcsData()
 
         val tdAdapter = TodoAdapter(tdList)
-        val lcsAdapter = LicenseAdapter(lcslist)
         val bnAdapter = BannerAdapter()
 
         bnAdapter.setBannerListener(object: QnaBannerEnterListener {
@@ -87,7 +94,6 @@ class HomeFragment : Fragment() {
         })
 
         binding.recyclerSchedule.adapter = tdAdapter
-        binding.recyclerQualification.adapter = lcsAdapter
         isNoSchedule(tdAdapter)
 
         binding.viewPager.apply {
@@ -111,6 +117,11 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        favoriteViewModel.getFavoriteList()
     }
 
     private fun setupToolbar() {
@@ -138,6 +149,17 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setupRecyclerView() {
+        binding.recyclerQualification.apply {
+            adapter = favoriteAdapter2
+            itemAnimator = null
+            setHasFixedSize(true)
+        }
+
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(binding.recyclerQualification)
+    }
+
     private fun observeViewModel() {
         // DataStore에 닉네임이 저장되어 있는지 확인 (로그인 상태)
         dataStore.getNickname().asLiveData().observe(viewLifecycleOwner) { nickname ->
@@ -155,6 +177,24 @@ class HomeFragment : Fragment() {
                 loggedIn = false
             }
         }
+
+        favoriteViewModel.apply {
+            favoriteList.observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    binding.layoutNoFavorite.visibility = View.VISIBLE
+                    binding.recyclerQualification.visibility = View.GONE
+                } else {
+                    binding.layoutNoFavorite.visibility = View.GONE
+                    binding.recyclerQualification.visibility = View.VISIBLE
+                }
+                favoriteAdapter2.setItemList(it)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) {
+                binding.layoutNoFavorite.visibility = View.VISIBLE
+                binding.recyclerQualification.visibility = View.GONE
+            }
+        }
     }
 
     private fun isNoSchedule(todoAdapter: TodoAdapter) {
@@ -163,14 +203,6 @@ class HomeFragment : Fragment() {
         }
         else {
             binding.txtNoSchedule.visibility = View.VISIBLE
-        }
-    }
-
-    private fun lcsData(): ArrayList<myLicenseData> {
-        return ArrayList<myLicenseData>().apply {
-//            add(myLicenseData("정보처리기사"))
-//            add(myLicenseData("한식조리기능사"))
-//            add(myLicenseData("직업상담사1급"))
         }
     }
 

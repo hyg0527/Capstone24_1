@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/yellowpin"
+        android:id="@+id/imgPin"
         android:layout_width="25dp"
         android:layout_height="25dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -15,7 +15,6 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="4dp"
@@ -61,7 +60,7 @@
                 android:id="@+id/imgTheme"
                 android:layout_width="100dp"
                 android:layout_height="55dp"
-                app:layout_constraintBottom_toTopOf="@+id/txtQualificationName"
+                app:layout_constraintBottom_toTopOf="@+id/txtname"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtStudying"
@@ -69,11 +68,14 @@
                 app:srcCompat="@drawable/license_theme" />
 
             <TextView
-                android:id="@+id/txtQualificationName"
+                android:id="@+id/txtname"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/godom"
                 android:gravity="center"
+                android:maxLines="1"
+                android:paddingHorizontal="8dp"
                 android:textColor="@color/blue"
                 android:textSize="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
