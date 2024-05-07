@@ -22,7 +22,6 @@ import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
-import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.repository.ChatRepository
 import com.credential.cubrism.model.service.StompClient
 import com.credential.cubrism.view.adapter.ChatAdapter
@@ -35,10 +34,8 @@ import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
@@ -133,13 +130,15 @@ class StudyGroupFunc3Fragment : Fragment() {
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var stompClient: StompClient
+    private val stompClient = StompClient()
 
     private var studygroupId: Long = 100 //임의로 설정함. 나중에 수정
     private var myEmail: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
+
+        stompClient.connect()
 
         return binding.root
     }
@@ -153,8 +152,9 @@ class StudyGroupFunc3Fragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        stompClient.disconnect()
         _binding = null
+
+        stompClient.disconnect()
     }
 
     private fun setupView() {
@@ -176,9 +176,7 @@ class StudyGroupFunc3Fragment : Fragment() {
 
     private fun setupRecyclerView(myEmail: String) {
         chatAdapter = ChatAdapter(myEmail)
-        stompClient = StompClient()
-        stompClient.chatAdapter = chatAdapter
-        stompClient.connect(studygroupId)
+
         binding.recyclerView.apply {
             adapter = chatAdapter
             itemAnimator = null
@@ -190,6 +188,12 @@ class StudyGroupFunc3Fragment : Fragment() {
         chatViewModel.apply {
             chatList.observe(viewLifecycleOwner) {
                 chatAdapter.setItemList(it)
+                binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+
+                stompClient.subscribe(studygroupId) { chatResponseDto ->
+                    chatAdapter.addItem(chatResponseDto)
+                    binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+                }
             }
 
             errorMessage.observe(viewLifecycleOwner) { event ->

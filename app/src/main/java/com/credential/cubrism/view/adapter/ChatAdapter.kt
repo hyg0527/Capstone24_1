@@ -46,7 +46,8 @@ class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerV
     inner class MyViewHolder(private val binding: ItemListCommentMyBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatResponseDto) {
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
-            binding.txtTime.text = convertDateTimeFormat(item.createdAt, "yyyy-MM-dd'T'HH:mm:ss.[SSSSSSS][SSSSSS][SSSSS][SSSS][SSS][SS][S]", "M.d HH:mm:ss") // 임시 형식
+            val formattedTime = item.createdAt.substringBeforeLast('.')
+            binding.txtTime.text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "M.d HH:mm:ss") // 임시 형식
         }
     }
 
@@ -58,7 +59,8 @@ class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerV
                 .into(binding.imgProfile)
             binding.txtNickname.text = item.username ?: "(알수없음)"
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
-            binding.txtTime.text = convertDateTimeFormat(item.createdAt, "yyyy-MM-dd'T'HH:mm:ss.[SSSSSSS][SSSSSS][SSSSS][SSSS][SSS][SS][S]", "M.d HH:mm:ss") // 임시 형식
+            val formattedTime = item.createdAt.substringBeforeLast('.')
+            binding.txtTime.text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "M.d HH:mm:ss") // 임시 형식
             binding.imgReplyTo.visibility = View.GONE
         }
     }
