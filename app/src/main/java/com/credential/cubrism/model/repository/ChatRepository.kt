@@ -14,9 +14,8 @@ import java.time.format.DateTimeFormatter
 class ChatRepository {
     private val studyGroupApi: StudyGroupApi = RetrofitClient.getRetrofitWithAuth()?.create(StudyGroupApi::class.java)!!
 
-
-    fun getChattingList(studygroupId: Long, callback: (ResultUtil<List<ChatResponseDto>>) -> Unit) {
-        studyGroupApi.getChattingList(studygroupId).enqueue(object : Callback<List<ChatResponseDto>> {
+    fun getChatList(studygroupId: Int, callback: (ResultUtil<List<ChatResponseDto>>) -> Unit) {
+        studyGroupApi.getChatList(studygroupId).enqueue(object : Callback<List<ChatResponseDto>> {
             override fun onResponse(call: Call<List<ChatResponseDto>>, response: Response<List<ChatResponseDto>>) {
                 if (response.isSuccessful) {
                     response.body()?.let {

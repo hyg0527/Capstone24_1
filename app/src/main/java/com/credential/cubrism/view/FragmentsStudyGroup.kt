@@ -23,7 +23,6 @@ import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.repository.ChatRepository
-import com.credential.cubrism.model.service.StompClient
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.Rank
@@ -130,15 +129,15 @@ class StudyGroupFunc3Fragment : Fragment() {
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private lateinit var chatAdapter: ChatAdapter
-    private val stompClient = StompClient()
 
-    private var studygroupId: Long = 100 //임의로 설정함. 나중에 수정
     private var myEmail: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
 
-        stompClient.connect()
+        savedInstanceState?.let {
+            myEmail = it.getString("myEmail")
+        }
 
         return binding.root
     }
@@ -147,34 +146,34 @@ class StudyGroupFunc3Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        setupRecyclerView()
         observeViewModel()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-
-        stompClient.disconnect()
     }
 
     private fun setupView() {
-        chatViewModel.getChattingList(studygroupId)
-
         binding.btnSend.setOnClickListener {
             val text = binding.editMessage.text.toString()
 
             myEmail?.let {
                 if (text.isNotEmpty()) {
                     binding.editMessage.text?.clear()
-                    binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
-
-                    stompClient.sendMessage(studygroupId, ChatRequestDto(it, text))
+                    (activity as? StudyActivity)?.sendMessage(ChatRequestDto(it, text))
                 }
             }
         }
     }
 
-    private fun setupRecyclerView(myEmail: String) {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("myEmail", myEmail)
+    }
+
+    private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(myEmail)
 
         binding.recyclerView.apply {
@@ -189,11 +188,6 @@ class StudyGroupFunc3Fragment : Fragment() {
             chatList.observe(viewLifecycleOwner) {
                 chatAdapter.setItemList(it)
                 binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
-
-                stompClient.subscribe(studygroupId) { chatResponseDto ->
-                    chatAdapter.addItem(chatResponseDto)
-                    binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
-                }
             }
 
             errorMessage.observe(viewLifecycleOwner) { event ->
@@ -204,8 +198,10 @@ class StudyGroupFunc3Fragment : Fragment() {
         }
 
         dataStore.getEmail().asLiveData().observe(viewLifecycleOwner) { email ->
-            setupRecyclerView(email ?: "")
-            myEmail = email
+            if (myEmail == null) {
+                myEmail = email
+                setupRecyclerView()
+            }
         }
     }
 }

@@ -20,10 +20,12 @@
 
             <TextView
                 android:id="@+id/txtTitle"
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:ellipsize="end"
+                android:maxWidth="250dp"
+                android:maxLines="1"
                 android:text="스터디그룹 제목"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -31,40 +33,23 @@
         </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayoutStudyGroup"
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabIconTint="@color/color_tablayout_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/func1" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/func2" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/func3" />
-
-        </com.google.android.material.tabs.TabLayout>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
-            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayoutStudyGroup" />
-
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -74,8 +59,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/white"
+        app:headerLayout="@layout/drawer_header"
         app:itemTextColor="@color/black"
-        app:menu="@menu/study_drawer_menu"
-        app:headerLayout="@layout/drawer_header" />
+        app:menu="@menu/study_drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

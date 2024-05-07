@@ -42,7 +42,7 @@ class StompClient {
         stompClient.disconnect()
     }
 
-    fun sendMessage(studygroupId: Long, chatRequestDto: ChatRequestDto) {
+    fun sendMessage(studygroupId: Int, chatRequestDto: ChatRequestDto) {
         val gson = Gson()
         val chatRequestJson = gson.toJson(chatRequestDto)
 
@@ -52,7 +52,7 @@ class StompClient {
             .subscribe()
     }
 
-    fun subscribe(studygroupId: Long, callback: (ChatResponseDto) -> Unit): Disposable {
+    fun subscribe(studygroupId: Int, callback: (ChatResponseDto) -> Unit): Disposable {
         return stompClient.topic("/topic/public/$studygroupId")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

@@ -17,9 +17,9 @@ import com.credential.cubrism.databinding.ActivityMainBinding
 import com.credential.cubrism.model.dto.FcmTokenDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.FcmRepository
-import com.credential.cubrism.view.utils.FragmentType
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.FcmViewModel
+import com.credential.cubrism.viewmodel.MainFragmentType
 import com.credential.cubrism.viewmodel.MainViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
@@ -116,10 +116,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupFragment() {
         // Fragment 초기화
         supportFragmentManager.beginTransaction().apply {
-            add(binding.fragmentContainerView.id, HomeFragment(), FragmentType.HOME.tag)
-            add(binding.fragmentContainerView.id, StudyFragment(), FragmentType.STUDY.tag)
-            add(binding.fragmentContainerView.id, CalFragment(), FragmentType.CALENDAR.tag)
-            add(binding.fragmentContainerView.id, QualificationFragment(), FragmentType.QUALIFICATION.tag)
+            add(binding.fragmentContainerView.id, HomeFragment(), MainFragmentType.HOME.tag)
+            add(binding.fragmentContainerView.id, StudyFragment(), MainFragmentType.STUDY.tag)
+            add(binding.fragmentContainerView.id, CalFragment(), MainFragmentType.CALENDAR.tag)
+            add(binding.fragmentContainerView.id, QualificationFragment(), MainFragmentType.QUALIFICATION.tag)
             commit()
         }
     }

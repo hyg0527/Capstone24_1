@@ -89,5 +89,5 @@ interface StudyGroupApi {
 
     // 채팅
     @GET("/studygroup/{studygroupId}/chats")
-    fun getChattingList(@Path("studygroupId") studygroupId: Long): Call<List<ChatResponseDto>>
+    fun getChatList(@Path("studygroupId") studygroupId: Int): Call<List<ChatResponseDto>>
 }

@@ -1,78 +1,137 @@
 package com.credential.cubrism.view
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.core.view.MenuProvider
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyBinding
+import com.credential.cubrism.model.dto.ChatRequestDto
+import com.credential.cubrism.model.repository.ChatRepository
+import com.credential.cubrism.model.service.StompClient
+import com.credential.cubrism.viewmodel.ChatViewModel
+import com.credential.cubrism.viewmodel.StudyFragmentType
+import com.credential.cubrism.viewmodel.StudyViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayout
 
 class StudyActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyBinding.inflate(layoutInflater) }
 
-    private lateinit var currentFragment: Fragment
-    private val homeFragment = StudyGroupHomeFragment()
-    private val func2Fragment = StudyGroupFunc2Fragment()
-    private val func3Fragment = StudyGroupFunc3Fragment()
+    private val studyViewModel: StudyViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels { ViewModelFactory(ChatRepository()) }
+
+    private val stompClient = StompClient()
+
+    private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", 100) } // 나중에 -1로 변경
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        if (savedInstanceState == null) { setupFragment() }
+        setupToolbar()
+        setupTabLayout()
+        setupChat()
+        observeViewModel()
 
         intent.getStringExtra("studyGroupTitle")?.let { title ->
             binding.txtTitle.text = title
         }
 
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        navigationInit()
-        menuSetUp()
-
         var count = 5 // 참가자 인원수
         drawerInit(count)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.study_menu, menu)
-        return true
+    override fun onDestroy() {
+        super.onDestroy()
+        stompClient.disconnect()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.manage -> {     // 관리 버튼을 누르면 관리 화면으로 이동
-                val intent = Intent(this, StudyManageActivity::class.java)
-                intent.putExtra("titleName", binding.txtTitle.text.toString())
-                startActivity(intent)
-                true
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        // 메뉴 추가
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.study_menu, menu)
             }
-            else -> super.onOptionsItemSelected(item)
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.manage -> {
+                        val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
+                        intent.putExtra("titleName", binding.txtTitle.text.toString())
+                        startActivity(intent)
+                    }
+                }
+                return false
+            }
+        })
+    }
+
+    private fun setupTabLayout() {
+        val tabIcons = listOf(R.drawable.func1, R.drawable.func2, R.drawable.func3)
+
+        for (icon in tabIcons) {
+            binding.tabLayout.addTab(binding.tabLayout.newTab().setIcon(icon))
+        }
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.toolbar.collapseActionView()
+
+                studyViewModel.setCurrentFragment(tab?.position ?: 0)
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun setupFragment() {
+        supportFragmentManager.beginTransaction().apply {
+            add(binding.fragmentContainerView.id, StudyGroupHomeFragment(), StudyFragmentType.HOME.tag)
+            add(binding.fragmentContainerView.id, StudyGroupFunc2Fragment(), StudyFragmentType.LEARN_RATE.tag)
+            add(binding.fragmentContainerView.id, StudyGroupFunc3Fragment(), StudyFragmentType.CHAT.tag)
+            commit()
         }
     }
 
-    private fun navigationInit() {
-        currentFragment = homeFragment
-        val fragmentList = listOf(homeFragment, func2Fragment, func3Fragment)
-        val transaction = supportFragmentManager.beginTransaction()
+    private fun setupChat() {
+        if (studyGroupId != -1)
+            chatViewModel.getChatList(studyGroupId)
 
-        for (fragment in fragmentList) {
-            transaction.add(binding.fragmentContainerView.id, fragment)
+        stompClient.apply {
+            connect()
+            subscribe(studyGroupId) { chat ->
+                chatViewModel.addChat(chat)
+            }
         }
-        for (fragment in listOf(func2Fragment, func3Fragment)) {
-            transaction.hide(fragment)
-        }
+    }
 
-        transaction.commit()
+    private fun observeViewModel() {
+        studyViewModel.currentFragmentType.observe(this) { fragmentType ->
+            val currentFragment = supportFragmentManager.findFragmentByTag(fragmentType.tag)
+            supportFragmentManager.beginTransaction().apply {
+                supportFragmentManager.fragments.forEach { fragment ->
+                    if (fragment == currentFragment)
+                        show(fragment)
+                    else
+                        hide(fragment)
+                }
+            }.commit()
+
+            binding.tabLayout.getTabAt(fragmentType.ordinal)?.select()
+        }
     }
 
     private fun drawerInit(count: Int) { // 참가자명 drawer에 표시
@@ -82,40 +141,7 @@ class StudyActivity : AppCompatActivity() {
         for (i in 1..count) { menu.getItem(i - 1).isEnabled = false }
     }
 
-    private fun menuSetUp() { // 상단 프래그먼트 메뉴 이동 버튼 설정
-        for (tabIndex in 1..2) {
-            val tab = binding.tabLayoutStudyGroup.getTabAt(tabIndex)
-            tab?.icon?.setColorFilter(Color.parseColor("#BFBFBF"), PorterDuff.Mode.SRC_IN)
-        }
-
-        binding.tabLayoutStudyGroup.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                // 선택된 탭의 아이콘 색상을 변경
-                p0?.icon?.setColorFilter(resources.getColor(R.color.blue), PorterDuff.Mode.SRC_IN)
-
-                when (p0?.position) {
-                    0 -> changeFragment(homeFragment)
-                    1 -> changeFragment(func2Fragment)
-                    2 -> changeFragment(func3Fragment)
-                }
-            }
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-                p0?.icon?.setColorFilter(Color.parseColor("#BFBFBF"), PorterDuff.Mode.SRC_IN)
-            }
-
-            override fun onTabReselected(p0: TabLayout.Tab?) {}
-        })
-    }
-
-    private fun changeFragment(fragment: Fragment) { // 프래그먼트 전환 함수
-        if (fragment != currentFragment) {
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-                .hide(currentFragment)
-                .show(fragment)
-                .commit()
-        }
-        currentFragment = fragment
+    fun sendMessage(chatRequestDto: ChatRequestDto) {
+        stompClient.sendMessage(studyGroupId, chatRequestDto)
     }
 }
