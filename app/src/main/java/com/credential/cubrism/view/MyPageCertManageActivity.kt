@@ -1,53 +1,87 @@
 package com.credential.cubrism.view
-import android.os.Bundle
-import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.credential.cubrism.databinding.ActivityMypageCertmanageBinding
-import com.credential.cubrism.view.adapter.ItemDeleteListener
-import com.credential.cubrism.view.adapter.MyPageCertAdapter
-import com.credential.cubrism.view.adapter.myCertData
-import com.credential.cubrism.viewmodel.CertListViewModel
 
-class MyPageCertManageActivity : AppCompatActivity(), ItemDeleteListener {
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.credential.cubrism.databinding.ActivityMypageCertmanageBinding
+import com.credential.cubrism.model.dto.FavoriteListDto
+import com.credential.cubrism.model.repository.FavoriteRepository
+import com.credential.cubrism.view.adapter.FavoriteAdapter
+import com.credential.cubrism.view.adapter.FavoriteDeleteButtonClickListener
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.FavoriteViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
+
+class MyPageCertManageActivity : AppCompatActivity(), FavoriteDeleteButtonClickListener {
     private val binding by lazy { ActivityMypageCertmanageBinding.inflate(layoutInflater) }
-    private lateinit var certListViewModel: CertListViewModel
+    private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
+
+    private lateinit var favoriteAdapter: FavoriteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        certListViewModel = ViewModelProvider(this)[CertListViewModel::class.java]
-        setupView()
+        setupToolbar()
         setupRecyclerView()
+        observeViewModel()
+
+        favoriteViewModel.getFavoriteList()
     }
 
-    override fun onItemDeleted(itemCount: Int) {
-        if (itemCount == 0) binding.noCert.visibility = View.VISIBLE else View.GONE
-    }
-
-    private fun setupView() {
-        // 뒤로가기
-        binding.backBtn.setOnClickListener { finish() }
-
-        // 설정하기 버튼
-        binding.btnApply.setOnClickListener {
-            Toast.makeText(this, "변경 사항을 저장했습니다.", Toast.LENGTH_SHORT).show()
-            finish()
+    override fun onButtonClick(item: FavoriteListDto) {
+        AlertDialog.Builder(this).apply {
+            setTitle(item.name)
+            setMessage("관심 자격증을 삭제하시겠습니까?")
+            setNegativeButton("취소", null)
+            setPositiveButton("삭제") { _, _ ->
+                favoriteViewModel.deleteFavorite(item.favoriteId)
+            }
+            show()
         }
     }
 
-    private fun setupRecyclerView() : MyPageCertAdapter {
-        val items = certListViewModel.certList.value ?: ArrayList()
-        val adapter = MyPageCertAdapter(items)
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener { finish() }
+    }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false)
-        binding.recyclerView.adapter = adapter
+    private fun setupRecyclerView() {
+        favoriteAdapter = FavoriteAdapter(this)
 
-        adapter.setItemDeleteListener(this)
+        binding.recyclerView.apply {
+            adapter = favoriteAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 80, 0, 0, 0, 0, null))
+            setHasFixedSize(true)
+        }
+    }
 
-        return adapter
+    private fun observeViewModel() {
+        favoriteViewModel.apply {
+            favoriteList.observe(this@MyPageCertManageActivity) {
+                binding.progressIndicator.hide()
+                if (it.isEmpty())
+                    binding.txtNoFavorite.visibility = android.view.View.VISIBLE
+                else
+                    binding.txtNoFavorite.visibility = android.view.View.GONE
+                favoriteAdapter.setItemList(it)
+            }
+
+            deleteFavorite.observe(this@MyPageCertManageActivity) {
+                Toast.makeText(this@MyPageCertManageActivity, it.message, Toast.LENGTH_SHORT).show()
+                favoriteViewModel.getFavoriteList()
+            }
+
+            errorMessage.observe(this@MyPageCertManageActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@MyPageCertManageActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
