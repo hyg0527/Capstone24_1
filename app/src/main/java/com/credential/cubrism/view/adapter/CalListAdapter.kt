@@ -3,11 +3,10 @@ package com.credential.cubrism.view.adapter
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ItemListScheduleBinding
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -15,8 +14,8 @@ interface ScheduleClickListener {
     fun onItemClick(item: CalMonth)
 }
 
-data class CalMonth(val title: String? = null, val startTime: String? = null,
-                    val endTime: String? = null, val info: String? = null, val isFullTime: Boolean) : Parcelable {
+data class CalMonth(val startDate: String? = null, val endDate: String? = null,
+                    val title: String? = null, val content: String? = null, val allDay: Boolean) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -27,10 +26,10 @@ data class CalMonth(val title: String? = null, val startTime: String? = null,
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
-        parcel.writeString(startTime)
-        parcel.writeString(endTime)
-        parcel.writeString(info)
-        parcel.writeByte(if (isFullTime) 1 else 0)
+        parcel.writeString(startDate)
+        parcel.writeString(endDate)
+        parcel.writeString(content)
+        parcel.writeByte(if (allDay) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -55,36 +54,32 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         itemClickListener = listener
     }
 
-    inner class CalViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val title = v.findViewById<TextView>(R.id.txtCalMonthTitle)
-        val timeStart = v.findViewById<TextView>(R.id.timeStart)
-        val timeEnd = v.findViewById<TextView>(R.id.timeEnd)
-        val info = v.findViewById<TextView>(R.id.txtCalMonthInfo)
-        init {
-            v.setOnClickListener {
-                val position = adapterPosition
-                val item = items[position]
-                itemClickListener?.onItemClick(item)
+    inner class CalViewHolder(private val binding: ItemListScheduleBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: CalMonth) {
+            binding.apply {
+                txtCalMonthTitle.text = item.title
+                timeStart.text = convertStartEndTxt(item.startDate)
+                timeEnd.text = convertStartEndTxt(item.endDate)
+                txtCalMonthInfo.text = item.content
+                root.setOnClickListener {
+                    itemClickListener?.onItemClick(item)
+                }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_list_schedule, parent, false)
-
-        return CalViewHolder(view)
+        val binding = ItemListScheduleBinding.inflate(inflater, parent, false)
+        return CalViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
-        return items.count()
+        return items.size
     }
 
     override fun onBindViewHolder(holder: CalViewHolder, position: Int) {
-        holder.title.text = items[position].title
-        holder.timeStart.text = convertStartEndTxt(items[position].startTime)
-        holder.timeEnd.text = convertStartEndTxt(items[position].endTime)
-        holder.info.text = items[position].info
+        holder.bind(items[position])
     }
 
     private fun convertStartEndTxt(inputString: String?): String {
@@ -109,10 +104,11 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         newList.clear()
 
         for (item in items) {
-            val (realDateStartDay, realDateEndDay, dateToInt) = findDate(item, date)
+            val item2 = checkFormat(item)
+            val (realDateStartDay, realDateEndDay, dateToInt) = findDate(item2, date)
 
             if ((realDateStartDay <= dateToInt) && (realDateEndDay >= dateToInt)) {
-                newList.add(item)
+                newList.add(item2)
             }
         }
 
@@ -124,18 +120,63 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         return items.isNotEmpty()
     }
 
+    private fun checkFormat(value: CalMonth): CalMonth { // 형식 체크(로컬데이터 형식으로 변환 후 반환)
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+        val dateFormatterOutput = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
+        val dateFormatterOutputAllDay = SimpleDateFormat("yyyy - MM - dd 종일", Locale.getDefault())
+
+        try { // startDate를 dateFormatter로 파싱하여 오류가 없으면 value 그대로 반환
+            dateFormatterOutput.parse(value.startDate ?: "")
+            return value
+        }
+        catch (e: ParseException) { // ParseException이 발생 하면 format 변경
+            var startDate = ""; var endDate = ""
+
+            if (value.allDay) {
+                startDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.startDate ?: "") ?: "")
+                endDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.endDate ?: "") ?: "")
+            }
+            else {
+                startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate ?: "") ?: "")
+                endDate = dateFormatterOutput.format(dateFormatter.parse(value.endDate ?: "") ?: "")
+            }
+
+            return value.copy(startDate = startDate, endDate = endDate)
+        }
+    }
+
+    fun revertFormat(value: CalMonth): CalMonth { // 형식 체크(원래 데이터 형식으로 다시 변환 후 반환)
+        val dateFormatter = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
+        val dateFormatterAllDay = SimpleDateFormat("yyyy - MM - dd 종일", Locale.getDefault())
+        val dateFormatterOutput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+        val dateFormatterOutputAllDay = SimpleDateFormat("yyyy-MM-dd'T'00:00", Locale.getDefault())
+
+        var startDate = ""; var endDate = ""
+
+        if (value.allDay) {
+            startDate = dateFormatterOutputAllDay.format(dateFormatterAllDay.parse(value.startDate ?: "") ?: "")
+            endDate = dateFormatterOutputAllDay.format(dateFormatterAllDay.parse(value.endDate ?: "") ?: "")
+        }
+        else {
+            startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate ?: "") ?: "")
+            endDate = dateFormatterOutput.format(dateFormatter.parse(value.endDate ?: "") ?: "")
+        }
+
+        return value.copy(startDate = startDate, endDate = endDate)
+    }
+
     private fun findDate(item: CalMonth, date: String): Triple<Int, Int, Int> {
         var realDateStart = ""
         var realDateEnd = ""
         val dateToInt = date.replace(" - ", "").toInt()
 
-        if ((item.startTime ?: "").contains("종일") || (item.endTime ?: "").contains("종일")) {
-            realDateStart = item.startTime?.substringBefore(" 종일")?.trim() ?: ""
-            realDateEnd = item.endTime?.substringBefore(" 종일")?.trim() ?: ""
+        if ((item.startDate ?: "").contains("종일") || (item.endDate ?: "").contains("종일")) {
+            realDateStart = item.startDate?.substringBefore(" 종일")?.trim() ?: ""
+            realDateEnd = item.endDate?.substringBefore(" 종일")?.trim() ?: ""
         }
-        else if ((item.startTime ?: "").contains("오")  || (item.endTime ?: "").contains("오")) {
-            realDateStart = item.startTime?.substringBefore(" 오")?.trim() ?: ""
-            realDateEnd = item.endTime?.substringBefore(" 오")?.trim() ?: ""
+        else if ((item.startDate ?: "").contains("오")  || (item.endDate ?: "").contains("오")) {
+            realDateStart = item.startDate?.substringBefore(" 오")?.trim() ?: ""
+            realDateEnd = item.endDate?.substringBefore(" 오")?.trim() ?: ""
         }
         else return Triple(0,0,0)
 

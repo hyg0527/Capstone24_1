@@ -1,15 +1,12 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.databinding.ActivityMyscheduleBinding
-import com.credential.cubrism.model.repository.ScheduleRepository
-import com.credential.cubrism.view.adapter.ScheduleAdapter
-import com.credential.cubrism.view.utils.ItemDecoratorDivider
-import com.credential.cubrism.viewmodel.ScheduleViewModel
-import com.credential.cubrism.viewmodel.ViewModelFactory
+import com.credential.cubrism.view.adapter.CalListAdapter
+import com.credential.cubrism.viewmodel.CalendarViewModel
 
 class MyScheduleListActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMyscheduleBinding.inflate(layoutInflater) }

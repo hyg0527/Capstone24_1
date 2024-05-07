@@ -167,6 +167,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerSchedule"
                     android:layout_width="match_parent"
@@ -221,6 +223,7 @@
                 android:orientation="horizontal"
                 android:overScrollMode="never"
                 android:paddingTop="16dp"
+
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

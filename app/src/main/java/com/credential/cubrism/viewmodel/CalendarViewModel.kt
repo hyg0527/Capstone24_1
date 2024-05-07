@@ -10,18 +10,18 @@ class CalendarViewModel : ViewModel() {
     val calMonthList: LiveData<ArrayList<CalMonth>> get() = _calMonthList
 
     init { // 샘플 일정 생성
-        addDateMonth(CalMonth(title="일정1", startTime="2024 - 04 - 10 오전 01:00",
-            endTime="2024 - 04 - 10 오전 02:00", info="일정1 입니다.", isFullTime=false))
-        addDateMonth(CalMonth(title="일정2", startTime="2024 - 04 - 10 오전 01:00",
-            endTime="2024 - 04 - 10 오전 02:00", info="일정2 입니다.", isFullTime=false))
-        addDateMonth(CalMonth(title="ios 중간 시험", startTime="2024 - 04 - 22 오후 01:30",
-            endTime="2024 - 04 - 22 오후 03:00", info="ios 시험일", isFullTime=false))
-//        addDateMonth(CalMonth(title="예비군 다음날", startTime="2024 - 04 - 17 종일",
-//            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
-//        addDateMonth(CalMonth(title="예비군 다음날2", startTime="2024 - 04 - 17 종일",
-//            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
-//        addDateMonth(CalMonth(title="예비군 다음날3", startTime="2024 - 04 - 17 종일",
-//            endTime="2024 - 04 - 17 종일", info="예비군 끝났다!!", isFullTime=true))
+        addDateMonth(CalMonth(startDate="2024-03-31T17:00", endDate="2024-04-01T17:00",
+            title="일정1", content="내용1", allDay=false))
+        addDateMonth(CalMonth(startDate="2024-04-03T00:00", endDate="2024-04-03T00:00",
+            title="일정2", content="내용2", allDay=true))
+        addDateMonth(CalMonth(startDate="2024-05-03T00:00", endDate="2024-05-03T00:00",
+            title="일정3", content="내용3", allDay=true))
+        /*
+        { "scheduleId": 1, "startDate": "2024-03-31T17:00", "endDate": "2024-04-01T17:00",
+        "title": "일정1", "content": "내용1", "allDay": false }
+        { "startDate": "2024-03-31T17:00", "endDate": "2024-04-01T17:00",
+        "title": "일정1", "content": "내용1", "allDay": false }
+        */
     }
 
     fun addDateMonth(value: CalMonth) { // 추가

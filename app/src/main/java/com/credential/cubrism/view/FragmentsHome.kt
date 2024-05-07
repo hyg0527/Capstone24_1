@@ -164,22 +164,22 @@ class HomeFragment : Fragment() {
 
     private fun lcsData(): ArrayList<myLicenseData> {
         return ArrayList<myLicenseData>().apply {
-            add(myLicenseData("정보처리기사"))
-            add(myLicenseData("한식조리기능사"))
-            add(myLicenseData("직업상담사1급"))
+//            add(myLicenseData("정보처리기사"))
+//            add(myLicenseData("한식조리기능사"))
+//            add(myLicenseData("직업상담사1급"))
         }
     }
 
     private fun getTodayData(): String {
         val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy - MM - dd")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return currentDate.format(formatter)
     }
 
     private fun filterItem(items: ArrayList<CalMonth>): ArrayList<CalMonth> {
         val newList = ArrayList<CalMonth>()
         for (item in items) {
-            if ((item.startTime ?: "").contains(getTodayData())) {
+            if ((item.startDate ?: "").contains(getTodayData())) {
                 newList.add(item)
             }
         }

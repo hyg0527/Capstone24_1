@@ -15,19 +15,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <CheckBox
-            android:id="@+id/todayCheckBox"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:button="@null"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:textSize="18dp"
-            android:background="@drawable/checkbox_todaylist" />
-
         <TextView
             android:id="@+id/todaySchedule"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
