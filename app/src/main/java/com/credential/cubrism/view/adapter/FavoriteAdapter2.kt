@@ -7,26 +7,48 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
+import com.credential.cubrism.databinding.ItemListMylicenselistAddBinding
 import com.credential.cubrism.databinding.ItemListMylicenselistBinding
 import com.credential.cubrism.model.dto.FavoriteListDto
-import com.credential.cubrism.view.diff.FavoriteDiffUtil
+import com.credential.cubrism.view.diff.FavoriteItemDiffUtil
 
-class FavoriteAdapter2 : RecyclerView.Adapter<FavoriteAdapter2.ViewHolder>() {
-    private var itemList = mutableListOf<FavoriteListDto>()
+enum class FavType {
+    FAVORITE, ADD
+}
+
+data class FavoriteItem(
+    val type: FavType,
+    val data: Any?
+)
+
+class FavoriteAdapter2 : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var itemList = mutableListOf<FavoriteItem>()
 
     override fun getItemCount(): Int = itemList.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun getItemViewType(position: Int): Int {
+        return when (itemList[position].type) {
+            FavType.FAVORITE -> 0
+            FavType.ADD -> 1
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemListMylicenselistBinding.inflate(inflater, parent, false)
-        return ViewHolder(binding)
+        return when (viewType) {
+            0 -> FavoriteViewHolder(ItemListMylicenselistBinding.inflate(inflater, parent, false))
+            else -> AddViewHolder(ItemListMylicenselistAddBinding.inflate(inflater, parent, false))
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(itemList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is FavoriteViewHolder -> holder.bind(itemList[position].data as FavoriteListDto)
+            is AddViewHolder -> holder.bind(itemList[position])
+        }
     }
 
-    inner class ViewHolder(private val binding: ItemListMylicenselistBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class FavoriteViewHolder(private val binding: ItemListMylicenselistBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FavoriteListDto) {
             Glide.with(binding.root).run {
                 if ((adapterPosition + 1) % 3 == 1) {
@@ -48,8 +70,12 @@ class FavoriteAdapter2 : RecyclerView.Adapter<FavoriteAdapter2.ViewHolder>() {
         }
     }
 
-    fun setItemList(list: List<FavoriteListDto>) {
-        val diffCallback = FavoriteDiffUtil(itemList, list)
+    inner class AddViewHolder(private val binding: ItemListMylicenselistAddBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: FavoriteItem) {}
+    }
+
+    fun setItemList(list: List<FavoriteItem>) {
+        val diffCallback = FavoriteItemDiffUtil(itemList, list)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         itemList.clear()

@@ -22,7 +22,9 @@ import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.CalMonth
+import com.credential.cubrism.view.adapter.FavType
 import com.credential.cubrism.view.adapter.FavoriteAdapter2
+import com.credential.cubrism.view.adapter.FavoriteItem
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodoAdapter
 import com.credential.cubrism.viewmodel.AuthViewModel
@@ -179,15 +181,23 @@ class HomeFragment : Fragment() {
         }
 
         favoriteViewModel.apply {
-            favoriteList.observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
+            favoriteList.observe(viewLifecycleOwner) { list ->
+                val items = mutableListOf<FavoriteItem>()
+
+                if (list.isEmpty()) {
                     binding.layoutNoFavorite.visibility = View.VISIBLE
                     binding.recyclerQualification.visibility = View.GONE
                 } else {
                     binding.layoutNoFavorite.visibility = View.GONE
                     binding.recyclerQualification.visibility = View.VISIBLE
+
+                    items.addAll(list.map { FavoriteItem(FavType.FAVORITE, it) })
+                    if (items.size < 3) {
+                        items.add(FavoriteItem(FavType.ADD, null))
+                    }
                 }
-                favoriteAdapter2.setItemList(it)
+
+                favoriteAdapter2.setItemList(items)
             }
 
             errorMessage.observe(viewLifecycleOwner) {
