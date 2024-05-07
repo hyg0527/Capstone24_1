@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -28,6 +29,7 @@ class StudyInfoActivity : AppCompatActivity() {
     private val studyGroupTagAdapter by lazy { StudyGroupTagAdapter(2) }
 
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
+    private var studyGroupName: String? = null
     private var isJoined = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +56,12 @@ class StudyInfoActivity : AppCompatActivity() {
 
         binding.btnStudyJoin.setOnClickListener {
             if (isJoined) {
-                // TODO: 해당 스터디 그룹으로 이동
+                if (studyGroupId != -1 && studyGroupName != null) {
+                    val intent = Intent(this, StudyActivity::class.java)
+                    intent.putExtra("studyGroupId", studyGroupId)
+                    intent.putExtra("studyGroupName", studyGroupName)
+                    startActivity(intent)
+                }
             } else {
                 studyGroupViewModel.requestJoin(studyGroupId)
                 binding.progressIndicator.visibility = View.VISIBLE
@@ -100,6 +107,7 @@ class StudyInfoActivity : AppCompatActivity() {
                     }
                 }
                 studyGroupTagAdapter.setItemList(group.tags)
+                studyGroupName = group.groupName
             }
 
             requestJoin.observe(this@StudyInfoActivity) {
