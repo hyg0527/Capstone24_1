@@ -23,6 +23,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _studyGroupList = MutableLiveData<List<GroupList>>()
     val studyGroupList: LiveData<List<GroupList>> = _studyGroupList
 
+    private val _studyGroupMyList = MutableLiveData<List<GroupList>>()
+    val studyGroupMyList: LiveData<List<GroupList>> = _studyGroupMyList
+
     private val _studyGroupInfo = MutableLiveData<StudyGroupInfoDto>()
     val studyGroupInfo: LiveData<StudyGroupInfoDto> = _studyGroupInfo
 
@@ -59,6 +62,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
                 is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
                 is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
             }
+        }
+    }
+
+    fun getMyStudyGroupList() {
+        repository.myStudyGroupList { result ->
+            handleResult(result, _studyGroupMyList, _errorMessage)
         }
     }
 

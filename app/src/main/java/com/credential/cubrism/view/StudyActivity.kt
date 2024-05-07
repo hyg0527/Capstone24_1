@@ -29,6 +29,7 @@ class StudyActivity : AppCompatActivity() {
     private val stompClient = StompClient()
 
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", 100) } // 나중에 -1로 변경
+    private val studyGroupName by lazy { intent.getStringExtra("studyGroupName") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +40,6 @@ class StudyActivity : AppCompatActivity() {
         setupTabLayout()
         setupChat()
         observeViewModel()
-
-        intent.getStringExtra("studyGroupTitle")?.let { title ->
-            binding.txtTitle.text = title
-        }
 
         var count = 5 // 참가자 인원수
         drawerInit(count)
@@ -56,6 +53,8 @@ class StudyActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
+        binding.txtTitle.text = studyGroupName
+
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()

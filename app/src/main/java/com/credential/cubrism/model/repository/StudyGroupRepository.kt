@@ -1,6 +1,8 @@
 package com.credential.cubrism.model.repository
 
+import android.util.Log
 import com.credential.cubrism.model.api.StudyGroupApi
+import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
@@ -49,6 +51,25 @@ class StudyGroupRepository {
 
             override fun onFailure(call: Call<StudyGroupListDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun myStudyGroupList(callback: (ResultUtil<List<GroupList>>) -> Unit) {
+        studyGroupApiAuth.getMyStudyGroupList().enqueue(object : Callback<List<GroupList>> {
+            override fun onResponse(call: Call<List<GroupList>>, response: Response<List<GroupList>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<List<GroupList>>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+                Log.d("테스트", "t : ${t.message}")
             }
         })
     }

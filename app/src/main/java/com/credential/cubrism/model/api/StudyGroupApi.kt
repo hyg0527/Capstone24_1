@@ -41,7 +41,7 @@ interface StudyGroupApi {
 
     // 내가 가입한 스터디 그룹 목록
     @GET("/studygroups/my")
-    fun getMyStudyGroupList(): Call<GroupList>
+    fun getMyStudyGroupList(): Call<List<GroupList>>
 
     // 스터디 그룹 정보
     @GET("/studygroup/{groupId}")
