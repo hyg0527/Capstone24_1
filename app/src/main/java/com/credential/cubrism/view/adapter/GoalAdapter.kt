@@ -1,7 +1,6 @@
 package com.credential.cubrism.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -18,6 +17,8 @@ class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boole
             binding.closeBtn2.setOnClickListener {
                 val position = adapterPosition
                 val item = items[position]
+
+                Toast.makeText(itemView.context, "목표가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                 items.remove(item)
 
                 rearrangeItem(items)
@@ -78,8 +79,8 @@ class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boole
         }
     }
 
-    fun addItem(itemNum: Int) {
-        items.add(Goals(null, null, itemNum))
+    fun addItem(itemNum: Int, text: String) {
+        items.add(Goals(itemNum, text, itemNum))
         notifyDataSetChanged()
     }
 

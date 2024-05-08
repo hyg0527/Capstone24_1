@@ -92,7 +92,7 @@ class StudyGroupFunc2Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
 
-        initRankList(view)
+        initRankList()
         binding.button.setOnClickListener { goToCBT() }
     }
 
@@ -101,17 +101,16 @@ class StudyGroupFunc2Fragment : Fragment() {
         _binding = null
     }
 
-    private fun initRankList(v: View) {
+    private fun initRankList() {
         val items = ArrayList<Rank>().apply {
             for (i in 1..5) {
                 add(Rank("참가자 $i",(6 - i) * 20))
             }
         }
-        val recyclerView = v.findViewById<RecyclerView>(R.id.studyGroupRankView)
         adapter = StudyGroupRankAdapter(items)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = adapter
+        binding.studyGroupRankView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.studyGroupRankView.adapter = adapter
     }
 
     private fun goToCBT() { // 자격증 기출문제 홈페이지 이동 함수

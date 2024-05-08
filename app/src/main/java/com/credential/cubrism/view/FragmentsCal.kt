@@ -24,6 +24,7 @@ import com.credential.cubrism.databinding.DialogScheduleDatepickBinding
 import com.credential.cubrism.databinding.DialogScheduleInfoBinding
 import com.credential.cubrism.databinding.DialogTimePickBinding
 import com.credential.cubrism.databinding.FragmentCalBinding
+import com.credential.cubrism.model.dto.ScheduleDto
 import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.view.adapter.CalListAdapter
 import com.credential.cubrism.view.adapter.CalMonth
@@ -62,6 +63,19 @@ class CalFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initCalendarSchedule()
+
+        scheduleViewModel.getScheduleList(null, null)
+
+//        scheduleViewModel.addSchedule(
+//            ScheduleDto(startDate="2024-03-31T17:00", endDate="2024-04-01T17:00",
+//            title="일정1", content="내용1", isAllDay=false)
+//        )
+//
+//        scheduleViewModel.deleteSchedule(4)
+//
+//        scheduleViewModel.updateSchedule(4, ScheduleDto(startDate="2024-03-31T17:00", endDate="2024-04-01T17:00",
+//            title="일정1", content="내용1", isAllDay=false))
+
     }
 
     override fun onDestroyView() {
