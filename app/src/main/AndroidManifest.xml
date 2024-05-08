@@ -110,8 +110,7 @@
             android:exported="true" />
         <activity
             android:name=".view.StudyCreateActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustNothing" />
+            android:exported="true" />
         <activity
             android:name=".view.MyScheduleListActivity"
             android:exported="true" />
