@@ -61,11 +61,11 @@ interface StudyGroupApi {
 
     // 스터디 그룹 가입 승인
     @PUT("/studygroup/join/receive/{memberId}")
-    fun approveJoinRequest(@Path("memberId") memberId: UUID): Call<MessageDto>
+    fun acceptJoinRequest(@Path("memberId") memberId: UUID): Call<MessageDto>
 
     // 스터디 그룹 가입 거절
     @DELETE("/studygroup/join/receive/{memberId}")
-    fun rejectJoinRequest(@Path("memberId") memberId: UUID): Call<MessageDto>
+    fun denyJoinRequest(@Path("memberId") memberId: UUID): Call<MessageDto>
 
     // 해당 스터디 그룹 가입 신청 목록
     @GET("/studygroup/join/receives/{groupId}")

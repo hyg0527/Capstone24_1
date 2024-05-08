@@ -2,25 +2,20 @@ package com.credential.cubrism.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListJoinacceptBinding
-import com.credential.cubrism.databinding.ItemListMystudyBinding
-import com.credential.cubrism.model.dto.PostList
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
-import com.credential.cubrism.view.diff.PostDiffUtil
 import com.credential.cubrism.view.diff.StudyGroupJoinReceiveDiffUtil
-import java.util.UUID
 
 interface GroupAcceptButtonClickListener {
-    fun onAcceptButtonClick(memberId: UUID)
+    fun onAcceptButtonClick(item: StudyGroupJoinReceiveListDto)
 }
 
 interface GroupDenyButtonClickListener {
-    fun onDenyButtonClick(memberId: UUID)
+    fun onDenyButtonClick(item: StudyGroupJoinReceiveListDto)
 }
 
 class JoinAcceptAdapter(private val listenerAccept: GroupAcceptButtonClickListener, private val listenerDeny: GroupDenyButtonClickListener) : RecyclerView.Adapter<JoinAcceptAdapter.ViewHolder>() {
@@ -50,11 +45,11 @@ class JoinAcceptAdapter(private val listenerAccept: GroupAcceptButtonClickListen
             binding.txtName.text = item.userName
 
             binding.btnAccept.setOnClickListener {
-                listenerAccept.onAcceptButtonClick(item.memberId)
+                listenerAccept.onAcceptButtonClick(item)
             }
 
             binding.btnDeny.setOnClickListener {
-                listenerDeny.onDenyButtonClick(item.memberId)
+                listenerDeny.onDenyButtonClick(item)
             }
         }
     }

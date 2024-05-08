@@ -2,11 +2,11 @@ package com.credential.cubrism.view
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -15,6 +15,7 @@ import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
+import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.GroupAcceptButtonClickListener
@@ -28,7 +29,6 @@ import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 
 
 class StudyGroupManageFragment : Fragment() { // 관리 홈화면
@@ -194,12 +194,28 @@ class StudyGroupAcceptFragment : Fragment(), GroupAcceptButtonClickListener, Gro
         _binding = null
     }
 
-    override fun onAcceptButtonClick(memberId: UUID) {
-
+    override fun onAcceptButtonClick(item: StudyGroupJoinReceiveListDto) {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(item.userName)
+            setMessage("가입 신청을 수락하시겠습니까?")
+            setNegativeButton("취소", null)
+            setPositiveButton("수락") { _, _ ->
+                studyGroupViewModel.acceptJoinRequest(item.memberId)
+            }
+            show()
+        }
     }
 
-    override fun onDenyButtonClick(memberId: UUID) {
-
+    override fun onDenyButtonClick(item: StudyGroupJoinReceiveListDto) {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(item.userName)
+            setMessage("가입 신청을 거절하시겠습니까?")
+            setNegativeButton("취소", null)
+            setPositiveButton("거절") { _, _ ->
+                studyGroupViewModel.denyJoinRequest(item.memberId)
+            }
+            show()
+        }
     }
 
     private fun setupToolbar() {
@@ -225,6 +241,16 @@ class StudyGroupAcceptFragment : Fragment(), GroupAcceptButtonClickListener, Gro
         studyGroupViewModel.apply {
             joinReceiveList.observe(viewLifecycleOwner) {
                 joinAcceptAdapter.setItemList(it)
+            }
+
+            acceptJoinRequest.observe(viewLifecycleOwner) {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
+            }
+
+            denyJoinRequest.observe(viewLifecycleOwner) {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
             }
         }
     }

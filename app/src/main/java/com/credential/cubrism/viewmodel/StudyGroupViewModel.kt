@@ -13,6 +13,7 @@ import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
+import java.util.UUID
 
 class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewModel() {
     private val _page = MutableLiveData<PageDto>()
@@ -32,6 +33,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _joinRequestList = MutableLiveData<List<StudyGroupJoinListDto>>()
     val joinRequestList: LiveData<List<StudyGroupJoinListDto>> = _joinRequestList
+
+    private val _acceptJoinRequest = MutableLiveData<MessageDto>()
+    val acceptJoinRequest: LiveData<MessageDto> = _acceptJoinRequest
+
+    private val _denyJoinRequest = MutableLiveData<MessageDto>()
+    val denyJoinRequest: LiveData<MessageDto> = _denyJoinRequest
 
     private val _joinReceiveList = MutableLiveData<List<StudyGroupJoinReceiveListDto>>()
     val joinReceiveList: LiveData<List<StudyGroupJoinReceiveListDto>> = _joinReceiveList
@@ -84,6 +91,18 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun getStudyGroupJoinRequestList() {
         repository.joinRequestList { result ->
             handleResult(result, _joinRequestList, _errorMessage)
+        }
+    }
+
+    fun acceptJoinRequest(memberId: UUID) {
+        repository.acceptJoinRequest(memberId) { result ->
+            handleResult(result, _acceptJoinRequest, _errorMessage)
+        }
+    }
+
+    fun denyJoinRequest(memberId: UUID) {
+        repository.denyJoinRequest(memberId) { result ->
+            handleResult(result, _denyJoinRequest, _errorMessage)
         }
     }
 

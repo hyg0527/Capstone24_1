@@ -15,6 +15,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.UUID
 
 class StudyGroupRepository {
     private val studyGroupApi: StudyGroupApi = RetrofitClient.getRetrofit()?.create(StudyGroupApi::class.java)!!
@@ -124,6 +125,42 @@ class StudyGroupRepository {
             }
 
             override fun onFailure(call: Call<List<StudyGroupJoinListDto>>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun acceptJoinRequest(memberId: UUID, callback: (ResultUtil<MessageDto>) -> Unit) {
+        studyGroupApiAuth.acceptJoinRequest(memberId).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun denyJoinRequest(memberId: UUID, callback: (ResultUtil<MessageDto>) -> Unit) {
+        studyGroupApiAuth.denyJoinRequest(memberId).enqueue(object : Callback<MessageDto> {
+            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })
