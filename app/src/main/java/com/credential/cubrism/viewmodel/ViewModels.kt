@@ -6,21 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.credential.cubrism.view.adapter.Goals
 
 
-class GoalListViewModel : ViewModel() {
-    private val _goalList = MutableLiveData<ArrayList<Goals>>(arrayListOf())
-    val goalList: LiveData<ArrayList<Goals>> get() = _goalList
-
-    init {
-        addList(Goals(1, "목표 1입니다.", 1))
-        addList(Goals(2, "목표 2입니다.", 2))
-        addList(Goals(3, "목표 3입니다.", 3))
-    }
-    fun addList(value: Goals) {
-        _goalList.value?.add(value)
-        _goalList.value = _goalList.value
-    }
-}
-
 class DDayViewModel : ViewModel() {
     private val _pairStringLiveData = MutableLiveData<Pair<String, Int>>()
     val pairStringLiveData: LiveData<Pair<String, Int>> get() = _pairStringLiveData

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.credential.cubrism.databinding.DialogGoalAddBinding
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
@@ -18,12 +19,12 @@ import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GoalAdapter
+import com.credential.cubrism.view.adapter.Goals
 import com.credential.cubrism.view.adapter.GroupAcceptButtonClickListener
 import com.credential.cubrism.view.adapter.GroupDenyButtonClickListener
 import com.credential.cubrism.view.adapter.JoinAcceptAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.DDayViewModel
-import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
@@ -45,8 +46,7 @@ class StudyGroupManageFragment : Fragment() { // 관리 홈화면
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val title = arguments?.getString("titleName")
-        initList(title)
+        initList()
     }
 
     override fun onDestroyView() {
@@ -54,8 +54,7 @@ class StudyGroupManageFragment : Fragment() { // 관리 홈화면
         _binding = null
     }
 
-    private fun initList(title: String?) {
-
+    private fun initList() {
         binding.apply {
             manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupGoalFragment()) }
             manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupDDayFragment()) }
@@ -71,7 +70,6 @@ class StudyGroupManageFragment : Fragment() { // 관리 홈화면
 class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     private var _binding: FragmentStudygroupGoalBinding? = null
     private val binding get() = _binding!!
-    private val goalListViewModel: GoalListViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupGoalBinding.inflate(inflater, container, false)
@@ -84,19 +82,11 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
         val adapter = initGoalRecyclerView()
 
         binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
-        binding.txtGoalSubmit.setOnClickListener {
-            for (item in adapter.getItem()) {
-                goalListViewModel.addList(item)
-            }
-
-            Toast.makeText(requireContext(), "목표 설정이 완료되었습니다.", Toast.LENGTH_SHORT).show()
-            (activity as StudyManageActivity).popBackStackFragment()
-        }
         binding.btnAddGoal.setOnClickListener {
             if (adapter.getItem().size >= 3) {
                 Toast.makeText(requireContext(), "목표 개수는 3개까지 작성 가능합니다.", Toast.LENGTH_SHORT).show()
             } else {
-                adapter.addItem(adapter.getItem().size + 1)
+                callAddDialog(adapter)
             }
         }
     }
@@ -107,13 +97,33 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     }
 
     private fun initGoalRecyclerView(): GoalAdapter {
-        val items = goalListViewModel.goalList.value ?: ArrayList()
+        val items = ArrayList<Goals>()
         val adapter = GoalAdapter(items, false)
 
         binding.goalRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.goalRecyclerView.adapter = adapter
 
         return adapter
+    }
+
+    private fun callAddDialog(adapter: GoalAdapter) { // 목표 추가 다이얼로그 호출
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogBinding = DialogGoalAddBinding.inflate(layoutInflater)
+
+        builder.setView(dialogBinding.root)
+            .setPositiveButton("추가") { dialog, _ ->
+                if (dialogBinding.editTextGoalTitle.text.isEmpty()) {
+                    Toast.makeText(requireContext(), "목표 제목을 입력하세요.", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    adapter.addItem(adapter.getItem().size + 1, dialogBinding.editTextGoalTitle.text.toString())
+                    Toast.makeText(requireContext(), "목표가 추가되었습니다.", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+            }
+            .setNegativeButton("취소") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 }
 

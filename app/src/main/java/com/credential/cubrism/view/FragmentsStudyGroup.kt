@@ -12,9 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
-import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
@@ -22,19 +20,18 @@ import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.repository.ChatRepository
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
+import com.credential.cubrism.view.adapter.Goals
 import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.DDayViewModel
-import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val goalListViewModel: GoalListViewModel by activityViewModels()
     private val dDayViewModel: DDayViewModel by activityViewModels()
     private var view: View? = null
 
@@ -64,7 +61,7 @@ class StudyGroupHomeFragment : Fragment() {
     }
 
     private fun initGoalListView() {
-        val items = goalListViewModel.goalList.value ?: ArrayList()
+        val items = ArrayList<Goals>()
         val adapter = GoalAdapter(items, true)
 
         binding.goalRecyclerViewList.layoutManager = LinearLayoutManager(requireContext())
@@ -92,7 +89,7 @@ class StudyGroupFunc2Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         this.view = view
 
-        initRankList(view)
+        initRankList()
         binding.button.setOnClickListener { goToCBT() }
     }
 
@@ -101,17 +98,16 @@ class StudyGroupFunc2Fragment : Fragment() {
         _binding = null
     }
 
-    private fun initRankList(v: View) {
+    private fun initRankList() {
         val items = ArrayList<Rank>().apply {
             for (i in 1..5) {
                 add(Rank("참가자 $i",(6 - i) * 20))
             }
         }
-        val recyclerView = v.findViewById<RecyclerView>(R.id.studyGroupRankView)
         adapter = StudyGroupRankAdapter(items)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = adapter
+        binding.studyGroupRankView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.studyGroupRankView.adapter = adapter
     }
 
     private fun goToCBT() { // 자격증 기출문제 홈페이지 이동 함수
