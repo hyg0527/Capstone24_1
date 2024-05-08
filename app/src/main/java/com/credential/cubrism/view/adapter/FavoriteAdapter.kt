@@ -29,7 +29,7 @@ class FavoriteAdapter(private val listener: FavoriteDeleteButtonClickListener) :
 
     inner class ViewHolder(private val binding: ItemListMypageCertBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FavoriteListDto) {
-            binding.txtCount.text = "${adapterPosition + 1}"
+            binding.txtCount.text = item.index.toString()
             binding.txtName.text = item.name
 
             binding.btnDelete.setOnClickListener {
