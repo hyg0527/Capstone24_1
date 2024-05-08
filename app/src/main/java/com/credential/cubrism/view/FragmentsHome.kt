@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
+import com.credential.cubrism.model.dto.FavoriteListDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
@@ -160,6 +161,15 @@ class HomeFragment : Fragment() {
 
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.recyclerQualification)
+
+        favoriteAdapter2.setOnItemClickListener { item, _ ->
+            if (item is FavoriteListDto) {
+                val intent = Intent(requireActivity(), QualificationDetailsActivity::class.java)
+                intent.putExtra("qualificationName", item.name)
+                intent.putExtra("qualificationCode", item.code)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun observeViewModel() {

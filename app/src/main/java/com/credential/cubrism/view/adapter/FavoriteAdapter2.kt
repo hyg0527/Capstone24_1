@@ -23,6 +23,7 @@ data class FavoriteItem(
 
 class FavoriteAdapter2 : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<FavoriteItem>()
+    private var onItemClickListener: ((Any, Int) -> Unit)? = null
 
     override fun getItemCount(): Int = itemList.size
 
@@ -49,6 +50,15 @@ class FavoriteAdapter2 : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class FavoriteViewHolder(private val binding: ItemListMylicenselistBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(itemList[position].data as FavoriteListDto, position)
+                }
+            }
+        }
+
         fun bind(item: FavoriteListDto) {
             Glide.with(binding.root).run {
                 if ((adapterPosition + 1) % 3 == 1) {
@@ -71,7 +81,20 @@ class FavoriteAdapter2 : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class AddViewHolder(private val binding: ItemListMylicenselistAddBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(itemList[position], position)
+                }
+            }
+        }
+
         fun bind(item: FavoriteItem) {}
+    }
+
+    fun setOnItemClickListener(listener: (Any, Int) -> Unit) {
+        onItemClickListener = listener
     }
 
     fun setItemList(list: List<FavoriteItem>) {
