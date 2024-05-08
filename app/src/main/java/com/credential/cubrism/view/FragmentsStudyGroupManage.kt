@@ -1,30 +1,41 @@
 package com.credential.cubrism.view
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
+import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GoalAdapter
+import com.credential.cubrism.view.adapter.GroupAcceptButtonClickListener
+import com.credential.cubrism.view.adapter.GroupDenyButtonClickListener
 import com.credential.cubrism.view.adapter.JoinAcceptAdapter
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.GoalListViewModel
+import com.credential.cubrism.viewmodel.StudyGroupViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 
 class StudyGroupManageFragment : Fragment() { // 관리 홈화면
     private var _binding: FragmentStudygroupManagehomeBinding? = null
     private val binding get() = _binding!!
+
+    private val groupId by lazy { arguments?.getInt("groupId") ?: -1 }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupManagehomeBinding.inflate(inflater, container, false)
@@ -48,7 +59,11 @@ class StudyGroupManageFragment : Fragment() { // 관리 홈화면
         binding.apply {
             manageGoal.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupGoalFragment()) }
             manageDday.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupDDayFragment()) }
-            manageAccept.setOnClickListener { (activity as StudyManageActivity).changeFragmentManage(StudyGroupAcceptFragment()) }
+            manageAccept.setOnClickListener {
+                val fragment = StudyGroupAcceptFragment()
+                fragment.arguments = Bundle().apply { putInt("groupId", groupId) }
+                (activity as StudyManageActivity).changeFragmentManage(fragment)
+            }
         }
     }
 }
@@ -147,11 +162,17 @@ class StudyGroupDDayFragment : Fragment() { // 디데이 설정 화면
     }
 }
 
-class StudyGroupAcceptFragment : Fragment() { // 신청 관리 화면
+class StudyGroupAcceptFragment : Fragment(), GroupAcceptButtonClickListener, GroupDenyButtonClickListener { // 신청 관리 화면
     private var _binding: FragmentStudygroupManageacceptBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
+
+    private lateinit var joinAcceptAdapter: JoinAcceptAdapter
+
+    private val groupId by lazy { arguments?.getInt("groupId") ?: -1 }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupManageacceptBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -159,8 +180,13 @@ class StudyGroupAcceptFragment : Fragment() { // 신청 관리 화면
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnBack.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
-        initData()
+        setupToolbar()
+        setupRecyclerView()
+        observeViewModel()
+
+        if (groupId != -1) {
+            studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
+        }
     }
 
     override fun onDestroyView() {
@@ -168,17 +194,38 @@ class StudyGroupAcceptFragment : Fragment() { // 신청 관리 화면
         _binding = null
     }
 
-    private fun initData() {
-        val items = ArrayList<String>().apply {
-            add("참가자 6"); add("참가자 7"); add("참가자 8")
+    override fun onAcceptButtonClick(memberId: UUID) {
+
+    }
+
+    override fun onDenyButtonClick(memberId: UUID) {
+
+    }
+
+    private fun setupToolbar() {
+        (activity as StudyManageActivity).apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
-        val adapter = JoinAcceptAdapter(items)
+        binding.toolbar.setNavigationOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+    }
 
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = adapter
+    private fun setupRecyclerView() {
+        joinAcceptAdapter = JoinAcceptAdapter(this, this)
+        binding.recyclerView.apply {
+            adapter = joinAcceptAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
+            setHasFixedSize(true)
+        }
+    }
 
-        val dividerItemDecoration = DividerItemDecoration(binding.recyclerView.context, layoutManager.orientation)
-        binding.recyclerView.addItemDecoration(dividerItemDecoration)
+    private fun observeViewModel() {
+        studyGroupViewModel.apply {
+            joinReceiveList.observe(viewLifecycleOwner) {
+                joinAcceptAdapter.setItemList(it)
+            }
+        }
     }
 }

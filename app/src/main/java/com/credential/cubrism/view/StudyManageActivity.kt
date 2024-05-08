@@ -12,6 +12,8 @@ class StudyManageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyManageBinding.inflate(layoutInflater) }
     private val dDayViewModel: DDayViewModel by viewModels()
 
+    private val groupId by lazy { intent.getIntExtra("groupId", -1) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -20,6 +22,7 @@ class StudyManageActivity : AppCompatActivity() {
         val manageFragment = StudyGroupManageFragment()
         val bundle = Bundle()
         bundle.putString("titleName", titleTxt)
+        bundle.putInt("groupId", groupId)
         manageFragment.arguments = bundle
 
         // 처음 화면을 fragment_study_home으로 설정

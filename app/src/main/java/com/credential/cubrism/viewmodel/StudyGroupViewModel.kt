@@ -9,6 +9,7 @@ import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
+import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.model.utils.ResultUtil
 import com.credential.cubrism.viewmodel.utils.Event
@@ -29,8 +30,11 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _studyGroupInfo = MutableLiveData<StudyGroupInfoDto>()
     val studyGroupInfo: LiveData<StudyGroupInfoDto> = _studyGroupInfo
 
-    private val _joinList = MutableLiveData<List<StudyGroupJoinListDto>>()
-    val joinList: LiveData<List<StudyGroupJoinListDto>> = _joinList
+    private val _joinRequestList = MutableLiveData<List<StudyGroupJoinListDto>>()
+    val joinRequestList: LiveData<List<StudyGroupJoinListDto>> = _joinRequestList
+
+    private val _joinReceiveList = MutableLiveData<List<StudyGroupJoinReceiveListDto>>()
+    val joinReceiveList: LiveData<List<StudyGroupJoinReceiveListDto>> = _joinReceiveList
 
     private val _requestJoin = MutableLiveData<MessageDto>()
     val requestJoin: LiveData<MessageDto> = _requestJoin
@@ -77,9 +81,15 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
         }
     }
 
-    fun getStudyGroupJoinList() {
-        repository.getJoinList { result ->
-            handleResult(result, _joinList, _errorMessage)
+    fun getStudyGroupJoinRequestList() {
+        repository.joinRequestList { result ->
+            handleResult(result, _joinRequestList, _errorMessage)
+        }
+    }
+
+    fun getStudyGroupJoinReceiveList(groupId: Int) {
+        repository.joinReceiveList(groupId) { result ->
+            handleResult(result, _joinReceiveList, _errorMessage)
         }
     }
 

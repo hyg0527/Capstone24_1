@@ -3,45 +3,68 @@ package com.credential.cubrism.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListJoinacceptBinding
+import com.credential.cubrism.databinding.ItemListMystudyBinding
+import com.credential.cubrism.model.dto.PostList
+import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
+import com.credential.cubrism.view.diff.PostDiffUtil
+import com.credential.cubrism.view.diff.StudyGroupJoinReceiveDiffUtil
+import java.util.UUID
 
-class JoinAcceptAdapter(private val items: ArrayList<String>) : RecyclerView.Adapter<JoinAcceptAdapter.AcceptViewHolder>() {
-    inner class AcceptViewHolder(val binding: ItemListJoinacceptBinding) : RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.btnAccept.setOnClickListener { handleButtonClick(true) }
-            binding.btnDecline.setOnClickListener { handleButtonClick(false) }
-        }
+interface GroupAcceptButtonClickListener {
+    fun onAcceptButtonClick(memberId: UUID)
+}
 
-        fun bind(item: String) {
-            binding.txtUserName.text = item
-        }
+interface GroupDenyButtonClickListener {
+    fun onDenyButtonClick(memberId: UUID)
+}
 
-        private fun handleButtonClick(accept: Boolean) {
-            val position = adapterPosition
+class JoinAcceptAdapter(private val listenerAccept: GroupAcceptButtonClickListener, private val listenerDeny: GroupDenyButtonClickListener) : RecyclerView.Adapter<JoinAcceptAdapter.ViewHolder>() {
+    private var itemList = mutableListOf<StudyGroupJoinReceiveListDto>()
 
-            if (position != RecyclerView.NO_POSITION) {
-                val item = items[position]
-                if (accept) {
-                    Toast.makeText(itemView.context, "요청을 수락하였습니다.", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(itemView.context, "요청을 거절하였습니다.", Toast.LENGTH_SHORT).show()
-                }
+    override fun getItemCount(): Int = itemList.size
 
-                items.remove(item)
-                notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemListJoinacceptBinding.inflate(inflater, parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(itemList[position])
+    }
+
+    inner class ViewHolder(private val binding: ItemListJoinacceptBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: StudyGroupJoinReceiveListDto) {
+            Glide.with(binding.root)
+                .load(item.userImage)
+                .error(R.drawable.profile)
+                .fallback(R.drawable.profile)
+                .dontAnimate()
+                .into(binding.imgProfile)
+
+            binding.txtName.text = item.userName
+
+            binding.btnAccept.setOnClickListener {
+                listenerAccept.onAcceptButtonClick(item.memberId)
+            }
+
+            binding.btnDeny.setOnClickListener {
+                listenerDeny.onDenyButtonClick(item.memberId)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AcceptViewHolder {
-        val binding = ItemListJoinacceptBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AcceptViewHolder(binding)
-    }
+    fun setItemList(list: List<StudyGroupJoinReceiveListDto>) {
+        val diffCallback = StudyGroupJoinReceiveDiffUtil(itemList, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-    override fun getItemCount(): Int = items.size
-
-    override fun onBindViewHolder(holder: AcceptViewHolder, position: Int) {
-        holder.bind(items[position])
+        itemList.clear()
+        itemList.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
     }
 }

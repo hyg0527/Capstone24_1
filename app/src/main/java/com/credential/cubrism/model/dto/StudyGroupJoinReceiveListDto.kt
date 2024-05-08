@@ -2,7 +2,7 @@ package com.credential.cubrism.model.dto
 
 import java.util.UUID
 
-data class StudyGroupJoinReceiveList(
+data class StudyGroupJoinReceiveListDto(
     val memberId: UUID,
     val groupName: String,
     val userName: String,

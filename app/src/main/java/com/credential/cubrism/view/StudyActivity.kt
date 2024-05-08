@@ -70,6 +70,7 @@ class StudyActivity : AppCompatActivity() {
                     R.id.manage -> {
                         val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
                         intent.putExtra("titleName", binding.txtTitle.text.toString())
+                        intent.putExtra("groupId", studyGroupId)
                         startActivity(intent)
                     }
                 }

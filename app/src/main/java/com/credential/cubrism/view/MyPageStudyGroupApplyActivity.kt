@@ -41,7 +41,7 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
         setupRecyclerView()
         observeViewModel()
 
-        studyGroupViewModel.getStudyGroupJoinList()
+        studyGroupViewModel.getStudyGroupJoinRequestList()
     }
 
     override fun onMenuClick(memberId: String) {
@@ -104,7 +104,7 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
 
     private fun observeViewModel() {
         studyGroupViewModel.apply {
-            joinList.observe(this@MyPageStudyGroupApplyActivity) {
+            joinRequestList.observe(this@MyPageStudyGroupApplyActivity) {
                 if (it.isEmpty())
                     binding.txtNoJoin.visibility = View.VISIBLE
 

@@ -6,7 +6,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
-import com.credential.cubrism.model.dto.StudyGroupJoinReceiveList
+import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.dto.StudyGroupListDto
 import retrofit2.Call
 import retrofit2.http.Body
@@ -69,7 +69,7 @@ interface StudyGroupApi {
 
     // 해당 스터디 그룹 가입 신청 목록
     @GET("/studygroup/join/receives/{groupId}")
-    fun getJoinReceiveList(@Path("groupId") groupId: Int): Call<List<StudyGroupJoinReceiveList>>
+    fun getJoinReceiveList(@Path("groupId") groupId: Int): Call<List<StudyGroupJoinReceiveListDto>>
 
     // 스터디 그룹 목표 추가
 //    @POST("/studygroup/goal")

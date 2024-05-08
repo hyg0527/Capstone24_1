@@ -7,6 +7,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
+import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.dto.StudyGroupListDto
 import com.credential.cubrism.model.service.RetrofitClient
 import com.credential.cubrism.model.utils.ResultUtil
@@ -110,7 +111,7 @@ class StudyGroupRepository {
         })
     }
 
-    fun getJoinList(callback: (ResultUtil<List<StudyGroupJoinListDto>>) -> Unit) {
+    fun joinRequestList(callback: (ResultUtil<List<StudyGroupJoinListDto>>) -> Unit) {
         studyGroupApiAuth.getJoinRequestList().enqueue(object : Callback<List<StudyGroupJoinListDto>> {
             override fun onResponse(call: Call<List<StudyGroupJoinListDto>>, response: Response<List<StudyGroupJoinListDto>>) {
                 if (response.isSuccessful) {
@@ -123,6 +124,24 @@ class StudyGroupRepository {
             }
 
             override fun onFailure(call: Call<List<StudyGroupJoinListDto>>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun joinReceiveList(groupId: Int, callback: (ResultUtil<List<StudyGroupJoinReceiveListDto>>) -> Unit) {
+        studyGroupApiAuth.getJoinReceiveList(groupId).enqueue(object : Callback<List<StudyGroupJoinReceiveListDto>> {
+            override fun onResponse(call: Call<List<StudyGroupJoinReceiveListDto>>, response: Response<List<StudyGroupJoinReceiveListDto>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<List<StudyGroupJoinReceiveListDto>>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })
