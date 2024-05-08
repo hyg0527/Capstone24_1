@@ -150,6 +150,14 @@ class HomeFragment : Fragment() {
         binding.btnNoti.setOnClickListener {
             startActivity(Intent(requireActivity(), NotiActivity::class.java))
         }
+
+        binding.layoutNoFavorite.setOnClickListener {
+            if (loggedIn) {
+                val intent = Intent(requireActivity(), QualificationSearchActivity::class.java)
+                intent.putExtra("type", "favorite")
+                startActivity(intent)
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -168,6 +176,10 @@ class HomeFragment : Fragment() {
                 intent.putExtra("qualificationName", item.name)
                 intent.putExtra("qualificationCode", item.code)
                 startActivity(intent)
+            } else {
+                val intent = Intent(requireActivity(), QualificationSearchActivity::class.java)
+                intent.putExtra("type", "favorite")
+                startActivity(intent)
             }
         }
     }
@@ -180,12 +192,14 @@ class HomeFragment : Fragment() {
                 binding.btnNoti.visibility = View.VISIBLE
                 binding.txtSignIn.text = "${nickname}님 환영합니다."
                 binding.txtArrow.visibility = View.GONE
+                binding.txtAdd.text = "관심 자격증을 추가해 보세요!"
                 loggedIn = true
             } else {
                 binding.btnProfile.visibility = View.GONE
                 binding.btnNoti.visibility = View.GONE
                 binding.txtSignIn.text = "로그인 하세요"
                 binding.txtArrow.visibility = View.VISIBLE
+                binding.txtAdd.text = "로그인 하여 관심 자격증을 추가해 보세요!"
                 loggedIn = false
             }
         }

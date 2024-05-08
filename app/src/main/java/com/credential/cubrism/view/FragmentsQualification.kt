@@ -63,8 +63,11 @@ class QualificationFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.search)
-                    startActivity(Intent(requireContext(), QualificationSearchActivity::class.java))
+                if (menuItem.itemId == R.id.search) {
+                    val intent = Intent(requireContext(), QualificationSearchActivity::class.java)
+                    intent.putExtra("type", "search")
+                    startActivity(intent)
+                }
                 return false
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
