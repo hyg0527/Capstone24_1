@@ -32,7 +32,7 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
 
     override fun getItemCount(): Int = itemList.size
 
-    override fun getItemViewType(position: Int): Int = if (itemList[position].email == myEmail) VIEW_TYPE_MY else VIEW_TYPE_OTHERS
+    override fun getItemViewType(position: Int): Int = if (myEmail != null && itemList[position].email == myEmail) VIEW_TYPE_MY else VIEW_TYPE_OTHERS
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_MY) {
