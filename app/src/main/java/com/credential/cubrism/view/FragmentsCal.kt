@@ -15,7 +15,6 @@ import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.R
@@ -31,7 +30,7 @@ import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
-import com.credential.cubrism.view.adapter.ScheduleClickListener
+import com.credential.cubrism.view.adapter.ScheduleAdapter
 import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.credential.cubrism.viewmodel.ScheduleViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -51,8 +50,8 @@ class CalFragment : Fragment() {
     private var _binding: FragmentCalBinding? = null
     private val binding get() = _binding!!
 
-    private val calendarViewModel: CalendarViewModel by activityViewModels()
     private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
+    private val scheduleAdapter = ScheduleAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalBinding.inflate(inflater, container, false)
@@ -64,18 +63,10 @@ class CalFragment : Fragment() {
 
         initCalendarSchedule()
 
-        scheduleViewModel.getScheduleList(null, null)
-
-//        scheduleViewModel.addSchedule(
-//            ScheduleDto(startDate="2024-03-31T17:00", endDate="2024-04-01T17:00",
-//            title="일정1", content="내용1", isAllDay=false)
-//        )
-//
 //        scheduleViewModel.deleteSchedule(4)
 //
 //        scheduleViewModel.updateSchedule(4, ScheduleDto(startDate="2024-03-31T17:00", endDate="2024-04-01T17:00",
 //            title="일정1", content="내용1", isAllDay=false))
-
     }
 
     override fun onDestroyView() {
@@ -84,23 +75,27 @@ class CalFragment : Fragment() {
     }
 
     private fun initCalendarSchedule() {
-        val calHyg = CalendarHyg()
-        // viewmodel 호출. 일정 추가기능을 livedata로 구현.
-        val adapter = initScheduleList()
+        initScheduleList()
 
+        val calHyg = CalendarHyg()
         val calendarAdapter = CalendarAdapter(ArrayList()) // 날짜 어댑터
-        val layoutManager = GridLayoutManager(requireContext(), 7)
-        binding.calendarRealView.layoutManager = layoutManager // 월간 달력 recyclerView 초기화
+
+        binding.calendarRealView.layoutManager = GridLayoutManager(requireContext(), 7) // 월간 달력 recyclerView 초기화
         binding.calendarRealView.adapter = calendarAdapter
 
-        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, calendarViewModel.calMonthList.value) { date ->
-            updateViewModel(adapter, date)
+        scheduleViewModel.scheduleList.observe(viewLifecycleOwner) {
+            for (list in scheduleAdapter.getItemList()) {
+                println(list)
+
+            }
         }
+
+        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel) { _ -> }
 
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
             override fun onAddDelete(item: CalMonth?) {
-                addDelSchedule(item, adapter, calendarAdapter, calHyg)
+//                addDelSchedule(item, adapter, calendarAdapter, calHyg)
             }
             override fun bringInfo(item: CalMonth?) {
                 val bundle = Bundle()
@@ -109,7 +104,7 @@ class CalFragment : Fragment() {
                 val addFragment = CalScheduleAddFragment()
                 addFragment.setAddListener(object: AddDot {
                     override fun onAddDelete(item: CalMonth?) {
-                        addDelSchedule(item, adapter, calendarAdapter, calHyg)
+//                        addDelSchedule(item, adapter, calendarAdapter, calHyg)
                     }
                     override fun bringInfo(item: CalMonth?) {}
                 })
@@ -127,8 +122,8 @@ class CalFragment : Fragment() {
             val addFragment = CalScheduleAddFragment()
             addFragment.setAddListener(object: AddDot {
                 override fun onAddDelete(item: CalMonth?) {
-                    addDelSchedule(item, adapter, calendarAdapter, calHyg)
-                    println("observe: " + scheduleViewModel.scheduleList.value)
+//                    addDelSchedule(item, adapter, calendarAdapter, calHyg)
+//                    println("observe: " + scheduleViewModel.scheduleList.value)
                 }
                 override fun bringInfo(item: CalMonth?) {}
             })
@@ -139,26 +134,29 @@ class CalFragment : Fragment() {
         }
 
         binding.dateSelect.setOnClickListener {
-            showDatePickDialog(calHyg, calendarAdapter, calendarViewModel.calMonthList.value) { date ->
-                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
+            showDatePickDialog(calHyg, calendarAdapter) { date ->
+//                updateViewModel(adapter, date)
+                calendarAdapter.highlightDate(date)
             }
         }
         binding.preMonth.setOnClickListener {
-            calHyg.setPreNextMonthCalendar(calendarAdapter, binding.txtYearMonth, binding.currentDate,
-                calendarViewModel.calMonthList.value, "pre") { date ->
-                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
+            calHyg.setPreNextMonthCalendar(scheduleViewModel, calendarAdapter,
+                binding.txtYearMonth, binding.currentDate, "pre") { date ->
+//                updateViewModel(adapter, date)
+                calendarAdapter.highlightDate(date)
             }
         }
         binding.nextMonth.setOnClickListener {
-            calHyg.setPreNextMonthCalendar(calendarAdapter, binding.txtYearMonth, binding.currentDate,
-                calendarViewModel.calMonthList.value, "next") { date ->
-                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
+            calHyg.setPreNextMonthCalendar(scheduleViewModel, calendarAdapter,
+                binding.txtYearMonth, binding.currentDate, "next") { date ->
+//                updateViewModel(adapter, date)
+                calendarAdapter.highlightDate(date)
             }
         }
         binding.btnToday.setOnClickListener {
-            calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter,
-                calendarViewModel.calMonthList.value) { date ->
-                updateViewModel(adapter, date); calendarAdapter.highlightDate(date)
+            calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel) { date ->
+//                updateViewModel(adapter, date)
+                calendarAdapter.highlightDate(date)
             }
         }
 
@@ -175,23 +173,24 @@ class CalFragment : Fragment() {
                     val intRegex = """(\d{4})년 (\d{1,2})월 (\d{1,2})일""".toRegex()
                     intRegex.find(text)?.let {
                         val (foundYear, foundMonth, foundDay) = it.destructured
-                        val dateSelected = "${foundYear.toInt()} - ${String.format("%02d", foundMonth.toInt())} - ${String.format("%02d", foundDay.toInt())}"
+//                        val dateSelected = "${foundYear.toInt()} - ${String.format("%02d", foundMonth.toInt())} - ${String.format("%02d", foundDay.toInt())}"
 
-                        updateViewModel(adapter, dateSelected)
+                        scheduleViewModel.getScheduleList(foundYear.toInt(), foundMonth.toInt())
+//                        updateViewModel(adapter, dateSelected)
                     }
                 }
             }
         })
 
-        adapter.setItemClickListener(object: ScheduleClickListener { // 일정 상세정보 dialog 호출
-            override fun onItemClick(item: CalMonth) {
-                val bundle = Bundle()
-                bundle.putParcelable("scheduleInfo", item) // item의 정보를 bottomdialog로 넘기기
-
-                infoFragment.arguments = bundle
-                infoFragment.show(parentFragmentManager, "scheduleInfo")
-            }
-        })
+//        adapter.setItemClickListener(object: ScheduleClickListener { // 일정 상세정보 dialog 호출
+//            override fun onItemClick(item: CalMonth) {
+//                val bundle = Bundle()
+//                bundle.putParcelable("scheduleInfo", item) // item의 정보를 bottomdialog로 넘기기
+//
+//                infoFragment.arguments = bundle
+//                infoFragment.show(parentFragmentManager, "scheduleInfo")
+//            }
+//        })
     }
 
     private fun getCurrentDate(): String {  // 월간 프래그먼트의 현재 날짜 getter 함수 (일정 추가 dialog에 날짜 표시에 활용됨)
@@ -201,16 +200,13 @@ class CalFragment : Fragment() {
     private fun addDelSchedule(item: CalMonth?, listAdapter: CalListAdapter, calAdapter: CalendarAdapter, calHyg: CalendarHyg) {
         if (item != null) {
             val itemNew = listAdapter.revertFormat(item)
-            calendarViewModel.deleteDateMonth(itemNew)
-        }
-        for (itemS in (calendarViewModel.calMonthList.value ?: ArrayList())) {
-            println("list: $itemS")
+//            calendarViewModel.deleteDateMonth(itemNew)
         }
 
         val pickTxt = binding.txtYearMonth.text.toString()
         val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
 
-        val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, calendarViewModel.calMonthList.value)
+        val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex)
         calAdapter.updateCalendar(monthUpdateList)
         calAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
     }
@@ -227,13 +223,12 @@ class CalFragment : Fragment() {
         }
     }
 
-    private fun showDatePickDialog(calInstance: CalendarHyg, calAdapter: CalendarAdapter,
-                                   data: ArrayList<CalMonth>? = null, callback: (String) -> Unit) {
+    private fun showDatePickDialog(calInstance: CalendarHyg, calAdapter: CalendarAdapter, callback: (String) -> Unit) {
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_date_pick, null)
 
-        calInstance.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate, calAdapter, data) { selectedDate ->
+        calInstance.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate, calAdapter, scheduleViewModel) { selectedDate ->
             callback(selectedDate)
         }
 
@@ -241,27 +236,42 @@ class CalFragment : Fragment() {
         dialog.show()
     }
 
-    private fun updateViewModel(adapter: CalListAdapter, date: String) { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지)
-        calendarViewModel.calMonthList.observe(viewLifecycleOwner) { calList ->
-            adapter.clearItem() // 업데이트 전 리스트 초기화 후 항목을 모두 추가 (중복 삽입 방지)
+//    private fun updateViewModel(adapter: CalListAdapter, date: String) { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지)
+//        calendarViewModel.calMonthList.observe(viewLifecycleOwner) { calList ->
+//            adapter.clearItem() // 업데이트 전 리스트 초기화 후 항목을 모두 추가 (중복 삽입 방지)
+//
+//            calList.forEach { calMonth ->
+//                adapter.addItem(calMonth)
+//            }
+//            adapter.updateList(date)
+//        }
+//    }
 
-            calList.forEach { calMonth ->
-                adapter.addItem(calMonth)
-            }
-            adapter.updateList(date)
-        }
-    }
-
-    private fun initScheduleList(): CalListAdapter { // 일정 리스트 초기화 함수
-        val itemList = ArrayList<CalMonth>()
-        val recyclerView = binding.calMonthScheduleView
-        val adapter = CalListAdapter(itemList)
+    private fun initScheduleList() { // 일정 리스트 초기화 함수
+//        val itemList = ArrayList<CalMonth>()
+//        val adapter = CalListAdapter(itemList)
+        val adapter = scheduleAdapter
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
+        binding.calMonthScheduleView.layoutManager = layoutManager
+        binding.calMonthScheduleView.adapter = adapter
 
-        return adapter
+        observeViewModel(adapter)
+        scheduleViewModel.getScheduleList(2024, 2)
+    }
+
+    private fun observeViewModel(adapter: ScheduleAdapter) {
+        scheduleViewModel.apply {
+            scheduleList.observe(viewLifecycleOwner) {
+                adapter.setItemList(it)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
 
@@ -273,7 +283,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
     private var _binding: DialogScheduleAddBinding? = null
     private val binding get() = _binding!!
 
-    private val calendarViewModel: CalendarViewModel by activityViewModels()
+    private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
     private var listener: AddDot? = null
 
     fun setAddListener(listener: AddDot) {
@@ -361,12 +371,13 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
             }
             else {
                 if (add.text.equals("+")) {
-                    calendarViewModel.addDateMonth(data)
+//                    calendarViewModel.addDateMonth(data)
+                    scheduleViewModel.addSchedule(data)
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete()
                 }
                 else if (add.text.equals("수정")) {
-                    calendarViewModel.addDateMonth(data)
+//                    calendarViewModel.addDateMonth(data)
                     Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
                     listener?.onAddDelete(modifiedData!!)
                 }
@@ -378,19 +389,19 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
     }
 
     // 작성한 데이터를 일정에 등록 하기 위한 데이터 리턴 함수
-    private fun bringCurrentData(title: EditText, info: EditText, fullTime: CheckBox): CalMonth {
+    private fun bringCurrentData(title: EditText, info: EditText, fullTime: CheckBox): ScheduleDto {
         val currentDateStart = binding.txtCurrentDateAdd.text.toString().replace(" - ", "-")
         val currentDateEnd = binding.txtCurrentDateAddEnd.text.toString().replace(" - ", "-")
-        val data: CalMonth
+        val data: ScheduleDto
 
         val times = timeTakeLast(binding.txtStartTime.text.toString(), binding.txtEndTime.text.toString())
 
         if (fullTime.isChecked) { // 종일이 체크되어 있으면 시간대는 "종일"로 기록, 아니면 시간대를 저장
-            data = CalMonth("${currentDateStart}T00:00", "${currentDateEnd}T00:00", title.text.toString(),
-                info.text.toString(), fullTime.isChecked)
+            data = ScheduleDto("${currentDateStart}T00:00", "${currentDateEnd}T00:00", fullTime.isChecked,
+                title.text.toString(), info.text.toString())
         }
-        else data = CalMonth("${currentDateStart}T${timeCalculate(times.first)}",
-            "${currentDateEnd}T${timeCalculate(times.second)}", title.text.toString(), info.text.toString(), fullTime.isChecked)
+        else data = ScheduleDto("${currentDateStart}T${timeCalculate(times.first)}",
+            "${currentDateEnd}T${timeCalculate(times.second)}", fullTime.isChecked, title.text.toString(), info.text.toString())
 
         return data
     }

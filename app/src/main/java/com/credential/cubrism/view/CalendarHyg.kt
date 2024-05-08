@@ -10,6 +10,8 @@ import com.credential.cubrism.R
 import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateSelect
+import com.credential.cubrism.view.adapter.ScheduleAdapter
+import com.credential.cubrism.viewmodel.ScheduleViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.YearMonth
@@ -22,8 +24,8 @@ class CalendarHyg {
         return Calendar.getInstance()
     }
 
-    fun initToday(monthTxt: TextView, currentDate: TextView, adapter: CalendarAdapter, data: ArrayList<CalMonth>? = null,
-                  callback: (String) -> Unit) { // 오늘 날짜로 돌아오는 함수
+    fun initToday(monthTxt: TextView, currentDate: TextView, adapter: CalendarAdapter,
+                  scheduleViewModel: ScheduleViewModel, callback: (String) -> Unit) { // 오늘 날짜로 돌아오는 함수
         val calInstance = getInstance()
         val initYear = calInstance.get(Calendar.YEAR) // 처음 뷰 생성시 오늘날짜로 초기화
         val initMonth = calInstance.get(Calendar.MONTH) + 1  // 월은 0부터 시작하므로 1+.
@@ -35,7 +37,10 @@ class CalendarHyg {
         monthTxt.text = monthPickTxt
 
         val (m, w) = setDateWeek(initYear, initMonth)
-        val monthList = showMonthCalendar(monthPickTxt, m, w, data)
+//        val monthList = showMonthCalendar(monthPickTxt, m, w, data)
+        val monthList = showMonthCalendar(monthPickTxt, m, w)
+
+        scheduleViewModel.getScheduleList(initYear, initMonth)
         adapter.updateCalendar(monthList)
 
         val selectedReturn = String.format("%02d", initYear) + " - " +
@@ -44,11 +49,11 @@ class CalendarHyg {
     }
 
     // 해당 월의 달력 출력 함수
-    fun showMonthCalendar(yearMonth: String, daysInMonth: Int, dayOfWeekIndex: Int, data: ArrayList<CalMonth>? = null): ArrayList<DateSelect> {
+    fun showMonthCalendar(yearMonth: String, daysInMonth: Int, dayOfWeekIndex: Int): ArrayList<DateSelect> {
         val (year, month) = getSelectedYearMonth(yearMonth)
         val monthData = "$year - ${String.format("%02d", month)}"
 
-        val numDate = extractListInfo(checkFormat(data ?: ArrayList()))
+//        val numDate = extractListInfo(checkFormat(data ?: ArrayList()))
         val daysList = ArrayList<DateSelect>().apply {
             val weekOfTheDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
@@ -63,13 +68,13 @@ class CalendarHyg {
             }
         }
         // 일정 리스트와 출력하려는 월의 날짜를 모두 비교 하여 해당 날짜에 일정이 있으면 표시
-        for (date in numDate) if (date.key == monthData)
-            for (day in daysList)
-                for (scDate in date.value)
-                    if ((day.date ?: "").isDigitsOnly() && (day.date ?: "").toInt() == scDate) {
-                        day.isScheduled = true
-                        break
-                    }
+//        for (date in numDate) if (date.key == monthData)
+//            for (day in daysList)
+//                for (scDate in date.value)
+//                    if ((day.date ?: "").isDigitsOnly() && (day.date ?: "").toInt() == scDate) {
+//                        day.isScheduled = true
+//                        break
+//                    }
 
         return daysList
     }
@@ -179,7 +184,7 @@ class CalendarHyg {
     }
 
     fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView, txtCurrentDate: TextView,
-                           adapter: CalendarAdapter, data: ArrayList<CalMonth>? = null, callback: (String) -> Unit) { // numberpicker dialog 호출
+                           adapter: CalendarAdapter, scheduleViewModel: ScheduleViewModel, callback: (String) -> Unit) { // numberpicker dialog 호출
         val yearPick = view.findViewById<NumberPicker>(R.id.yearPick)
         val monthPick = view.findViewById<NumberPicker>(R.id.monthPick)
         val (getYear, getMonth) = getSelectedYearMonth(datePickTxt.text.toString())
@@ -208,8 +213,11 @@ class CalendarHyg {
                 txtCurrentDate.text = resTextDate
 
                 // RecyclerView에 데이터 갱신
-                val monthList = showMonthCalendar(resText, m, w, data)
+//                val monthList = showMonthCalendar(resText, m, w, data)
+                val monthList = showMonthCalendar(resText, m, w)
                 adapter.updateCalendar(monthList)
+
+                scheduleViewModel.getScheduleList(selectedYear, selectedMonth)
 
                 val selectedReturn = String.format("%02d", selectedYear) + " - " + String.format("%02d", selectedMonth) + " - 01"
                 callback(selectedReturn)
@@ -240,8 +248,9 @@ class CalendarHyg {
         return Pair(daysInMonth, dayOfWeek)
     }
 
-    fun setPreNextMonthCalendar(adapter: CalendarAdapter, yearMonth: TextView, currentDate: TextView,
-                                data: ArrayList<CalMonth>? = null, isPreNext: String, callback: (String) -> Unit) {
+    fun setPreNextMonthCalendar(scheduleViewModel: ScheduleViewModel, calendarAdapter: CalendarAdapter,
+                                yearMonth: TextView, currentDate: TextView, isPreNext: String,
+                                callback: (String) -> Unit) {
         var (year, month) = getSelectedYearMonth(yearMonth.text.toString())
 
         when (isPreNext) {
@@ -260,8 +269,10 @@ class CalendarHyg {
         yearMonth.text = selectedMonthToString(month) + " " + year
 
         val (m, w) = setDateWeek(year, month)
-        val monthList = showMonthCalendar(yearMonth.text.toString(), m, w, data)
-        adapter.updateCalendar(monthList)
+        val monthList = showMonthCalendar(yearMonth.text.toString(), m, w)
+
+        scheduleViewModel.getScheduleList(year, month)
+        calendarAdapter.updateCalendar(monthList)
 
         val selectedReturn = String.format("%02d", year) + " - " + String.format("%02d", month) + " - 01"
         callback(selectedReturn)

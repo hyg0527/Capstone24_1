@@ -38,16 +38,23 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
         }
 
         fun bind(item: ScheduleListDto) {
-//            binding.txtTitle.text = item.title
-//            binding.txtContent.text = item.content
-//
-//            binding.txtDate.text = if (item.allDay) {
+            binding.txtCalMonthTitle.text = item.title
+            binding.txtCalMonthInfo.text = item.content
+
+//            binding.timeStart.text = if (item.allDay) {
 //                convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd")
 //            } else {
 //                val startDateTime = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a")
 //                val endDateTime = item.endDate?.let { convertDateTimeFormat(it, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a") }
 //                "$startDateTime\n~\n$endDateTime"
 //            }
+            if (item.allDay) {
+                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
+                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
+            } else {
+                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  h:mm a")
+                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  h:mm a")
+            }
         }
     }
 
@@ -62,5 +69,9 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
         itemList.clear()
         itemList.addAll(list)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun getItemList(): List<ScheduleListDto> {
+        return itemList
     }
 }
