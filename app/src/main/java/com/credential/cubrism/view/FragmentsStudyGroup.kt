@@ -12,9 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
-import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
@@ -22,19 +20,18 @@ import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.repository.ChatRepository
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.GoalAdapter
+import com.credential.cubrism.view.adapter.Goals
 import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.DDayViewModel
-import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val goalListViewModel: GoalListViewModel by activityViewModels()
     private val dDayViewModel: DDayViewModel by activityViewModels()
     private var view: View? = null
 
@@ -64,7 +61,7 @@ class StudyGroupHomeFragment : Fragment() {
     }
 
     private fun initGoalListView() {
-        val items = goalListViewModel.goalList.value ?: ArrayList()
+        val items = ArrayList<Goals>()
         val adapter = GoalAdapter(items, true)
 
         binding.goalRecyclerViewList.layoutManager = LinearLayoutManager(requireContext())

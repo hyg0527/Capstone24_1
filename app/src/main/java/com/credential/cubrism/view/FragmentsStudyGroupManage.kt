@@ -19,12 +19,12 @@ import com.credential.cubrism.databinding.FragmentStudygroupManagehomeBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GoalAdapter
+import com.credential.cubrism.view.adapter.Goals
 import com.credential.cubrism.view.adapter.GroupAcceptButtonClickListener
 import com.credential.cubrism.view.adapter.GroupDenyButtonClickListener
 import com.credential.cubrism.view.adapter.JoinAcceptAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.DDayViewModel
-import com.credential.cubrism.viewmodel.GoalListViewModel
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
@@ -70,7 +70,6 @@ class StudyGroupManageFragment : Fragment() { // 관리 홈화면
 class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     private var _binding: FragmentStudygroupGoalBinding? = null
     private val binding get() = _binding!!
-    private val goalListViewModel: GoalListViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupGoalBinding.inflate(inflater, container, false)
@@ -98,7 +97,7 @@ class StudyGroupGoalFragment : Fragment() { // 목표 설정 화면
     }
 
     private fun initGoalRecyclerView(): GoalAdapter {
-        val items = goalListViewModel.goalList.value ?: ArrayList()
+        val items = ArrayList<Goals>()
         val adapter = GoalAdapter(items, false)
 
         binding.goalRecyclerView.layoutManager = LinearLayoutManager(requireContext())
