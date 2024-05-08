@@ -85,23 +85,26 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     }
 
     override fun onReplyClick(nickname: String?, commentId: Int) {
-        nickname?.let {
-            commentState = CommentState.REPLY
-            this.commentId = commentId
+        if (myEmail != null) {
+            nickname?.let {
+                commentState = CommentState.REPLY
+                this.commentId = commentId
 
-            binding.layoutReply.visibility = View.VISIBLE
-            binding.txtReply.text = it
-            binding.editComment.hint = "답글 입력"
+                binding.layoutReply.visibility = View.VISIBLE
+                binding.txtReply.text = it
+                binding.editComment.hint = "답글 입력"
 
-            binding.editComment.requestFocus()
-            imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
+                binding.editComment.requestFocus()
+                imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
+            }
         }
     }
 
     override fun onLongClick(item: Comments) {
         commentId = item.commentId
         comment = item.content
-        bottomSheetDialog.show()
+        if (myEmail != null)
+            bottomSheetDialog.show()
     }
 
     private fun setupToolbar() {
@@ -189,6 +192,9 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     }
 
     private fun setupView() {
+        binding.editComment.isEnabled = myEmail != null
+        binding.btnSend.isEnabled = myEmail != null
+
         powerMenu = PowerMenu.Builder(this)
             .addItemList(listOf(
                 PowerMenuItem("수정", false),
