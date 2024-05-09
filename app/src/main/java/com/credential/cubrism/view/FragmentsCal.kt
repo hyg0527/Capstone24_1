@@ -51,8 +51,10 @@ class CalFragment : Fragment() {
 
     private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
     private val scheduleAdapter = ScheduleAdapter()
+
+    private val calHyg = CalendarHyg()
     private val localList = ArrayList<ScheduleListDto>()
-    private var selectedDate: Pair<Int, Int>? = null
+    private var selectedDate: Triple<Int, Int, Int>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalBinding.inflate(inflater, container, false)
@@ -70,6 +72,15 @@ class CalFragment : Fragment() {
 //            title="일정1", content="내용1", isAllDay=false))
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        observeViewModel(scheduleAdapter)
+
+        val (year, month, day) = calHyg.initToday(binding.txtYearMonth, binding.currentDate)
+        selectedDate = Triple(year, month, day)
+        scheduleViewModel.getScheduleList(year, month)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -78,9 +89,7 @@ class CalFragment : Fragment() {
     private fun initCalendarSchedule() {
         initScheduleList()
 
-        val calHyg = CalendarHyg()
         val calendarAdapter = CalendarAdapter(ArrayList()) // 날짜 어댑터
-
         binding.calendarRealView.layoutManager = GridLayoutManager(requireContext(), 7) // 월간 달력 recyclerView 초기화
         binding.calendarRealView.adapter = calendarAdapter
 
@@ -88,9 +97,11 @@ class CalFragment : Fragment() {
             for (list in scheduleAdapter.getItemList()) {
                 println(list)
             }
-            selectedDate?.let { (year, month) ->
-                calHyg.updateMonthCalendar(year, month, binding.txtYearMonth, calendarAdapter, scheduleAdapter.getItemList())
+
+            selectedDate?.let { (year, month, day) ->
+                calHyg.showMonthCalendarNew(year, month, day, scheduleAdapter.getItemList(), calendarAdapter)
             }
+            selectedDate = null
 //            localList.clear()
 //            scheduleAdapter.getItemList().forEach { schedule ->
 //                localList.add(schedule)
@@ -101,7 +112,9 @@ class CalFragment : Fragment() {
 //            }
         }
 
-        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel, localList) { _ -> }
+        val (initYear, initMonth, initDay) = calHyg.initToday(binding.txtYearMonth, binding.currentDate)
+        selectedDate = Triple(initYear, initMonth, initDay)
+        scheduleViewModel.getScheduleList(initYear, initMonth)
 
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
@@ -145,36 +158,28 @@ class CalFragment : Fragment() {
         }
 
         binding.dateSelect.setOnClickListener {
-            showDatePickDialog(calHyg, calendarAdapter) { date ->
-//                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
-            }
+            showDatePickDialog(calHyg, calendarAdapter)
         }
         binding.preMonth.setOnClickListener {
-            val (date, year, month) = calHyg.setPreNextMonthCalendar(calendarAdapter,
-                binding.txtYearMonth, binding.currentDate, localList, "pre")
-            scheduleViewModel.getScheduleList(year, month)
+            val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "pre")
+            println("year: $year, month: $month")
 
-//            selectedDate = Pair(year, month)
-            calendarAdapter.highlightDate(date)
+            selectedDate = Triple(year, month, day)
+            scheduleViewModel.getScheduleList(year, month)
         }
         binding.nextMonth.setOnClickListener {
-//            calHyg.setPreNextMonthCalendar(scheduleViewModel, calendarAdapter,
-//                binding.txtYearMonth, binding.currentDate, localList, "next") { date ->
-////                updateViewModel(adapter, date)
-//                calendarAdapter.highlightDate(date)
-//            }
-            val (date, year, month) = calHyg.setPreNextMonthCalendar(calendarAdapter,
-                binding.txtYearMonth, binding.currentDate, localList, "next")
-            scheduleViewModel.getScheduleList(year, month)
+            val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "next")
+            println("year: $year, month: $month")
 
-            calendarAdapter.highlightDate(date)
+            selectedDate = Triple(year, month, day)
+            scheduleViewModel.getScheduleList(year, month)
         }
         binding.btnToday.setOnClickListener {
-            calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel, localList) { date ->
-//                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
-            }
+            val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "today")
+            println("year: $year, month: $month")
+
+            selectedDate = Triple(year, month, day)
+            scheduleViewModel.getScheduleList(year, month)
         }
 
         calendarAdapter.setItemClickListener(object: DateMonthClickListener {
@@ -239,14 +244,18 @@ class CalFragment : Fragment() {
         }
     }
 
-    private fun showDatePickDialog(calInstance: CalendarHyg, calAdapter: CalendarAdapter, callback: (String) -> Unit) {
+    private fun showDatePickDialog(calHyg: CalendarHyg, calendarAdapter: CalendarAdapter) {
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_date_pick, null)
 
-        calInstance.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate,
-            calAdapter, scheduleViewModel, localList) { selectedDate ->
-            callback(selectedDate)
+        calHyg.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate,
+            calendarAdapter, scheduleViewModel) { info ->
+            val (year, month, day) = info
+            println("year: $year, month: $month")
+
+            selectedDate = Triple(year, month, day)
+            scheduleViewModel.getScheduleList(year, month)
         }
 
         val dialog = builder.create()
@@ -265,16 +274,11 @@ class CalFragment : Fragment() {
 //    }
 
     private fun initScheduleList() { // 일정 리스트 초기화 함수
-//        val itemList = ArrayList<CalMonth>()
-//        val adapter = CalListAdapter(itemList)
-        val adapter = scheduleAdapter
-
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.calMonthScheduleView.layoutManager = layoutManager
-        binding.calMonthScheduleView.adapter = adapter
+        binding.calMonthScheduleView.adapter = scheduleAdapter
 
-        observeViewModel(adapter)
-        scheduleViewModel.getScheduleList(2024, 2)
+        observeViewModel(scheduleAdapter)
     }
 
     private fun observeViewModel(adapter: ScheduleAdapter) {
