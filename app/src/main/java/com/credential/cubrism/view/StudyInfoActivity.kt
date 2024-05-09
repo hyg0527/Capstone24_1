@@ -17,17 +17,16 @@ import com.credential.cubrism.view.adapter.StudyGroupTagAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class StudyInfoActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyInfoBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val studyGroupTagAdapter by lazy { StudyGroupTagAdapter(2) }
 
+    private val myEmail = MyApplication.getInstance().getUserData().getEmail()
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
     private var studyGroupName: String? = null
     private var isJoined = false
@@ -91,7 +90,7 @@ class StudyInfoActivity : AppCompatActivity() {
                 binding.txtMember.text = "${group.currentMembers} / ${group.maxMembers}"
                 binding.btnStudyJoin.apply {
                     lifecycleScope.launch {
-                        if (group.members.contains(dataStore.getEmail().first())) {
+                        if (group.members.contains(myEmail)) {
                             text = "스터디 그룹 입장"
                             isEnabled = true
                             isJoined = true

@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityPostViewBinding
 import com.credential.cubrism.databinding.DialogMenuBinding
@@ -27,7 +28,6 @@ import com.credential.cubrism.view.adapter.PostCommentAdapter
 import com.credential.cubrism.view.adapter.PostCommentLongClickListener
 import com.credential.cubrism.view.adapter.PostCommentReplyClickListener
 import com.credential.cubrism.view.adapter.PostImageAdapter
-import com.credential.cubrism.view.utils.CommentState
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -36,8 +36,14 @@ import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
 
+enum class CommentState {
+    ADD, UPDATE, REPLY
+}
+
 class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, PostCommentLongClickListener {
     private val binding by lazy { ActivityPostViewBinding.inflate(layoutInflater) }
+
+    private val myApplication = MyApplication.getInstance()
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
 
@@ -45,12 +51,13 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     private val postImageAdapter = PostImageAdapter()
     private val menuAdapter = MenuAdapter()
 
-    private val postId by lazy { intent.getIntExtra("postId", -1) }
-    private val myEmail by lazy { intent.getStringExtra("myEmail") }
-    private val imm by lazy { getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager }
-
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var powerMenu : PowerMenu
+
+    private val isLoggedIn = myApplication.getUserData().getLoginStatus()
+    private val myEmail = myApplication.getUserData().getEmail()
+    private val postId by lazy { intent.getIntExtra("postId", -1) }
+    private val imm by lazy { getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager }
 
     private var commentState = CommentState.ADD
     private var commentId: Int? = null
@@ -85,7 +92,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     }
 
     override fun onReplyClick(nickname: String?, commentId: Int) {
-        if (myEmail != null) {
+        if (isLoggedIn) {
             nickname?.let {
                 commentState = CommentState.REPLY
                 this.commentId = commentId
@@ -103,7 +110,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     override fun onLongClick(item: Comments) {
         commentId = item.commentId
         comment = item.content
-        if (myEmail != null)
+        if (isLoggedIn)
             bottomSheetDialog.show()
     }
 
@@ -192,8 +199,8 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     }
 
     private fun setupView() {
-        binding.editComment.isEnabled = myEmail != null
-        binding.btnSend.isEnabled = myEmail != null
+        binding.editComment.isEnabled = isLoggedIn
+        binding.btnSend.isEnabled = isLoggedIn
 
         powerMenu = PowerMenu.Builder(this)
             .addItemList(listOf(
@@ -274,7 +281,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 binding.txtTitle.text = result.title
                 binding.txtContent.text = result.content.replace(" ", "\u00A0")
 
-                binding.btnMenu.visibility = if (myEmail != null && result.email == myEmail) View.VISIBLE else View.GONE
+                binding.btnMenu.visibility = if (isLoggedIn && result.email == myEmail) View.VISIBLE else View.GONE
 
                 postCommentAdapter.setItemList(result.comments)
                 postImageAdapter.setItemList(result.images)

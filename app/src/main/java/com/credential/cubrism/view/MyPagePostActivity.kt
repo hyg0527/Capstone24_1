@@ -10,10 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMypageMypostBinding
 import com.credential.cubrism.databinding.DialogMenuBinding
@@ -31,7 +29,6 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
     private val binding by lazy { ActivityMypageMypostBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private lateinit var postMyAdapter : PostMyAdapter
     private val menuAdapter = MenuAdapter()
@@ -39,7 +36,6 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
     private lateinit var bottomSheetDialog: BottomSheetDialog
 
     private var loadingState = false
-    private var myEmail: String? = null
     private var postId: Int? = null
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -144,7 +140,6 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
         postMyAdapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, PostViewActivity::class.java)
             intent.putExtra("postId", item.postId)
-            intent.putExtra("myEmail", myEmail)
             startActivity(intent)
         }
     }
@@ -174,10 +169,6 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
                     Toast.makeText(this@MyPagePostActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-
-        dataStore.getEmail().asLiveData().observe(this) { email ->
-            myEmail = email
         }
     }
 }

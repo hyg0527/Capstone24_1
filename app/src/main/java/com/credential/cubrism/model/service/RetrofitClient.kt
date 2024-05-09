@@ -1,7 +1,5 @@
 package com.credential.cubrism.model.service
 
-import android.util.Log
-import com.auth0.android.jwt.JWT
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
@@ -18,7 +16,8 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private val dataStore = MyApplication.getInstance().getDataStoreRepository()
+private val myApplication = MyApplication.getInstance()
+private val dataStore = myApplication.getDataStoreRepository()
 private val notificationRepository = NotiRepository(MyApplication.getInstance().getNotiDao())
 
 object RetrofitClient {
@@ -87,8 +86,6 @@ class RequestInterceptor : Interceptor {
 //            }
 //        }
 
-        Log.d("테스트", "[RequestInterceptor] AccessToken: $accessToken")
-
         // 헤더에 Access Token 추가
         val request = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $accessToken")
@@ -111,16 +108,11 @@ class ResponseInterceptor : Interceptor {
             // Body를 JSONObject로 변환 후 에러 메시지를 가져옴
             val errorMessage = JSONObject(responseBodyString).optString("message")
 
-            Log.d("테스트", "[ResponseInterceptor] ErrorMessage: $errorMessage")
-
             // AccessToken이 만료되었을 경우
             if (errorMessage == "JWT 토큰이 만료되었습니다.") {
                 // DataStore에서 AccessToken과 RefreshToken을 가져옴
                 val accessToken = runBlocking { dataStore.getAccessToken().first() }
                 val refreshToken = runBlocking { dataStore.getRefreshToken().first() }
-
-                Log.d("테스트", "[ResponseInterceptor] AccessToken: $accessToken")
-                Log.d("테스트", "[ResponseInterceptor] RefreshToken: $refreshToken")
 
                 if (accessToken != null && refreshToken != null) {
                     // AccessToken과 RefreshToken을 이용해 AccessToken 재발급 요청
@@ -128,7 +120,6 @@ class ResponseInterceptor : Interceptor {
 
                     if (response?.isSuccessful == true) { // AccessToken 재발급 성공 시
                         response.body()?.accessToken?.let { newAccessToken ->
-                            Log.d("테스트", "[ResponseInterceptor] New AccessToken: $newAccessToken")
                             runBlocking {
                                 dataStore.saveAccessToken(newAccessToken)
                             }
@@ -138,22 +129,19 @@ class ResponseInterceptor : Interceptor {
                                 .addHeader("Authorization", "Bearer $newAccessToken")
                                 .build()
 
-                            Log.d("테스트", "[ResponseInterceptor] New Request: $newRequest")
-
                             return chain.proceed(newRequest)
                         }
                     } else { // RefreshToken이 만료되었을 경우
-                        Log.d("테스트", "RefreshToken 만료")
-
                         runBlocking {
                             // DataStore에 저장된 AccessToken과 RefreshToken을 삭제
                             dataStore.deleteAccessToken()
                             dataStore.deleteRefreshToken()
 
-                            // DataStore에 저장되어 있는 유저 정보를 삭제
-                            dataStore.deleteEmail()
-                            dataStore.deleteNickname()
-                            dataStore.deleteProfileImage()
+                            // 저장되어 있는 유저 정보를 삭제
+                            myApplication.getUserData().apply {
+                                setLoginStatus(false)
+                                deleteUserData()
+                            }
 
                             // Room에 저장된 알림 삭제
                             notificationRepository.deleteAllNoties()

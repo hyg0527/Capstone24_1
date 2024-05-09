@@ -3,7 +3,6 @@ package com.credential.cubrism.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.asLiveData
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivityNotiBinding
 import com.credential.cubrism.model.repository.NotiRepository
@@ -14,11 +13,8 @@ class NotiActivity : AppCompatActivity() {
     private val binding by lazy { ActivityNotiBinding.inflate(layoutInflater) }
 
     private val notiRepository = NotiRepository(MyApplication.getInstance().getNotiDao())
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val notiAdapter = NotiAdapter()
-
-    private var myEmail: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +43,6 @@ class NotiActivity : AppCompatActivity() {
                 "POST" -> {
                     val intent = Intent(this, PostViewActivity::class.java)
                     intent.putExtra("postId", item.id.toInt())
-                    intent.putExtra("myEmail", myEmail)
                     startActivity(intent)
                 }
             }
@@ -62,10 +57,6 @@ class NotiActivity : AppCompatActivity() {
                 binding.txtEmpty.visibility = android.view.View.GONE
             }
             notiAdapter.setItemList(it)
-        }
-
-        dataStore.getEmail().asLiveData().observe(this) { email ->
-            myEmail = email
         }
     }
 }

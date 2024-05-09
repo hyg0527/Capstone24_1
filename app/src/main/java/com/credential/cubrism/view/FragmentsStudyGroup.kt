@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
@@ -146,19 +145,13 @@ class StudyGroupFunc3Fragment : Fragment() {
     private val binding get() = _binding!!
 
     private val chatViewModel: ChatViewModel by activityViewModels { ViewModelFactory(ChatRepository()) }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private lateinit var chatAdapter: ChatAdapter
 
-    private var myEmail: String? = null
+    private var myEmail = MyApplication.getInstance().getUserData().getEmail()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupFunc3Binding.inflate(inflater, container, false)
-
-        savedInstanceState?.let {
-            myEmail = it.getString("myEmail")
-        }
-
         return binding.root
     }
 
@@ -188,11 +181,6 @@ class StudyGroupFunc3Fragment : Fragment() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString("myEmail", myEmail)
-    }
-
     private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(myEmail)
 
@@ -214,13 +202,6 @@ class StudyGroupFunc3Fragment : Fragment() {
                 event.getContentIfNotHandled()?.let { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
-            }
-        }
-
-        dataStore.getEmail().asLiveData().observe(viewLifecycleOwner) { email ->
-            if (myEmail == null) {
-                myEmail = email
-                setupRecyclerView()
             }
         }
     }

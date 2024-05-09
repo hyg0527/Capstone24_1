@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivityQualificationDetailsBinding
 import com.credential.cubrism.model.dto.Book
 import com.credential.cubrism.model.dto.FavoriteAddDto
@@ -37,6 +38,8 @@ import com.skydoves.powermenu.PowerMenuItem
 
 class QualificationDetailsActivity : AppCompatActivity() {
     private val binding by lazy { ActivityQualificationDetailsBinding.inflate(layoutInflater) }
+
+    private val myApplication = MyApplication.getInstance()
 
     private val qualificationViewModel: QualificationViewModel by viewModels { ViewModelFactory(QualificationRepository()) }
     private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
@@ -102,6 +105,12 @@ class QualificationDetailsActivity : AppCompatActivity() {
             binding.progressIndicator.show()
             qualificationViewModel.getQualificationDetails(it)
         }
+
+        val isLoggedIn = myApplication.getUserData().getLoginStatus()
+        if (isLoggedIn)
+            binding.btnMenu.visibility = View.VISIBLE
+        else
+            binding.btnMenu.visibility = View.GONE
 
         powerMenu = PowerMenu.Builder(this)
             .addItemList(listOf(PowerMenuItem("관심 자격증 추가", false)))
@@ -223,8 +232,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
             errorMessage.observe(this@QualificationDetailsActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    if (message == "JWT 토큰이 잘못되었습니다.")
-                        Toast.makeText(this@QualificationDetailsActivity, "로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

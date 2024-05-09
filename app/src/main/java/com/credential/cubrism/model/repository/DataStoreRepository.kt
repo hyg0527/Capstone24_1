@@ -39,40 +39,4 @@ class DataStoreRepository(private val dataStore: DataStoreModule) {
     suspend fun deleteFcmToken() {
         dataStore.deleteFcmToken()
     }
-
-    suspend fun saveEmail(email: String) {
-        dataStore.saveEmail(email)
-    }
-
-    fun getEmail(): Flow<String?> {
-        return dataStore.getEmail()
-    }
-
-    suspend fun deleteEmail() {
-        dataStore.deleteEmail()
-    }
-
-    suspend fun saveNickname(nickname: String) {
-        dataStore.saveNickname(nickname)
-    }
-
-    fun getNickname(): Flow<String?> {
-        return dataStore.getNickname()
-    }
-
-    suspend fun deleteNickname() {
-        dataStore.deleteNickname()
-    }
-
-    suspend fun saveProfileImage(profileImage: String) {
-        dataStore.saveProfileImage(profileImage)
-    }
-
-    fun getProfileImage(): Flow<String?> {
-        return dataStore.getProfileImage()
-    }
-
-    suspend fun deleteProfileImage() {
-        dataStore.deleteProfileImage()
-    }
 }

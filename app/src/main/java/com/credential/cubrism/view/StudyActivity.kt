@@ -28,7 +28,7 @@ class StudyActivity : AppCompatActivity() {
 
     private val stompClient = StompClient()
 
-    private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", 100) } // 나중에 -1로 변경
+    private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
     private val studyGroupName by lazy { intent.getStringExtra("studyGroupName") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,6 @@ class StudyActivity : AppCompatActivity() {
         if (savedInstanceState == null) { setupFragment() }
         setupToolbar()
         setupTabLayout()
-        setupChat()
         observeViewModel()
 
         var count = 5 // 참가자 인원수
@@ -48,6 +47,11 @@ class StudyActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         stompClient.disconnect()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupChat()
     }
 
     private fun setupToolbar() {

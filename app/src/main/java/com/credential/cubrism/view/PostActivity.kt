@@ -13,7 +13,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
@@ -30,17 +29,17 @@ class PostActivity : AppCompatActivity() {
     private val binding by lazy { ActivityPostBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val postAdapter = PostAdapter()
+
     private lateinit var searchView: SearchView
 
+    private val isLoggedIn = MyApplication.getInstance().getUserData().getLoginStatus()
     private val boardId = 1
     private var loadingState = false
     private var refreshState = false
     private var searchQuery: String? = null
     private var favorites = false
-    private var myEmail: String? = null
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -129,10 +128,7 @@ class PostActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.toolbar.collapseActionView()
 
-                if (myEmail == null) {
-                    Toast.makeText(this@PostActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-                    binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
-                } else {
+                if (isLoggedIn) {
                     when (tab?.position) {
                         0 -> {
                             // 전체 글 목록
@@ -145,6 +141,9 @@ class PostActivity : AppCompatActivity() {
                             postViewModel.getFavoritePostList(boardId, 0, 10, true)
                         }
                     }
+                } else {
+                    Toast.makeText(this@PostActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                    binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
                 }
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -184,7 +183,6 @@ class PostActivity : AppCompatActivity() {
         postAdapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, PostViewActivity::class.java)
             intent.putExtra("postId", item.postId)
-            intent.putExtra("myEmail", myEmail)
             startForRegisterResult.launch(intent)
         }
 
@@ -202,6 +200,11 @@ class PostActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
+        if (isLoggedIn)
+            binding.floatingActionButton.show()
+        else
+            binding.floatingActionButton.hide()
+
         postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
         binding.swipeRefreshLayout.isRefreshing = true
 
@@ -234,13 +237,6 @@ class PostActivity : AppCompatActivity() {
                 event.getContentIfNotHandled()?.let { message ->
                     Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show()
                 }
-            }
-        }
-
-        dataStore.getEmail().asLiveData().observe(this) { email ->
-            myEmail = email
-            if (email == null) {
-                binding.floatingActionButton.hide()
             }
         }
     }
