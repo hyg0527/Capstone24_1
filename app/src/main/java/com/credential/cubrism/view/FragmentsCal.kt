@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +23,7 @@ import com.credential.cubrism.databinding.DialogScheduleInfoBinding
 import com.credential.cubrism.databinding.DialogTimePickBinding
 import com.credential.cubrism.databinding.FragmentCalBinding
 import com.credential.cubrism.model.dto.ScheduleDto
+import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.view.adapter.CalListAdapter
 import com.credential.cubrism.view.adapter.CalMonth
@@ -31,7 +31,6 @@ import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
 import com.credential.cubrism.view.adapter.ScheduleAdapter
-import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.credential.cubrism.viewmodel.ScheduleViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -52,6 +51,8 @@ class CalFragment : Fragment() {
 
     private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
     private val scheduleAdapter = ScheduleAdapter()
+    private val localList = ArrayList<ScheduleListDto>()
+    private var selectedDate: Pair<Int, Int>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalBinding.inflate(inflater, container, false)
@@ -86,11 +87,21 @@ class CalFragment : Fragment() {
         scheduleViewModel.scheduleList.observe(viewLifecycleOwner) {
             for (list in scheduleAdapter.getItemList()) {
                 println(list)
-
             }
+            selectedDate?.let { (year, month) ->
+                calHyg.updateMonthCalendar(year, month, binding.txtYearMonth, calendarAdapter, scheduleAdapter.getItemList())
+            }
+//            localList.clear()
+//            scheduleAdapter.getItemList().forEach { schedule ->
+//                localList.add(schedule)
+//            }
+//
+//            for (list in localList) {
+//                println(list)
+//            }
         }
 
-        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel) { _ -> }
+        calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel, localList) { _ -> }
 
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
@@ -140,21 +151,27 @@ class CalFragment : Fragment() {
             }
         }
         binding.preMonth.setOnClickListener {
-            calHyg.setPreNextMonthCalendar(scheduleViewModel, calendarAdapter,
-                binding.txtYearMonth, binding.currentDate, "pre") { date ->
-//                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
-            }
+            val (date, year, month) = calHyg.setPreNextMonthCalendar(calendarAdapter,
+                binding.txtYearMonth, binding.currentDate, localList, "pre")
+            scheduleViewModel.getScheduleList(year, month)
+
+//            selectedDate = Pair(year, month)
+            calendarAdapter.highlightDate(date)
         }
         binding.nextMonth.setOnClickListener {
-            calHyg.setPreNextMonthCalendar(scheduleViewModel, calendarAdapter,
-                binding.txtYearMonth, binding.currentDate, "next") { date ->
-//                updateViewModel(adapter, date)
-                calendarAdapter.highlightDate(date)
-            }
+//            calHyg.setPreNextMonthCalendar(scheduleViewModel, calendarAdapter,
+//                binding.txtYearMonth, binding.currentDate, localList, "next") { date ->
+////                updateViewModel(adapter, date)
+//                calendarAdapter.highlightDate(date)
+//            }
+            val (date, year, month) = calHyg.setPreNextMonthCalendar(calendarAdapter,
+                binding.txtYearMonth, binding.currentDate, localList, "next")
+            scheduleViewModel.getScheduleList(year, month)
+
+            calendarAdapter.highlightDate(date)
         }
         binding.btnToday.setOnClickListener {
-            calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel) { date ->
+            calHyg.initToday(binding.txtYearMonth, binding.currentDate, calendarAdapter, scheduleViewModel, localList) { date ->
 //                updateViewModel(adapter, date)
                 calendarAdapter.highlightDate(date)
             }
@@ -173,10 +190,9 @@ class CalFragment : Fragment() {
                     val intRegex = """(\d{4})년 (\d{1,2})월 (\d{1,2})일""".toRegex()
                     intRegex.find(text)?.let {
                         val (foundYear, foundMonth, foundDay) = it.destructured
-//                        val dateSelected = "${foundYear.toInt()} - ${String.format("%02d", foundMonth.toInt())} - ${String.format("%02d", foundDay.toInt())}"
-
-                        scheduleViewModel.getScheduleList(foundYear.toInt(), foundMonth.toInt())
+                        val dateSelected = "${foundYear.toInt()} - ${String.format("%02d", foundMonth.toInt())} - ${String.format("%02d", foundDay.toInt())}"
 //                        updateViewModel(adapter, dateSelected)
+                        println("localList: $localList")
                     }
                 }
             }
@@ -206,7 +222,7 @@ class CalFragment : Fragment() {
         val pickTxt = binding.txtYearMonth.text.toString()
         val (days, weekIndex) = calHyg.getMonthInfoS(pickTxt)
 
-        val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex)
+        val monthUpdateList = calHyg.showMonthCalendar(pickTxt, days, weekIndex, localList)
         calAdapter.updateCalendar(monthUpdateList)
         calAdapter.highlightDate(convertDateFormat(binding.currentDate.text.toString()))
     }
@@ -228,7 +244,8 @@ class CalFragment : Fragment() {
         val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_date_pick, null)
 
-        calInstance.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate, calAdapter, scheduleViewModel) { selectedDate ->
+        calInstance.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate,
+            calAdapter, scheduleViewModel, localList) { selectedDate ->
             callback(selectedDate)
         }
 

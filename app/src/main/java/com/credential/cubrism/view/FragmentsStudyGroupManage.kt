@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.credential.cubrism.databinding.DialogDatePickBinding
 import com.credential.cubrism.databinding.DialogGoalAddBinding
+import com.credential.cubrism.databinding.DialogScheduleDatepickBinding
 import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
@@ -27,9 +29,13 @@ import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.DDayViewModel
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 class StudyGroupManageFragment : Fragment() { // 관리 홈화면
@@ -157,7 +163,32 @@ class StudyGroupDDayFragment : Fragment() { // 디데이 설정 화면
             Toast.makeText(requireContext(), "디데이를 등록하였습니다.", Toast.LENGTH_SHORT).show()
             (activity as StudyManageActivity).popBackStackFragment()
         }
+        binding.txtDdayDate.setOnClickListener {
+            showDateSelectDialog()
+        }
         binding.backBtn.setOnClickListener { (activity as StudyManageActivity).popBackStackFragment() }
+    }
+
+    private fun showDateSelectDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogBinding = DialogScheduleDatepickBinding.inflate(layoutInflater)
+
+        val dialog = builder.create()
+        builder.setView(dialogBinding.root).show()
+
+        // 날짜 선택 이벤트 처리
+        dialogBinding.calendarViewDialog.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val selectedDate = Calendar.getInstance().apply {
+                set(year, month, dayOfMonth)
+            }.time
+
+            handleSelectedDate(selectedDate)
+            dialog.dismiss()
+        }
+    }
+
+    private fun handleSelectedDate(selectedDate: Date) {
+        binding.txtDdayDate.text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectedDate)
     }
 
     private fun calculateDays(date: String): Int {
