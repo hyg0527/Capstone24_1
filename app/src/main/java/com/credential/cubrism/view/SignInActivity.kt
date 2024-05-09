@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivitySigninBinding
+import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.repository.AuthRepository
@@ -22,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SignInActivity : AppCompatActivity() {
@@ -124,7 +126,13 @@ class SignInActivity : AppCompatActivity() {
 
     // 이메일 로그인
     private fun signIn(email: String, password: String) {
-        authViewModel.signIn(email, password)
+        lifecycleScope.launch {
+            val fcmToken = dataStore.getFcmToken().first()
+            if (fcmToken != null)
+                authViewModel.signIn(SignInDto(email, password, fcmToken))
+            else
+                authViewModel.signIn(SignInDto(email, password, null))
+        }
     }
 
     // 구글 로그인

@@ -69,8 +69,8 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun signIn(email: String, password: String) {
-        authRepository.signIn(SignInDto(email, password)) { result ->
+    fun signIn(signInDto: SignInDto) {
+        authRepository.signIn(signInDto) { result ->
             handleResult(result, _signIn, _errorMessage)
         }
     }

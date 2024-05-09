@@ -14,16 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
-import com.credential.cubrism.model.dto.FcmTokenDto
 import com.credential.cubrism.model.repository.AuthRepository
-import com.credential.cubrism.model.repository.FcmRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
-import com.credential.cubrism.viewmodel.FcmViewModel
 import com.credential.cubrism.viewmodel.MainFragmentType
 import com.credential.cubrism.viewmodel.MainViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-    private val fcmViewModel: FcmViewModel by viewModels { ViewModelFactory(FcmRepository()) }
 
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
@@ -89,11 +84,6 @@ class MainActivity : AppCompatActivity() {
                     saveEmail(user.email)
                     saveNickname(user.nickname)
                     saveProfileImage(user.profileImage ?: "")
-
-                    // 서버로 FCM 토큰 전송
-                    getFcmToken().first()?.let { token ->
-                        fcmViewModel.updateFcmToken(FcmTokenDto(token))
-                    }
                 }
             }
         }
