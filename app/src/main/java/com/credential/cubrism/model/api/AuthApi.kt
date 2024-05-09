@@ -4,6 +4,7 @@ import com.credential.cubrism.model.dto.EmailVerifyDto
 import com.credential.cubrism.model.dto.EmailVerifyRequestDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
+import com.credential.cubrism.model.dto.SignInSuccessDto
 import com.credential.cubrism.model.dto.SignUpDto
 import com.credential.cubrism.model.dto.SocialTokenDto
 import com.credential.cubrism.model.dto.TokenDto
@@ -24,15 +25,15 @@ interface AuthApi {
 
     // 로그인
     @POST("/auth/signin")
-    fun signIn(@Body signInDto: SignInDto): Call<TokenDto>
+    fun signIn(@Body signInDto: SignInDto): Call<SignInSuccessDto>
 
     // 구글 로그인
     @POST("/auth/signin/google")
-    fun googleLogIn(@Body socialTokenDto: SocialTokenDto): Call<TokenDto>
+    fun googleLogIn(@Body socialTokenDto: SocialTokenDto): Call<SignInSuccessDto>
 
     // 카카오 로그인
     @POST("/auth/signin/kakao")
-    fun kakaoLogIn(@Body socialTokenDto: SocialTokenDto): Call<TokenDto>
+    fun kakaoLogIn(@Body socialTokenDto: SocialTokenDto): Call<SignInSuccessDto>
 
     // 로그아웃
     @POST("/auth/logout")
@@ -44,7 +45,7 @@ interface AuthApi {
 
     // 회원 정보 수정
     @PUT("/auth/users")
-    fun editUserInfo(@Body userEditDto: UserEditDto): Call<MessageDto>
+    fun editUserInfo(@Body userEditDto: UserEditDto): Call<UserInfoDto>
 
     // 회원 탈퇴
     @DELETE("/auth/users")

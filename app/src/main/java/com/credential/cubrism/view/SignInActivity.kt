@@ -12,8 +12,8 @@ import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivitySigninBinding
 import com.credential.cubrism.model.dto.SignInDto
+import com.credential.cubrism.model.dto.SignInSuccessDto
 import com.credential.cubrism.model.dto.SocialTokenDto
-import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -28,6 +28,9 @@ import kotlinx.coroutines.launch
 
 class SignInActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySigninBinding.inflate(layoutInflater) }
+
+    private val myApplication = MyApplication.getInstance()
+
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
     private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
@@ -162,14 +165,21 @@ class SignInActivity : AppCompatActivity() {
     }
 
     // 로그인 성공
-    private fun signInSuccess(dto : TokenDto) {
-        if (dto.accessToken != null && dto.refreshToken != null) {
-            lifecycleScope.launch {
-                dataStore.saveAccessToken(dto.accessToken)
-                dataStore.saveRefreshToken(dto.refreshToken)
-
-                setResult(RESULT_OK).also { finish() }
+    private fun signInSuccess(dto : SignInSuccessDto) {
+        lifecycleScope.launch {
+            // DataStore에 토큰 저장
+            dataStore.apply {
+                dto.token.accessToken?.let { saveAccessToken(it) }
+                dto.token.refreshToken?.let { saveRefreshToken(it) }
             }
+
+            // 유저 정보 저장
+            myApplication.getUserData().apply {
+                setLoginStatus(true)
+                setUserData(dto.user.email, dto.user.nickname, dto.user.profileImage)
+            }
+
+            finish()
         }
     }
 }

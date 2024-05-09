@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.EmailVerifyRequestDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
+import com.credential.cubrism.model.dto.SignInSuccessDto
 import com.credential.cubrism.model.dto.SocialTokenDto
-import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.repository.AuthRepository
@@ -24,14 +24,14 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _emailVerify = MutableLiveData<ResultUtil<MessageDto>>()
     val emailVerify: LiveData<ResultUtil<MessageDto>> = _emailVerify
 
-    private val _signIn = MutableLiveData<TokenDto>()
-    val signIn: LiveData<TokenDto> = _signIn
+    private val _signIn = MutableLiveData<SignInSuccessDto>()
+    val signIn: LiveData<SignInSuccessDto> = _signIn
 
-    private val _googleLogIn = MutableLiveData<TokenDto>()
-    val googleLogIn: LiveData<TokenDto> = _googleLogIn
+    private val _googleLogIn = MutableLiveData<SignInSuccessDto>()
+    val googleLogIn: LiveData<SignInSuccessDto> = _googleLogIn
 
-    private val _kakaoLogIn = MutableLiveData<TokenDto>()
-    val kakaoLogIn: LiveData<TokenDto> = _kakaoLogIn
+    private val _kakaoLogIn = MutableLiveData<SignInSuccessDto>()
+    val kakaoLogIn: LiveData<SignInSuccessDto> = _kakaoLogIn
 
     private val _logOut = MutableLiveData<MessageDto>()
     val logOut: LiveData<MessageDto> = _logOut
@@ -39,8 +39,8 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _getUserInfo = MutableLiveData<UserInfoDto>()
     val getUserInfo: LiveData<UserInfoDto> = _getUserInfo
 
-    private val _editUserInfo = MutableLiveData<MessageDto>()
-    val editUserInfo: LiveData<MessageDto> = _editUserInfo
+    private val _editUserInfo = MutableLiveData<UserInfoDto>()
+    val editUserInfo: LiveData<UserInfoDto> = _editUserInfo
 
     private val _withdrawal = MutableLiveData<MessageDto>()
     val withdrawal: LiveData<MessageDto> = _withdrawal
@@ -105,8 +105,8 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun editUserInfo(nickname: String, profileImage: String?) {
-        authRepository.editUserInfo(UserEditDto(nickname, profileImage)) { result ->
+    fun editUserInfo(userEditDto: UserEditDto) {
+        authRepository.editUserInfo(userEditDto) { result ->
             handleResult(result, _editUserInfo, _errorMessage)
         }
     }

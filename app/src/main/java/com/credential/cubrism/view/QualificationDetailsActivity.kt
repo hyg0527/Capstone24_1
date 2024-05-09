@@ -223,7 +223,8 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
             errorMessage.observe(this@QualificationDetailsActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
+                    if (message == "JWT 토큰이 잘못되었습니다.")
+                        Toast.makeText(this@QualificationDetailsActivity, "로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -10,25 +10,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
-import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
-import com.credential.cubrism.model.repository.AuthRepository
-import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.MainFragmentType
 import com.credential.cubrism.viewmodel.MainViewModel
-import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val mainViewModel: MainViewModel by viewModels()
-    private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private var backPressedTime: Long = 0
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -54,8 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-        authViewModel.getUserInfo()
-
         if (savedInstanceState == null) { setupFragment() }
         setupBottomNav()
         observeViewModel()
@@ -76,18 +65,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        // 서버에서 유저 정보를 가져오면
-        authViewModel.getUserInfo.observe(this) { user ->
-            lifecycleScope.launch {
-                // DataStore에 유저 정보를 저장
-                dataStore.apply {
-                    saveEmail(user.email)
-                    saveNickname(user.nickname)
-                    saveProfileImage(user.profileImage ?: "")
-                }
-            }
-        }
-
         mainViewModel.currentFragmentType.observe(this) { fragmentType ->
             binding.bottomNavigationView.show(fragmentType.ordinal + 1, true)
 

@@ -1,12 +1,10 @@
 package com.credential.cubrism.view
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.credential.cubrism.MyApplication
@@ -24,18 +22,14 @@ import kotlinx.coroutines.launch
 class MyPageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMyPageBinding.inflate(layoutInflater) }
 
+    private val myApplication = MyApplication.getInstance()
+
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
     private val calendarViewModel: CalendarViewModel by viewModels()
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
-    private val notificationRepository = NotiRepository(MyApplication.getInstance().getNotiDao())
+    private val notificationRepository = NotiRepository(myApplication.getNotiDao())
+    private val dataStore = myApplication.getDataStoreRepository()
 
     private val myPageAdapter = MyPageAdapter()
-
-    private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            authViewModel.getUserInfo()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +40,15 @@ class MyPageActivity : AppCompatActivity() {
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupProfile()
+    }
+
     private fun setupView() {
         // 정보 수정
         binding.layoutEdit.setOnClickListener {
-            startForRegisterResult.launch(Intent(this, EditProfileActivity::class.java))
+            startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
         // 나의 스터디
@@ -70,9 +69,27 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupProfile() {
+        val isLoggedIn = myApplication.getUserData().getLoginStatus()
+        if (isLoggedIn) {
+            myApplication.getUserData().let {
+                Glide.with(this@MyPageActivity).load(it.getProfileImage())
+                    .error(R.drawable.profile)
+                    .fallback(R.drawable.profile)
+                    .dontAnimate()
+                    .into(binding.imgProfile)
+                binding.txtNickname.text = it.getNickname()
+                binding.txtEmail.text = it.getEmail()
+            }
+        } else {
+            finish()
+        }
+    }
+
     private fun setupRecyclerView() {
         binding.recyclerView.apply {
             adapter = myPageAdapter
+            itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 48, 0, 0, 0, 0, null))
             setHasFixedSize(true)
         }
@@ -102,49 +119,24 @@ class MyPageActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     dataStore.deleteAccessToken()
                     dataStore.deleteRefreshToken()
-                    dataStore.deleteEmail()
-                    dataStore.deleteNickname()
-                    dataStore.deleteProfileImage()
                     notificationRepository.deleteAllNoties()
 
-                    setResult(RESULT_OK).also { finish() }
-                }
-            }
-
-            // 유저 정보
-            getUserInfo.observe(this@MyPageActivity) { user ->
-                lifecycleScope.launch {
-                    dataStore.apply {
-                        saveEmail(user.email)
-                        saveNickname(user.nickname)
-                        saveProfileImage(user.profileImage ?: "")
+                    myApplication.getUserData().apply {
+                        setLoginStatus(false)
+                        deleteUserData()
                     }
+
+                    finish()
                 }
             }
 
             errorMessage.observe(this@MyPageActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     if (message == "JWT 토큰이 잘못되었습니다.")
-                        setResult(RESULT_OK).also { finish() }
+                        finish()
+                    else
+                        Toast.makeText(this@MyPageActivity, message, Toast.LENGTH_SHORT).show()
                 }
-            }
-        }
-
-        dataStore.apply {
-            getEmail().asLiveData().observe(this@MyPageActivity) { email ->
-                binding.txtEmail.text = email
-            }
-
-            getNickname().asLiveData().observe(this@MyPageActivity) { nickname ->
-                binding.txtNickname.text = nickname
-            }
-
-            getProfileImage().asLiveData().observe(this@MyPageActivity) { image ->
-                Glide.with(this@MyPageActivity).load(image)
-                    .error(R.drawable.profile)
-                    .fallback(R.drawable.profile)
-                    .dontAnimate()
-                    .into(binding.imgProfile)
             }
         }
     }

@@ -1,17 +1,14 @@
 package com.credential.cubrism.view
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -19,7 +16,6 @@ import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
 import com.credential.cubrism.model.dto.FavoriteListDto
-import com.credential.cubrism.model.repository.AuthRepository
 import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
 import com.credential.cubrism.view.adapter.CalMonth
@@ -28,7 +24,6 @@ import com.credential.cubrism.view.adapter.FavoriteAdapter2
 import com.credential.cubrism.view.adapter.FavoriteItem
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodoAdapter
-import com.credential.cubrism.viewmodel.AuthViewModel
 import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
@@ -41,32 +36,15 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val authViewModel: AuthViewModel by activityViewModels { ViewModelFactory(AuthRepository()) }
+    private val myApplication = MyApplication.getInstance()
+
     private val calendarViewModel: CalendarViewModel by activityViewModels()
     private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
-    private val dataStore = MyApplication.getInstance().getDataStoreRepository()
 
     private val favoriteAdapter2 = FavoriteAdapter2()
 
     private var currentPage = 0
     private val timer = Timer()
-    private var loggedIn = false
-
-    // 로그인 성공
-    private val startForRegisterResultSignIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            authViewModel.getUserInfo()
-            favoriteViewModel.getFavoriteList()
-        }
-    }
-
-    // 로그아웃 성공
-    private val startForRegisterResultLogOut = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            authViewModel.getUserInfo()
-            favoriteViewModel.getFavoriteList()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -124,7 +102,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        favoriteViewModel.getFavoriteList()
+        setupViewWithLoginStatus()
     }
 
     private fun setupToolbar() {
@@ -137,13 +115,12 @@ class HomeFragment : Fragment() {
 
         // 로그인
         binding.txtSignIn.setOnClickListener {
-            if (!loggedIn)
-                startForRegisterResultSignIn.launch(Intent(requireActivity(), SignInActivity::class.java))
+            startActivity(Intent(requireActivity(), SignInActivity::class.java))
         }
 
         // 프로필
         binding.btnProfile.setOnClickListener {
-            startForRegisterResultLogOut.launch(Intent(requireActivity(), MyPageActivity::class.java))
+            startActivity(Intent(requireActivity(), MyPageActivity::class.java))
         }
 
         // 알림
@@ -152,11 +129,32 @@ class HomeFragment : Fragment() {
         }
 
         binding.layoutNoFavorite.setOnClickListener {
-            if (loggedIn) {
+            val isLoggedIn = myApplication.getUserData().getLoginStatus()
+            if (isLoggedIn) {
                 val intent = Intent(requireActivity(), QualificationSearchActivity::class.java)
                 intent.putExtra("type", "favorite")
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun setupViewWithLoginStatus() {
+        favoriteViewModel.getFavoriteList()
+
+        // 로그인 상태에 따라 다른 화면 표시
+        val isLoggedIn = myApplication.getUserData().getLoginStatus()
+        if (isLoggedIn) {
+            binding.btnProfile.visibility = View.VISIBLE
+            binding.btnNoti.visibility = View.VISIBLE
+            binding.txtSignIn.text = "${myApplication.getUserData().getNickname()}님 환영합니다."
+            binding.txtArrow.visibility = View.GONE
+            binding.txtAdd.text = "관심 자격증을 추가해 보세요!"
+        } else {
+            binding.btnProfile.visibility = View.GONE
+            binding.btnNoti.visibility = View.GONE
+            binding.txtSignIn.text = "로그인 하세요"
+            binding.txtArrow.visibility = View.VISIBLE
+            binding.txtAdd.text = "로그인 하여 관심 자격증을 추가해 보세요!"
         }
     }
 
@@ -185,25 +183,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        // DataStore에 닉네임이 저장되어 있는지 확인 (로그인 상태)
-        dataStore.getNickname().asLiveData().observe(viewLifecycleOwner) { nickname ->
-            if (nickname != null) {
-                binding.btnProfile.visibility = View.VISIBLE
-                binding.btnNoti.visibility = View.VISIBLE
-                binding.txtSignIn.text = "${nickname}님 환영합니다."
-                binding.txtArrow.visibility = View.GONE
-                binding.txtAdd.text = "관심 자격증을 추가해 보세요!"
-                loggedIn = true
-            } else {
-                binding.btnProfile.visibility = View.GONE
-                binding.btnNoti.visibility = View.GONE
-                binding.txtSignIn.text = "로그인 하세요"
-                binding.txtArrow.visibility = View.VISIBLE
-                binding.txtAdd.text = "로그인 하여 관심 자격증을 추가해 보세요!"
-                loggedIn = false
-            }
-        }
-
         favoriteViewModel.apply {
             favoriteList.observe(viewLifecycleOwner) { list ->
                 val items = mutableListOf<FavoriteItem>()
