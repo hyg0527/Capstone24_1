@@ -113,5 +113,12 @@ class QualificationSearchActivity : AppCompatActivity() {
                 }
             }
         }
+
+        favoriteViewModel.apply {
+            addFavorite.observe(this@QualificationSearchActivity) {
+                Toast.makeText(this@QualificationSearchActivity, it.message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
     }
 }
