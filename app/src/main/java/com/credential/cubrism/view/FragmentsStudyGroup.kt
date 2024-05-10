@@ -187,7 +187,7 @@ class StudyGroupFunc3Fragment : Fragment() {
         binding.recyclerView.apply {
             adapter = chatAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(0, 20, 0, 0, 0, 0, null))
         }
     }
 

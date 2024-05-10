@@ -76,8 +76,9 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
     inner class OthersViewHolder(private val binding: ItemListCommentOthersBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Comments) {
             Glide.with(binding.root).load(item.profileImageUrl)
-                .error(R.drawable.profil_image)
-                .fallback(R.drawable.profil_image)
+                .error(R.drawable.profile)
+                .fallback(R.drawable.profile)
+                .dontAnimate()
                 .into(binding.imgProfile)
             binding.txtNickname.text = item.nickname ?: "(알수없음)"
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
