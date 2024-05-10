@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -42,9 +44,21 @@ class StudyActivity : AppCompatActivity() {
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
     private val studyGroupName by lazy { intent.getStringExtra("studyGroupName") }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (binding.drawerLayout.isDrawerOpen(binding.navigation)) {
+                binding.drawerLayout.closeDrawer(binding.navigation)
+            } else {
+                finish()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         if (savedInstanceState == null) { setupFragment() }
         setupToolbar()
