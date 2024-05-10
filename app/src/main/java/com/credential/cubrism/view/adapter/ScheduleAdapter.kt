@@ -8,8 +8,9 @@ import com.credential.cubrism.databinding.ItemListScheduleBinding
 import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
     private var itemList = mutableListOf<ScheduleListDto>()
@@ -41,13 +42,6 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
             binding.txtCalMonthTitle.text = item.title
             binding.txtCalMonthInfo.text = item.content
 
-//            binding.timeStart.text = if (item.allDay) {
-//                convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd")
-//            } else {
-//                val startDateTime = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a")
-//                val endDateTime = item.endDate?.let { convertDateTimeFormat(it, "yyyy-MM-dd'T'HH:mm", "MM.dd  h:mm a") }
-//                "$startDateTime\n~\n$endDateTime"
-//            }
             if (item.allDay) {
                 binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
                 binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")

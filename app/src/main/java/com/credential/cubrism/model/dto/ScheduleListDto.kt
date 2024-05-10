@@ -1,5 +1,7 @@
 package com.credential.cubrism.model.dto
 
+import java.io.Serializable
+
 data class ScheduleListDto(
     val scheduleId: Int,
     val startDate: String,
@@ -7,4 +9,4 @@ data class ScheduleListDto(
     val title: String,
     val content: String,
     val allDay: Boolean
-)
+): Serializable

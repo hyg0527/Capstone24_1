@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
 import com.credential.cubrism.R
+import com.credential.cubrism.model.dto.ScheduleDto
 import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateSelect
@@ -56,41 +57,11 @@ class CalendarHyg {
     }
 
     // 해당 월의 달력 출력 함수
-    fun showMonthCalendar(yearMonth: String, daysInMonth: Int, dayOfWeekIndex: Int, data: ArrayList<ScheduleListDto>): ArrayList<DateSelect> {
-        val (year, month) = getSelectedYearMonth(yearMonth)
-        val monthData = "$year - ${String.format("%02d", month)}"
-
-        val numDate = extractListInfo(checkFormat(data))
-        val daysList = ArrayList<DateSelect>().apply {
-            val weekOfTheDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-
-            for (i in 1..7) { // 요일 출력 부분
-                add(DateSelect(weekOfTheDayList[i - 1]))
-            }
-            for (i in 0..dayOfWeekIndex - 2) { // 1일이 나오기 전까지 공백을 메우는 부분
-                add(DateSelect(" "))
-            }
-            for (i in 1..daysInMonth) { // 날짜 출력 부분
-                add(DateSelect("$i"))
-            }
-        }
-        // 일정 리스트와 출력하려는 월의 날짜를 모두 비교 하여 해당 날짜에 일정이 있으면 표시
-        println("data: $data, numDate: $numDate")
-        for (date in numDate) if (date.key == monthData)
-            for (day in daysList)
-                for (scDate in date.value)
-                    if ((day.date ?: "").isDigitsOnly() && (day.date ?: "").toInt() == scDate) {
-                        day.isScheduled = true
-                        break
-                    }
-
-        return daysList
-    }
-
     fun showMonthCalendarNew(year: Int, month: Int, day: Int, data: List<ScheduleListDto>, calendarAdapter: CalendarAdapter) {
         val monthData = "$year - ${String.format("%02d", month)}"
         val newData = ArrayList(data)
         val numDate = extractListInfo(checkFormat(newData))
+        println("newData: $numDate")
 
         val (daysInMonth, dayOfWeekIndex) = setDateWeek(year, month)
         val daysList = ArrayList<DateSelect>().apply {
@@ -108,7 +79,6 @@ class CalendarHyg {
         }
 
         // 일정 리스트와 출력하려는 월의 날짜를 모두 비교 하여 해당 날짜에 일정이 있으면 표시
-        println("data: $data, numDate: $numDate")
         for (date in numDate) if (date.key == monthData)
             for (day in daysList)
                 for (scDate in date.value)
@@ -132,18 +102,18 @@ class CalendarHyg {
 
         for (value in values) {
             try { // startDate를 dateFormatter로 파싱하여 오류가 없으면 value 그대로 반환
-                dateFormatterOutput.parse(value.startDate ?: "")
+                dateFormatterOutput.parse(value.startDate)
                 formattedList.add(value)
             } catch (e: ParseException) { // ParseException이 발생하면 format 변경
                 var startDate = ""
                 var endDate = ""
 
                 if (value.allDay) {
-                    startDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.startDate ?: "") ?: "")
-                    endDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.endDate ?: "") ?: "")
+                    startDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.startDate) ?: "")
+                    endDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.endDate) ?: "")
                 } else {
-                    startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate ?: "") ?: "")
-                    endDate = dateFormatterOutput.format(dateFormatter.parse(value.endDate ?: "") ?: "")
+                    startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate) ?: "")
+                    endDate = dateFormatterOutput.format(dateFormatter.parse(value.endDate) ?: "")
                 }
 
                 formattedList.add(value.copy(startDate = startDate, endDate = endDate))
@@ -326,6 +296,58 @@ class CalendarHyg {
 //        calendarAdapter.updateCalendar(monthList)
 
         return Triple(year, month, day)
+    }
+
+    fun extractInfoS(item: ScheduleDto): Triple<Int, Int, Int> {
+        val startDate = item.startDate.substringBefore("T")
+        val (year, month, day) = startDate.split("-").map { it.trim().toInt() }
+
+        return Triple(year, month, day)
+    }
+
+    fun checkFormatSingle(value: ScheduleListDto): ScheduleListDto { // 형식 체크 (로컬데이터 형식으로 변환 후 반환)
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+        val dateFormatterOutput = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
+        val dateFormatterOutputAllDay = SimpleDateFormat("yyyy - MM - dd 종일", Locale.getDefault())
+
+        try { // startDate를 dateFormatter로 파싱하여 오류가 없으면 value 그대로 반환
+            dateFormatterOutput.parse(value.startDate)
+            return value
+        }
+        catch (e: ParseException) { // ParseException이 발생 하면 format 변경
+            var startDate = ""; var endDate = ""
+
+            if (value.allDay) {
+                startDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.startDate) ?: "")
+                endDate = dateFormatterOutputAllDay.format(dateFormatter.parse(value.endDate) ?: "")
+            }
+            else {
+                startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate) ?: "")
+                endDate = dateFormatterOutput.format(dateFormatter.parse(value.endDate) ?: "")
+            }
+
+            return value.copy(startDate = startDate, endDate = endDate)
+        }
+    }
+
+    fun revertFormat(value: ScheduleDto): ScheduleDto { // 형식 체크(원래 데이터 형식으로 다시 변환 후 반환)
+        val dateFormatter = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
+        val dateFormatterAllDay = SimpleDateFormat("yyyy - MM - dd 종일", Locale.getDefault())
+        val dateFormatterOutput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+        val dateFormatterOutputAllDay = SimpleDateFormat("yyyy-MM-dd'T'00:00", Locale.getDefault())
+
+        var startDate = ""; var endDate = ""
+
+        if (value.isAllDay) {
+            startDate = dateFormatterOutputAllDay.format(dateFormatterAllDay.parse(value.startDate) ?: "")
+            endDate = dateFormatterOutputAllDay.format(dateFormatterAllDay.parse(value.endDate) ?: "")
+        }
+        else {
+            startDate = dateFormatterOutput.format(dateFormatter.parse(value.startDate) ?: "")
+            endDate = dateFormatterOutput.format(dateFormatter.parse(value.endDate) ?: "")
+        }
+
+        return value.copy(startDate = startDate, endDate = endDate)
     }
 
     private fun selectedMonthToString(selectedMonth: Int): String { // 월에 해당하는 숫자를 영어로 변환
