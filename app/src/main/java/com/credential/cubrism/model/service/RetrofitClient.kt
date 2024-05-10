@@ -1,5 +1,6 @@
 package com.credential.cubrism.model.service
 
+import com.auth0.android.jwt.JWT
 import com.credential.cubrism.BuildConfig
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.model.api.AuthApi
@@ -15,6 +16,8 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 private val myApplication = MyApplication.getInstance()
 private val dataStore = myApplication.getDataStoreRepository()
@@ -65,26 +68,30 @@ class RequestInterceptor : Interceptor {
             dataStore.getAccessToken().first()
         }
 
-//        val refreshToken = runBlocking {
-//            dataStore.getRefreshToken().first()?.let { JWT(it) }
-//        }
-//
-//        // Refresh Token의 만료 기간이 2일 이내로 남았으면
-//        if ((refreshToken?.expiresAt?.time ?: (0 - System.currentTimeMillis())) < 2 * 24 * 60 * 60 * 1000) {
-//            // Refresh Token 재발급 요청
-//            val response = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)?.reissueRefreshToken()?.execute()
-//
-//            if (response?.isSuccessful == true) { // RefreshToken 재발급 성공 시
-//                response.body()?.refreshToken?.let { newRefreshToken ->
-//                    Log.d("테스트", "[RequestInterceptor] New RefreshToken: $newRefreshToken")
-//
-//                    runBlocking {
-//                        // 새로 발급받은 RefreshToken을 DataStore에 저장
-//                        dataStore.saveRefreshToken(newRefreshToken)
-//                    }
-//                }
-//            }
-//        }
+        val refreshToken = runBlocking {
+            dataStore.getRefreshToken().first()?.let { JWT(it) }
+        }
+
+        refreshToken?.expiresAt?.time?.let { expiresAt ->
+            // 한국시간 기준으로 Refresh Token의 만료 시간을 계산
+            val koreaCurrentTimeMillis = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli()
+            val refreshTokenRemain = expiresAt - koreaCurrentTimeMillis
+
+            // Refresh Token의 만료가 2일 이내로 남았을 경우
+            if (refreshTokenRemain < 2 * 24 * 60 * 60 * 1000) {
+                // Refresh Token 재발급 요청
+                val response = RetrofitClient.getRetrofit()?.create(AuthApi::class.java)?.reissueRefreshToken("Bearer $accessToken")?.execute()
+
+                if (response?.isSuccessful == true) { // RefreshToken 재발급 성공 시
+                    response.body()?.refreshToken?.let { newRefreshToken ->
+                        runBlocking {
+                            // 새로 발급받은 RefreshToken을 DataStore에 저장
+                            dataStore.saveRefreshToken(newRefreshToken)
+                        }
+                    }
+                }
+            }
+        }
 
         // 헤더에 Access Token 추가
         val request = chain.request().newBuilder()

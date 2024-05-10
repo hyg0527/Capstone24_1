@@ -68,5 +68,5 @@ interface AuthApi {
 
     // Refresh Token 재발급
     @POST("/auth/token/refresh")
-    fun reissueRefreshToken(): Call<TokenDto>
+    fun reissueRefreshToken(@Header("Authorization") accessToken: String): Call<TokenDto>
 }
