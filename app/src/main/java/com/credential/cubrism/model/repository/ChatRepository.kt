@@ -19,10 +19,7 @@ class ChatRepository {
             override fun onResponse(call: Call<List<ChatResponseDto>>, response: Response<List<ChatResponseDto>>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        val sortedChatList = it.sortedBy { chat ->
-                            LocalDateTime.parse(chat.createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.[SSSSSS][SSSSS][SSSS][SSS][SS][S]"))
-                        }
-                        callback(ResultUtil.Success(sortedChatList))
+                        response.body()?.let { callback(ResultUtil.Success(it)) }
                     }
                 } else {
                     response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }

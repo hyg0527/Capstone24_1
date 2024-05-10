@@ -8,5 +8,6 @@ data class ChatResponseDto(
     val username: String?,
     val profileImgUrl: String?,
     val createdAt: String,
-    val content: String
+    val content: String,
+    var isDateHeader: Boolean
 )
