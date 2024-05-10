@@ -145,6 +145,15 @@
         <activity
             android:name=".view.PhotoViewActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.StudyManageGoalActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageDDayActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageAcceptActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

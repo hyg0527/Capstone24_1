@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -18,27 +19,45 @@ class StudyManageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val manageFragment = StudyGroupManageFragment()
-        val bundle = Bundle()
-        bundle.putString("titleName", titleName)
-        bundle.putInt("groupId", groupId)
-        bundle.putString("ddayTitle", ddayTitle)
-        bundle.putString("dday", dday)
-        manageFragment.arguments = bundle
+//        val manageFragment = StudyGroupManageFragment()
+//        val bundle = Bundle()
+//        bundle.putString("titleName", titleName)
+//        bundle.putInt("groupId", groupId)
+//        bundle.putString("ddayTitle", ddayTitle)
+//        bundle.putString("dday", dday)
+//        manageFragment.arguments = bundle
 
         // 처음 화면을 fragment_study_home으로 설정
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainerView.id, manageFragment)
-                .setReorderingAllowed(true)
-                .commit()
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(binding.fragmentContainerView.id, manageFragment)
+//                .setReorderingAllowed(true)
+//                .commit()
+//        }
+        binding.manageGoal.setOnClickListener {
+            val intent = Intent(this, StudyManageGoalActivity::class.java)
+            startActivity(intent)
+        }
+        binding.manageDday.setOnClickListener {
+            val intent = Intent(this, StudyManageDDayActivity::class.java)
+
+            intent.putExtra("groupId", groupId)
+            intent.putExtra("ddayTitle", ddayTitle)
+            intent.putExtra("dday", dday)
+
+            startActivity(intent)
+        }
+        binding.manageAccept.setOnClickListener {
+            val intent = Intent(this, StudyManageAcceptActivity::class.java)
+            intent.putExtra("groupId", groupId)
+            startActivity(intent)
         }
     }
 
     fun changeFragmentManage(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-            .replace(binding.fragmentContainerView.id, fragment)
+//            .replace(binding.fragmentContainerView.id, fragment)
             .addToBackStack(null)
             .commit()
     }
