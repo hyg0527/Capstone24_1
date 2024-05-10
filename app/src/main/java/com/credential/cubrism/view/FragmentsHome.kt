@@ -195,9 +195,7 @@ class HomeFragment : Fragment() {
                     binding.recyclerQualification.visibility = View.VISIBLE
 
                     items.addAll(list.map { FavoriteItem(FavType.FAVORITE, it) })
-                    if (items.size < 3) {
-                        items.add(FavoriteItem(FavType.ADD, null))
-                    }
+                    items.add(FavoriteItem(FavType.ADD, null))
                 }
 
                 favoriteAdapter2.setItemList(items)

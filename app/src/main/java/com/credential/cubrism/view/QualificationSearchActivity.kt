@@ -119,6 +119,12 @@ class QualificationSearchActivity : AppCompatActivity() {
                 Toast.makeText(this@QualificationSearchActivity, it.message, Toast.LENGTH_SHORT).show()
                 finish()
             }
+
+            errorMessage.observe(this@QualificationSearchActivity) {
+                it.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@QualificationSearchActivity, message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }
