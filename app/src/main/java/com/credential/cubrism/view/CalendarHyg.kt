@@ -34,16 +34,7 @@ class CalendarHyg {
         val monthPickTxt = "${selectedMonthToString(initMonth)} $initYear"
         currentDate.text = todayTxt
         monthTxt.text = monthPickTxt
-//
-//        val (m, w) = setDateWeek(initYear, initMonth)
-//        val monthList = showMonthCalendar(monthPickTxt, m, w, data)
-//
-//        scheduleViewModel.getScheduleList(initYear, initMonth)
-//        adapter.updateCalendar(monthList)
-//
-//        val selectedReturn = String.format("%02d", initYear) + " - " +
-//                String.format("%02d", initMonth) + " - " + String.format("%02d", initDay)
-//        callback(selectedReturn)
+
         return Triple(initYear, initMonth, initDay)
     }
 
@@ -197,8 +188,8 @@ class CalendarHyg {
         return Pair(numDaysInMonth, firstDayIndex)
     }
 
-    fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView, txtCurrentDate: TextView, calendarAdapter: CalendarAdapter,
-                           scheduleViewModel: ScheduleViewModel, callback: (Triple<Int, Int, Int>) -> Unit) { // numberpicker dialog 호출
+    fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView, txtCurrentDate: TextView,
+                           callback: (Triple<Int, Int, Int>) -> Unit) { // numberpicker dialog 호출
         val yearPick = view.findViewById<NumberPicker>(R.id.yearPick)
         val monthPick = view.findViewById<NumberPicker>(R.id.monthPick)
         val (getYear, getMonth) = getSelectedYearMonth(datePickTxt.text.toString())
@@ -289,11 +280,6 @@ class CalendarHyg {
         val dateTxt = "${year}년 ${month}월 ${day}일"
         currentDate.text = dateTxt
         yearMonth.text = selectedMonthToString(month) + " " + year
-
-//        val (m, w) = setDateWeek(year, month)
-//        val monthList = showMonthCalendar(yearMonth.text.toString(), m, w, ArrayList())
-//
-//        calendarAdapter.updateCalendar(monthList)
 
         return Triple(year, month, day)
     }

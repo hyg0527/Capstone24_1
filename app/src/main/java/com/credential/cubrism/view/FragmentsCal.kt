@@ -27,8 +27,6 @@ import com.credential.cubrism.databinding.FragmentCalBinding
 import com.credential.cubrism.model.dto.ScheduleDto
 import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.model.repository.ScheduleRepository
-import com.credential.cubrism.view.adapter.CalListAdapter
-import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateMonthClickListener
 import com.credential.cubrism.view.adapter.DateSelect
@@ -55,7 +53,6 @@ class CalFragment : Fragment() {
     private val scheduleAdapter = ScheduleAdapter()
 
     private val calHyg = CalendarHyg()
-    private val localList = ArrayList<ScheduleListDto>()
     private var selectedDate: Triple<Int, Int, Int>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -67,8 +64,6 @@ class CalFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initCalendarSchedule()
-//        scheduleViewModel.updateSchedule(4, ScheduleDto(startDate="2024-03-31T17:00", endDate="2024-04-01T17:00",
-//            title="일정1", content="내용1", isAllDay=false))
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -96,20 +91,10 @@ class CalFragment : Fragment() {
 //            for (list in scheduleAdapter.getItemList()) {
 //                println(list)
 //            }
-
             selectedDate?.let { (year, month, day) ->
-                println("called!")
                 calHyg.showMonthCalendarNew(year, month, day, scheduleAdapter.getItemList(), calendarAdapter)
             }
             selectedDate = null
-//            localList.clear()
-//            scheduleAdapter.getItemList().forEach { schedule ->
-//                localList.add(schedule)
-//            }
-//
-//            for (list in localList) {
-//                println(list)
-//            }
         }
 
         val (initYear, initMonth, initDay) = calHyg.initToday(binding.txtYearMonth, binding.currentDate)
@@ -157,7 +142,7 @@ class CalFragment : Fragment() {
         }
 
         binding.dateSelect.setOnClickListener {
-            showDatePickDialog(calHyg, calendarAdapter)
+            showDatePickDialog()
         }
         binding.preMonth.setOnClickListener {
             val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "pre")
@@ -181,16 +166,10 @@ class CalFragment : Fragment() {
                     val day = item.date
                     val regex = Regex("\\d+일")
                     val text = binding.currentDate.text.toString().replace(regex, "${day}일")
+
                     // 달력의 날짜 누르면 textview 날짜 갱신
                     binding.currentDate.text = text
                     calendarAdapter.highlightCurrentDate(item, true)
-
-                    val intRegex = """(\d{4})년 (\d{1,2})월 (\d{1,2})일""".toRegex()
-                    intRegex.find(text)?.let {
-                        val (foundYear, foundMonth, foundDay) = it.destructured
-                        val dateSelected = "${foundYear.toInt()} - ${String.format("%02d", foundMonth.toInt())} - ${String.format("%02d", foundDay.toInt())}"
-//                        updateViewModel(adapter, dateSelected)
-                    }
                 }
             }
         })
@@ -230,13 +209,12 @@ class CalFragment : Fragment() {
         }
     }
 
-    private fun showDatePickDialog(calHyg: CalendarHyg, calendarAdapter: CalendarAdapter) {
+    private fun showDatePickDialog() {
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_date_pick, null)
 
-        calHyg.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate,
-            calendarAdapter, scheduleViewModel) { info ->
+        calHyg.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate) { info ->
             val (year, month, day) = info
             println("year: $year, month: $month")
 
@@ -373,7 +351,7 @@ class CalScheduleAddFragment : BottomSheetDialogFragment() {
         add.setOnClickListener {
             val data = bringCurrentData(title, info, fullTime)
 
-            if (title.text.toString().isEmpty()) { // 제목 미 입력시 입력하도록 설계
+            if (title.text.toString().isEmpty()) { // 제목 미 입력시 입력 하도록 설계
                 Toast.makeText(requireContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
             }
             else {

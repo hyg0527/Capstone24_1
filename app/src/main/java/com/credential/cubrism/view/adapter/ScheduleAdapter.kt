@@ -8,9 +8,6 @@ import com.credential.cubrism.databinding.ItemListScheduleBinding
 import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
     private var itemList = mutableListOf<ScheduleListDto>()
