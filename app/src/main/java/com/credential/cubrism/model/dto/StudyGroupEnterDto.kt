@@ -1,0 +1,30 @@
+package com.credential.cubrism.model.dto
+
+data class StudyGroupEnterDto(
+    val members: List<MembersDto>,
+    val dDay: DDayDto
+)
+
+data class MembersDto(
+    val nickname: String,
+    val email: String,
+    val admin: Boolean,
+    val userGoal: UserGoalsDto
+)
+
+data class UserGoalsDto(
+    val goals: List<GoalsDto>,
+    val completionPercentage: Double?
+)
+
+data class GoalsDto(
+    val goalId: Int,
+    val goalName: String,
+    val completed: Boolean
+)
+
+data class DDayDto(
+    val groupId: Int,
+    val dDay: String?,
+    val dname: String?
+)

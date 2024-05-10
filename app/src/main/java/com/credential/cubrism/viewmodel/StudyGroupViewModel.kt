@@ -7,6 +7,7 @@ import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
+import com.credential.cubrism.model.dto.StudyGroupEnterDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -45,6 +46,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _requestJoin = MutableLiveData<MessageDto>()
     val requestJoin: LiveData<MessageDto> = _requestJoin
+
+    private val _studyGroupEnterData = MutableLiveData<StudyGroupEnterDto>()
+    val studyGroupEnterData: LiveData<StudyGroupEnterDto> = _studyGroupEnterData
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -115,6 +119,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun requestJoin(groupId: Int) {
         repository.requestJoin(groupId) { result ->
             handleResult(result, _requestJoin, _errorMessage)
+        }
+    }
+
+    fun getStudyGroupEnterData(groupId: Int) {
+        repository.studyGroupEnterData(groupId) { result ->
+            handleResult(result, _studyGroupEnterData, _errorMessage)
         }
     }
 

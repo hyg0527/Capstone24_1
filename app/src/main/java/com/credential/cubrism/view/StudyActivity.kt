@@ -2,20 +2,28 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
+import com.credential.cubrism.model.dto.MembersDto
 import com.credential.cubrism.model.repository.ChatRepository
+import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.model.service.StompClient
 import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.StudyFragmentType
+import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.StudyViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayout
@@ -23,7 +31,10 @@ import com.google.android.material.tabs.TabLayout
 class StudyActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyBinding.inflate(layoutInflater) }
 
+    private val myApplication = MyApplication.getInstance()
+
     private val studyViewModel: StudyViewModel by viewModels()
+    private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
     private val chatViewModel: ChatViewModel by viewModels { ViewModelFactory(ChatRepository()) }
 
     private val stompClient = StompClient()
@@ -40,8 +51,7 @@ class StudyActivity : AppCompatActivity() {
         setupTabLayout()
         observeViewModel()
 
-        var count = 5 // 참가자 인원수
-        drawerInit(count)
+        studyGroupViewModel.getStudyGroupEnterData(studyGroupId)
     }
 
     override fun onDestroy() {
@@ -61,9 +71,11 @@ class StudyActivity : AppCompatActivity() {
 
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
         binding.drawerLayout.addDrawerListener(toggle)
+        binding.navigation.itemIconTintList = null
         toggle.syncState()
+    }
 
-        // 메뉴 추가
+    private fun setupMenu() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.study_menu, menu)
@@ -136,13 +148,39 @@ class StudyActivity : AppCompatActivity() {
 
             binding.tabLayout.getTabAt(fragmentType.ordinal)?.select()
         }
-    }
 
-    private fun drawerInit(count: Int) { // 참가자명 drawer에 표시
-        val menu = binding.navigation.menu
+        studyGroupViewModel.apply {
+            studyGroupEnterData.observe(this@StudyActivity) { group ->
+                val myEmail = myApplication.getUserData().getEmail()
 
-        for (i in 1..count) { menu.add(R.id.groupList, Menu.NONE, Menu.NONE, "참가자 $i") }
-        for (i in 1..count) { menu.getItem(i - 1).isEnabled = false }
+                // 관리자를 가장 위에 놓고 나머지는 닉네임 순으로 정렬
+                group.members.sortedWith(compareByDescending<MembersDto> { it.admin }.thenBy { it.nickname }).forEach { member ->
+                    // 그룹의 관리자인 경우 관리 메뉴 추가
+                    if (member.email == myEmail && member.admin) {
+                        setupMenu()
+                    }
+
+                    // Navigation Drawer에 멤버 목록 추가
+                    if (member.email == myEmail) {
+                        // 내 닉네임에 색상 적용
+                        val spannable = SpannableString(member.nickname)
+                        spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@StudyActivity, R.color.blue)), 0, spannable.length, 0)
+                        binding.navigation.menu.add(spannable)
+                    } else {
+                        binding.navigation.menu.add(member.nickname)
+                    }.apply {
+                        isEnabled = false // 클릭 비활성화
+                        if (member.admin) setIcon(R.drawable.crown) // 관리자인 경우 아이콘 추가
+                    }
+                }
+            }
+
+            errorMessage.observe(this@StudyActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Log.d("테스트", "message : $message")
+                }
+            }
+        }
     }
 
     fun sendMessage(chatRequestDto: ChatRequestDto) {

@@ -4,6 +4,7 @@ import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
+import com.credential.cubrism.model.dto.StudyGroupEnterDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -86,6 +87,10 @@ interface StudyGroupApi {
     // 스터디 그룹 목표 정보
 //    @GET("/studygroup/goal/{goalId}")
 //    fun getGoalInfo(@Path("goalId") goalId: Int): Call<StudyGroupGoalInfo>
+
+    // 스터디 그룹 입장 데이터
+    @GET("/studygroup/{groupId}/enter")
+    fun getStudyGroupEnterData(@Path("groupId") groupId: Int): Call<StudyGroupEnterDto>
 
     // 채팅
     @GET("/studygroup/{studygroupId}/chats")

@@ -5,6 +5,7 @@ import com.credential.cubrism.model.api.StudyGroupApi
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
+import com.credential.cubrism.model.dto.StudyGroupEnterDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -179,6 +180,24 @@ class StudyGroupRepository {
             }
 
             override fun onFailure(call: Call<List<StudyGroupJoinReceiveListDto>>, t: Throwable) {
+                callback(ResultUtil.NetworkError())
+            }
+        })
+    }
+
+    fun studyGroupEnterData(groupId: Int, callback: (ResultUtil<StudyGroupEnterDto>) -> Unit) {
+        studyGroupApiAuth.getStudyGroupEnterData(groupId).enqueue(object : Callback<StudyGroupEnterDto> {
+            override fun onResponse(call: Call<StudyGroupEnterDto>, response: Response<StudyGroupEnterDto>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        callback(ResultUtil.Success(it))
+                    }
+                } else {
+                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
+                }
+            }
+
+            override fun onFailure(call: Call<StudyGroupEnterDto>, t: Throwable) {
                 callback(ResultUtil.NetworkError())
             }
         })
