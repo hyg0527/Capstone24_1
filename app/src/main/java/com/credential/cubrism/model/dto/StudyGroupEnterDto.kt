@@ -2,7 +2,7 @@ package com.credential.cubrism.model.dto
 
 data class StudyGroupEnterDto(
     val members: List<MembersDto>,
-    val dDay: DDayDto
+    val day: DDayDto
 )
 
 data class MembersDto(
@@ -25,6 +25,6 @@ data class GoalsDto(
 
 data class DDayDto(
     val groupId: Int,
-    val dDay: String?,
-    val dname: String?
+    val title: String?,
+    val day: String?
 )

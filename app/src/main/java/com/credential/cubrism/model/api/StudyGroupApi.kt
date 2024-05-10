@@ -1,6 +1,7 @@
 package com.credential.cubrism.model.api
 
 import com.credential.cubrism.model.dto.ChatResponseDto
+import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
@@ -87,6 +88,10 @@ interface StudyGroupApi {
     // 스터디 그룹 목표 정보
 //    @GET("/studygroup/goal/{goalId}")
 //    fun getGoalInfo(@Path("goalId") goalId: Int): Call<StudyGroupGoalInfo>
+
+    // 스터디 그룹 D-Day 설정
+    @POST("/studygroup/dday")
+    fun setDday(@Body dDayDto: DDayDto): Call<MessageDto>
 
     // 스터디 그룹 입장 데이터
     @GET("/studygroup/{groupId}/enter")

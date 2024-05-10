@@ -17,22 +17,23 @@ import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.repository.ChatRepository
+import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.ChatAdapter
-import com.credential.cubrism.view.adapter.GoalAdapter
-import com.credential.cubrism.view.adapter.Goals
 import com.credential.cubrism.view.adapter.Rank
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.ChatViewModel
-import com.credential.cubrism.viewmodel.DDayViewModel
+import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class StudyGroupHomeFragment : Fragment() {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val dDayViewModel: DDayViewModel by activityViewModels()
-    private var view: View? = null
+    private val studyGroupViewModel: StudyGroupViewModel by activityViewModels { ViewModelFactory(StudyGroupRepository()) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupHomeBinding.inflate(inflater, container, false)
@@ -41,10 +42,8 @@ class StudyGroupHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.view = view
 
-        initGoalListView()
-        dDayInit()
+        observeViewModel()
     }
 
     override fun onDestroyView() {
@@ -52,23 +51,24 @@ class StudyGroupHomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun dDayInit() {
-        dDayViewModel.pairStringLiveData.observe(viewLifecycleOwner) { data ->
-            binding.goaltxt.text = data.first + "까지"
-            binding.ddaynumtext.text = data.second.toString()
+    private fun observeViewModel() {
+        studyGroupViewModel.apply {
+            studyGroupEnterData.observe(viewLifecycleOwner) {
+                if (it.day.title != null && it.day.day != null) {
+                    binding.txtGoal.text = it.day.title
+                    binding.txtDDay.text = calculateDDay(it.day.day).toString()
+                }
+            }
         }
+
     }
 
-    private fun initGoalListView() {
-        val items = ArrayList<Goals>()
-        val adapter = GoalAdapter(items, true)
+    private fun calculateDDay(targetDateString: String): Long {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val targetDate = LocalDate.parse(targetDateString, formatter)
+        val currentDate = LocalDate.now()
 
-        binding.goalRecyclerViewList.layoutManager = LinearLayoutManager(requireContext())
-        binding.goalRecyclerViewList.adapter = adapter
-
-        if (items.isEmpty()) {
-            binding.textView50.visibility = View.VISIBLE
-        }
+        return ChronoUnit.DAYS.between(currentDate, targetDate)
     }
 }
 

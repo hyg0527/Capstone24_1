@@ -3,6 +3,7 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
@@ -46,6 +47,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _requestJoin = MutableLiveData<MessageDto>()
     val requestJoin: LiveData<MessageDto> = _requestJoin
+
+    private val _setDday = MutableLiveData<MessageDto>()
+    val setDday: LiveData<MessageDto> = _setDday
 
     private val _studyGroupEnterData = MutableLiveData<StudyGroupEnterDto>()
     val studyGroupEnterData: LiveData<StudyGroupEnterDto> = _studyGroupEnterData
@@ -119,6 +123,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun requestJoin(groupId: Int) {
         repository.requestJoin(groupId) { result ->
             handleResult(result, _requestJoin, _errorMessage)
+        }
+    }
+
+    fun setDday(dDayDto: DDayDto) {
+        repository.setDday(dDayDto) { result ->
+            handleResult(result, _setDday, _errorMessage)
         }
     }
 

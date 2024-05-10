@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -43,6 +42,8 @@ class StudyActivity : AppCompatActivity() {
 
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
     private val studyGroupName by lazy { intent.getStringExtra("studyGroupName") }
+    private var ddayTitle: String? = null
+    private var dday: String? = null
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -76,6 +77,8 @@ class StudyActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         setupChat()
+        // StudyManageActivity에서 뒤로가기가 이상해져서 일단 보류
+//        studyGroupViewModel.getStudyGroupEnterData(studyGroupId)
     }
 
     private fun setupToolbar() {
@@ -92,7 +95,9 @@ class StudyActivity : AppCompatActivity() {
     private fun setupMenu() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.study_menu, menu)
+                if (menu.findItem(R.id.manage) == null) {
+                    menuInflater.inflate(R.menu.study_menu, menu)
+                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -101,6 +106,8 @@ class StudyActivity : AppCompatActivity() {
                         val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
                         intent.putExtra("titleName", binding.txtTitle.text.toString())
                         intent.putExtra("groupId", studyGroupId)
+                        intent.putExtra("ddayTitle", ddayTitle)
+                        intent.putExtra("dday", dday)
                         startActivity(intent)
                     }
                 }
@@ -167,6 +174,9 @@ class StudyActivity : AppCompatActivity() {
             studyGroupEnterData.observe(this@StudyActivity) { group ->
                 val myEmail = myApplication.getUserData().getEmail()
 
+                ddayTitle = group.day.title
+                dday = group.day.day
+
                 // 관리자를 가장 위에 놓고 나머지는 닉네임 순으로 정렬
                 group.members.sortedWith(compareByDescending<MembersDto> { it.admin }.thenBy { it.nickname }).forEach { member ->
                     // 그룹의 관리자인 경우 관리 메뉴 추가
@@ -200,4 +210,6 @@ class StudyActivity : AppCompatActivity() {
     fun sendMessage(chatRequestDto: ChatRequestDto) {
         stompClient.sendMessage(studyGroupId, chatRequestDto)
     }
+
+
 }
