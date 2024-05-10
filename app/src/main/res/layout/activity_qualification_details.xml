@@ -17,6 +17,7 @@
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/godom"
             android:layout_gravity="center"
             android:textSize="20dp" />
 
