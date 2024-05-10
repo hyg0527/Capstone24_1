@@ -6,7 +6,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SignInSuccessDto
 import com.credential.cubrism.model.dto.SignUpDto
-import com.credential.cubrism.model.dto.SocialTokenDto
+import com.credential.cubrism.model.dto.SocialLogInDto
 import com.credential.cubrism.model.dto.TokenDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
@@ -29,11 +29,11 @@ interface AuthApi {
 
     // 구글 로그인
     @POST("/auth/signin/google")
-    fun googleLogIn(@Body socialTokenDto: SocialTokenDto): Call<SignInSuccessDto>
+    fun googleLogIn(@Body socialLogInDto: SocialLogInDto): Call<SignInSuccessDto>
 
     // 카카오 로그인
     @POST("/auth/signin/kakao")
-    fun kakaoLogIn(@Body socialTokenDto: SocialTokenDto): Call<SignInSuccessDto>
+    fun kakaoLogIn(@Body socialLogInDto: SocialLogInDto): Call<SignInSuccessDto>
 
     // 로그아웃
     @POST("/auth/logout")

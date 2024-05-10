@@ -7,7 +7,7 @@ import com.credential.cubrism.model.dto.EmailVerifyRequestDto
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SignInSuccessDto
-import com.credential.cubrism.model.dto.SocialTokenDto
+import com.credential.cubrism.model.dto.SocialLogInDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.repository.AuthRepository
@@ -75,14 +75,14 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun googleSignIn(socialTokenDto: SocialTokenDto) {
-        authRepository.googleLogin(socialTokenDto) { result ->
+    fun googleSignIn(socialLogInDto: SocialLogInDto) {
+        authRepository.googleLogin(socialLogInDto) { result ->
             handleResult(result, _googleLogIn, _errorMessage)
         }
     }
 
-    fun kakaoSignIn(socialTokenDto: SocialTokenDto) {
-        authRepository.kakaoLogin(socialTokenDto) { result ->
+    fun kakaoSignIn(socialLogInDto: SocialLogInDto) {
+        authRepository.kakaoLogin(socialLogInDto) { result ->
             handleResult(result, _kakaoLogIn, _errorMessage)
         }
     }

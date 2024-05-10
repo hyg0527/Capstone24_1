@@ -7,7 +7,7 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.SignInDto
 import com.credential.cubrism.model.dto.SignInSuccessDto
 import com.credential.cubrism.model.dto.SignUpDto
-import com.credential.cubrism.model.dto.SocialTokenDto
+import com.credential.cubrism.model.dto.SocialLogInDto
 import com.credential.cubrism.model.dto.UserEditDto
 import com.credential.cubrism.model.dto.UserInfoDto
 import com.credential.cubrism.model.service.RetrofitClient
@@ -85,8 +85,8 @@ class AuthRepository {
         })
     }
 
-    fun googleLogin(socialTokenDto: SocialTokenDto, callback: (ResultUtil<SignInSuccessDto>) -> Unit) {
-        authApi.googleLogIn(socialTokenDto).enqueue(object : Callback<SignInSuccessDto> {
+    fun googleLogin(socialLogInDto: SocialLogInDto, callback: (ResultUtil<SignInSuccessDto>) -> Unit) {
+        authApi.googleLogIn(socialLogInDto).enqueue(object : Callback<SignInSuccessDto> {
             override fun onResponse(call: Call<SignInSuccessDto>, response: Response<SignInSuccessDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
@@ -101,8 +101,8 @@ class AuthRepository {
         })
     }
 
-    fun kakaoLogin(socialTokenDto: SocialTokenDto, callback: (ResultUtil<SignInSuccessDto>) -> Unit) {
-        authApi.kakaoLogIn(socialTokenDto).enqueue(object : Callback<SignInSuccessDto> {
+    fun kakaoLogin(socialLogInDto: SocialLogInDto, callback: (ResultUtil<SignInSuccessDto>) -> Unit) {
+        authApi.kakaoLogIn(socialLogInDto).enqueue(object : Callback<SignInSuccessDto> {
             override fun onResponse(call: Call<SignInSuccessDto>, response: Response<SignInSuccessDto>) {
                 if (response.isSuccessful) {
                     response.body()?.let { callback(ResultUtil.Success(it)) }
