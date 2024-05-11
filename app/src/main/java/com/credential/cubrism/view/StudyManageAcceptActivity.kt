@@ -2,11 +2,12 @@ package com.credential.cubrism.view
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import com.credential.cubrism.databinding.FragmentStudygroupManageacceptBinding
+import androidx.appcompat.app.AppCompatActivity
+import com.credential.cubrism.databinding.ActivityStudygroupManageacceptBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GroupAcceptButtonClickListener
@@ -17,7 +18,7 @@ import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
 class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickListener, GroupDenyButtonClickListener {
-    private val binding by lazy { FragmentStudygroupManageacceptBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityStudygroupManageacceptBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
 
@@ -63,11 +64,9 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
     }
 
     private fun setupToolbar() {
-//        (activity as StudyManageActivity).apply {
-            setSupportActionBar(binding.toolbar)
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
@@ -83,8 +82,14 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
 
     private fun observeViewModel() {
         studyGroupViewModel.apply {
-            joinReceiveList.observe(this@StudyManageAcceptActivity) {
-                joinAcceptAdapter.setItemList(it)
+            joinReceiveList.observe(this@StudyManageAcceptActivity) { list ->
+                binding.progressIndicator.hide()
+                if (list.isEmpty()) {
+                    binding.txtNoJoin.visibility = View.VISIBLE
+                } else {
+                    binding.txtNoJoin.visibility = View.GONE
+                    joinAcceptAdapter.setItemList(list)
+                }
             }
 
             acceptJoinRequest.observe(this@StudyManageAcceptActivity) {
@@ -95,6 +100,12 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
             denyJoinRequest.observe(this@StudyManageAcceptActivity) {
                 Toast.makeText(this@StudyManageAcceptActivity, it.message, Toast.LENGTH_SHORT).show()
                 studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
+            }
+
+            errorMessage.observe(this@StudyManageAcceptActivity) { event ->
+                event.getContentIfNotHandled()?.let {
+                    binding.progressIndicator.hide()
+                }
             }
         }
     }
