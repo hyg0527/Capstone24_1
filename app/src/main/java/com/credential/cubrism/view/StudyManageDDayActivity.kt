@@ -5,8 +5,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.credential.cubrism.databinding.ActivityStudygroupDdayBinding
 import com.credential.cubrism.databinding.DialogScheduleDatepickBinding
-import com.credential.cubrism.databinding.FragmentStudygroupDdayBinding
 import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
@@ -16,7 +16,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class StudyManageDDayActivity : AppCompatActivity() {
-    private val binding by lazy { FragmentStudygroupDdayBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityStudygroupDdayBinding.inflate(layoutInflater) }
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
 
     private val groupId by lazy { intent.getIntExtra("groupId", -1) }
@@ -36,11 +36,9 @@ class StudyManageDDayActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-//        (activity as StudyManageActivity).apply {
-            setSupportActionBar(binding.toolbar)
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
@@ -68,7 +66,14 @@ class StudyManageDDayActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                studyGroupViewModel.setDday(DDayDto(groupId, title, date))
+                AlertDialog.Builder(this).apply {
+                    setMessage("D-Day를 설정하면 수정이 불가능합니다.")
+                    setNegativeButton("취소", null)
+                    setPositiveButton("확인") { _, _ ->
+                        studyGroupViewModel.setDday(DDayDto(groupId, title, date))
+                    }
+                    show()
+                }
             }
         } else {
             binding.editTitle.isEnabled = false
