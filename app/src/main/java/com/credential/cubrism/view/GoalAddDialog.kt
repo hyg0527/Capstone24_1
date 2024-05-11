@@ -27,6 +27,11 @@ class GoalAddDialog(private val context: Context, private val onConfirm: (title:
         setupView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupDialog() {
         dialog?.apply {
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

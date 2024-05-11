@@ -3,8 +3,6 @@ package com.credential.cubrism.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyManageBinding
 
 class StudyManageActivity : AppCompatActivity() {
@@ -35,17 +33,5 @@ class StudyManageActivity : AppCompatActivity() {
             intent.putExtra("groupId", groupId)
             startActivity(intent)
         }
-    }
-
-    fun changeFragmentManage(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.custom_fade_in, R.anim.custom_fade_out)
-//            .replace(binding.fragmentContainerView.id, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    fun popBackStackFragment() {
-        supportFragmentManager.popBackStack()
     }
 }

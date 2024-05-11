@@ -7,10 +7,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityStudygroupGoalBinding
-import com.credential.cubrism.databinding.DialogGoalAddBinding
+import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
-import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
 import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
 import com.credential.cubrism.view.adapter.StudyGroupGoalType
@@ -25,8 +24,6 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
     private lateinit var studyGroupGoalAdapter: StudyGroupGoalAdapter
 
-    private lateinit var goalAddDialog: GoalAddDialog
-
     private val groupId by lazy { intent.getIntExtra("groupId", -1) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +32,6 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
         setupToolbar()
         setupView()
-        setupDialog()
         setupRecyclerView()
         observeViewModel()
     }
@@ -64,20 +60,19 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
         binding.btnAddGoal.setOnClickListener {
             if (studyGroupGoalAdapter.getItemSize() >= 3) {
-                Toast.makeText(this, "목표 개수는 3개까지 작성 가능합니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "목표는 3개까지 추가 가능합니다.", Toast.LENGTH_SHORT).show()
             } else {
-                // TODO: 목표 추가
-                goalAddDialog.show(supportFragmentManager, "GoalAddDialog")
+                showDialog()
             }
         }
     }
 
-    private fun setupDialog() {
-        goalAddDialog = GoalAddDialog(this,
+    private fun showDialog() {
+        GoalAddDialog(this,
             onConfirm = {
-                Toast.makeText(this, "title: $it", Toast.LENGTH_SHORT).show()
+                studyGroupViewModel.addGoal(StudyGroupAddGoalDto(groupId, it))
             }
-        )
+        ).show(supportFragmentManager, "GoalAddDialog")
     }
 
     private fun setupRecyclerView() {
@@ -93,12 +88,12 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
         studyGroupViewModel.apply {
             goalList.observe(this@StudyManageGoalActivity) { list ->
                 binding.progressIndicator.hide()
+                studyGroupGoalAdapter.setItemList(list)
 
                 if (list.isEmpty()) {
                     binding.txtNoGoal.visibility = View.VISIBLE
                 } else {
                     binding.txtNoGoal.visibility = View.GONE
-                    studyGroupGoalAdapter.setItemList(list)
                 }
 
                 if (list.size >= 3) {
@@ -106,6 +101,11 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
                 } else {
                     binding.btnAddGoal.visibility = View.VISIBLE
                 }
+            }
+
+            addGoal.observe(this@StudyManageGoalActivity) {
+                Toast.makeText(this@StudyManageGoalActivity, it.message, Toast.LENGTH_SHORT).show()
+                studyGroupViewModel.getGoalList(groupId)
             }
 
             deleteGoal.observe(this@StudyManageGoalActivity) {
@@ -119,25 +119,5 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
                 }
             }
         }
-    }
-
-    private fun callAddDialog(adapter: GoalAdapter) { // 목표 추가 다이얼로그 호출
-        val builder = AlertDialog.Builder(this)
-        val dialogBinding = DialogGoalAddBinding.inflate(layoutInflater)
-
-        builder.setView(dialogBinding.root)
-            .setPositiveButton("추가") { dialog, _ ->
-                if (dialogBinding.editTextGoalTitle.text.isEmpty()) {
-                    Toast.makeText(this, "목표 제목을 입력하세요.", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    adapter.addItem(adapter.getItem().size + 1, dialogBinding.editTextGoalTitle.text.toString())
-                    Toast.makeText(this, "목표가 추가되었습니다.", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
-            }
-            .setNegativeButton("취소") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
     }
 }

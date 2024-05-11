@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -65,8 +65,6 @@ class StudyActivity : AppCompatActivity() {
         setupToolbar()
         setupTabLayout()
         observeViewModel()
-
-        studyGroupViewModel.getStudyGroupEnterData(studyGroupId)
     }
 
     override fun onDestroy() {
@@ -77,8 +75,7 @@ class StudyActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         setupChat()
-        // StudyManageActivity에서 뒤로가기가 이상해져서 일단 보류
-//        studyGroupViewModel.getStudyGroupEnterData(studyGroupId)
+        studyGroupViewModel.getStudyGroupEnterData(studyGroupId)
     }
 
     private fun setupToolbar() {
@@ -201,7 +198,7 @@ class StudyActivity : AppCompatActivity() {
 
             errorMessage.observe(this@StudyActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Log.d("테스트", "message : $message")
+                    Toast.makeText(this@StudyActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -210,6 +207,4 @@ class StudyActivity : AppCompatActivity() {
     fun sendMessage(chatRequestDto: ChatRequestDto) {
         stompClient.sendMessage(studyGroupId, chatRequestDto)
     }
-
-
 }
