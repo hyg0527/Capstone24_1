@@ -297,6 +297,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:background="@drawable/layout_rounded_corner_lb"
+            android:enabled="false"
             android:fontFamily="@font/kopubdotummedium"
             android:hint="댓글 입력"
             android:inputType="text"
@@ -313,6 +314,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/send_btn"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

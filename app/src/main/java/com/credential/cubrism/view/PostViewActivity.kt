@@ -282,6 +282,8 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 binding.txtContent.text = result.content.replace(" ", "\u00A0")
 
                 binding.btnMenu.visibility = if (isLoggedIn && result.email == myEmail) View.VISIBLE else View.GONE
+                binding.editComment.isEnabled = result.nickname != null
+                binding.btnSend.isEnabled = result.nickname != null
 
                 postCommentAdapter.setItemList(result.comments)
                 postImageAdapter.setItemList(result.images)
