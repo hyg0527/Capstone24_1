@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListStudyTag1Binding
 import com.credential.cubrism.databinding.ItemListStudyTag2Binding
-import com.credential.cubrism.view.diff.StudyGroupTagDiffUtil
+import com.credential.cubrism.view.diff.StringListDiffUtil
 
 class StudyGroupTagAdapter(private val tagStyle: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<String>()
@@ -51,7 +51,7 @@ class StudyGroupTagAdapter(private val tagStyle: Int) : RecyclerView.Adapter<Rec
     }
 
     fun setItemList(list: List<String>) {
-        val diffCallBack = StudyGroupTagDiffUtil(itemList, list)
+        val diffCallBack = StringListDiffUtil(itemList, list)
         val diffUtil = DiffUtil.calculateDiff(diffCallBack)
 
         itemList.clear()
