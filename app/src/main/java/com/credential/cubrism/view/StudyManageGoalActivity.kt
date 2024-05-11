@@ -25,6 +25,8 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
     private lateinit var studyGroupGoalAdapter: StudyGroupGoalAdapter
 
+    private lateinit var goalAddDialog: GoalAddDialog
+
     private val groupId by lazy { intent.getIntExtra("groupId", -1) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +35,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
         setupToolbar()
         setupView()
+        setupDialog()
         setupRecyclerView()
         observeViewModel()
     }
@@ -64,8 +67,17 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
                 Toast.makeText(this, "목표 개수는 3개까지 작성 가능합니다.", Toast.LENGTH_SHORT).show()
             } else {
                 // TODO: 목표 추가
+                goalAddDialog.show(supportFragmentManager, "GoalAddDialog")
             }
         }
+    }
+
+    private fun setupDialog() {
+        goalAddDialog = GoalAddDialog(this,
+            onConfirm = {
+                Toast.makeText(this, "title: $it", Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun setupRecyclerView() {
