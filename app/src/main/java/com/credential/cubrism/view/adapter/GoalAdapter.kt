@@ -14,7 +14,7 @@ data class Goals(val id: Int? = null, val name: String? = null, var num: Int? = 
 class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     inner class GoalViewHolder(val binding: ItemListGoalBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.closeBtn2.setOnClickListener {
+            binding.btnDelete.setOnClickListener {
                 val position = adapterPosition
                 val item = items[position]
 
@@ -69,8 +69,8 @@ class GoalAdapter(private val items: ArrayList<Goals>, private val isList: Boole
         when (holder) {
             is GoalViewHolder -> {
                 val item = items[position]
-                holder.binding.editTextGoalTitle.setText(item.name)
-                holder.binding.txtGoalCount.text = "목표${item.num}"
+                holder.binding.txtTitle.setText(item.name)
+                holder.binding.txtCount.text = "목표${item.num}"
             }
             is GoalListViewHolder -> {
                 val item = items[position]

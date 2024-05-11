@@ -10,7 +10,6 @@ import com.credential.cubrism.databinding.ActivityStudyManageBinding
 class StudyManageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyManageBinding.inflate(layoutInflater) }
 
-    private val titleName by lazy { intent.getStringExtra("titleName") }
     private val groupId by lazy { intent.getIntExtra("groupId", -1) }
     private val dday by lazy { intent.getStringExtra("dday") }
     private val ddayTitle by lazy { intent.getStringExtra("ddayTitle") }
@@ -19,32 +18,16 @@ class StudyManageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-//        val manageFragment = StudyGroupManageFragment()
-//        val bundle = Bundle()
-//        bundle.putString("titleName", titleName)
-//        bundle.putInt("groupId", groupId)
-//        bundle.putString("ddayTitle", ddayTitle)
-//        bundle.putString("dday", dday)
-//        manageFragment.arguments = bundle
-
-        // 처음 화면을 fragment_study_home으로 설정
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .replace(binding.fragmentContainerView.id, manageFragment)
-//                .setReorderingAllowed(true)
-//                .commit()
-//        }
         binding.manageGoal.setOnClickListener {
             val intent = Intent(this, StudyManageGoalActivity::class.java)
+            intent.putExtra("groupId", groupId)
             startActivity(intent)
         }
         binding.manageDday.setOnClickListener {
             val intent = Intent(this, StudyManageDDayActivity::class.java)
-
             intent.putExtra("groupId", groupId)
             intent.putExtra("ddayTitle", ddayTitle)
             intent.putExtra("dday", dday)
-
             startActivity(intent)
         }
         binding.manageAccept.setOnClickListener {

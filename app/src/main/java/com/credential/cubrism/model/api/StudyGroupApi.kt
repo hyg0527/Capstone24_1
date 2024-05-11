@@ -4,8 +4,10 @@ import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
+import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
+import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -28,10 +30,6 @@ interface StudyGroupApi {
     // 스터디 그룹 삭제
     @DELETE("/studygroup/{groupId}")
     fun deleteStudyGroup(@Path("groupId") groupId: Int): Call<MessageDto>
-
-    // 스터디 그룹 수정
-//    @PUT("/studygroup/{groupId}")
-//    fun updateStudyGroup(@Path("groupId") groupId: Int, @Body studyGroupUpdateDto: StudyGroupUpdateDto): Call<MessageDto>
 
     // 스터디 그룹 목록
     @GET("/studygroups")
@@ -74,20 +72,16 @@ interface StudyGroupApi {
     fun getJoinReceiveList(@Path("groupId") groupId: Int): Call<List<StudyGroupJoinReceiveListDto>>
 
     // 스터디 그룹 목표 추가
-//    @POST("/studygroup/goal")
-//    fun addGoal(@Body studyGroupAddGoalDto: StudyGroupAddGoalDto): Call<MessageDto>
+    @POST("/studygroup/goal")
+    fun addGoal(@Body studyGroupAddGoalDto: StudyGroupAddGoalDto): Call<MessageDto>
 
     // 스터디 그룹 목표 삭제
-//    @DELETE("/studygroup/goal/{goalId}")
-//    fun deleteGoal(@Path("goalId") goalId: Int): Call<MessageDto>
+    @DELETE("/studygroup/goal/{goalId}")
+    fun deleteGoal(@Path("goalId") goalId: Int): Call<MessageDto>
 
-    // 스터디 그룹 목표 수정
-//    @PUT("/studygroup/goal/{goalId}")
-//    fun updateStudyGroupGoal(@Path("goalId") goalId: Int, @Body studyGroupUpdateGoalDto: StudyGroupUpdateGoalDto): Call<MessageDto>
-
-    // 스터디 그룹 목표 정보
-//    @GET("/studygroup/goal/{goalId}")
-//    fun getGoalInfo(@Path("goalId") goalId: Int): Call<StudyGroupGoalInfo>
+    // 스터디 그룹 목표 목록
+    @GET("/studygroup/{groupId}/goals")
+    fun getGoalList(@Path("groupId") groupId: Int): Call<List<StudyGroupGoalListDto>>
 
     // 스터디 그룹 D-Day 설정
     @POST("/studygroup/dday")

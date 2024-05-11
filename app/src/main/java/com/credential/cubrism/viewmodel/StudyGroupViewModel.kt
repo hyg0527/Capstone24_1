@@ -7,8 +7,10 @@ import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
+import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
+import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -47,6 +49,15 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _requestJoin = MutableLiveData<MessageDto>()
     val requestJoin: LiveData<MessageDto> = _requestJoin
+
+    private val _addGoal = MutableLiveData<MessageDto>()
+    val addGoal: LiveData<MessageDto> = _addGoal
+
+    private val _deleteGoal = MutableLiveData<MessageDto>()
+    val deleteGoal: LiveData<MessageDto> = _deleteGoal
+
+    private val _goalList = MutableLiveData<List<StudyGroupGoalListDto>>()
+    val goalList: LiveData<List<StudyGroupGoalListDto>> = _goalList
 
     private val _setDday = MutableLiveData<MessageDto>()
     val setDday: LiveData<MessageDto> = _setDday
@@ -123,6 +134,24 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun requestJoin(groupId: Int) {
         repository.requestJoin(groupId) { result ->
             handleResult(result, _requestJoin, _errorMessage)
+        }
+    }
+
+    fun addGoal(studyGroupAddGoalDto: StudyGroupAddGoalDto) {
+        repository.addGoal(studyGroupAddGoalDto) { result ->
+            handleResult(result, _addGoal, _errorMessage)
+        }
+    }
+
+    fun deleteGoal(goalId: Int) {
+        repository.deleteGoal(goalId) { result ->
+            handleResult(result, _deleteGoal, _errorMessage)
+        }
+    }
+
+    fun getGoalList(groupId: Int) {
+        repository.goalList(groupId) { result ->
+            handleResult(result, _goalList, _errorMessage)
         }
     }
 
