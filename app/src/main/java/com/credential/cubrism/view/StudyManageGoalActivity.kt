@@ -5,21 +5,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.credential.cubrism.databinding.ActivityStudygroupGoalBinding
 import com.credential.cubrism.databinding.DialogGoalAddBinding
-import com.credential.cubrism.databinding.FragmentStudygroupGoalBinding
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.Goals
 
 class StudyManageGoalActivity : AppCompatActivity() {
-    private val binding by lazy { FragmentStudygroupGoalBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityStudygroupGoalBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setupToolbar()
+
         val adapter = initGoalRecyclerView()
 
-        binding.backBtn.setOnClickListener { finish() }
         binding.btnAddGoal.setOnClickListener {
             if (adapter.getItem().size >= 3) {
                 Toast.makeText(this, "목표 개수는 3개까지 작성 가능합니다.", Toast.LENGTH_SHORT).show()
@@ -29,12 +30,19 @@ class StudyManageGoalActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener { finish() }
+    }
+
     private fun initGoalRecyclerView(): GoalAdapter {
         val items = ArrayList<Goals>()
         val adapter = GoalAdapter(items, false)
 
-        binding.goalRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.goalRecyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
 
         return adapter
     }
