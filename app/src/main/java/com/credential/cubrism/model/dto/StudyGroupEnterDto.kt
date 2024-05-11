@@ -8,6 +8,7 @@ data class StudyGroupEnterDto(
 data class MembersDto(
     val nickname: String,
     val email: String,
+    val profileImage: String?,
     val admin: Boolean,
     val userGoal: UserGoalsDto
 )
