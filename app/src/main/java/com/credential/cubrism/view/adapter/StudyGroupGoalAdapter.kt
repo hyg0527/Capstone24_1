@@ -2,11 +2,13 @@ package com.credential.cubrism.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemListGoalBinding
 import com.credential.cubrism.databinding.ItemListGoalshowBinding
-import com.credential.cubrism.model.dto.StudyGroupGoalListDto
+import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.view.diff.StudyGroupGoalDiffUtil
 
 enum class StudyGroupGoalType {
@@ -15,11 +17,11 @@ enum class StudyGroupGoalType {
 }
 
 interface StudyGroupGoalClickListener {
-    fun onGoalClick(item: StudyGroupGoalListDto)
+    fun onGoalClick(item: GoalsDto)
 }
 
 class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private val listener: StudyGroupGoalClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var itemList = mutableListOf<StudyGroupGoalListDto>()
+    private var itemList = mutableListOf<GoalsDto>()
 
     companion object {
         private const val VIEW_TYPE_GOAL_LIST = 0
@@ -54,13 +56,22 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
     }
 
     inner class GoalListViewHolder(private val binding: ItemListGoalshowBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: StudyGroupGoalListDto) {
-
+        fun bind(item: GoalsDto) {
+            binding.txtTitle.text = item.goalName
+            binding.btnFinish.apply {
+                item.completed?.let {
+                    if (it) setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                    isEnabled = !it
+                }
+                setOnClickListener {
+                    listener.onGoalClick(item)
+                }
+            }
         }
     }
 
     inner class GoalViewHolder(private val binding: ItemListGoalBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: StudyGroupGoalListDto) {
+        fun bind(item: GoalsDto) {
             binding.txtCount.text = "목표 ${item.index}"
             binding.txtTitle.text = item.goalName
             binding.btnDelete.setOnClickListener {
@@ -69,7 +80,7 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
         }
     }
 
-    fun setItemList(list: List<StudyGroupGoalListDto>) {
+    fun setItemList(list: List<GoalsDto>) {
         val diffCallback = StudyGroupGoalDiffUtil(itemList, list)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 

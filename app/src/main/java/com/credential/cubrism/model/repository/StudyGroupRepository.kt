@@ -2,12 +2,12 @@ package com.credential.cubrism.model.repository
 
 import com.credential.cubrism.model.api.StudyGroupApi
 import com.credential.cubrism.model.dto.DDayDto
+import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
-import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -65,7 +65,7 @@ class StudyGroupRepository {
         handleResponse(studyGroupApiAuth.deleteGoal(goalId), callback)
     }
 
-    fun goalList(groupId: Int, callback: (ResultUtil<List<StudyGroupGoalListDto>>) -> Unit) {
+    fun goalList(groupId: Int, callback: (ResultUtil<List<GoalsDto>>) -> Unit) {
         handleResponse(studyGroupApiAuth.getGoalList(groupId), callback)
     }
 

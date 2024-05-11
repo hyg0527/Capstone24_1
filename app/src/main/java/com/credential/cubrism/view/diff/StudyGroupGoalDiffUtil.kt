@@ -1,9 +1,9 @@
 package com.credential.cubrism.view.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.credential.cubrism.model.dto.StudyGroupGoalListDto
+import com.credential.cubrism.model.dto.GoalsDto
 
-class StudyGroupGoalDiffUtil(private val oldList: List<StudyGroupGoalListDto>, private val newList: List<StudyGroupGoalListDto>) : DiffUtil.Callback() {
+class StudyGroupGoalDiffUtil(private val oldList: List<GoalsDto>, private val newList: List<GoalsDto>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }

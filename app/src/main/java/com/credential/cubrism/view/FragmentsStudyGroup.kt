@@ -16,10 +16,14 @@ import com.credential.cubrism.databinding.FragmentStudygroupFunc2Binding
 import com.credential.cubrism.databinding.FragmentStudygroupFunc3Binding
 import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
+import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.repository.ChatRepository
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.Rank
+import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
+import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
+import com.credential.cubrism.view.adapter.StudyGroupGoalType
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.ChatViewModel
@@ -29,11 +33,15 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class StudyGroupHomeFragment : Fragment() {
+class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val myApplication = MyApplication.getInstance()
+
     private val studyGroupViewModel: StudyGroupViewModel by activityViewModels { ViewModelFactory(StudyGroupRepository()) }
+
+    private lateinit var studyGroupGoalAdapter: StudyGroupGoalAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupHomeBinding.inflate(inflater, container, false)
@@ -43,6 +51,7 @@ class StudyGroupHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         observeViewModel()
     }
 
@@ -51,16 +60,39 @@ class StudyGroupHomeFragment : Fragment() {
         _binding = null
     }
 
+    override fun onGoalClick(item: GoalsDto) {
+
+    }
+
+    private fun setupRecyclerView() {
+        studyGroupGoalAdapter = StudyGroupGoalAdapter(StudyGroupGoalType.GOAL_LIST, this)
+
+        binding.recyclerView.apply {
+            adapter = studyGroupGoalAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            setHasFixedSize(true)
+        }
+    }
+
     private fun observeViewModel() {
         studyGroupViewModel.apply {
-            studyGroupEnterData.observe(viewLifecycleOwner) {
-                if (it.day.title != null && it.day.day != null) {
-                    binding.txtGoal.text = "${it.day.title}까지"
-                    binding.txtDDay.text = calculateDDay(it.day.day).toString()
+            studyGroupEnterData.observe(viewLifecycleOwner) { data ->
+                val myEmail = myApplication.getUserData().getEmail()
+
+                if (data.day.title != null && data.day.day != null) {
+                    binding.txtGoal.text = "${data.day.title}까지"
+                    binding.txtDDay.text = calculateDDay(data.day.day).toString()
+                }
+
+                data.members.find { it.email == myEmail }?.userGoal?.goals?.let { list ->
+                    binding.progressIndicator.hide()
+                    studyGroupGoalAdapter.setItemList(list)
+
+                    binding.txtNoGoal.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
                 }
             }
         }
-
     }
 
     private fun calculateDDay(targetDateString: String): Long {

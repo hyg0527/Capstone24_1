@@ -18,9 +18,10 @@ data class UserGoalsDto(
 )
 
 data class GoalsDto(
+    val index: Int?,
     val goalId: Int,
     val goalName: String,
-    val completed: Boolean
+    val completed: Boolean?
 )
 
 data class DDayDto(

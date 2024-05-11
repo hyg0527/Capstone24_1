@@ -31,19 +31,22 @@
             app:srcCompat="@drawable/polygon_right" />
 
         <TextView
-            android:id="@+id/txtGoalTitleList"
-            android:layout_width="wrap_content"
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:fontFamily="@font/seoulhangang_cb"
+            android:lineSpacingExtra="4dp"
+            android:maxLines="2"
             android:textSize="19dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnFinish"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnGoalStart"
+            android:id="@+id/btnFinish"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginTop="16dp"
@@ -52,7 +55,7 @@
             android:backgroundTint="#B49FF0"
             android:fontFamily="@font/kopubdotumbold"
             android:minWidth="0dp"
-            android:text="학습하기"
+            android:text="학습완료"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

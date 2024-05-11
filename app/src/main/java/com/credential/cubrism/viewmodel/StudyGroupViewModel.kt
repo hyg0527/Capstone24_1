@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.credential.cubrism.model.dto.DDayDto
+import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
-import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -56,8 +56,8 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _deleteGoal = MutableLiveData<MessageDto>()
     val deleteGoal: LiveData<MessageDto> = _deleteGoal
 
-    private val _goalList = MutableLiveData<List<StudyGroupGoalListDto>>()
-    val goalList: LiveData<List<StudyGroupGoalListDto>> = _goalList
+    private val _goalList = MutableLiveData<List<GoalsDto>>()
+    val goalList: LiveData<List<GoalsDto>> = _goalList
 
     private val _setDday = MutableLiveData<MessageDto>()
     val setDday: LiveData<MessageDto> = _setDday

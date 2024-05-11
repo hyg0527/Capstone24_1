@@ -7,8 +7,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityStudygroupGoalBinding
+import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
-import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
 import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
@@ -36,7 +36,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
         observeViewModel()
     }
 
-    override fun onGoalClick(item: StudyGroupGoalListDto) {
+    override fun onGoalClick(item: GoalsDto) {
         AlertDialog.Builder(this).apply {
             setTitle(item.goalName)
             setMessage("목표를 삭제하시겠습니까?")
@@ -90,17 +90,8 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
                 binding.progressIndicator.hide()
                 studyGroupGoalAdapter.setItemList(list)
 
-                if (list.isEmpty()) {
-                    binding.txtNoGoal.visibility = View.VISIBLE
-                } else {
-                    binding.txtNoGoal.visibility = View.GONE
-                }
-
-                if (list.size >= 3) {
-                    binding.btnAddGoal.visibility = View.GONE
-                } else {
-                    binding.btnAddGoal.visibility = View.VISIBLE
-                }
+                binding.txtNoGoal.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                binding.btnAddGoal.visibility = if (list.size >= 3) View.GONE else View.VISIBLE
             }
 
             addGoal.observe(this@StudyManageGoalActivity) {
