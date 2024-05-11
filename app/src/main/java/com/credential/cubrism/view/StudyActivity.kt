@@ -4,16 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyBinding
@@ -64,11 +61,17 @@ class StudyActivity : AppCompatActivity() {
         if (savedInstanceState == null) { setupFragment() }
         setupToolbar()
         setupTabLayout()
+        setupView()
         observeViewModel()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        stompClient.disconnect()
+    }
+
+    override fun onPause() {
+        super.onPause()
         stompClient.disconnect()
     }
 
@@ -89,28 +92,15 @@ class StudyActivity : AppCompatActivity() {
         toggle.syncState()
     }
 
-    private fun setupMenu() {
-        addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                if (menu.findItem(R.id.manage) == null) {
-                    menuInflater.inflate(R.menu.study_menu, menu)
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.manage -> {
-                        val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
-                        intent.putExtra("titleName", binding.txtTitle.text.toString())
-                        intent.putExtra("groupId", studyGroupId)
-                        intent.putExtra("ddayTitle", ddayTitle)
-                        intent.putExtra("dday", dday)
-                        startActivity(intent)
-                    }
-                }
-                return false
-            }
-        })
+    private fun setupView() {
+        binding.txtManage.setOnClickListener {
+            val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
+            intent.putExtra("titleName", binding.txtTitle.text.toString())
+            intent.putExtra("groupId", studyGroupId)
+            intent.putExtra("ddayTitle", ddayTitle)
+            intent.putExtra("dday", dday)
+            startActivity(intent)
+        }
     }
 
     private fun setupTabLayout() {
@@ -171,16 +161,11 @@ class StudyActivity : AppCompatActivity() {
             studyGroupEnterData.observe(this@StudyActivity) { group ->
                 val myEmail = myApplication.getUserData().getEmail()
 
-                ddayTitle = group.day.title
-                dday = group.day.day
+                // 그룹의 관리자인 경우 관리 텍스트 표시
+                binding.txtManage.visibility = if (group.members.any { it.email == myEmail && it.admin }) View.VISIBLE else View.GONE
 
                 // 관리자를 가장 위에 놓고 나머지는 닉네임 순으로 정렬
                 group.members.sortedWith(compareByDescending<MembersDto> { it.admin }.thenBy { it.nickname }).forEach { member ->
-                    // 그룹의 관리자인 경우 관리 메뉴 추가
-                    if (member.email == myEmail && member.admin) {
-                        setupMenu()
-                    }
-
                     // Navigation Drawer에 멤버 목록 추가
                     if (member.email == myEmail) {
                         // 내 닉네임에 색상 적용
@@ -194,6 +179,9 @@ class StudyActivity : AppCompatActivity() {
                         if (member.admin) setIcon(R.drawable.crown) // 관리자인 경우 아이콘 추가
                     }
                 }
+
+                ddayTitle = group.day.title
+                dday = group.day.day
             }
 
             errorMessage.observe(this@StudyActivity) { event ->

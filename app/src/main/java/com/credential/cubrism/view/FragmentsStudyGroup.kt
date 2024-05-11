@@ -55,7 +55,7 @@ class StudyGroupHomeFragment : Fragment() {
         studyGroupViewModel.apply {
             studyGroupEnterData.observe(viewLifecycleOwner) {
                 if (it.day.title != null && it.day.day != null) {
-                    binding.txtGoal.text = it.day.title
+                    binding.txtGoal.text = "${it.day.title}까지"
                     binding.txtDDay.text = calculateDDay(it.day.day).toString()
                 }
             }
