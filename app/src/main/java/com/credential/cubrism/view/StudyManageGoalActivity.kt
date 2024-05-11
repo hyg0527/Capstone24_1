@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityStudygroupGoalBinding
 import com.credential.cubrism.databinding.DialogGoalAddBinding
+import com.credential.cubrism.model.dto.StudyGroupGoalListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GoalAdapter
 import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
@@ -36,8 +37,16 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
         observeViewModel()
     }
 
-    override fun onGoalClick(goalId: Int) {
-        // TODO: 목표 삭제
+    override fun onGoalClick(item: StudyGroupGoalListDto) {
+        AlertDialog.Builder(this).apply {
+            setTitle(item.goalName)
+            setMessage("목표를 삭제하시겠습니까?")
+            setNegativeButton("취소", null)
+            setPositiveButton("확인") { _, _ ->
+                studyGroupViewModel.deleteGoal(item.goalId)
+            }
+            show()
+        }
     }
 
     private fun setupToolbar() {
@@ -64,25 +73,38 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
         binding.recyclerView.apply {
             adapter = studyGroupGoalAdapter
-            itemAnimator = null
             addItemDecoration(ItemDecoratorDivider(0, 60, 0, 0, 0, 0, null))
         }
     }
 
     private fun observeViewModel() {
-        studyGroupViewModel.goalList.observe(this) { list ->
-            binding.progressIndicator.hide()
-            if (list.isEmpty()) {
-                binding.txtNoGoal.visibility = View.VISIBLE
-            } else {
-                binding.txtNoGoal.visibility = View.GONE
-                studyGroupGoalAdapter.setItemList(list)
+        studyGroupViewModel.apply {
+            goalList.observe(this@StudyManageGoalActivity) { list ->
+                binding.progressIndicator.hide()
+
+                if (list.isEmpty()) {
+                    binding.txtNoGoal.visibility = View.VISIBLE
+                } else {
+                    binding.txtNoGoal.visibility = View.GONE
+                    studyGroupGoalAdapter.setItemList(list)
+                }
+
+                if (list.size >= 3) {
+                    binding.btnAddGoal.visibility = View.GONE
+                } else {
+                    binding.btnAddGoal.visibility = View.VISIBLE
+                }
             }
 
-            if (list.size >= 3) {
-                binding.btnAddGoal.visibility = View.GONE
-            } else {
-                binding.btnAddGoal.visibility = View.VISIBLE
+            deleteGoal.observe(this@StudyManageGoalActivity) {
+                Toast.makeText(this@StudyManageGoalActivity, it.message, Toast.LENGTH_SHORT).show()
+                studyGroupViewModel.getGoalList(groupId)
+            }
+
+            errorMessage.observe(this@StudyManageGoalActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(this@StudyManageGoalActivity, message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

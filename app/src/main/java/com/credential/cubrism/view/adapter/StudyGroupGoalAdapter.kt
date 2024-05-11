@@ -15,7 +15,7 @@ enum class StudyGroupGoalType {
 }
 
 interface StudyGroupGoalClickListener {
-    fun onGoalClick(goalId: Int)
+    fun onGoalClick(item: StudyGroupGoalListDto)
 }
 
 class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private val listener: StudyGroupGoalClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -64,7 +64,7 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
             binding.txtCount.text = "목표 ${item.index}"
             binding.txtTitle.text = item.goalName
             binding.btnDelete.setOnClickListener {
-                listener.onGoalClick(item.goalId)
+                listener.onGoalClick(item)
             }
         }
     }
