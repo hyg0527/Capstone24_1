@@ -195,4 +195,6 @@ class StudyActivity : AppCompatActivity() {
     fun sendMessage(chatRequestDto: ChatRequestDto) {
         stompClient.sendMessage(studyGroupId, chatRequestDto)
     }
+
+    fun getGroupId(): Int = studyGroupId
 }

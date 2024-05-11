@@ -65,6 +65,10 @@ class StudyGroupRepository {
         handleResponse(studyGroupApiAuth.deleteGoal(goalId), callback)
     }
 
+    fun completeGoal(goalId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
+        handleResponse(studyGroupApiAuth.completeGoal(goalId), callback)
+    }
+
     fun goalList(groupId: Int, callback: (ResultUtil<List<GoalsDto>>) -> Unit) {
         handleResponse(studyGroupApiAuth.getGoalList(groupId), callback)
     }

@@ -61,7 +61,15 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
     }
 
     override fun onGoalClick(item: GoalsDto) {
-
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(item.goalName)
+            setMessage("목표를 완료하시겠습니까?")
+            setNegativeButton("취소", null)
+            setPositiveButton("확인") { _, _ ->
+                studyGroupViewModel.completeGoal(item.goalId)
+            }
+            show()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -91,6 +99,11 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
 
                     binding.txtNoGoal.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
                 }
+            }
+
+            completeGoal.observe(viewLifecycleOwner) {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                (activity as? StudyActivity)?.getGroupId()?.let { groupId -> studyGroupViewModel.getStudyGroupEnterData(groupId) }
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.credential.cubrism.view.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -60,7 +61,10 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
             binding.txtTitle.text = item.goalName
             binding.btnFinish.apply {
                 item.completed?.let {
-                    if (it) setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                    if (it) {
+                        setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                        setTextColor(Color.parseColor("#989898"))
+                    }
                     isEnabled = !it
                 }
                 setOnClickListener {

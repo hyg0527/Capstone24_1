@@ -79,6 +79,10 @@ interface StudyGroupApi {
     @DELETE("/studygroup/goal/{goalId}")
     fun deleteGoal(@Path("goalId") goalId: Int): Call<MessageDto>
 
+    // 스터디 그룹 목표 완료
+    @PUT("/studygroup/goal/{goalId}")
+    fun completeGoal(@Path("goalId") goalId: Int): Call<MessageDto>
+
     // 스터디 그룹 목표 목록
     @GET("/studygroup/{groupId}/goals")
     fun getGoalList(@Path("groupId") groupId: Int): Call<List<GoalsDto>>
