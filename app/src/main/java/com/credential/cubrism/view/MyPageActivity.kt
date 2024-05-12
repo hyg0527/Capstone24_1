@@ -24,7 +24,6 @@ class MyPageActivity : AppCompatActivity() {
     private val myApplication = MyApplication.getInstance()
 
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory(AuthRepository()) }
-//    private val calendarViewModel: CalendarViewModel by viewModels()
     private val notificationRepository = NotiRepository(myApplication.getNotiDao())
     private val dataStore = myApplication.getDataStoreRepository()
 
@@ -52,9 +51,7 @@ class MyPageActivity : AppCompatActivity() {
 
         // 나의 스터디
         binding.layoutStudy.setOnClickListener {
-            val intent = Intent(this, MyStudyListActivity::class.java)
-//            intent.putExtra("myScheduleList", calendarViewModel.calMonthList.value)
-            startActivity(intent)
+            startActivity(Intent(this, MyStudyListActivity::class.java))
         }
 
         // 나의 일정
