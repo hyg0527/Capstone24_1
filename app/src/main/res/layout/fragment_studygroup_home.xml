@@ -57,6 +57,23 @@
                 app:srcCompat="@drawable/ellipse_4" />
 
             <TextView
+                android:id="@+id/closedeye"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="˘"
+                android:textSize="30dp"
+                android:visibility="gone"
+                android:layout_marginStart="51dp"
+                android:layout_marginTop="45dp"
+                android:fontFamily="@font/godom"
+                android:textStyle="bold"
+                />
+
+
+
+
+            <TextView
                 android:id="@+id/txtGoal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,6 +96,18 @@
                 android:textColor="#4F4747"
                 android:textSize="19dp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="85dp"
+                android:fontFamily="@font/godom"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_marginTop="30dp"
+                android:text="디데이를 추가해 보세요!"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="35dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -105,6 +134,7 @@
                     android:letterSpacing="-0.1"
                     android:textColor="#FFE290"
                     android:textSize="90dp" />
+
 
             </LinearLayout>
 
