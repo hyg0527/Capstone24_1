@@ -48,6 +48,13 @@
                 android:layout_marginBottom="-30dp"
                 app:srcCompat="@drawable/whale2" />
 
+            <View
+                android:id="@+id/disableView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="#80756F6F"/>
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="12dp"
                 android:layout_height="12dp"
@@ -67,11 +74,7 @@
                 android:layout_marginStart="51dp"
                 android:layout_marginTop="45dp"
                 android:fontFamily="@font/godom"
-                android:textStyle="bold"
-                />
-
-
-
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtGoal"
@@ -97,17 +100,31 @@
                 android:textSize="19dp"
                 android:textStyle="bold" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/addDdayImg"
                 android:layout_width="wrap_content"
-                android:layout_height="85dp"
-                android:fontFamily="@font/godom"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:layout_marginTop="30dp"
-                android:text="디데이를 추가해 보세요!"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_gravity="center"
                 android:visibility="gone"
+                android:background="@android:color/transparent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/plus_license" />
+
+            <TextView
+                android:id="@+id/addDdaytxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/godom"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="25dp"
+                android:text="디데이를 추가해 보세요!"
                 android:textColor="@color/white"
-                android:textSize="35dp" />
+                android:textSize="20dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
