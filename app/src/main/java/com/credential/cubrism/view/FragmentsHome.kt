@@ -2,6 +2,8 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +66,6 @@ class HomeFragment : Fragment() {
 
         scheduleViewModel.getScheduleList(null, null)
         todoAdapter.setTodayItemList(filterItem())
-        println("monthList: $monthList")
 
         val bnAdapter = BannerAdapter()
 
@@ -220,7 +221,7 @@ class HomeFragment : Fragment() {
         scheduleViewModel.apply {
             scheduleList.observe(viewLifecycleOwner) {
                 monthList = it
-                println("homeObserve monthList: $monthList")
+                todoAdapter.setTodayItemList(filterItem())
             }
 
             errorMessage.observe(viewLifecycleOwner) { event ->
@@ -248,7 +249,6 @@ class HomeFragment : Fragment() {
 
     private fun filterItem(): ArrayList<ScheduleListDto> {
         val newList = arrayListOf<ScheduleListDto>()
-        println("filterItemList: $monthList")
         for (item in monthList) {
             if ((item.startDate).contains(getTodayData())) {
                 newList.add(item)
