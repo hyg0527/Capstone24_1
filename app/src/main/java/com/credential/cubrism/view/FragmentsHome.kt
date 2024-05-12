@@ -238,7 +238,8 @@ class HomeFragment : Fragment() {
 
             errorMessage.observe(viewLifecycleOwner) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    if (message != "JWT 토큰이 잘못되었습니다.")
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
