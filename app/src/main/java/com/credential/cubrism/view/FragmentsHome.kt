@@ -114,7 +114,9 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         setupViewWithLoginStatus()
+        setupTodoStatus()
     }
 
     private fun setupToolbar() {
@@ -167,6 +169,16 @@ class HomeFragment : Fragment() {
             binding.txtSignIn.text = "로그인 하세요"
             binding.txtArrow.visibility = View.VISIBLE
             binding.txtAdd.text = "로그인 하여 관심 자격증을 추가해 보세요!"
+        }
+    }
+
+    private fun setupTodoStatus() {
+        val isLoggedIn = myApplication.getUserData().getLoginStatus()
+        if (!isLoggedIn) {
+            todoAdapter.setTodayItemList(ArrayList())
+        } else {
+            scheduleViewModel.getScheduleList(null, null)
+            todoAdapter.setTodayItemList(filterItem())
         }
     }
 

@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.DialogScheduleAddBinding
 import com.credential.cubrism.databinding.DialogScheduleDatepickBinding
@@ -53,6 +54,7 @@ class CalFragment : Fragment() {
     private val calendarAdapter = CalendarAdapter()
     private val scheduleAdapter = ScheduleAdapter()
 
+    private val myApplication = MyApplication.getInstance()
     private val calHyg = CalendarHyg()
     private var selectedDate: Triple<Int, Int, Int>? = null
     private var currentMonthList = listOf<ScheduleListDto>()
@@ -119,9 +121,14 @@ class CalFragment : Fragment() {
                 override fun bringInfo(item: ScheduleListDto?) {}
             })
 
-            bundle.putString("date", convertText) // 날짜 putString으로 dialogFragment에 보내기
-            addFragment.arguments = bundle
-            addFragment.show(parentFragmentManager, "openAddDialog") // 일정추가 dialog 호출
+            val isLoggedIn = myApplication.getUserData().getLoginStatus()
+            if (isLoggedIn) {
+                bundle.putString("date", convertText) // 날짜 putString으로 dialogFragment에 보내기
+                addFragment.arguments = bundle
+                addFragment.show(parentFragmentManager, "openAddDialog") // 일정추가 dialog 호출
+            } else {
+                Toast.makeText(requireContext(), "로그인하여 일정 기능을 이용해보세요!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.dateSelect.setOnClickListener { showDatePickDialog() }
@@ -188,9 +195,15 @@ class CalFragment : Fragment() {
         calHyg.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate) { info ->
             val (year, month, day) = info
 
-            selectedDate = Triple(year, month, day)
-            scheduleViewModel.getScheduleList(year, month)
-            refreshScheduleList(day)
+            val isLoggedIn = myApplication.getUserData().getLoginStatus()
+            if (isLoggedIn) {
+                selectedDate = Triple(year, month, day)
+                scheduleViewModel.getScheduleList(year, month)
+                refreshScheduleList(day)
+            } else {
+                calHyg.showMonthCalendarNew(year, month, day, listOf(), calendarAdapter)
+            }
+
         }
 
         val dialog = builder.create()
@@ -213,9 +226,15 @@ class CalFragment : Fragment() {
             calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, status)
         }
 
-        selectedDate = Triple(year, month, day)
-        scheduleViewModel.getScheduleList(year, month)
-        refreshScheduleList(day)
+        val isLoggedIn = myApplication.getUserData().getLoginStatus()
+        if (isLoggedIn) {
+            selectedDate = Triple(year, month, day)
+            scheduleViewModel.getScheduleList(year, month)
+            refreshScheduleList(day)
+        } else {
+            calHyg.showMonthCalendarNew(year, month, day, listOf(), calendarAdapter)
+            scheduleAdapter.setItemList(listOf())
+        }
     }
 
     private fun refreshScheduleList(day: Int) {
