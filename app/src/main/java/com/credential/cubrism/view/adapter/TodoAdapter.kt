@@ -4,14 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListHomeTodaylistBinding
+import com.credential.cubrism.model.dto.ScheduleListDto
 
-data class CalMonth(val startDate: String? = null, val endDate: String? = null,
-                    val title: String? = null, val content: String? = null, val allDay: Boolean)
+
 // home 화면의 todoList adapter.
-class TodoAdapter(private val items: ArrayList<CalMonth>) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+class TodoAdapter : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+    private val items = arrayListOf<ScheduleListDto>()
 
     inner class TodoViewHolder(val binding: ItemListHomeTodaylistBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CalMonth) {
+        fun bind(item: ScheduleListDto) {
             binding.todaySchedule.text = item.title
         }
     }
@@ -27,5 +28,12 @@ class TodoAdapter(private val items: ArrayList<CalMonth>) : RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         holder.bind(items[position])
+    }
+
+    fun setTodayItemList(list: ArrayList<ScheduleListDto>) {
+        items.clear()
+        items.addAll(list)
+
+        notifyDataSetChanged()
     }
 }

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.viewpager2.widget.ViewPager2
@@ -16,16 +16,17 @@ import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
 import com.credential.cubrism.model.dto.FavoriteListDto
+import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.model.repository.FavoriteRepository
+import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
-import com.credential.cubrism.view.adapter.CalMonth
 import com.credential.cubrism.view.adapter.FavType
 import com.credential.cubrism.view.adapter.FavoriteAdapter2
 import com.credential.cubrism.view.adapter.FavoriteItem
 import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodoAdapter
-import com.credential.cubrism.viewmodel.CalendarViewModel
 import com.credential.cubrism.viewmodel.FavoriteViewModel
+import com.credential.cubrism.viewmodel.ScheduleViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -38,10 +39,12 @@ class HomeFragment : Fragment() {
 
     private val myApplication = MyApplication.getInstance()
 
-    private val calendarViewModel: CalendarViewModel by activityViewModels()
+    private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
     private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
 
     private val favoriteAdapter2 = FavoriteAdapter2()
+    private val todoAdapter = TodoAdapter()
+    private var monthList = listOf<ScheduleListDto>()
 
     private var currentPage = 0
     private val timer = Timer()
@@ -59,9 +62,10 @@ class HomeFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
 
-        val tdList = filterItem(calendarViewModel.calMonthList.value ?: ArrayList())
+        scheduleViewModel.getScheduleList(null, null)
+        todoAdapter.setTodayItemList(filterItem())
+        println("monthList: $monthList")
 
-        val tdAdapter = TodoAdapter(tdList)
         val bnAdapter = BannerAdapter()
 
         bnAdapter.setBannerListener(object: QnaBannerEnterListener {
@@ -74,8 +78,8 @@ class HomeFragment : Fragment() {
             }
         })
 
-        binding.recyclerSchedule.adapter = tdAdapter
-        isNoSchedule(tdAdapter)
+        binding.recyclerSchedule.adapter = todoAdapter
+        isNoSchedule(todoAdapter)
 
         binding.viewPager.apply {
             adapter = bnAdapter
@@ -98,6 +102,13 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        scheduleViewModel.getScheduleList(null, null)
+        todoAdapter.setTodayItemList(filterItem())
     }
 
     override fun onResume() {
@@ -206,6 +217,18 @@ class HomeFragment : Fragment() {
                 binding.recyclerQualification.visibility = View.GONE
             }
         }
+        scheduleViewModel.apply {
+            scheduleList.observe(viewLifecycleOwner) {
+                monthList = it
+                println("homeObserve monthList: $monthList")
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun isNoSchedule(todoAdapter: TodoAdapter) {
@@ -223,10 +246,11 @@ class HomeFragment : Fragment() {
         return currentDate.format(formatter)
     }
 
-    private fun filterItem(items: ArrayList<CalMonth>): ArrayList<CalMonth> {
-        val newList = ArrayList<CalMonth>()
-        for (item in items) {
-            if ((item.startDate ?: "").contains(getTodayData())) {
+    private fun filterItem(): ArrayList<ScheduleListDto> {
+        val newList = arrayListOf<ScheduleListDto>()
+        println("filterItemList: $monthList")
+        for (item in monthList) {
+            if ((item.startDate).contains(getTodayData())) {
                 newList.add(item)
             }
         }

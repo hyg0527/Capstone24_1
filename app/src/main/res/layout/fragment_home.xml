@@ -170,7 +170,7 @@
                     android:id="@+id/recyclerSchedule"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:overScrollMode="never"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
