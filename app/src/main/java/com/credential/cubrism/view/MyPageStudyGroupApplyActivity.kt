@@ -62,7 +62,7 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
         val menuList: List<MenuDto> = listOf(
-            MenuDto(R.drawable.icon_close, "가입 요청 취소"),
+            MenuDto(R.drawable.icon_close, "가입 신청 취소"),
         )
 
         menuAdapter.setItemList(menuList)
@@ -75,13 +75,13 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
 
         menuAdapter.setOnItemClickListener { item, _ ->
             when (item.text) {
-                "가입 요청 취소" -> {
+                "가입 신청 취소" -> {
                     memberId?.let {
                         AlertDialog.Builder(this).apply {
-                            setMessage("가입 요청을 취소하시겠습니까?")
+                            setMessage("가입 신청을 취소하시겠습니까?")
                             setNegativeButton("취소", null)
                             setPositiveButton("확인") { _, _ ->
-                                // TODO: 가입 요청 취소
+                                studyGroupViewModel.cancelJoin(it)
                             }
                             show()
                         }
@@ -105,11 +105,15 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             joinRequestList.observe(this@MyPageStudyGroupApplyActivity) {
-                if (it.isEmpty())
-                    binding.txtNoJoin.visibility = View.VISIBLE
-
                 binding.progressIndicator.hide()
                 studyGroupJoinAdapter.setItemList(it)
+
+                binding.txtNoJoin.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            }
+
+            cancelJoin.observe(this@MyPageStudyGroupApplyActivity) {
+                Toast.makeText(this@MyPageStudyGroupApplyActivity, it.message, Toast.LENGTH_SHORT).show()
+                studyGroupViewModel.getStudyGroupJoinRequestList()
             }
 
             errorMessage.observe(this@MyPageStudyGroupApplyActivity) {

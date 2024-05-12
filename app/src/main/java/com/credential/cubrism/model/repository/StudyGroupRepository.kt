@@ -42,6 +42,10 @@ class StudyGroupRepository {
         handleResponse(studyGroupApiAuth.requestJoin(groupId), callback)
     }
 
+    fun cancelJoin(memberId: String, callback: (ResultUtil<MessageDto>) -> Unit) {
+        handleResponse(studyGroupApiAuth.cancelJoin(memberId), callback)
+    }
+
     fun joinRequestList(callback: (ResultUtil<List<StudyGroupJoinListDto>>) -> Unit) {
         handleResponse(studyGroupApiAuth.getJoinRequestList(), callback)
     }

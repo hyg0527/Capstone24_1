@@ -36,6 +36,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _studyGroupInfo = MutableLiveData<StudyGroupInfoDto>()
     val studyGroupInfo: LiveData<StudyGroupInfoDto> = _studyGroupInfo
 
+    private val _requestJoin = MutableLiveData<MessageDto>()
+    val requestJoin: LiveData<MessageDto> = _requestJoin
+
+    private val _cancelJoin = MutableLiveData<MessageDto>()
+    val cancelJoin: LiveData<MessageDto> = _cancelJoin
+
     private val _joinRequestList = MutableLiveData<List<StudyGroupJoinListDto>>()
     val joinRequestList: LiveData<List<StudyGroupJoinListDto>> = _joinRequestList
 
@@ -47,9 +53,6 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _joinReceiveList = MutableLiveData<List<StudyGroupJoinReceiveListDto>>()
     val joinReceiveList: LiveData<List<StudyGroupJoinReceiveListDto>> = _joinReceiveList
-
-    private val _requestJoin = MutableLiveData<MessageDto>()
-    val requestJoin: LiveData<MessageDto> = _requestJoin
 
     private val _addGoal = MutableLiveData<MessageDto>()
     val addGoal: LiveData<MessageDto> = _addGoal
@@ -114,6 +117,18 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
         }
     }
 
+    fun requestJoin(groupId: Int) {
+        repository.requestJoin(groupId) { result ->
+            handleResult(result, _requestJoin, _errorMessage)
+        }
+    }
+
+    fun cancelJoin(memberId: String) {
+        repository.cancelJoin(memberId) { result ->
+            handleResult(result, _cancelJoin, _errorMessage)
+        }
+    }
+
     fun getStudyGroupJoinRequestList() {
         repository.joinRequestList { result ->
             handleResult(result, _joinRequestList, _errorMessage)
@@ -135,12 +150,6 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun getStudyGroupJoinReceiveList(groupId: Int) {
         repository.joinReceiveList(groupId) { result ->
             handleResult(result, _joinReceiveList, _errorMessage)
-        }
-    }
-
-    fun requestJoin(groupId: Int) {
-        repository.requestJoin(groupId) { result ->
-            handleResult(result, _requestJoin, _errorMessage)
         }
     }
 

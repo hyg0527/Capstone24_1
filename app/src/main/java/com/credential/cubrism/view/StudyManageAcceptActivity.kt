@@ -84,12 +84,9 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
         studyGroupViewModel.apply {
             joinReceiveList.observe(this@StudyManageAcceptActivity) { list ->
                 binding.progressIndicator.hide()
-                if (list.isEmpty()) {
-                    binding.txtNoJoin.visibility = View.VISIBLE
-                } else {
-                    binding.txtNoJoin.visibility = View.GONE
-                    joinAcceptAdapter.setItemList(list)
-                }
+                joinAcceptAdapter.setItemList(list)
+
+                binding.txtNoJoin.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
             }
 
             acceptJoinRequest.observe(this@StudyManageAcceptActivity) {

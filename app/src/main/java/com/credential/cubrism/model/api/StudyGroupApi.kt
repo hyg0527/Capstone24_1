@@ -27,10 +27,6 @@ interface StudyGroupApi {
     @POST("/studygroup")
     fun createStudyGroup(@Body studyGroupCreateDto: StudyGroupCreateDto): Call<MessageDto>
 
-    // 스터디 그룹 삭제
-    @DELETE("/studygroup/{groupId}")
-    fun deleteStudyGroup(@Path("groupId") groupId: Int): Call<MessageDto>
-
     // 스터디 그룹 목록
     @GET("/studygroups")
     fun getStudyGroupList(
@@ -52,8 +48,8 @@ interface StudyGroupApi {
     fun requestJoin(@Path("groupId") groupId: Int): Call<MessageDto>
 
     // 스터디 그룹 가입 신청 취소
-    @DELETE("/studygroup/join/request/{groupId}")
-    fun cancelJoin(@Path("groupId") groupId: Int): Call<MessageDto>
+    @DELETE("/studygroup/join/request/{memberId}")
+    fun cancelJoin(@Path("memberId") memberId: String): Call<MessageDto>
 
     // 내가 신청한 스터디 그룹 목록
     @GET("/studygroup/join/requests")
