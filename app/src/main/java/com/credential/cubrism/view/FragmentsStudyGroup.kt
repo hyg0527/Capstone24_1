@@ -24,6 +24,7 @@ import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
 import com.credential.cubrism.view.adapter.StudyGroupGoalType
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.view.utils.KeyboardVisibilityUtils
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
@@ -210,6 +211,7 @@ class StudyGroupFunc3Fragment : Fragment() {
     private val studyGroupViewModel: StudyGroupViewModel by activityViewModels { ViewModelFactory(StudyGroupRepository()) }
 
     private lateinit var chatAdapter: ChatAdapter
+    private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
 
     private var myEmail = MyApplication.getInstance().getUserData().getEmail()
 
@@ -232,6 +234,12 @@ class StudyGroupFunc3Fragment : Fragment() {
     }
 
     private fun setupView() {
+        keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().window,
+            onShowKeyboard = {
+                binding.recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
+            }
+        )
+
         binding.btnSend.setOnClickListener {
             val text = binding.editMessage.text.toString()
 
