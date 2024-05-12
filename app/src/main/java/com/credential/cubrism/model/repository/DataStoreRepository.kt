@@ -35,8 +35,4 @@ class DataStoreRepository(private val dataStore: DataStoreModule) {
     fun getFcmToken(): Flow<String?> {
         return dataStore.getFcmToken()
     }
-
-    suspend fun deleteFcmToken() {
-        dataStore.deleteFcmToken()
-    }
 }

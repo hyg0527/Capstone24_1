@@ -16,10 +16,8 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudyBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.dto.MembersDto
-import com.credential.cubrism.model.repository.ChatRepository
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.model.service.StompClient
-import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.StudyFragmentType
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.StudyViewModel
@@ -33,7 +31,6 @@ class StudyActivity : AppCompatActivity() {
 
     private val studyViewModel: StudyViewModel by viewModels()
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
-    private val chatViewModel: ChatViewModel by viewModels { ViewModelFactory(ChatRepository()) }
 
     private val stompClient = StompClient()
 
@@ -133,12 +130,12 @@ class StudyActivity : AppCompatActivity() {
 
     private fun setupChat() {
         if (studyGroupId != -1)
-            chatViewModel.getChatList(studyGroupId)
+            studyGroupViewModel.getChatList(studyGroupId)
 
         stompClient.apply {
             connect()
             subscribe(studyGroupId) { chat ->
-                chatViewModel.addChat(chat)
+                studyGroupViewModel.addChat(chat)
             }
         }
     }

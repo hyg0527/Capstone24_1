@@ -11,189 +11,54 @@ import com.credential.cubrism.model.dto.PostUpdateDto
 import com.credential.cubrism.model.dto.PostViewDto
 import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.service.RetrofitClient
+import com.credential.cubrism.model.utils.NetworkUtil.handleResponse
 import com.credential.cubrism.model.utils.ResultUtil
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class PostRepository {
     private val postApi: PostApi = RetrofitClient.getRetrofit()?.create(PostApi::class.java)!!
     private val postApiAuth: PostApi = RetrofitClient.getRetrofitWithAuth()?.create(PostApi::class.java)!!
 
     fun addPost(postAddDto: PostAddDto, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.addPost(postAddDto).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.addPost(postAddDto), callback)
     }
 
     fun deletePost(postId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.deletePost(postId).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.deletePost(postId), callback)
     }
 
     fun updatePost(postId: Int, postUpdateDto: PostUpdateDto, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.updatePost(postId, postUpdateDto).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.updatePost(postId, postUpdateDto), callback)
     }
 
     fun getPostView(postId: Int, callback: (ResultUtil<PostViewDto>) -> Unit) {
-        postApi.getPostView(postId).enqueue(object : Callback<PostViewDto> {
-            override fun onResponse(call: Call<PostViewDto>, response: Response<PostViewDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<PostViewDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApi.getPostView(postId), callback)
     }
 
     fun getPostList(boardId: Int, page: Int, limit: Int, searchQuery: String?, callback: (ResultUtil<PostListDto>) -> Unit) {
-        postApi.getPostList(boardId, page, limit, searchQuery).enqueue(object : Callback<PostListDto> {
-            override fun onResponse(call: Call<PostListDto>, response: Response<PostListDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<PostListDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApi.getPostList(boardId, page, limit, searchQuery), callback)
     }
 
     fun getMyPostList(page: Int, limit: Int, callback: (ResultUtil<PostMyListDto>) -> Unit) {
-        postApiAuth.getMyPostList(page, limit).enqueue(object : Callback<PostMyListDto> {
-            override fun onResponse(call: Call<PostMyListDto>, response: Response<PostMyListDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<PostMyListDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.getMyPostList(page, limit), callback)
     }
 
     fun getFavoritePostList(boardId: Int, page: Int, limit: Int, callback: (ResultUtil<PostListDto>) -> Unit) {
-        postApiAuth.getFavoritePostList(boardId, page, limit).enqueue(object : Callback<PostListDto> {
-            override fun onResponse(call: Call<PostListDto>, response: Response<PostListDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<PostListDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.getFavoritePostList(boardId, page, limit), callback)
     }
 
     fun addComment(commentAddDto: CommentAddDto, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.addComment(commentAddDto).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.addComment(commentAddDto), callback)
     }
 
     fun deleteComment(commentId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.deleteComment(commentId).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.deleteComment(commentId), callback)
     }
 
     fun updateComment(commentId: Int, commentUpdateDto: CommentUpdateDto, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.updateComment(commentId, commentUpdateDto).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.updateComment(commentId, commentUpdateDto), callback)
     }
 
     fun addReply(replyAddDto: ReplyAddDto, callback: (ResultUtil<MessageDto>) -> Unit) {
-        postApiAuth.addReply(replyAddDto).enqueue(object : Callback<MessageDto> {
-            override fun onResponse(call: Call<MessageDto>, response: Response<MessageDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { callback(ResultUtil.Success(it)) }
-                } else {
-                    response.errorBody()?.string()?.let { callback(ResultUtil.Error(JSONObject(it).optString("message"))) }
-                }
-            }
-
-            override fun onFailure(call: Call<MessageDto>, t: Throwable) {
-                callback(ResultUtil.NetworkError())
-            }
-        })
+        handleResponse(postApiAuth.addReply(replyAddDto), callback)
     }
 }

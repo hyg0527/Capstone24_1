@@ -1,6 +1,7 @@
 package com.credential.cubrism.model.repository
 
 import com.credential.cubrism.model.api.StudyGroupApi
+import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.GroupList
@@ -79,5 +80,9 @@ class StudyGroupRepository {
 
     fun studyGroupEnterData(groupId: Int, callback: (ResultUtil<StudyGroupEnterDto>) -> Unit) {
         handleResponse(studyGroupApiAuth.getStudyGroupEnterData(groupId), callback)
+    }
+
+    fun getChatList(studygroupId: Int, callback: (ResultUtil<List<ChatResponseDto>>) -> Unit) {
+        handleResponse(studyGroupApiAuth.getChatList(studygroupId), callback)
     }
 }

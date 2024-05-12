@@ -3,6 +3,7 @@ package com.credential.cubrism.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.model.dto.DDayDto
 import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.GroupList
@@ -67,6 +68,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _studyGroupEnterData = MutableLiveData<StudyGroupEnterDto>()
     val studyGroupEnterData: LiveData<StudyGroupEnterDto> = _studyGroupEnterData
+
+    private val _chatList = MutableLiveData<MutableList<ChatResponseDto>>()
+    val chatList: LiveData<MutableList<ChatResponseDto>> = _chatList
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -174,6 +178,21 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
         repository.studyGroupEnterData(groupId) { result ->
             handleResult(result, _studyGroupEnterData, _errorMessage)
         }
+    }
+
+    fun getChatList(studygroupId: Int) {
+        repository.getChatList(studygroupId) { result ->
+            when (result) {
+                is ResultUtil.Success -> { _chatList.postValue(result.data.toMutableList()) }
+                is ResultUtil.Error -> { _errorMessage.postValue(Event(result.error)) }
+                is ResultUtil.NetworkError -> { _errorMessage.postValue(Event("네트워크 오류가 발생했습니다.")) }
+            }
+        }
+    }
+
+    fun addChat(chat: ChatResponseDto) {
+        _chatList.value?.add(chat)
+        _chatList.postValue(_chatList.value)
     }
 
     fun setLoading(isLoading: Boolean) {

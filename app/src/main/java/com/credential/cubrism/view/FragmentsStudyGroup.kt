@@ -17,7 +17,6 @@ import com.credential.cubrism.databinding.FragmentStudygroupHomeBinding
 import com.credential.cubrism.model.dto.ChatRequestDto
 import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.MembersDto
-import com.credential.cubrism.model.repository.ChatRepository
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
@@ -25,7 +24,6 @@ import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
 import com.credential.cubrism.view.adapter.StudyGroupGoalType
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
-import com.credential.cubrism.viewmodel.ChatViewModel
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import java.time.LocalDate
@@ -209,7 +207,7 @@ class StudyGroupFunc3Fragment : Fragment() {
     private var _binding: FragmentStudygroupFunc3Binding? = null
     private val binding get() = _binding!!
 
-    private val chatViewModel: ChatViewModel by activityViewModels { ViewModelFactory(ChatRepository()) }
+    private val studyGroupViewModel: StudyGroupViewModel by activityViewModels { ViewModelFactory(StudyGroupRepository()) }
 
     private lateinit var chatAdapter: ChatAdapter
 
@@ -257,7 +255,7 @@ class StudyGroupFunc3Fragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        chatViewModel.apply {
+        studyGroupViewModel.apply {
             chatList.observe(viewLifecycleOwner) {
                 chatAdapter.setItemList(it)
                 binding.recyclerView.scrollToPosition(chatAdapter.itemCount - 1)
