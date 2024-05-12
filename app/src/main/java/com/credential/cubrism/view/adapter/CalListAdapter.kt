@@ -120,6 +120,27 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         return items.isNotEmpty()
     }
 
+    private fun findDate(item: CalMonth, date: String): Triple<Int, Int, Int> {
+        var realDateStart = ""
+        var realDateEnd = ""
+        val dateToInt = date.replace(" - ", "").toInt()
+
+        if ((item.startDate ?: "").contains("종일") || (item.endDate ?: "").contains("종일")) {
+            realDateStart = item.startDate?.substringBefore(" 종일")?.trim() ?: ""
+            realDateEnd = item.endDate?.substringBefore(" 종일")?.trim() ?: ""
+        }
+        else if ((item.startDate ?: "").contains("오")  || (item.endDate ?: "").contains("오")) {
+            realDateStart = item.startDate?.substringBefore(" 오")?.trim() ?: ""
+            realDateEnd = item.endDate?.substringBefore(" 오")?.trim() ?: ""
+        }
+        else return Triple(0,0,0)
+
+        val realDateStartDay = realDateStart.replace(" - ", "").toInt()
+        val realDateEndDay = realDateEnd.replace(" - ", "").toInt()
+
+        return Triple(realDateStartDay, realDateEndDay, dateToInt)
+    }
+
     private fun checkFormat(value: CalMonth): CalMonth { // 형식 체크(로컬데이터 형식으로 변환 후 반환)
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
         val dateFormatterOutput = SimpleDateFormat("yyyy - MM - dd a hh:mm", Locale.KOREA)
@@ -163,27 +184,6 @@ class CalListAdapter(private var items: ArrayList<CalMonth>) : RecyclerView.Adap
         }
 
         return value.copy(startDate = startDate, endDate = endDate)
-    }
-
-    private fun findDate(item: CalMonth, date: String): Triple<Int, Int, Int> {
-        var realDateStart = ""
-        var realDateEnd = ""
-        val dateToInt = date.replace(" - ", "").toInt()
-
-        if ((item.startDate ?: "").contains("종일") || (item.endDate ?: "").contains("종일")) {
-            realDateStart = item.startDate?.substringBefore(" 종일")?.trim() ?: ""
-            realDateEnd = item.endDate?.substringBefore(" 종일")?.trim() ?: ""
-        }
-        else if ((item.startDate ?: "").contains("오")  || (item.endDate ?: "").contains("오")) {
-            realDateStart = item.startDate?.substringBefore(" 오")?.trim() ?: ""
-            realDateEnd = item.endDate?.substringBefore(" 오")?.trim() ?: ""
-        }
-        else return Triple(0,0,0)
-
-        val realDateStartDay = realDateStart.replace(" - ", "").toInt()
-        val realDateEndDay = realDateEnd.replace(" - ", "").toInt()
-
-        return Triple(realDateStartDay, realDateEndDay, dateToInt)
     }
 
     fun addItem(item: CalMonth) { // 일정 항목 추가 함수

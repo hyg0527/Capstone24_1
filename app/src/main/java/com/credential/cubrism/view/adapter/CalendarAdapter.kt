@@ -17,9 +17,11 @@ import java.time.format.DateTimeFormatter
 interface DateMonthClickListener {
     fun onItemClicked(item: DateSelect)
 }
-data class DateSelect(var date: String? = null, var isScheduled: Boolean = false, var isHighlighted: Boolean = false)
+data class DateSelect(var date: String, var isScheduled: Boolean = false, var isHighlighted: Boolean = false)
 
-class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.Adapter<CalendarAdapter.MonthViewHolder>() {
+class CalendarAdapter : RecyclerView.Adapter<CalendarAdapter.MonthViewHolder>() {
+    private var items = arrayListOf<DateSelect>()
+
     private var itemClickListener: DateMonthClickListener? = null
     private var isBackgroundSet = false
     fun setItemClickListener(listener: DateMonthClickListener) {
@@ -109,7 +111,7 @@ class CalendarAdapter(private var items: ArrayList<DateSelect>) : RecyclerView.A
     fun highlightDate(dateString: String) { // 현재 선택된 날짜 highlighting 함수
         val (_, date) = convertDateStringAndInt(dateString)
         for (item in items) {
-            if ((item.date ?: "").isDigitsOnly() && (item.date ?: "").toInt() == date)
+            if ((item.date).isDigitsOnly() && (item.date).toInt() == date)
                 item.isHighlighted = true
         }
         notifyDataSetChanged()

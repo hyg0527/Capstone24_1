@@ -50,10 +50,12 @@ class CalFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
+    private val calendarAdapter = CalendarAdapter()
     private val scheduleAdapter = ScheduleAdapter()
 
     private val calHyg = CalendarHyg()
     private var selectedDate: Triple<Int, Int, Int>? = null
+    private var currentMonthList = listOf<ScheduleListDto>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalBinding.inflate(inflater, container, false)
@@ -63,16 +65,15 @@ class CalFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        observeViewModel()
         initCalendarSchedule()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        observeViewModel(scheduleAdapter)
 
-        val (year, month, day) = calHyg.initToday(binding.txtYearMonth, binding.currentDate)
-        selectedDate = Triple(year, month, day)
-        scheduleViewModel.getScheduleList(year, month)
+        observeViewModel()
+        changeCalendarStatus()
     }
 
     override fun onDestroyView() {
@@ -82,24 +83,6 @@ class CalFragment : Fragment() {
 
     private fun initCalendarSchedule() {
         initScheduleList()
-
-        val calendarAdapter = CalendarAdapter(ArrayList()) // 날짜 어댑터
-        binding.calendarRealView.layoutManager = GridLayoutManager(requireContext(), 7) // 월간 달력 recyclerView 초기화
-        binding.calendarRealView.adapter = calendarAdapter
-
-        scheduleViewModel.scheduleList.observe(viewLifecycleOwner) {
-//            for (list in scheduleAdapter.getItemList()) {
-//                println(list)
-//            }
-            selectedDate?.let { (year, month, day) ->
-                calHyg.showMonthCalendarNew(year, month, day, scheduleAdapter.getItemList(), calendarAdapter)
-            }
-            selectedDate = null
-        }
-
-        val (initYear, initMonth, initDay) = calHyg.initToday(binding.txtYearMonth, binding.currentDate)
-        selectedDate = Triple(initYear, initMonth, initDay)
-        scheduleViewModel.getScheduleList(initYear, initMonth)
 
         val infoFragment = CalScheduleInfoFragment()
         infoFragment.setAddListener(object: AddDot {
@@ -141,28 +124,14 @@ class CalFragment : Fragment() {
             addFragment.show(parentFragmentManager, "openAddDialog") // 일정추가 dialog 호출
         }
 
-        binding.dateSelect.setOnClickListener {
-            showDatePickDialog()
-        }
-        binding.preMonth.setOnClickListener {
-            val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "pre")
-            selectedDate = Triple(year, month, day)
-            scheduleViewModel.getScheduleList(year, month)
-        }
-        binding.nextMonth.setOnClickListener {
-            val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "next")
-            selectedDate = Triple(year, month, day)
-            scheduleViewModel.getScheduleList(year, month)
-        }
-        binding.btnToday.setOnClickListener {
-            val (year, month, day) = calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, "today")
-            selectedDate = Triple(year, month, day)
-            scheduleViewModel.getScheduleList(year, month)
-        }
+        binding.dateSelect.setOnClickListener { showDatePickDialog() }
+        binding.preMonth.setOnClickListener { changeCalendarStatus("pre") }
+        binding.nextMonth.setOnClickListener { changeCalendarStatus("next") }
+        binding.btnToday.setOnClickListener { changeCalendarStatus("today") }
 
         calendarAdapter.setItemClickListener(object: DateMonthClickListener {
             override fun onItemClicked(item: DateSelect) {
-                if (item.date!!.isDigitsOnly()) {
+                if (item.date.isDigitsOnly()) {
                     val day = item.date
                     val regex = Regex("\\d+일")
                     val text = binding.currentDate.text.toString().replace(regex, "${day}일")
@@ -170,6 +139,7 @@ class CalFragment : Fragment() {
                     // 달력의 날짜 누르면 textview 날짜 갱신
                     binding.currentDate.text = text
                     calendarAdapter.highlightCurrentDate(item, true)
+                    refreshScheduleList(day.toInt())
                 }
             }
         })
@@ -194,6 +164,7 @@ class CalFragment : Fragment() {
 
             selectedDate = Triple(year, month, day)
             scheduleViewModel.getScheduleList(year, month)
+            refreshScheduleList(day)
         }
     }
 
@@ -216,39 +187,53 @@ class CalFragment : Fragment() {
 
         calHyg.showDatePickDialog(view, builder, binding.txtYearMonth, binding.currentDate) { info ->
             val (year, month, day) = info
-            println("year: $year, month: $month")
 
             selectedDate = Triple(year, month, day)
             scheduleViewModel.getScheduleList(year, month)
+            refreshScheduleList(day)
         }
 
         val dialog = builder.create()
         dialog.show()
     }
 
-//    private fun updateViewModel(adapter: CalListAdapter, date: String) { // 아이템이 추가될 때마다 호출됨(실시간 데이터 변경 감지)
-//        calendarViewModel.calMonthList.observe(viewLifecycleOwner) { calList ->
-//            adapter.clearItem() // 업데이트 전 리스트 초기화 후 항목을 모두 추가 (중복 삽입 방지)
-//
-//            calList.forEach { calMonth ->
-//                adapter.addItem(calMonth)
-//            }
-//            adapter.updateList(date)
-//        }
-//    }
-
     private fun initScheduleList() { // 일정 리스트 초기화 함수
+        binding.calendarRealView.layoutManager = GridLayoutManager(requireContext(), 7) // 월간 달력 recyclerView 초기화
+        binding.calendarRealView.adapter = calendarAdapter
+
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.calMonthScheduleView.layoutManager = layoutManager
         binding.calMonthScheduleView.adapter = scheduleAdapter
-
-        observeViewModel(scheduleAdapter)
     }
 
-    private fun observeViewModel(adapter: ScheduleAdapter) {
+    private fun changeCalendarStatus(status: String? = null) {
+        val (year, month, day) = if (status == null) {
+            calHyg.initToday(binding.txtYearMonth, binding.currentDate)
+        } else {
+            calHyg.setPreNextMonthCalendar(binding.txtYearMonth, binding.currentDate, status)
+        }
+
+        selectedDate = Triple(year, month, day)
+        scheduleViewModel.getScheduleList(year, month)
+        refreshScheduleList(day)
+    }
+
+    private fun refreshScheduleList(day: Int) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            val format = calHyg.getSelectedYearMonth(binding.txtYearMonth.text.toString())
+            val dateInt = "${format.first}${String.format("%02d", format.second)}${String.format("%02d", day)}".toInt()
+            scheduleAdapter.setItemListDay(currentMonthList, dateInt)
+        }, 100)
+    }
+
+    private fun observeViewModel() {
         scheduleViewModel.apply {
             scheduleList.observe(viewLifecycleOwner) {
-                adapter.setItemList(it)
+                currentMonthList = it
+                selectedDate?.let { (year, month, day) ->
+                    calHyg.showMonthCalendarNew(year, month, day, it, calendarAdapter)
+                }
+                selectedDate = null
             }
 
             errorMessage.observe(viewLifecycleOwner) { event ->

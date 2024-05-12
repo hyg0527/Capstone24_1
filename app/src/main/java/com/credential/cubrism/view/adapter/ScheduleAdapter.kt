@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListScheduleBinding
 import com.credential.cubrism.model.dto.ScheduleListDto
+import com.credential.cubrism.view.CalendarHyg
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 
@@ -62,7 +63,16 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun getItemList(): List<ScheduleListDto> {
-        return itemList
+    fun setItemListDay(list: List<ScheduleListDto>, yearMonthDay: Int) {
+        val localList = mutableListOf<ScheduleListDto>()
+
+        for (schedule in list) {
+            val start = schedule.startDate.substringBefore("T").replace("-", "").toInt()
+            val end = schedule.endDate.substringBefore("T").replace("-", "").toInt()
+
+            if (yearMonthDay in start..end)
+                localList.add(schedule)
+        }
+        setItemList(localList)
     }
 }

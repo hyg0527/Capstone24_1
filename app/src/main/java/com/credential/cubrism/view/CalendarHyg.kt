@@ -73,7 +73,7 @@ class CalendarHyg {
         for (date in numDate) if (date.key == monthData)
             for (day in daysList)
                 for (scDate in date.value)
-                    if ((day.date ?: "").isDigitsOnly() && (day.date ?: "").toInt() == scDate) {
+                    if (day.date.isDigitsOnly() && day.date.toInt() == scDate) {
                         day.isScheduled = true
                         break
                     }
@@ -234,7 +234,7 @@ class CalendarHyg {
             }
     }
 
-    private fun getSelectedYearMonth(yearMonth: String): Pair<Int, Int> { // 다이얼로그를 다시 열었을때 현재 선택된 연월이 다시 표시되는 함수
+    fun getSelectedYearMonth(yearMonth: String): Pair<Int, Int> { // 다이얼로그를 다시 열었을때 현재 선택된 연월이 다시 표시되는 함수
         val (month, year) = yearMonth.split(" ")
         val returnYear = year.toInt()
         val returnMonth = selectedMonthToInt(month)
