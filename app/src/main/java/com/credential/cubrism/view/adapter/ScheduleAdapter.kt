@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListScheduleBinding
 import com.credential.cubrism.model.dto.ScheduleListDto
-import com.credential.cubrism.view.CalendarHyg
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 

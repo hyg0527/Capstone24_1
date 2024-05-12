@@ -11,7 +11,6 @@ import com.credential.cubrism.model.dto.ScheduleDto
 import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.adapter.CalendarAdapter
 import com.credential.cubrism.view.adapter.DateSelect
-import com.credential.cubrism.viewmodel.ScheduleViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.YearMonth
@@ -52,7 +51,6 @@ class CalendarHyg {
         val monthData = "$year - ${String.format("%02d", month)}"
         val newData = ArrayList(data)
         val numDate = extractListInfo(checkFormat(newData))
-        println("newData: $numDate")
 
         val (daysInMonth, dayOfWeekIndex) = setDateWeek(year, month)
         val daysList = ArrayList<DateSelect>().apply {
@@ -172,22 +170,6 @@ class CalendarHyg {
         return months
     }
 
-    fun getMonthInfoS(input: String): Pair<Int, Int> { // "April 2024"로 입력을 받으면, 월의 일 수, 1일의 시작 인덱스 반환
-        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
-        val yearMonth = YearMonth.parse(input, formatter)
-
-        // 해당 월의 첫 날과 마지막 날
-        val firstDayOfMonth = yearMonth.atDay(1)
-        val lastDayOfMonth = yearMonth.atEndOfMonth()
-
-        // 첫 날의 시작 인덱스 계산
-        val firstDayIndex = firstDayOfMonth.dayOfWeek.value % 7 + 1
-        // 해당 월의 일 수를 계산
-        val numDaysInMonth = lastDayOfMonth.dayOfMonth
-
-        return Pair(numDaysInMonth, firstDayIndex)
-    }
-
     fun showDatePickDialog(view: View, builder: AlertDialog.Builder, datePickTxt: TextView, txtCurrentDate: TextView,
                            callback: (Triple<Int, Int, Int>) -> Unit) { // numberpicker dialog 호출
         val yearPick = view.findViewById<NumberPicker>(R.id.yearPick)
@@ -213,20 +195,9 @@ class CalendarHyg {
                 datePickTxt.text = resText
 
                 // 선택후 달력이 바뀌는 부분 여기에 추가
-//                val (m, w) = setDateWeek(selectedYear, selectedMonth)
                 txtCurrentDate.text = "${selectedYear}년 ${selectedMonth}월 1일" // 1일로 초기화
 
-                // RecyclerView에 데이터 갱신
-//                val monthList = showMonthCalendar(resText, m, w, data)
-//                calendarAdapter.updateCalendar(monthList)
-//
-//                scheduleViewModel.getScheduleList(selectedYear, selectedMonth)
-
-                val selectedReturn = String.format("%02d", selectedYear) + " - " + String.format("%02d", selectedMonth) + " - 01"
                 callback(Triple(selectedYear, selectedMonth, 1))
-
-//                calendarAdapter.highlightDate(selectedReturn)
-
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
