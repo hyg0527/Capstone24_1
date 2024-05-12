@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListHomeTodaylistBinding
 
+data class CalMonth(val startDate: String? = null, val endDate: String? = null,
+                    val title: String? = null, val content: String? = null, val allDay: Boolean)
 // home 화면의 todoList adapter.
 class TodoAdapter(private val items: ArrayList<CalMonth>) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
