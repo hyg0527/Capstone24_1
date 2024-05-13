@@ -31,6 +31,7 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/layoutReply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -300,7 +301,7 @@
             android:enabled="false"
             android:fontFamily="@font/kopubdotummedium"
             android:hint="댓글 입력"
-            android:inputType="text"
+            android:maxLines="3"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -313,11 +314,11 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/send_btn"
             android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

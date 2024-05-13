@@ -29,6 +29,7 @@ import com.credential.cubrism.view.adapter.PostCommentLongClickListener
 import com.credential.cubrism.view.adapter.PostCommentReplyClickListener
 import com.credential.cubrism.view.adapter.PostImageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.view.utils.KeyboardVisibilityUtils
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -53,6 +54,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
 
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var powerMenu : PowerMenu
+    private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
 
     private val isLoggedIn = myApplication.getUserData().getLoginStatus()
     private val myEmail = myApplication.getUserData().getEmail()
@@ -91,6 +93,11 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         getPostView()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        keyboardVisibilityUtils.detachKeyboardListeners()
+    }
+
     override fun onReplyClick(nickname: String?, commentId: Int) {
         if (isLoggedIn) {
             nickname?.let {
@@ -115,8 +122,8 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     }
 
     private fun setupToolbar() {
-        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { backPress() }
     }
@@ -126,7 +133,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
-        val menuList: List<MenuDto> = listOf(
+        val menuList = listOf(
             MenuDto(R.drawable.icon_edit2, "수정하기"),
             MenuDto(R.drawable.icon_delete2, "삭제하기")
         )
@@ -266,11 +273,22 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         binding.btnCancel.setOnClickListener {
             clearComment()
         }
+
+        keyboardVisibilityUtils = KeyboardVisibilityUtils(window,
+            onShowKeyboard = {
+                binding.editComment.maxLines = 3
+            },
+            onHideKeyboard = {
+                binding.editComment.maxLines = 1
+            }
+        )
     }
 
     private fun observeViewModel() {
         postViewModel.apply {
             postView.observe(this@PostViewActivity) { result ->
+                binding.swipeRefreshLayout.visibility = View.VISIBLE
+
                 Glide.with(this@PostViewActivity).load(result.profileImageUrl)
                     .error(R.drawable.profile_blue)
                     .fallback(R.drawable.profile_blue)
