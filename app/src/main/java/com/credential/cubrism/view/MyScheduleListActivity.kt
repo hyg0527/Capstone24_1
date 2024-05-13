@@ -30,9 +30,9 @@ class MyScheduleListActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
@@ -40,14 +40,18 @@ class MyScheduleListActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             adapter = scheduleAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 16, 0, 0, 0, 0, null))
         }
     }
 
     private fun observeViewModel() {
         scheduleViewModel.apply {
-            scheduleList.observe(this@MyScheduleListActivity) {
-                scheduleAdapter.setItemList(it)
+            scheduleList.observe(this@MyScheduleListActivity) { list ->
+                binding.progressIndicator.hide()
+                if (list.isEmpty())
+                    binding.txtNoSchedule.visibility = android.view.View.VISIBLE
+                else
+                    binding.txtNoSchedule.visibility = android.view.View.GONE
+                scheduleAdapter.setItemList(list)
             }
 
             errorMessage.observe(this@MyScheduleListActivity) { event ->
