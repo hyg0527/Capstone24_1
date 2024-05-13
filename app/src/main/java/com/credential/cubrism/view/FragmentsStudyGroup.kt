@@ -231,6 +231,7 @@ class StudyGroupFunc3Fragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        keyboardVisibilityUtils.detachKeyboardListeners()
     }
 
     private fun setupView() {
