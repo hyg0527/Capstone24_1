@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.databinding.ActivityNotiBinding
 import com.credential.cubrism.model.repository.NotiRepository
+import com.credential.cubrism.view.adapter.Noti
 import com.credential.cubrism.view.adapter.NotiAdapter
-import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
 class NotiActivity : AppCompatActivity() {
     private val binding by lazy { ActivityNotiBinding.inflate(layoutInflater) }
@@ -33,10 +33,7 @@ class NotiActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.apply {
-            adapter = notiAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 60, 0, 0, 0, 0, null))
-        }
+        binding.recyclerView.adapter = notiAdapter
 
         notiAdapter.setOnItemClickListener { item, _ ->
             when (item.type) {
@@ -63,7 +60,19 @@ class NotiActivity : AppCompatActivity() {
             } else {
                 binding.txtEmpty.visibility = android.view.View.GONE
             }
-            notiAdapter.setItemList(it)
+            notiAdapter.setItemList(
+                it.map { notiEntity ->
+                    Noti(
+                        notiEntity.notiId,
+                        notiEntity.title,
+                        notiEntity.body,
+                        notiEntity.type,
+                        notiEntity.id,
+                        null,
+                        notiEntity.date
+                    )
+                }
+            )
         }
     }
 }

@@ -1,9 +1,9 @@
 package com.credential.cubrism.view.diff
 
 import androidx.recyclerview.widget.DiffUtil
-import com.credential.cubrism.model.entity.NotiEntity
+import com.credential.cubrism.view.adapter.Noti
 
-class NotiDiffUtil(private val oldList: List<NotiEntity>, private val newList: List<NotiEntity>) : DiffUtil.Callback() {
+class NotiDiffUtil(private val oldList: List<Noti>, private val newList: List<Noti>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }

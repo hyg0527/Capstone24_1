@@ -8,7 +8,7 @@ import com.credential.cubrism.model.entity.NotiEntity
 
 @Dao
 interface NotiDao {
-    @Query("SELECT * FROM noti ORDER BY date DESC")
+    @Query("SELECT * FROM noti")
     fun getAllNoties(): LiveData<List<NotiEntity>>
 
     @Insert
