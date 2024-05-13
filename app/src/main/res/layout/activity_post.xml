@@ -7,7 +7,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:liftOnScrollColor="@color/white">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -25,17 +26,44 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:tabIndicatorColor="@color/blue"
-            app:tabIndicatorHeight="4dp"
-            app:tabMode="fixed"
-            app:tabRippleColor="@android:color/transparent"
-            app:tabSelectedTextColor="@color/blue"
-            app:tabTextAppearance="@style/StyleTabLayout"
-            app:tabTextColor="@android:color/darker_gray" />
+        <nl.bryanderidder.themedtogglebuttongroup.ThemedToggleButtonGroup
+            android:id="@+id/btnToggleGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            app:toggle_requiredAmount="1"
+            app:toggle_selectAnimation="fade">
+
+            <nl.bryanderidder.themedtogglebuttongroup.ThemedButton
+                android:id="@+id/btnAll"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:layout_flexShrink="0"
+                app:toggle_backgroundColor="@color/white"
+                app:toggle_borderColor="@color/blue"
+                app:toggle_borderWidth="4dp"
+                app:toggle_fontFamily="/fonts/kopubdotumbold.ttf"
+                app:toggle_selectedBackgroundColor="@color/blue"
+                app:toggle_selectedTextColor="@color/white"
+                app:toggle_text="전체"
+                app:toggle_textColor="@color/blue" />
+
+            <nl.bryanderidder.themedtogglebuttongroup.ThemedButton
+                android:id="@+id/btnFavorite"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:layout_flexShrink="0"
+                app:toggle_backgroundColor="@color/white"
+                app:toggle_borderColor="@color/blue"
+                app:toggle_borderWidth="4dp"
+                app:toggle_fontFamily="/fonts/kopubdotumbold.ttf"
+                app:toggle_selectedBackgroundColor="@color/blue"
+                app:toggle_selectedTextColor="@color/white"
+                app:toggle_text="관심 자격증"
+                app:toggle_textColor="@color/blue" />
+
+        </nl.bryanderidder.themedtogglebuttongroup.ThemedToggleButtonGroup>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -53,9 +81,10 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="12dp"
             android:paddingBottom="104dp"
+            android:descendantFocusability="blocksDescendants"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -73,5 +102,14 @@
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraLarge"
         app:srcCompat="@drawable/icon_edit"
         app:tint="@color/blue" />
+
+    <TextView
+        android:id="@+id/txtNoPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="등록된 게시글이 없습니다."
+        android:textColor="#BFBFBF"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

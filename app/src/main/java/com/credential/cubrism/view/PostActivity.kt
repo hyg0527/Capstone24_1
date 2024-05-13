@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -23,7 +24,6 @@ import com.credential.cubrism.view.adapter.PostAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
-import com.google.android.material.tabs.TabLayout
 
 class PostActivity : AppCompatActivity() {
     private val binding by lazy { ActivityPostBinding.inflate(layoutInflater) }
@@ -53,59 +53,58 @@ class PostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
-        setupTabLayout()
         setupRecyclerView()
         setupView()
         observeViewModel()
     }
 
     private fun setupToolbar() {
-        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener {
-            if (!searchView.isIconified) {
-                postViewModel.getPostList(boardId, 0, 10, null, true)
-                binding.toolbar.collapseActionView()
-                searchView.setQuery("", false)
-                searchQuery = null
-                binding.swipeRefreshLayout.isRefreshing = true
-            } else {
-                finish()
-            }
-        }
+        binding.toolbar.setNavigationOnClickListener { finish() }
 
         // 메뉴 추가
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.search_menu, menu)
+
                 val searchItem = menu.findItem(R.id.search)
                 searchView = searchItem.actionView as SearchView
 
-                searchView.queryHint = "게시글 검색"
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        searchQuery = query
-                        postViewModel.getPostList(boardId, 0, 10, query, true)
-                        searchView.clearFocus()
-                        binding.tabLayout.getTabAt(0)?.select()
-                        return false
-                    }
+                searchView.apply {
+                    queryHint = "게시글 검색"
+                    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        // 게시글을 검색하고 토글 버튼을 숨김
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            postViewModel.getPostList(boardId, 0, 10, query, true)
+                            binding.swipeRefreshLayout.isRefreshing = true
+                            binding.btnToggleGroup.apply {
+                                selectButton(binding.btnAll)
+                                visibility = View.GONE
+                            }
+                            searchQuery = query
+                            searchView.clearFocus()
+                            return false
+                        }
 
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        return false
-                    }
-                })
+                        override fun onQueryTextChange(newText: String?): Boolean {
+                            return false
+                        }
+                    })
+                }
 
                 searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                         return true
                     }
 
+                    // SearchView를 닫았을 때 전체 게시글 목록을 가져오고 토글 버튼을 다시 보여줌
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                         postViewModel.getPostList(boardId, 0, 10, null, true)
-                        searchQuery = null
                         binding.swipeRefreshLayout.isRefreshing = true
+                        binding.btnToggleGroup.visibility = View.VISIBLE
+                        searchQuery = null
                         return true
                     }
                 })
@@ -114,40 +113,6 @@ class PostActivity : AppCompatActivity() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return false
             }
-        })
-    }
-
-    private fun setupTabLayout() {
-        val tabTitles = listOf("전체 글 목록", "관심 자격증")
-
-        for (title in tabTitles) {
-            binding.tabLayout.addTab(binding.tabLayout.newTab().setText(title))
-        }
-
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.toolbar.collapseActionView()
-
-                if (isLoggedIn) {
-                    when (tab?.position) {
-                        0 -> {
-                            // 전체 글 목록
-                            favorites = false
-                            postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
-                        }
-                        1 -> {
-                            // 관심 자격증
-                            favorites = true
-                            postViewModel.getFavoritePostList(boardId, 0, 10, true)
-                        }
-                    }
-                } else {
-                    Toast.makeText(this@PostActivity, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-                    binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
-                }
-            }
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
 
@@ -190,20 +155,20 @@ class PostActivity : AppCompatActivity() {
             if (favorites) {
                 postViewModel.getFavoritePostList(boardId, 0, 10, true)
             } else {
-                postViewModel.getPostList(boardId, 0, 10, null, true)
+                postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
             }
-            binding.toolbar.collapseActionView()
-            searchView.setQuery("", false)
-            searchQuery = null
             binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 
     private fun setupView() {
-        if (isLoggedIn)
+        if (isLoggedIn) {
             binding.floatingActionButton.show()
-        else
+            binding.btnToggleGroup.visibility = View.VISIBLE
+        } else {
             binding.floatingActionButton.hide()
+            binding.btnToggleGroup.visibility = View.GONE
+        }
 
         postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
         binding.swipeRefreshLayout.isRefreshing = true
@@ -213,13 +178,33 @@ class PostActivity : AppCompatActivity() {
             intent.putExtra("postState", "add")
             startForRegisterResult.launch(intent)
         }
+
+        binding.btnToggleGroup.apply {
+            selectButton(binding.btnAll)
+
+            setOnSelectListener {
+                binding.swipeRefreshLayout.isRefreshing = true
+                when (it) {
+                    binding.btnAll -> {
+                        favorites = false
+                        postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
+                    }
+                    binding.btnFavorite -> {
+                        favorites = true
+                        postViewModel.getFavoritePostList(boardId, 0, 10, true)
+                    }
+                }
+            }
+        }
     }
 
     private fun observeViewModel() {
         postViewModel.apply {
-            postList.observe(this@PostActivity) {
-                postAdapter.setItemList(it ?: emptyList())
+            postList.observe(this@PostActivity) { list ->
                 binding.swipeRefreshLayout.isRefreshing = false
+
+                postAdapter.setItemList(list)
+                binding.txtNoPost.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
                 setLoading(false)
                 if (refreshState) binding.recyclerView.scrollToPosition(0)
             }
