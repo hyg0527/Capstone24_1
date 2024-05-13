@@ -45,6 +45,13 @@ class NotiActivity : AppCompatActivity() {
                     intent.putExtra("postId", item.id.toInt())
                     startActivity(intent)
                 }
+                "STUDY" -> {
+                    if (item.id.isNotEmpty()) {
+                        val intent = Intent(this, StudyActivity::class.java)
+                        intent.putExtra("studyGroupId", item.id.toInt())
+                        startActivity(intent)
+                    }
+                }
             }
         }
     }

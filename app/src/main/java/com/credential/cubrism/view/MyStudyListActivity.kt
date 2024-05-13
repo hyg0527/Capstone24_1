@@ -35,7 +35,6 @@ class MyStudyListActivity : AppCompatActivity(), GroupEnterButtonClickListener {
     override fun onButtonClick(item: GroupList) {
         val intent = Intent(this, StudyActivity::class.java)
         intent.putExtra("studyGroupId", item.studyGroupId)
-        intent.putExtra("studyGroupName", item.groupName)
         startActivity(intent)
     }
 

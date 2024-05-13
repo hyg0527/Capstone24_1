@@ -1,6 +1,7 @@
 package com.credential.cubrism.model.dto
 
 data class StudyGroupEnterDto(
+    val groupName: String,
     val members: List<MembersDto>,
     val day: DDayDto
 )

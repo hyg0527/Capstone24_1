@@ -35,7 +35,6 @@ class StudyActivity : AppCompatActivity() {
     private val stompClient = StompClient()
 
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
-    private val studyGroupName by lazy { intent.getStringExtra("studyGroupName") }
     private var ddayTitle: String? = null
     private var dday: String? = null
     private var firstLoad = true
@@ -81,8 +80,7 @@ class StudyActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // 기본 타이틀 제거
-        binding.txtTitle.text = studyGroupName
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0)
         binding.drawerLayout.addDrawerListener(toggle)
@@ -159,6 +157,8 @@ class StudyActivity : AppCompatActivity() {
             studyGroupEnterData.observe(this@StudyActivity) { group ->
                 if (firstLoad) {
                     val myEmail = myApplication.getUserData().getEmail()
+
+                    binding.txtTitle.text = group.groupName
 
                     // 그룹의 관리자인 경우 관리 텍스트 표시
                     binding.txtManage.visibility = if (group.members.any { it.email == myEmail && it.admin }) View.VISIBLE else View.GONE
