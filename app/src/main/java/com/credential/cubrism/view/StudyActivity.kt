@@ -89,6 +89,8 @@ class StudyActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
+        studyGroupViewModel.setGroupId(studyGroupId)
+
         binding.txtManage.setOnClickListener {
             val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
             intent.putExtra("titleName", binding.txtTitle.text.toString())
@@ -161,7 +163,13 @@ class StudyActivity : AppCompatActivity() {
                     binding.txtTitle.text = group.groupName
 
                     // 그룹의 관리자인 경우 관리 텍스트 표시
-                    binding.txtManage.visibility = if (group.members.any { it.email == myEmail && it.admin }) View.VISIBLE else View.GONE
+                    if (group.members.any { it.email == myEmail && it.admin }) {
+                        binding.txtManage.visibility = View.VISIBLE
+                        setIsAdmin(true)
+                    } else {
+                        binding.txtManage.visibility = View.GONE
+                        setIsAdmin(false)
+                    }
 
                     // 관리자를 가장 위에 놓고 나머지는 닉네임 순으로 정렬
                     group.members.sortedWith(compareByDescending<MembersDto> { it.admin }.thenBy { it.nickname }).forEach { member ->
@@ -197,6 +205,4 @@ class StudyActivity : AppCompatActivity() {
     fun sendMessage(chatRequestDto: ChatRequestDto) {
         stompClient.sendMessage(studyGroupId, chatRequestDto)
     }
-
-    fun getGroupId(): Int = studyGroupId
 }

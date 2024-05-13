@@ -24,7 +24,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
     private lateinit var studyGroupGoalAdapter: StudyGroupGoalAdapter
 
-    private val groupId by lazy { intent.getIntExtra("groupId", -1) }
+    private val studyGroupId by lazy { intent.getIntExtra("groupId", -1) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
     }
 
     private fun setupView() {
-        studyGroupViewModel.getGoalList(groupId)
+        studyGroupViewModel.getGoalList(studyGroupId)
 
         binding.btnAddGoal.setOnClickListener {
             if (studyGroupGoalAdapter.getItemSize() >= 3) {
@@ -70,7 +70,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
     private fun showDialog() {
         GoalAddDialog(this,
             onConfirm = {
-                studyGroupViewModel.addGoal(StudyGroupAddGoalDto(groupId, it))
+                studyGroupViewModel.addGoal(StudyGroupAddGoalDto(studyGroupId, it))
             }
         ).show(supportFragmentManager, "GoalAddDialog")
     }
@@ -96,12 +96,12 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
 
             addGoal.observe(this@StudyManageGoalActivity) {
                 Toast.makeText(this@StudyManageGoalActivity, it.message, Toast.LENGTH_SHORT).show()
-                studyGroupViewModel.getGoalList(groupId)
+                studyGroupViewModel.getGoalList(studyGroupId)
             }
 
             deleteGoal.observe(this@StudyManageGoalActivity) {
                 Toast.makeText(this@StudyManageGoalActivity, it.message, Toast.LENGTH_SHORT).show()
-                studyGroupViewModel.getGoalList(groupId)
+                studyGroupViewModel.getGoalList(studyGroupId)
             }
 
             errorMessage.observe(this@StudyManageGoalActivity) { event ->

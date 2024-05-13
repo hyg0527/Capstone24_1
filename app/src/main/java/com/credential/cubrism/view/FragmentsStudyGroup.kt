@@ -41,6 +41,9 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
 
     private lateinit var studyGroupGoalAdapter: StudyGroupGoalAdapter
 
+    private var studyGroupId = -1
+    private var isGroupAdmin = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudygroupHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -49,6 +52,7 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
         setupRecyclerView()
         observeViewModel()
     }
@@ -70,6 +74,18 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
         }
     }
 
+    private fun setupView() {
+        binding.cardDefault.setOnClickListener {
+            if (isGroupAdmin) {
+                val intent = Intent(requireContext(), StudyManageDDayActivity::class.java)
+                intent.putExtra("groupId", studyGroupId)
+                intent.putExtra("ddayTitle", "")
+                intent.putExtra("dday", "")
+                startActivity(intent)
+            }
+        }
+    }
+
     private fun setupRecyclerView() {
         studyGroupGoalAdapter = StudyGroupGoalAdapter(StudyGroupGoalType.GOAL_LIST, this)
 
@@ -87,12 +103,19 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
                 val myEmail = myApplication.getUserData().getEmail()
 
                 if (data.day.title != null && data.day.day != null) {
+                    binding.progressIndicatorDDay.hide()
+                    binding.cardDefault.visibility = View.INVISIBLE
+                    binding.cardDDay.visibility = View.VISIBLE
                     binding.txtGoal.text = "${data.day.title}까지"
                     binding.txtDDay.text = calculateDDay(data.day.day).toString()
+                } else {
+                    binding.progressIndicatorDDay.hide()
+                    binding.cardDefault.visibility = View.VISIBLE
+                    binding.cardDDay.visibility = View.INVISIBLE
                 }
 
                 data.members.find { it.email == myEmail }?.userGoal?.goals?.let { list ->
-                    binding.progressIndicator.hide()
+                    binding.progressIndicatorGoal.hide()
                     studyGroupGoalAdapter.setItemList(list)
 
                     binding.txtNoGoal.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
@@ -101,7 +124,16 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
 
             completeGoal.observe(viewLifecycleOwner) {
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                (activity as? StudyActivity)?.getGroupId()?.let { groupId -> studyGroupViewModel.getStudyGroupEnterData(groupId) }
+                if (studyGroupId != -1)
+                    getStudyGroupEnterData(studyGroupId)
+            }
+
+            groupId.observe(viewLifecycleOwner) {
+                studyGroupId = it
+            }
+
+            isAdmin.observe(viewLifecycleOwner) {
+                isGroupAdmin = it
             }
         }
     }

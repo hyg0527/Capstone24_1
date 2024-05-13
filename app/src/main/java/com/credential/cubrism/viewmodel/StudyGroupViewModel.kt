@@ -21,6 +21,12 @@ import com.credential.cubrism.viewmodel.utils.Event
 import java.util.UUID
 
 class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewModel() {
+    private val _groupId = MutableLiveData<Int>()
+    val groupId: LiveData<Int> = _groupId
+
+    private val _isAdmin = MutableLiveData<Boolean>()
+    val isAdmin: LiveData<Boolean> = _isAdmin
+
     private val _page = MutableLiveData<PageDto>()
     val page: LiveData<PageDto> = _page
 
@@ -80,6 +86,14 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
+
+    fun setGroupId(groupId: Int) {
+        _groupId.value = groupId
+    }
+
+    fun setIsAdmin(isAdmin: Boolean) {
+        _isAdmin.value = isAdmin
+    }
 
     fun createStudyGroup(studyGroupCreateDto: StudyGroupCreateDto) {
         repository.createStudyGroup(studyGroupCreateDto) { result ->

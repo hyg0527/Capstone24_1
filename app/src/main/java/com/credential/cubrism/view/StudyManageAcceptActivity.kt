@@ -24,7 +24,7 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
 
     private lateinit var joinAcceptAdapter: JoinAcceptAdapter
 
-    private val groupId by lazy { intent.getIntExtra("groupId", -1) }
+    private val studyGroupId by lazy { intent.getIntExtra("groupId", -1) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +34,8 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
         setupRecyclerView()
         observeViewModel()
 
-        if (groupId != -1) {
-            studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
+        if (studyGroupId != -1) {
+            studyGroupViewModel.getStudyGroupJoinReceiveList(studyGroupId)
         }
     }
 
@@ -91,12 +91,12 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
 
             acceptJoinRequest.observe(this@StudyManageAcceptActivity) {
                 Toast.makeText(this@StudyManageAcceptActivity, it.message, Toast.LENGTH_SHORT).show()
-                studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
+                studyGroupViewModel.getStudyGroupJoinReceiveList(studyGroupId)
             }
 
             denyJoinRequest.observe(this@StudyManageAcceptActivity) {
                 Toast.makeText(this@StudyManageAcceptActivity, it.message, Toast.LENGTH_SHORT).show()
-                studyGroupViewModel.getStudyGroupJoinReceiveList(groupId)
+                studyGroupViewModel.getStudyGroupJoinReceiveList(studyGroupId)
             }
 
             errorMessage.observe(this@StudyManageAcceptActivity) { event ->
