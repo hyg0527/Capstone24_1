@@ -12,14 +12,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMainBinding
+import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.viewmodel.MainFragmentType
 import com.credential.cubrism.viewmodel.MainViewModel
+import com.credential.cubrism.viewmodel.ScheduleViewModel
+import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val mainViewModel: MainViewModel by viewModels()
+    private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
 
     private var backPressedTime: Long = 0
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -48,6 +52,11 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) { setupFragment() }
         setupBottomNav()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        scheduleViewModel.getScheduleList(null, null)
     }
 
     private fun setupBottomNav() {

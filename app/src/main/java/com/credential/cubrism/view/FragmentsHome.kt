@@ -2,15 +2,15 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -18,38 +18,37 @@ import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.FragmentHomeBinding
 import com.credential.cubrism.model.dto.FavoriteListDto
-import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
+import com.credential.cubrism.view.adapter.BannerEnterListener
+import com.credential.cubrism.view.adapter.BannerType
 import com.credential.cubrism.view.adapter.FavType
 import com.credential.cubrism.view.adapter.FavoriteAdapter2
 import com.credential.cubrism.view.adapter.FavoriteItem
-import com.credential.cubrism.view.adapter.QnaBannerEnterListener
 import com.credential.cubrism.view.adapter.TodoAdapter
+import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.ScheduleViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Timer
-import java.util.TimerTask
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), BannerEnterListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val myApplication = MyApplication.getInstance()
 
-    private val scheduleViewModel: ScheduleViewModel by viewModels { ViewModelFactory(ScheduleRepository()) }
+    private val scheduleViewModel: ScheduleViewModel by activityViewModels { ViewModelFactory(ScheduleRepository()) }
     private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
 
     private val favoriteAdapter2 = FavoriteAdapter2()
     private val todoAdapter = TodoAdapter()
-    private var monthList = listOf<ScheduleListDto>()
+    private lateinit var bannerAdapter: BannerAdapter
 
     private var currentPage = 0
-    private val timer = Timer()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -62,42 +61,8 @@ class HomeFragment : Fragment() {
         setupToolbar()
         setupView()
         setupRecyclerView()
+        setupViewPager()
         observeViewModel()
-
-        scheduleViewModel.getScheduleList(null, null)
-        todoAdapter.setTodayItemList(filterItem())
-
-        val bnAdapter = BannerAdapter()
-
-        bnAdapter.setBannerListener(object: QnaBannerEnterListener {
-            override fun onBannerClicked() {
-                startActivity(Intent(requireActivity(), PostActivity::class.java))
-            }
-
-            override fun onBannerStudyClicked() {
-                startActivity(Intent(requireActivity(), MyStudyListActivity::class.java))
-            }
-        })
-
-        binding.recyclerSchedule.adapter = todoAdapter
-        isNoSchedule(todoAdapter)
-
-        binding.viewPager.apply {
-            adapter = bnAdapter
-            orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        }
-
-        // 3초마다 자동으로 viewpager2가 스크롤되도록 타이머 설정
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                activity?.runOnUiThread {
-                    if (currentPage == bnAdapter.itemCount) {
-                        currentPage = 0
-                    }
-                    binding.viewPager.setCurrentItem(currentPage++, true)
-                }
-            }
-        }, 0, 5000) // 3초마다 실행, 첫 실행 까지 3초 대기
     }
 
     override fun onDestroyView() {
@@ -105,23 +70,30 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        scheduleViewModel.getScheduleList(null, null)
-        todoAdapter.setTodayItemList(filterItem())
-    }
-
     override fun onResume() {
         super.onResume()
-
         setupViewWithLoginStatus()
-        setupTodoStatus()
+    }
+
+    override fun onBannerClicked(type: BannerType) {
+        when (type) {
+            BannerType.QNA -> startActivity(Intent(requireActivity(), PostActivity::class.java))
+            BannerType.STUDYGROUP -> {
+                if (!myApplication.getUserData().getLoginStatus()) {
+                    Toast.makeText(requireContext(), "로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                startActivity(Intent(requireActivity(), MyStudyListActivity::class.java))
+            }
+        }
     }
 
     private fun setupToolbar() {
-        binding.toolbar.title = ""
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (activity as AppCompatActivity).apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+        }
     }
 
     private fun setupView() {
@@ -172,16 +144,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupTodoStatus() {
-        val isLoggedIn = myApplication.getUserData().getLoginStatus()
-        if (!isLoggedIn) {
-            todoAdapter.setTodayItemList(ArrayList())
-        } else {
-            scheduleViewModel.getScheduleList(null, null)
-            todoAdapter.setTodayItemList(filterItem())
-        }
-    }
-
     private fun setupRecyclerView() {
         binding.recyclerQualification.apply {
             adapter = favoriteAdapter2
@@ -203,6 +165,12 @@ class HomeFragment : Fragment() {
                 intent.putExtra("type", "favorite")
                 startActivity(intent)
             }
+        }
+
+        binding.recyclerSchedule.apply {
+            adapter = todoAdapter
+            itemAnimator = null
+            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
         }
     }
 
@@ -230,43 +198,36 @@ class HomeFragment : Fragment() {
                 binding.recyclerQualification.visibility = View.GONE
             }
         }
+
         scheduleViewModel.apply {
-            scheduleList.observe(viewLifecycleOwner) {
-                monthList = it
-                todoAdapter.setTodayItemList(filterItem())
+            scheduleList.observe(viewLifecycleOwner) { list ->
+                todoAdapter.setItemList(list)
+                binding.txtNoSchedule.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
             }
 
-            errorMessage.observe(viewLifecycleOwner) { event ->
-                event.getContentIfNotHandled()?.let { message ->
-                    if (message != "JWT 토큰이 잘못되었습니다.")
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            errorMessage.observe(viewLifecycleOwner) {
+                todoAdapter.setItemList(emptyList())
+                binding.txtNoSchedule.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun setupViewPager() {
+        bannerAdapter = BannerAdapter(this)
+
+        binding.viewPager.apply {
+            adapter = bannerAdapter
+            orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        }
+
+        lifecycleScope.launch {
+            while (isActive) {
+                if (currentPage == bannerAdapter.itemCount) {
+                    currentPage = 0
                 }
+                binding.viewPager.setCurrentItem(currentPage++, true)
+                delay(5000L) // 5초마다 실행
             }
         }
-    }
-
-    private fun isNoSchedule(todoAdapter: TodoAdapter) {
-        if (todoAdapter.itemCount == 0) {
-            binding.txtNoSchedule.visibility = View.VISIBLE
-        }
-        else {
-            binding.txtNoSchedule.visibility = View.VISIBLE
-        }
-    }
-
-    private fun getTodayData(): String {
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        return currentDate.format(formatter)
-    }
-
-    private fun filterItem(): ArrayList<ScheduleListDto> {
-        val newList = arrayListOf<ScheduleListDto>()
-        for (item in monthList) {
-            if ((item.startDate).contains(getTodayData())) {
-                newList.add(item)
-            }
-        }
-        return newList
     }
 }
