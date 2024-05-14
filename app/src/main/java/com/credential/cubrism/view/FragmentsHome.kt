@@ -202,7 +202,7 @@ class HomeFragment : Fragment(), BannerEnterListener {
         scheduleViewModel.apply {
             scheduleList.observe(viewLifecycleOwner) { list ->
                 todoAdapter.setItemList(list)
-                binding.txtNoSchedule.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                binding.txtNoSchedule.visibility = if (todoAdapter.itemCount == 0) View.VISIBLE else View.GONE
             }
 
             errorMessage.observe(viewLifecycleOwner) {
