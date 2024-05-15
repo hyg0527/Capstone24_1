@@ -9,7 +9,7 @@ import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class ScheduleInfoDialog(private val scheduleListDto: ScheduleListDto, private val onUpdate: () -> Unit, private val onDelete: () -> Unit) : BottomSheetDialogFragment() {
+class ScheduleInfoDialog(private val scheduleListDto: ScheduleListDto, private val onUpdate: () -> Unit, private val onDelete: (scheduleId: Int) -> Unit) : BottomSheetDialogFragment() {
     private var _binding: DialogScheduleInfoBinding? = null
     private val binding get() = _binding!!
 
@@ -30,10 +30,18 @@ class ScheduleInfoDialog(private val scheduleListDto: ScheduleListDto, private v
     }
 
     private fun setupView() {
-        binding.txtSchTitleInfo.text = scheduleListDto.title
-        binding.txtSchDesInfo.text = scheduleListDto.content
-        binding.txtSchPeriodInfo.text = convertDateTimeFormat(scheduleListDto.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy - MM - dd a hh:mm")
-        binding.txtSchPeriodInfoEnd.text = convertDateTimeFormat(scheduleListDto.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy - MM - dd a hh:mm")
+        binding.txtTitle.text = scheduleListDto.title
+        binding.txtContent.text = scheduleListDto.content
+        binding.txtStartDateTime.text = if (scheduleListDto.allDay) {
+            convertDateTimeFormat(scheduleListDto.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
+        } else {
+            convertDateTimeFormat(scheduleListDto.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd a hh:mm")
+        }
+        binding.txtEndDateTime.text = if (scheduleListDto.allDay) {
+            convertDateTimeFormat(scheduleListDto.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
+        } else {
+            convertDateTimeFormat(scheduleListDto.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd a hh:mm")
+        }
 
         binding.btnSchModifyInfo.setOnClickListener {
             onUpdate()
@@ -41,7 +49,7 @@ class ScheduleInfoDialog(private val scheduleListDto: ScheduleListDto, private v
         }
 
         binding.btnSchDeleteInfo.setOnClickListener {
-            onDelete()
+            onDelete(scheduleListDto.scheduleId)
             dismiss()
         }
     }

@@ -20,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -30,7 +31,7 @@ enum class ScheduleType {
     ADD, UPDATE
 }
 
-class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private val context: Context, private val scheduleListDto: ScheduleListDto?, private val onClick: (scheduleDto: ScheduleDto) -> Unit) : BottomSheetDialogFragment() {
+class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private val context: Context, private val date: LocalDate?, private val scheduleListDto: ScheduleListDto?, private val onClick: (scheduleDto: ScheduleDto) -> Unit) : BottomSheetDialogFragment() {
     private var _binding: DialogScheduleAddBinding? = null
     private val binding get() = _binding!!
 
@@ -61,8 +62,8 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
         when (scheduleType) {
             // 일정 추가
             ScheduleType.ADD -> {
-                // 현재 시각을 기준으로 다음 정각을 기본값으로 설정
-                val startDateTime = LocalDateTime.now().plusHours(1)
+                val now = LocalDateTime.now()
+                val startDateTime = (date ?: LocalDate.now()).atTime(now.hour, now.minute).plusHours(1)
                 val endDateTime = startDateTime.plusHours(1)
 
                 binding.txtStartDate.text = startDateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
@@ -86,6 +87,8 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
                     binding.txtEndDate.text = convertDateTimeFormat(it.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
                     binding.txtEndTime.text = convertDateTimeFormat(it.endDate, "yyyy-MM-dd'T'HH:mm", "a hh:mm")
                     binding.isFullCheck.isChecked = it.allDay
+                    binding.txtStartTime.visibility = if (it.allDay) View.GONE else View.VISIBLE
+                    binding.txtEndTime.visibility = if (it.allDay) View.GONE else View.VISIBLE
                 }
 
                 binding.txtTitleAddScheduleModify.text = "일정 수정"
@@ -100,6 +103,11 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
         binding.isFullCheck.setOnCheckedChangeListener { _, isChecked ->
             binding.txtStartTime.visibility = if (isChecked) View.GONE else View.VISIBLE
             binding.txtEndTime.visibility = if (isChecked) View.GONE else View.VISIBLE
+
+            if (!isChecked && binding.txtStartTime.text == "오전 12:00" && binding.txtEndTime.text == "오전 12:00") {
+                binding.txtStartTime.text = "오전 12:00"
+                binding.txtEndTime.text = "오전 01:00"
+            }
         }
 
         binding.txtStartDate.setOnClickListener {
@@ -125,13 +133,13 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
             }
 
             val startDateTime = if (binding.isFullCheck.isChecked) {
-                "${convertDateTimeFormat(binding.txtStartDate.text.toString(), "yyyy.MM.dd", "yyyy-MM-dd")}'T'00:00:00"
+                "${binding.txtStartDate.text.toString().replace(".", "-")}T00:00:00"
             } else {
                 "${convertDateTimeFormat(binding.txtStartDate.text.toString() + " " + binding.txtStartTime.text.toString(), "yyyy.MM.dd a hh:mm", "yyyy-MM-dd'T'HH:mm")}:00"
             }
 
             val endDateTime = if (binding.isFullCheck.isChecked) {
-                startDateTime
+                "${binding.txtEndDate.text.toString().replace(".", "-")}T00:00:00"
             } else {
                 "${convertDateTimeFormat(binding.txtEndDate.text.toString() + " " + binding.txtEndTime.text.toString(), "yyyy.MM.dd a hh:mm", "yyyy-MM-dd'T'HH:mm")}:00"
             }
@@ -206,7 +214,7 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
                         if (isStartBeforeEnd(startDateTime, endDateTime)) {
                             binding.txtEndTime.text = timeValue
                         } else {
-                            Toast.makeText(context, "시간 설정 오류입니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "종료 시간을 시작 시간 이후로 설정해주세요.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -229,6 +237,8 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
 
     // 시작 시간이 종료 시간보다 빠른지 확인하는 함수
     private fun isStartBeforeEnd(start: LocalDateTime, end: LocalDateTime): Boolean = start < end
+
+
 
     private fun showDatePickDialog(status: String, dateString: String) { // 날짜 선택 다이얼로그 창 출력 함수
         val dialogScheduleDatepickBinding = DialogScheduleDatepickBinding.inflate(requireActivity().layoutInflater)
@@ -269,7 +279,7 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
                         if (isStartBeforeEnd(startDateTime, endDateTime)) {
                             binding.txtEndDate.text = dateFormat.format(calInstance.time)
                         } else {
-                            Toast.makeText(context, "날짜 설정 오류입니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "종료 날짜를 시작 날짜 이후로 설정해주세요.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
