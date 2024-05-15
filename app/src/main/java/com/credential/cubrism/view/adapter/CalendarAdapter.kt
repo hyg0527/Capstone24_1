@@ -4,123 +4,161 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.isDigitsOnly
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.R
-import de.hdodenhof.circleimageview.CircleImageView
+import com.credential.cubrism.databinding.ItemCalendarDayBinding
+import com.credential.cubrism.databinding.ItemCalendarWeekBinding
+import com.credential.cubrism.model.dto.ScheduleListDto
+import com.credential.cubrism.view.diff.CalendarDiffUtil
+import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
+data class DateSelect(
+    val date: String? = null,
+    val year: Int = -1,
+    val month: Int = -1,
+    var isScheduled: Boolean = false,
+    var isHighlighted: Boolean = false,
+    var dayOfWeek: Int = -1
+)
 
-interface DateMonthClickListener {
-    fun onItemClicked(item: DateSelect)
-}
-data class DateSelect(var date: String, var isScheduled: Boolean = false, var isHighlighted: Boolean = false)
+class CalendarAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var itemList = mutableListOf<DateSelect>()
+    private var onItemClickListener: ((DateSelect, Int) -> Unit)? = null
 
-class CalendarAdapter : RecyclerView.Adapter<CalendarAdapter.MonthViewHolder>() {
-    private var items = arrayListOf<DateSelect>()
-
-    private var itemClickListener: DateMonthClickListener? = null
-    private var isBackgroundSet = false
-    fun setItemClickListener(listener: DateMonthClickListener) {
-        itemClickListener = listener
+    companion object {
+        private const val VIEW_TYPE_WEEK = 0
+        private const val VIEW_TYPE_DAY = 1
     }
 
-    inner class MonthViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val date = v.findViewById<TextView>(R.id.calMonthDate)
-        val isScheduled = v.findViewById<CircleImageView>(R.id.isScheduledCircle)
-        init {
-            v.setOnClickListener {
-                val position = adapterPosition
-                val item = items[position]
-                itemClickListener?.onItemClicked(item)
+    override fun getItemCount(): Int = itemList.size
+
+    override fun getItemViewType(position: Int): Int = if (position < 7) VIEW_TYPE_WEEK else VIEW_TYPE_DAY
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_WEEK) {
+            val binding = ItemCalendarWeekBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            WeekViewHolder(binding)
+        } else {
+            val binding = ItemCalendarDayBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            DayViewHolder(binding)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is WeekViewHolder) {
+            holder.bind(itemList[position])
+        } else if (holder is DayViewHolder) {
+            holder.bind(itemList[position])
+        }
+    }
+
+    inner class WeekViewHolder(private val binding: ItemCalendarWeekBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: DateSelect) {
+            binding.txtWeek.apply {
+                text = item.date
+                setTextColor(when (item.date) {
+                    "일" -> Color.RED
+                    "토" -> Color.BLUE
+                    else -> Color.BLACK
+                })
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_month_date, parent, false)
-
-        return MonthViewHolder(view)
-    }
-
-    override fun getItemCount(): Int {
-        return items.count()
-    }
-
-    override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
-        val currentItem = items[position]
-        holder.date.text = currentItem.date
-
-        if (!isBackgroundSet && currentItem.date.equals(getCurrentDayToString())) {
-            isBackgroundSet = true // 처음 로드 될때 오늘 날짜 하이라이팅
-            holder.itemView.setBackgroundResource(R.drawable.date_highlighted)
-        } else {
-            holder.itemView.setBackgroundResource(0)
+    inner class DayViewHolder(private val binding: ItemCalendarDayBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(itemList[position], position)
+                }
+            }
         }
 
-        val typeface = ResourcesCompat.getFont(holder.date.context, R.font.godom) // 요일만 폰트 변경
-        if (holder.date.text.length == 3) {
-            holder.date.typeface = typeface
+        fun bind(item: DateSelect) {
+            binding.txtDay.apply {
+                text = item.date
+                setTextColor(
+                    when (item.dayOfWeek) {
+                        Calendar.SUNDAY -> Color.RED
+                        Calendar.SATURDAY -> Color.BLUE
+                        else -> Color.BLACK
+                    }
+                )
+            }
 
-            val layoutParams = holder.itemView.layoutParams
-            layoutParams.height = 80 // 변경할 높이 값
-            holder.itemView.layoutParams = layoutParams
-        }
+            binding.root.setBackgroundResource(
+                if (item.isHighlighted)
+                    R.drawable.date_highlighted
+                else
+                    android.R.color.transparent
+            )
 
-
-        if (!items[position].isScheduled)   //저장된 일정부분이 없으면 점표시 없애기(초기화 부분)
-            holder.isScheduled.visibility = View.GONE
-
-        if (items[position].isHighlighted)
-            holder.itemView.setBackgroundResource(R.drawable.date_highlighted)
-
-        if (position % 7 == 0) {
-            holder.date.setTextColor(Color.RED)
-        } else if (position % 7 == 6) {
-            holder.date.setTextColor(Color.BLUE)
-        } else {
-            holder.date.setTextColor(Color.BLACK)
+            binding.imgDot.visibility = if (item.isScheduled) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
         }
     }
 
-    private fun getCurrentDayToString(): String {
-        val currentDate = LocalDate.now()
-        // DateTimeFormatter를 사용 하여 날짜를 원하는 형식의 문자열로 변환
-        val formatter = DateTimeFormatter.ofPattern("d")
-
-        return currentDate.format(formatter)
+    fun setOnItemClickListener(listener: (DateSelect, Int) -> Unit) {
+        onItemClickListener = listener
     }
 
-    fun updateCalendar(monthList: ArrayList<DateSelect>) { // 데이터 갱신 함수
-        this.items = monthList
-        notifyDataSetChanged()
+    fun setItemList(list: List<DateSelect>) {
+        val diffCallBack = CalendarDiffUtil(itemList, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallBack)
+
+        itemList.clear()
+        itemList.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
     }
 
-    fun highlightCurrentDate(selectedItem: DateSelect, isHighlighted: Boolean) {
-        for (item in items) {
-            item.isHighlighted = false
+    // 이전에 선택된 아이템의 배경을 없애고 새로 선택된 아이템의 배경을 설정
+    fun setHighlightItem(item: DateSelect, position: Int) {
+        val previousHighlightedPosition = itemList.indexOfFirst { it.isHighlighted }
+        if (previousHighlightedPosition != -1) {
+            itemList[previousHighlightedPosition].isHighlighted = false
+            notifyItemChanged(previousHighlightedPosition)
         }
-        selectedItem.isHighlighted = isHighlighted
-        notifyDataSetChanged()
+        item.isHighlighted = true
+        notifyItemChanged(position)
     }
 
-    fun highlightDate(dateString: String) { // 현재 선택된 날짜 highlighting 함수
-        val (_, date) = convertDateStringAndInt(dateString)
-        for (item in items) {
-            if ((item.date).isDigitsOnly() && (item.date).toInt() == date)
-                item.isHighlighted = true
+    // 일정이 있는 날짜에 점 표시
+    fun setScheduledItem(scheduleList: List<ScheduleListDto>) {
+        for (schedule in scheduleList) {
+            val startDateStr = convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd")
+            val endDateStr = convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd")
+
+            val startDate = LocalDate.parse(startDateStr)
+            val endDate = LocalDate.parse(endDateStr)
+
+            itemList.filterIndexed { index, item ->
+                index >= 7 && item.date != null // 요일과 공백 부분 제외
+            }.forEach { item ->
+                val itemDate = LocalDate.of(item.year, item.month, item.date!!.toInt())
+
+                if (!itemDate.isBefore(startDate) && !itemDate.isAfter(endDate)) {
+                    item.isScheduled = true
+                    notifyItemChanged(itemList.indexOf(item))
+                }
+            }
         }
-        notifyDataSetChanged()
     }
 
-    private fun convertDateStringAndInt(dateString: String): Pair<String, Int> { // 연월을 string(0000 - 00), 일을 int(0)으로 반환
-        val yearMonth = dateString.take(9)
-        val dateInt = dateString.substring(12, 14).toInt()
-
-        return Pair(yearMonth, dateInt)
+    fun clearScheduledItem() {
+        itemList.filterIndexed { index, item ->
+            index >= 7 && item.date != null // 요일과 공백 부분 제외
+        }.forEach { item ->
+            if (item.isScheduled) {
+                item.isScheduled = false
+                notifyItemChanged(itemList.indexOf(item))
+            }
+        }
     }
 }

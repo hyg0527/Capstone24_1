@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -64,8 +63,7 @@
             android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@+id/imgCalendar"
             app:layout_constraintStart_toEndOf="@+id/imgCalendar"
-            app:layout_constraintTop_toTopOf="@+id/imgCalendar"
-            tools:text="Month Year" />
+            app:layout_constraintTop_toTopOf="@+id/imgCalendar" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -118,8 +116,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imgCalendar"
-            app:spanCount="7"
-            tools:listitem="@layout/item_month_date" />
+            app:spanCount="7" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -133,8 +130,7 @@
         android:gravity="center"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutCalendar"
-        tools:text="0000년 00월 00일" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutCalendar" />
 
     <TextView
         android:id="@+id/txtToday"
@@ -142,7 +138,7 @@
         android:layout_height="0dp"
         android:layout_marginEnd="24dp"
         android:gravity="center"
-        android:text="Today"
+        android:text="금일"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txtDate"
         app:layout_constraintEnd_toEndOf="parent"
@@ -170,8 +166,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDate"
-        tools:text="로그인하여 일정을 추가해 보세요!"/>
+        app:layout_constraintTop_toBottomOf="@+id/txtDate" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressIndicator"
@@ -191,6 +186,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="72dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/view"

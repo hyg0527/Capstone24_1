@@ -8,6 +8,7 @@ import com.credential.cubrism.databinding.ItemListScheduleBinding
 import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
+import java.time.LocalDate
 
 class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
     private var itemList = mutableListOf<ScheduleListDto>()
@@ -43,8 +44,8 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
                 binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
                 binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
             } else {
-                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  h:mm a")
-                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  h:mm a")
+                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  a hh:mm")
+                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  a hh:mm")
             }
         }
     }
@@ -62,16 +63,14 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setItemListDay(list: List<ScheduleListDto>, yearMonthDay: Int) {
-        val localList = mutableListOf<ScheduleListDto>()
+    fun setItemListDay(list: List<ScheduleListDto>, yearMonthDay: LocalDate) {
+        val filteredList = list.filter { schedule ->
+            val startDate = LocalDate.parse(convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd"))
+            val endDate = LocalDate.parse(convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd"))
 
-        for (schedule in list) {
-            val start = schedule.startDate.substringBefore("T").replace("-", "").toInt()
-            val end = schedule.endDate.substringBefore("T").replace("-", "").toInt()
-
-            if (yearMonthDay in start..end)
-                localList.add(schedule)
+            !(yearMonthDay.isBefore(startDate) || yearMonthDay.isAfter(endDate))
         }
-        setItemList(localList)
+
+        setItemList(filteredList)
     }
 }

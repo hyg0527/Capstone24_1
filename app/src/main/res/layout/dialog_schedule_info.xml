@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editscheduleLayout" />
 
     <TextView
-        android:id="@+id/txtSchTitleInfo"
+        android:id="@+id/txtTitle"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginStart="16dp"
@@ -99,7 +99,7 @@
         android:background="#E0E0E0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSchTitleInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
 
     <LinearLayout
         android:id="@+id/dateLayout"
@@ -137,7 +137,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txtSchPeriodInfo"
+                android:id="@+id/txtStartDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/godom"
@@ -146,7 +146,7 @@
                 android:textSize="18dp" />
 
             <TextView
-                android:id="@+id/txtSchPeriodInfoEnd"
+                android:id="@+id/txtEndDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -204,7 +204,7 @@
         app:layout_constraintTop_toBottomOf="@+id/view2"/>
 
     <TextView
-        android:id="@+id/txtSchDesInfo"
+        android:id="@+id/txtContent"
         android:layout_width="0dp"
         android:layout_height="120dp"
         android:layout_marginStart="16dp"

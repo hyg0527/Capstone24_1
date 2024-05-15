@@ -269,7 +269,8 @@ class StudyGroupFunc3Fragment : Fragment() {
     private fun setupView() {
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().window,
             onShowKeyboard = {
-                binding.recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
+                if (chatAdapter.itemCount > 0)
+                    binding.recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
             }
         )
 
