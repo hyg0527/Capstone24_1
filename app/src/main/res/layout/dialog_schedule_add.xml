@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -26,7 +25,6 @@
             android:layout_marginTop="1dp"
             android:layout_weight="1"
             android:fontFamily="@font/godom"
-            android:text="일정 추가"
             android:textColor="#4F4747"
             android:textSize="23dp"
             android:textStyle="bold" />
@@ -39,9 +37,9 @@
             android:layout_marginEnd="14dp"
             android:fontFamily="@font/godom"
             android:gravity="center"
-            android:text="+"
             android:textColor="@color/white"
             android:textSize="40dp" />
+
     </LinearLayout>
 
     <TextView
@@ -80,7 +78,6 @@
         app:layout_constraintStart_toEndOf="@+id/txtAddScheduleName"
         app:layout_constraintTop_toBottomOf="@+id/addscheduleLayout" />
 
-
     <LinearLayout
         android:id="@+id/dateLayout"
         android:layout_width="match_parent"
@@ -116,21 +113,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txtCurrentDateAdd"
+                android:id="@+id/txtStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/godom"
-                android:text="0000 - 00 - 00"
                 android:textColor="#453C3C"
                 android:textSize="18dp" />
 
             <TextView
-                android:id="@+id/txtCurrentDateAddEnd"
+                android:id="@+id/txtEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/godom"
-                android:text="0000 - 00 - 00"
                 android:textColor="#453C3C"
                 android:textSize="18dp" />
         </LinearLayout>
@@ -147,7 +142,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/godom"
-                android:text="오전 01:00"
                 android:textColor="#453C3C"
                 android:textSize="18dp" />
 
@@ -157,9 +151,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/godom"
-                android:text="오전 02:00"
                 android:textColor="#453C3C"
                 android:textSize="18dp" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -239,4 +233,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView20"
         app:layout_constraintTop_toBottomOf="@+id/dateLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

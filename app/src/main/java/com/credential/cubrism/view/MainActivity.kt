@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(binding.fragmentContainerView.id, HomeFragment(), MainFragmentType.HOME.tag)
             add(binding.fragmentContainerView.id, StudyFragment(), MainFragmentType.STUDY.tag)
-            add(binding.fragmentContainerView.id, CalFragment(), MainFragmentType.CALENDAR.tag)
+            add(binding.fragmentContainerView.id, ScheduleFragment(), MainFragmentType.SCHEDULE.tag)
             add(binding.fragmentContainerView.id, QualificationFragment(), MainFragmentType.QUALIFICATION.tag)
             commit()
         }

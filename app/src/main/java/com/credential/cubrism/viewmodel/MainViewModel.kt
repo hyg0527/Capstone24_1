@@ -8,7 +8,7 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 enum class MainFragmentType(val tag: String) {
     HOME("home"),
     STUDY("study"),
-    CALENDAR("schedule"),
+    SCHEDULE("schedule"),
     QUALIFICATION("qualification")
 }
 
@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
         return when (item.id) {
             1 -> MainFragmentType.HOME
             2 -> MainFragmentType.STUDY
-            3 -> MainFragmentType.CALENDAR
+            3 -> MainFragmentType.SCHEDULE
             4 -> MainFragmentType.QUALIFICATION
             else -> MainFragmentType.HOME
         }
