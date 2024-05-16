@@ -68,8 +68,8 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
 
                 binding.txtStartDate.text = startDateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
                 binding.txtEndDate.text = endDateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-                binding.txtStartTime.text =  "${startDateTime.format(DateTimeFormatter.ofPattern("a hh"))}:00"
-                binding.txtEndTime.text = "${endDateTime.format(DateTimeFormatter.ofPattern("a hh"))}:00"
+                binding.txtStartTime.text =  "${startDateTime.format(DateTimeFormatter.ofPattern("a hh", Locale.KOREA))}:00"
+                binding.txtEndTime.text = "${endDateTime.format(DateTimeFormatter.ofPattern("a hh", Locale.KOREA))}:00"
 
                 binding.txtTitleAddScheduleModify.text = "일정 추가"
                 binding.btnAddScheduleDialogModify.apply {
@@ -127,7 +127,7 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
         }
 
         binding.btnAddScheduleDialogModify.setOnClickListener {
-            if (binding.editTextAddTitle.text.isEmpty()) {
+            if (binding.editTextAddTitle.text?.isEmpty() == true) {
                 Toast.makeText(context, "제목을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

@@ -4,16 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/addscheduleLayout"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="0dp"
         android:layout_height="58dp"
         android:background="@drawable/button_rounded_corner_skyblue4"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="24dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,28 +17,33 @@
             android:id="@+id/txtTitleAddScheduleModify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="1dp"
-            android:layout_weight="1"
             android:fontFamily="@font/godom"
             android:textColor="#4F4747"
             android:textSize="23dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/btnAddScheduleDialogModify"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="14dp"
             android:fontFamily="@font/godom"
-            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="40dp" />
+            android:textSize="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/txtAddScheduleName"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginStart="16dp"
@@ -51,187 +51,176 @@
         android:background="@drawable/button_rounded_corner_skyblue3"
         android:fontFamily="@font/godom"
         android:gravity="center"
-        android:paddingStart="10dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="5dp"
+        android:paddingHorizontal="10dp"
         android:text="제목"
         android:textColor="@color/white"
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addscheduleLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/editTextAddTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="#3EB8EC"
-        android:ems="10"
         android:fontFamily="@font/godom"
-        android:inputType="text"
+        android:maxLines="1"
         android:textColor="#453C3C"
         android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txtAddScheduleName"
-        app:layout_constraintTop_toBottomOf="@+id/addscheduleLayout" />
-
-    <LinearLayout
-        android:id="@+id/dateLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtAddScheduleName">
-
-        <TextView
-            android:id="@+id/textView19"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/button_rounded_corner_skyblue3"
-            android:fontFamily="@font/godom"
-            android:gravity="center"
-            android:paddingStart="10dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="5dp"
-            android:text="기간"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="4dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtStartDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/godom"
-                android:textColor="#453C3C"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/txtEndDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/godom"
-                android:textColor="#453C3C"
-                android:textSize="18dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="4dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtStartTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/godom"
-                android:textColor="#453C3C"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/txtEndTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/godom"
-                android:textColor="#453C3C"
-                android:textSize="18dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/title" />
 
     <TextView
-        android:id="@+id/daylongtxt"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_rounded_corner_skyblue3"
         android:fontFamily="@font/godom"
-        android:text="~"
-        android:textColor="#453C3C"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="@+id/dateLayout"
-        app:layout_constraintStart_toStartOf="@+id/dateLayout" />
+        android:gravity="center"
+        android:paddingHorizontal="10dp"
+        android:text="기간"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/isFullCheck"
+        app:layout_constraintStart_toEndOf="@+id/date"
+        app:layout_constraintTop_toTopOf="@+id/date">
+
+        <TextView
+            android:id="@+id/txtStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="@font/godom"
+            android:textColor="#453C3C"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toTopOf="@+id/txtTilde"
+            app:layout_constraintEnd_toEndOf="@+id/txtEndDate"
+            app:layout_constraintStart_toStartOf="@+id/txtEndDate"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtStartTime"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/godom"
+            android:textColor="#453C3C"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtStartDate"
+            app:layout_constraintStart_toEndOf="@+id/txtStartDate"
+            app:layout_constraintTop_toTopOf="@+id/txtStartDate" />
+
+        <TextView
+            android:id="@+id/txtTilde"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/godom"
+            android:text="~"
+            android:textColor="#453C3C"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txtEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/godom"
+            android:textColor="#453C3C"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtTilde"
+            app:layout_constraintStart_toEndOf="@+id/txtTilde"
+            app:layout_constraintTop_toTopOf="@+id/txtTilde" />
+
+        <TextView
+            android:id="@+id/txtEndTime"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/godom"
+            android:textColor="#453C3C"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtTilde"
+            app:layout_constraintStart_toEndOf="@+id/txtEndDate"
+            app:layout_constraintTop_toTopOf="@+id/txtTilde" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <CheckBox
         android:id="@+id/isFullCheck"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/checkbox_schedule_allday"
         android:button="@null"
-        app:layout_constraintEnd_toStartOf="@+id/textView22"
-        app:layout_constraintTop_toTopOf="@+id/dateLayout" />
+        app:layout_constraintBottom_toBottomOf="@+id/allDay"
+        app:layout_constraintEnd_toStartOf="@+id/allDay"
+        app:layout_constraintTop_toTopOf="@+id/date" />
 
     <TextView
-        android:id="@+id/textView22"
+        android:id="@+id/allDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/godom"
         android:text="종일"
         android:textColor="#3EB8EC"
         android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/dateLayout"
-        app:layout_constraintTop_toTopOf="@+id/dateLayout" />
+        app:layout_constraintBottom_toBottomOf="@+id/date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/date" />
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/button_rounded_corner_skyblue3"
         android:fontFamily="@font/godom"
         android:gravity="center"
-        android:paddingStart="10dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="5dp"
+        android:paddingHorizontal="10dp"
         android:text="내용"
         android:textColor="@color/white"
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutDate" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/editTxtSchInfoFix"
         android:layout_width="0dp"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/edittext_rounded_corner_schedule"
-        android:ems="10"
         android:fontFamily="@font/godom"
         android:gravity="start|top"
-        android:inputType="textMultiLine"
-        android:lines="10"
+        android:maxLines="5"
+        android:minLines="5"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView20"
-        app:layout_constraintTop_toBottomOf="@+id/dateLayout" />
+        app:layout_constraintStart_toEndOf="@+id/content"
+        app:layout_constraintTop_toTopOf="@+id/content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

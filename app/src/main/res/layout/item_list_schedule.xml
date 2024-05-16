@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -15,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
@@ -28,74 +27,71 @@
 
         <TextView
             android:id="@+id/txtCalMonthTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
-            android:text="ScheduleTitle"
-            android:textSize="20sp"
+            android:layout_marginEnd="16dp"
             android:ellipsize="end"
-            android:maxWidth="200dp"
-            android:singleLine="true"
             android:fontFamily="@font/sokchobadadotum"
+            android:maxLines="1"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toStartOf="@+id/timeStart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtCalMonthInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/sokchobadadotum"
+            android:maxLines="1"
+            android:textColor="@color/blue"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/txtCalMonthTitle"
+            app:layout_constraintStart_toStartOf="@+id/txtCalMonthTitle"
+            app:layout_constraintTop_toBottomOf="@+id/txtCalMonthTitle" />
 
         <TextView
             android:id="@+id/timeStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="Start"
-            android:textSize="15sp"
             android:fontFamily="@font/gamtanroadgodic"
+            android:textSize="15dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/timeEnd"
+            app:layout_constraintBottom_toTopOf="@+id/txtTilde"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/timeEnd"
+            android:id="@+id/txtTilde"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="End"
-            android:textSize="15sp"
             android:fontFamily="@font/gamtanroadgodic"
+            android:text="~"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/timeEnd"
+            app:layout_constraintEnd_toEndOf="@+id/timeStart"
+            app:layout_constraintStart_toStartOf="@+id/timeStart"
             app:layout_constraintTop_toBottomOf="@+id/timeStart" />
 
         <TextView
-            android:id="@+id/txtCalMonthInfo"
-            android:layout_width="wrap_content"
+            android:id="@+id/timeEnd"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginBottom="8dp"
-            android:ellipsize="end"
-            android:maxWidth="200dp"
-            android:singleLine="true"
-            android:text="ScheduleInfo"
-            android:fontFamily="@font/sokchobadadotum"
-            android:textSize="14sp"
-            android:textColor="@color/blue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtCalMonthTitle" />
-
-        <TextView
-            android:id="@+id/textView56"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
             android:fontFamily="@font/gamtanroadgodic"
-            android:gravity="center"
-            android:text="~"
+            android:textSize="15dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/timeStart"
+            app:layout_constraintStart_toStartOf="@+id/timeStart"
+            app:layout_constraintTop_toBottomOf="@+id/txtTilde" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
