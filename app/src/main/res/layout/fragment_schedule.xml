@@ -138,7 +138,7 @@
         android:layout_height="0dp"
         android:layout_marginEnd="24dp"
         android:gravity="center"
-        android:text="금일"
+        android:text="Today"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txtDate"
         app:layout_constraintEnd_toEndOf="parent"

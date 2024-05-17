@@ -58,7 +58,7 @@ class ScheduleFragment : Fragment() {
 
     private fun setupView() {
         val (year, month, day) = calendarUtil.initToday()
-        updateCalendar(year, month, day)
+        updateCalendar(year, calendarUtil.selectedMonthToInt(month), day)
 
         binding.txtYearMonth.setOnClickListener {
             showDatePickDialog()
@@ -75,7 +75,7 @@ class ScheduleFragment : Fragment() {
         }
 
         binding.txtToday.setOnClickListener {
-            updateCalendar(year, month, day)
+            updateCalendar(year, calendarUtil.selectedMonthToInt(month), day)
         }
 
         binding.imgAddSchedule.setOnClickListener {
@@ -193,7 +193,7 @@ class ScheduleFragment : Fragment() {
 
     // 달력 및 일정 업데이트
     private fun updateCalendar(year: Int, month: Int, day: Int = 1) {
-        binding.txtYearMonth.text = "${year}년 ${month}월"
+        binding.txtYearMonth.text = "${calendarUtil.selectedMonthToString(month)} $year"
         binding.txtDate.text = "${year}년 ${month}월 ${day}일"
 
         calendarAdapter.setItemList(calendarUtil.showCalendar(year, month, day)) // 해당 달의 달력 표시
@@ -217,7 +217,7 @@ class ScheduleFragment : Fragment() {
             minValue = 1
             maxValue = 12
             value = month
-            displayedValues = arrayOf("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월")
+            displayedValues = arrayOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
         }
 
         AlertDialog.Builder(requireContext()).apply {

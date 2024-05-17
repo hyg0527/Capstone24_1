@@ -35,12 +35,12 @@ class ScheduleInfoDialog(private val scheduleListDto: ScheduleListDto, private v
         binding.txtStartDateTime.text = if (scheduleListDto.allDay) {
             convertDateTimeFormat(scheduleListDto.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
         } else {
-            convertDateTimeFormat(scheduleListDto.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd a hh:mm")
+            convertDateTimeFormat(scheduleListDto.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd hh:mm a")
         }
         binding.txtEndDateTime.text = if (scheduleListDto.allDay) {
             convertDateTimeFormat(scheduleListDto.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
         } else {
-            convertDateTimeFormat(scheduleListDto.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd a hh:mm")
+            convertDateTimeFormat(scheduleListDto.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd hh:mm a")
         }
 
         binding.btnSchModifyInfo.setOnClickListener {

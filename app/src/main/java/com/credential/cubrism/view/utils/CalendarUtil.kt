@@ -7,15 +7,15 @@ import java.util.Calendar
 class CalendarUtil {
     private fun getInstance(): Calendar = Calendar.getInstance()
 
-    private val weekOfTheDayList = listOf("일", "월", "화", "수", "목", "금", "토")
+    private val weekOfTheDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
-    fun initToday(): Triple<Int, Int, Int> { // 오늘 날짜로 돌아오는 함수
+    fun initToday(): Triple<Int, String, Int> { // 오늘 날짜로 돌아오는 함수
         val calInstance = getInstance()
         val initYear = calInstance.get(Calendar.YEAR) // 처음 뷰 생성시 오늘날짜로 초기화
         val initMonth = calInstance.get(Calendar.MONTH) + 1  // 월은 0부터 시작하므로 1+.
         val initDay = calInstance.get(Calendar.DAY_OF_MONTH)
 
-        return Triple(initYear, initMonth, initDay)
+        return Triple(initYear, selectedMonthToString(initMonth), initDay)
     }
 
     // 해당 달의 달력 출력 함수
@@ -73,12 +73,35 @@ class CalendarUtil {
     }
 
     fun getSelectedYearMonth(yearMonth: String): Pair<Int, Int> {
-        val (year, month) = yearMonth.replace("년", "").replace("월", "").split(" ")
-        return Pair(year.toInt(), month.toInt())
+        val (month, year) = yearMonth.split(" ")
+        val returnYear = year.toInt()
+        val returnMonth = selectedMonthToInt(month)
+
+        return Pair(returnYear, returnMonth)
     }
 
     fun getSelectedYearMonthDay(yearMonthDay: String): LocalDate {
         val (year, month, day) = yearMonthDay.replace("년", "").replace("월", "").replace("일", "").split(" ")
         return LocalDate.of(year.toInt(), month.toInt(), day.toInt())
+    }
+
+    fun selectedMonthToString(selectedMonth: Int): String { // 월에 해당하는 숫자를 영어로 변환
+        return when (selectedMonth) {
+            1 -> "January";     2 -> "February";    3 -> "March"
+            4 -> "April";       5 -> "May";         6 -> "June"
+            7 -> "July";        8 -> "August";      9 -> "September"
+            10 -> "October";    11 -> "November";   12 -> "December"
+            else -> "Invalid Month"
+        }
+    }
+
+    fun selectedMonthToInt(selectedMonth: String): Int { // 월애 해당하는 문자열을 숫자로 반환
+        return when (selectedMonth) {
+            "January" -> 1;     "February" -> 2;    "March" -> 3
+            "April" -> 4;       "May" -> 5;         "June" -> 6
+            "July" -> 7;        "August" -> 8;      "September" -> 9
+            "October" -> 10;    "November" -> 11;   "December" -> 12
+            else -> 0
+        }
     }
 }
