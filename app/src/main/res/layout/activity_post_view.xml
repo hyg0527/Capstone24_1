@@ -31,7 +31,6 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/layoutReply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -298,7 +297,6 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:background="@drawable/layout_rounded_corner_lb"
-            android:enabled="false"
             android:fontFamily="@font/kopubdotummedium"
             android:hint="댓글 입력"
             android:maxLines="3"
@@ -316,7 +314,6 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/send_btn"
-            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

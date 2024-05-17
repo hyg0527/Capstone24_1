@@ -287,8 +287,6 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     private fun observeViewModel() {
         postViewModel.apply {
             postView.observe(this@PostViewActivity) { result ->
-                binding.swipeRefreshLayout.visibility = View.VISIBLE
-
                 Glide.with(this@PostViewActivity).load(result.profileImageUrl)
                     .error(R.drawable.profile_blue)
                     .fallback(R.drawable.profile_blue)
@@ -300,8 +298,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 binding.txtContent.text = result.content.replace(" ", "\u00A0")
 
                 binding.btnMenu.visibility = if (isLoggedIn && result.email == myEmail) View.VISIBLE else View.GONE
-                binding.editComment.isEnabled = result.nickname != null
-                binding.btnSend.isEnabled = result.nickname != null
+                binding.layoutFooter.visibility = if (isLoggedIn && result.nickname != null) View.VISIBLE else View.GONE
 
                 postCommentAdapter.setItemList(result.comments)
                 postImageAdapter.setItemList(result.images)
