@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/godom"
-            android:text="내 스터디그룹"
+            android:text="내 스터디 그룹"
             android:textSize="23dp" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -41,6 +41,18 @@
         android:overScrollMode="never"
         android:paddingHorizontal="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/txtNoJoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="가입한 스터디 그룹이 없습니다."
+        android:textColor="#BFBFBF"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

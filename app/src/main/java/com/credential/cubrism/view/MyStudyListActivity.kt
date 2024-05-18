@@ -3,6 +3,7 @@ package com.credential.cubrism.view
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -64,8 +65,9 @@ class MyStudyListActivity : AppCompatActivity(), GroupEnterButtonClickListener {
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             studyGroupMyList.observe(this@MyStudyListActivity) {
-                studyGroupMyAdapter.setItemList(it)
                 binding.progressIndicator.hide()
+                studyGroupMyAdapter.setItemList(it)
+                binding.txtNoJoin.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             }
 
             errorMessage.observe(this@MyStudyListActivity) { event ->
