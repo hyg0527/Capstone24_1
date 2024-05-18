@@ -38,6 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
+import io.noties.markwon.Markwon
 
 enum class CommentState {
     ADD, UPDATE, REPLY
@@ -57,6 +58,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var powerMenu : PowerMenu
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
+    private lateinit var markwon: Markwon
 
     private val isLoggedIn = myApplication.getUserData().getLoginStatus()
     private val myEmail = myApplication.getUserData().getEmail()
@@ -211,6 +213,8 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         binding.editComment.isEnabled = isLoggedIn
         binding.btnSend.isEnabled = isLoggedIn
 
+        markwon = Markwon.create(this)
+
         powerMenu = PowerMenu.Builder(this)
             .addItemList(listOf(
                 PowerMenuItem("수정", false),
@@ -305,15 +309,16 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 postCommentAdapter.setItemList(result.comments)
                 postImageAdapter.setItemList(result.images)
 
-                // TODO: AI 답변
                 if (result.aiComment == null) {
                     // 답변이 null일 경우 (아직 생성 중)
                     binding.gptAnswer.text = "답변을 생성 중입니다.."
                     binding.gptAnswer.setTypeface(null, Typeface.ITALIC)
                 } else {
                     // 답변이 null이 아닐 경우 (생성 완료)
-                    Log.d("테스트", "AI 답변: ${result.aiComment}")
-                    binding.gptAnswer.text = result.aiComment
+                    binding.gptAnswer.setTypeface(null, Typeface.NORMAL)
+                    val node = markwon.parse(result.aiComment)
+                    val markdownContent = markwon.render(node)
+                    markwon.setParsedMarkdown(binding.gptAnswer, markdownContent)
                 }
 
                 binding.swipeRefreshLayout.isRefreshing = false
