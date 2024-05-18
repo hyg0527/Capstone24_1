@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -302,6 +303,14 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
 
                 postCommentAdapter.setItemList(result.comments)
                 postImageAdapter.setItemList(result.images)
+
+                // TODO: AI 답변
+                if (result.aiComment == null) {
+                    // 답변이 null일 경우 (아직 생성 중)
+                } else {
+                    // 답변이 null이 아닐 경우 (생성 완료)
+                    Log.d("테스트", "AI 답변: ${result.aiComment}")
+                }
 
                 binding.swipeRefreshLayout.isRefreshing = false
             }

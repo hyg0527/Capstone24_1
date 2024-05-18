@@ -11,7 +11,8 @@ data class PostViewDto(
     val content: String,
     val createdDate: String,
     val images: List<String>,
-    val comments: List<Comments>
+    val comments: List<Comments>,
+    val aiComment: String?
 )
 
 data class Comments(
