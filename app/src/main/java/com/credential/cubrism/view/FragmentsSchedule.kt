@@ -60,7 +60,7 @@ class ScheduleFragment : Fragment() {
         val (year, month, day) = calendarUtil.initToday()
         updateCalendar(year, calendarUtil.selectedMonthToInt(month), day)
 
-        binding.txtYearMonth.setOnClickListener {
+        binding.selectYearMonth.setOnClickListener {
             showDatePickDialog()
         }
 

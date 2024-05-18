@@ -60,8 +60,8 @@ class CalendarAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.txtWeek.apply {
                 text = item.date
                 setTextColor(when (item.date) {
-                    "일" -> Color.RED
-                    "토" -> Color.BLUE
+                    "Sun" -> Color.RED
+                    "Sat" -> Color.BLUE
                     else -> Color.BLACK
                 })
             }
