@@ -3,6 +3,7 @@ package com.credential.cubrism.view
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityMyscheduleBinding
 import com.credential.cubrism.model.repository.ScheduleRepository
@@ -37,9 +38,32 @@ class MyScheduleListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.apply {
-            adapter = scheduleAdapter
-            itemAnimator = null
+        binding.recyclerView.adapter = scheduleAdapter
+
+        scheduleAdapter.setOnItemClickListener { item, _ ->
+            ScheduleInfoDialog(item,
+                onUpdate = {
+                    ScheduleAddUpdateDialog(
+                        ScheduleType.UPDATE,
+                        this,
+                        null,
+                        item,
+                        onClick = {
+                            scheduleViewModel.updateSchedule(item.scheduleId, it)
+                        }
+                    ).show(supportFragmentManager, "scheduleAddUpdate")
+                },
+                onDelete = {
+                    AlertDialog.Builder(this).apply {
+                        setMessage("일정을 삭제하시겠습니까?")
+                        setNegativeButton("취소", null)
+                        setPositiveButton("확인") { _, _ ->
+                            scheduleViewModel.deleteSchedule(it)
+                        }
+                        show()
+                    }
+                }
+            ).show(supportFragmentManager, "scheduleInfo")
         }
     }
 
@@ -52,6 +76,14 @@ class MyScheduleListActivity : AppCompatActivity() {
                 else
                     binding.txtNoSchedule.visibility = android.view.View.GONE
                 scheduleAdapter.setItemList(list)
+            }
+
+            updateSchedule.observe(this@MyScheduleListActivity) {
+                scheduleViewModel.getScheduleList(null, null)
+            }
+
+            deleteSchedule.observe(this@MyScheduleListActivity) {
+                scheduleViewModel.getScheduleList(null, null)
             }
 
             errorMessage.observe(this@MyScheduleListActivity) { event ->
