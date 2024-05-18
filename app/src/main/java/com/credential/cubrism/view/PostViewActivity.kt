@@ -3,6 +3,7 @@ package com.credential.cubrism.view
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -307,9 +308,12 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
                 // TODO: AI 답변
                 if (result.aiComment == null) {
                     // 답변이 null일 경우 (아직 생성 중)
+                    binding.gptAnswer.text = "답변을 생성 중입니다.."
+                    binding.gptAnswer.setTypeface(null, Typeface.ITALIC)
                 } else {
                     // 답변이 null이 아닐 경우 (생성 완료)
                     Log.d("테스트", "AI 답변: ${result.aiComment}")
+                    binding.gptAnswer.text = result.aiComment
                 }
 
                 binding.swipeRefreshLayout.isRefreshing = false
