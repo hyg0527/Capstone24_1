@@ -9,6 +9,7 @@ import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 import java.time.LocalDate
+import java.util.Locale
 
 class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
     private var itemList = mutableListOf<ScheduleListDto>()
@@ -41,11 +42,11 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
             binding.txtCalMonthInfo.text = item.content
 
             if (item.allDay) {
-                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
-                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
+                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd", Locale.ENGLISH)
+                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd", Locale.ENGLISH)
             } else {
-                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  hh:mm a")
-                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  hh:mm a")
+                binding.timeStart.text = convertDateTimeFormat(item.startDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  hh:mm a", Locale.ENGLISH)
+                binding.timeEnd.text = convertDateTimeFormat(item.endDate, "yyyy-MM-dd'T'HH:mm", "yy.MM.dd  hh:mm a", Locale.ENGLISH)
             }
         }
     }
@@ -65,8 +66,8 @@ class ScheduleAdapter : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
 
     fun setItemListDay(list: List<ScheduleListDto>, yearMonthDay: LocalDate) {
         val filteredList = list.filter { schedule ->
-            val startDate = LocalDate.parse(convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd"))
-            val endDate = LocalDate.parse(convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd"))
+            val startDate = LocalDate.parse(convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd", Locale.ENGLISH))
+            val endDate = LocalDate.parse(convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd", Locale.ENGLISH))
 
             !(yearMonthDay.isBefore(startDate) || yearMonthDay.isAfter(endDate))
         }

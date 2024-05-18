@@ -14,6 +14,7 @@ import com.credential.cubrism.view.diff.CalendarDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 import java.time.LocalDate
 import java.util.Calendar
+import java.util.Locale
 
 data class DateSelect(
     val date: String? = null,
@@ -132,8 +133,8 @@ class CalendarAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // 일정이 있는 날짜에 점 표시
     fun setScheduledItem(scheduleList: List<ScheduleListDto>) {
         for (schedule in scheduleList) {
-            val startDateStr = convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd")
-            val endDateStr = convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd")
+            val startDateStr = convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd", Locale.ENGLISH)
+            val endDateStr = convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd", Locale.ENGLISH)
 
             val startDate = LocalDate.parse(startDateStr)
             val endDate = LocalDate.parse(endDateStr)

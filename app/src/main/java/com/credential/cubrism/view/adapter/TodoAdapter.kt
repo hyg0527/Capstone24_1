@@ -9,6 +9,7 @@ import com.credential.cubrism.model.dto.ScheduleListDto
 import com.credential.cubrism.view.diff.ScheduleDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
 import java.time.LocalDate
+import java.util.Locale
 
 // home 화면의 todoList adapter.
 class TodoAdapter : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
@@ -35,8 +36,8 @@ class TodoAdapter : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
         val today = LocalDate.now()
 
         val filteredList = list.filter { schedule ->
-            val startDate = LocalDate.parse(convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd"))
-            val endDate = LocalDate.parse(convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd"))
+            val startDate = LocalDate.parse(convertDateTimeFormat(schedule.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd", Locale.KOREA))
+            val endDate = LocalDate.parse(convertDateTimeFormat(schedule.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy-MM-dd", Locale.KOREA))
 
             !(today.isBefore(startDate) || today.isAfter(endDate))
         }
