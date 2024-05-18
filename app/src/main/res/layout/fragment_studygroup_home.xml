@@ -242,10 +242,9 @@
             <TextView
                 android:id="@+id/DDay"
                 android:layout_width="wrap_content"
-                android:layout_height="85dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/digikyonb"
                 android:letterSpacing="-0.1"
-                android:text="D-"
                 android:textColor="@color/white"
                 android:textSize="90dp"
                 app:layout_constraintBottom_toBottomOf="@+id/guidelineHorizontal2"
@@ -257,7 +256,7 @@
             <TextView
                 android:id="@+id/txtDDay"
                 android:layout_width="wrap_content"
-                android:layout_height="85dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/digikyonb"
                 android:letterSpacing="-0.1"
                 android:textColor="#FFE290"
@@ -268,6 +267,7 @@
                 app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal2" />
 
             <TextView
+                android:id="@+id/txtLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginEnd="20dp"

@@ -26,44 +26,71 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <nl.bryanderidder.themedtogglebuttongroup.ThemedToggleButtonGroup
-            android:id="@+id/btnToggleGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            app:toggle_requiredAmount="1"
-            app:toggle_selectAnimation="fade">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <nl.bryanderidder.themedtogglebuttongroup.ThemedButton
-                android:id="@+id/btnAll"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                app:layout_flexShrink="0"
-                app:toggle_backgroundColor="@color/white"
-                app:toggle_borderColor="@color/blue"
-                app:toggle_borderWidth="4dp"
-                app:toggle_fontFamily="/fonts/kopubdotumbold.ttf"
-                app:toggle_selectedBackgroundColor="@color/blue"
-                app:toggle_selectedTextColor="@color/white"
-                app:toggle_text="전체"
-                app:toggle_textColor="@color/blue" />
+            <TextView
+                android:id="@+id/txtAll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kopubdotumbold"
+                android:gravity="center"
+                android:letterSpacing="-0.03"
+                android:paddingStart="8dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="16dp"
+                android:text="전체 글 목록"
+                android:textColor="@color/blue"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toStartOf="@+id/txtFavorite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <nl.bryanderidder.themedtogglebuttongroup.ThemedButton
-                android:id="@+id/btnFavorite"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                app:layout_flexShrink="0"
-                app:toggle_backgroundColor="@color/white"
-                app:toggle_borderColor="@color/blue"
-                app:toggle_borderWidth="4dp"
-                app:toggle_fontFamily="/fonts/kopubdotumbold.ttf"
-                app:toggle_selectedBackgroundColor="@color/blue"
-                app:toggle_selectedTextColor="@color/white"
-                app:toggle_text="관심 자격증"
-                app:toggle_textColor="@color/blue" />
+            <TextView
+                android:id="@+id/txtFavorite"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/kopubdotumbold"
+                android:gravity="center"
+                android:letterSpacing="-0.03"
+                android:paddingStart="0dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="16dp"
+                android:text="관심 자격증"
+                android:textColor="@color/lightblue"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/txtAll"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/txtAll"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </nl.bryanderidder.themedtogglebuttongroup.ThemedToggleButtonGroup>
+            <View
+                android:id="@+id/viewAll"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/blue"
+                app:layout_constraintEnd_toStartOf="@+id/viewFavorite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtAll" />
+
+            <View
+                android:id="@+id/viewFavorite"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/lightblue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/viewAll"
+                app:layout_constraintTop_toBottomOf="@+id/txtAll" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -82,10 +82,10 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
                 scheduleListDto?.let {
                     binding.editTextAddTitle.setText(it.title)
                     binding.editTxtSchInfoFix.setText(it.content)
-                    binding.txtStartDate.text = convertDateTimeFormat(it.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
-                    binding.txtStartTime.text = convertDateTimeFormat(it.startDate, "yyyy-MM-dd'T'HH:mm", "hh:mm a")
-                    binding.txtEndDate.text = convertDateTimeFormat(it.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd")
-                    binding.txtEndTime.text = convertDateTimeFormat(it.endDate, "yyyy-MM-dd'T'HH:mm", "hh:mm a")
+                    binding.txtStartDate.text = convertDateTimeFormat(it.startDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd", Locale.ENGLISH)
+                    binding.txtStartTime.text = convertDateTimeFormat(it.startDate, "yyyy-MM-dd'T'HH:mm", "hh:mm a", Locale.ENGLISH)
+                    binding.txtEndDate.text = convertDateTimeFormat(it.endDate, "yyyy-MM-dd'T'HH:mm", "yyyy.MM.dd", Locale.ENGLISH)
+                    binding.txtEndTime.text = convertDateTimeFormat(it.endDate, "yyyy-MM-dd'T'HH:mm", "hh:mm a", Locale.ENGLISH)
                     binding.isFullCheck.isChecked = it.allDay
                     binding.txtStartTime.visibility = if (it.allDay) View.GONE else View.VISIBLE
                     binding.txtEndTime.visibility = if (it.allDay) View.GONE else View.VISIBLE
@@ -135,13 +135,13 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
             val startDateTime = if (binding.isFullCheck.isChecked) {
                 "${binding.txtStartDate.text.toString().replace(".", "-")}T00:00:00"
             } else {
-                "${convertDateTimeFormat(binding.txtStartDate.text.toString() + " " + binding.txtStartTime.text.toString(), "yyyy.MM.dd hh:mm a", "yyyy-MM-dd'T'HH:mm")}:00"
+                "${convertDateTimeFormat(binding.txtStartDate.text.toString() + " " + binding.txtStartTime.text.toString(), "yyyy.MM.dd hh:mm a", "yyyy-MM-dd'T'HH:mm", Locale.ENGLISH)}:00"
             }
 
             val endDateTime = if (binding.isFullCheck.isChecked) {
                 "${binding.txtEndDate.text.toString().replace(".", "-")}T00:00:00"
             } else {
-                "${convertDateTimeFormat(binding.txtEndDate.text.toString() + " " + binding.txtEndTime.text.toString(), "yyyy.MM.dd hh:mm a", "yyyy-MM-dd'T'HH:mm")}:00"
+                "${convertDateTimeFormat(binding.txtEndDate.text.toString() + " " + binding.txtEndTime.text.toString(), "yyyy.MM.dd hh:mm a", "yyyy-MM-dd'T'HH:mm", Locale.ENGLISH)}:00"
             }
 
             onClick(ScheduleDto(
@@ -201,8 +201,8 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
                         var endDateTime = getEndDateTime()
                         if (!isStartBeforeEnd(startDateTime, endDateTime)) {
                             endDateTime = startDateTime.plusHours(1)
-                            val endDate = converLocalDateTimeToString(endDateTime, "yyyy.MM.dd")
-                            val endTime = converLocalDateTimeToString(endDateTime, "hh:mm a")
+                            val endDate = converLocalDateTimeToString(endDateTime, "yyyy.MM.dd", Locale.ENGLISH)
+                            val endTime = converLocalDateTimeToString(endDateTime, "hh:mm a", Locale.ENGLISH)
                             binding.txtEndDate.text = endDate
                             binding.txtEndTime.text = endTime
                         }
@@ -227,13 +227,13 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
     private fun timeValue(noon: String, hour: Int, minute: Int): String = "${String.format(Locale.ENGLISH,"%02d", hour)}:${String.format(Locale.ENGLISH, "%02d", minute)} $noon"
 
     // 날짜와 시간을 합치는 함수
-    private fun combineDateTime(date: String, time: String): LocalDateTime = convertStringToLocalDateTime("$date $time", "yyyy.MM.dd hh:mm a")
+    private fun combineDateTime(date: String, time: String): LocalDateTime = convertStringToLocalDateTime("$date $time", "yyyy.MM.dd hh:mm a", Locale.ENGLISH)
 
     // 시작 날짜와 시간을 반환하는 함수
-    private fun getStartDateTime(): LocalDateTime = convertStringToLocalDateTime("${binding.txtStartDate.text} ${binding.txtStartTime.text}", "yyyy.MM.dd hh:mm a")
+    private fun getStartDateTime(): LocalDateTime = convertStringToLocalDateTime("${binding.txtStartDate.text} ${binding.txtStartTime.text}", "yyyy.MM.dd hh:mm a", Locale.ENGLISH)
 
     // 종료 날짜와 시간을 반환하는 함수
-    private fun getEndDateTime(): LocalDateTime = convertStringToLocalDateTime("${binding.txtEndDate.text} ${binding.txtEndTime.text}", "yyyy.MM.dd hh:mm a")
+    private fun getEndDateTime(): LocalDateTime = convertStringToLocalDateTime("${binding.txtEndDate.text} ${binding.txtEndTime.text}", "yyyy.MM.dd hh:mm a", Locale.ENGLISH)
 
     // 시작 시간이 종료 시간보다 빠른지 확인하는 함수
     private fun isStartBeforeEnd(start: LocalDateTime, end: LocalDateTime): Boolean = start < end
@@ -268,7 +268,7 @@ class ScheduleAddUpdateDialog(private val scheduleType: ScheduleType, private va
                         var endDateTime = getEndDateTime()
                         if (!isStartBeforeEnd(startDateTime, endDateTime)) {
                             endDateTime = startDateTime.plusDays(1)
-                            val endDate = converLocalDateTimeToString(endDateTime, "yyyy.MM.dd")
+                            val endDate = converLocalDateTimeToString(endDateTime, "yyyy.MM.dd", Locale.ENGLISH)
                             binding.txtEndDate.text = endDate
                         }
                         binding.txtStartDate.text = dateFormat.format(calInstance.time)

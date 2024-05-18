@@ -12,6 +12,7 @@ import com.credential.cubrism.databinding.ItemListChatOthersBinding
 import com.credential.cubrism.model.dto.ChatResponseDto
 import com.credential.cubrism.view.diff.ChatDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
+import java.util.Locale
 
 class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<ChatResponseDto>()
@@ -47,11 +48,11 @@ class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerV
         fun bind(item: ChatResponseDto) {
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             val formattedTime = item.createdAt.substringBeforeLast('.')
-            binding.txtTime.text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "H:mm")
+            binding.txtTime.text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "H:mm", Locale.KOREA)
             binding.txtDate.apply {
                 if (item.isDateHeader) {
                     visibility = View.VISIBLE
-                    text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "yyyy년 M월 d일 EEEE")
+                    text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "yyyy년 M월 d일 EEEE", Locale.KOREA)
                 } else {
                     visibility = View.GONE
                 }
@@ -69,11 +70,11 @@ class ChatAdapter(private val myEmail: String?) : RecyclerView.Adapter<RecyclerV
             binding.txtNickname.text = item.username ?: "(알수없음)"
             binding.txtMessage.text = item.content.replace(" ", "\u00A0")
             val formattedTime = item.createdAt.substringBeforeLast('.')
-            binding.txtTime.text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "H:mm")
+            binding.txtTime.text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "H:mm", Locale.KOREA)
             binding.txtDate.apply {
                 if (item.isDateHeader) {
                     visibility = View.VISIBLE
-                    text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "yyyy년 M월 d일 EEEE")
+                    text = convertDateTimeFormat(formattedTime, "yyyy-MM-dd'T'HH:mm:ss", "yyyy년 M월 d일 EEEE", Locale.KOREA)
                 } else {
                     visibility = View.GONE
                 }

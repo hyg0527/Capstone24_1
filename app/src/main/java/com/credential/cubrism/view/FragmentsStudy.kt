@@ -31,16 +31,14 @@ class StudyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStudyBinding.inflate(inflater, container, false)
-
-        setupRecyclerView()
-        setupView()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
+        setupView()
         observeViewModel()
     }
 

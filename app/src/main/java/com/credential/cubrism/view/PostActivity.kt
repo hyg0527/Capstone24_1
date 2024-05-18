@@ -13,15 +13,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.MyApplication
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityPostBinding
+import com.credential.cubrism.model.dto.FavoriteListDto
+import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.PostAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
+import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
@@ -29,6 +33,7 @@ class PostActivity : AppCompatActivity() {
     private val binding by lazy { ActivityPostBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
+    private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
 
     private val postAdapter = PostAdapter()
 
@@ -40,6 +45,7 @@ class PostActivity : AppCompatActivity() {
     private var refreshState = false
     private var searchQuery: String? = null
     private var favorites = false
+    private var favoriteList = mutableListOf<FavoriteListDto>()
 
     private val startForRegisterResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -79,10 +85,7 @@ class PostActivity : AppCompatActivity() {
                         override fun onQueryTextSubmit(query: String?): Boolean {
                             postViewModel.getPostList(boardId, 0, 10, query, true)
                             binding.swipeRefreshLayout.isRefreshing = true
-                            binding.btnToggleGroup.apply {
-                                selectButton(binding.btnAll)
-                                visibility = View.GONE
-                            }
+                            binding.layoutTab.visibility = View.GONE
                             searchQuery = query
                             searchView.clearFocus()
                             return false
@@ -103,7 +106,7 @@ class PostActivity : AppCompatActivity() {
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                         postViewModel.getPostList(boardId, 0, 10, null, true)
                         binding.swipeRefreshLayout.isRefreshing = true
-                        binding.btnToggleGroup.visibility = View.VISIBLE
+                        binding.layoutTab.visibility = View.VISIBLE
                         searchQuery = null
                         return true
                     }
@@ -164,13 +167,14 @@ class PostActivity : AppCompatActivity() {
     private fun setupView() {
         if (isLoggedIn) {
             binding.floatingActionButton.show()
-            binding.btnToggleGroup.visibility = View.VISIBLE
+            binding.layoutTab.visibility = View.VISIBLE
         } else {
             binding.floatingActionButton.hide()
-            binding.btnToggleGroup.visibility = View.GONE
+            binding.layoutTab.visibility = View.GONE
         }
 
         postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
+        favoriteViewModel.getFavoriteList()
         binding.swipeRefreshLayout.isRefreshing = true
 
         binding.floatingActionButton.setOnClickListener {
@@ -179,22 +183,23 @@ class PostActivity : AppCompatActivity() {
             startForRegisterResult.launch(intent)
         }
 
-        binding.btnToggleGroup.apply {
-            selectButton(binding.btnAll)
+        binding.txtAll.setOnClickListener {
+            updateTabColor(true)
+            favorites = false
+            postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
+            binding.swipeRefreshLayout.isRefreshing = true
+        }
 
-            setOnSelectListener {
-                binding.swipeRefreshLayout.isRefreshing = true
-                when (it) {
-                    binding.btnAll -> {
-                        favorites = false
-                        postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
-                    }
-                    binding.btnFavorite -> {
-                        favorites = true
-                        postViewModel.getFavoritePostList(boardId, 0, 10, true)
-                    }
-                }
+        binding.txtFavorite.setOnClickListener {
+            if (favoriteList.isEmpty()) {
+                Toast.makeText(this, "관심 자격증을 추가해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            updateTabColor(false)
+            favorites = true
+            postViewModel.getFavoritePostList(boardId, 0, 10, true)
+            binding.swipeRefreshLayout.isRefreshing = true
         }
     }
 
@@ -223,6 +228,24 @@ class PostActivity : AppCompatActivity() {
                     Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        favoriteViewModel.favoriteList.observe(this@PostActivity) { list ->
+            favoriteList.addAll(list)
+        }
+    }
+
+    private fun updateTabColor(isAllSelected: Boolean) {
+        if (isAllSelected) {
+            binding.txtAll.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
+            binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
+            binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
+            binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
+        } else {
+            binding.txtAll.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
+            binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
+            binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
+            binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
         }
     }
 }

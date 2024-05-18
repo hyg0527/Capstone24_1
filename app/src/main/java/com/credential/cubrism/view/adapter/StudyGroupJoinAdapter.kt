@@ -10,6 +10,7 @@ import com.credential.cubrism.databinding.ItemListStudyJoinBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.view.diff.StudyGroupJoinDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat.convertDateTimeFormat
+import java.util.Locale
 
 interface GroupJoinMenuClickListener {
     fun onMenuClick(memberId: String)
@@ -43,7 +44,7 @@ class StudyGroupJoinAdapter(private val listener: GroupJoinMenuClickListener) : 
 
             binding.txtNickname.text = item.groupAdmin
             binding.txtGroupName.text = item.groupName
-            binding.txtDate.text = convertDateTimeFormat(item.requestDate, "yyyy-MM-dd'T'HH:mm:ss", "M/d HH:mm")
+            binding.txtDate.text = convertDateTimeFormat(item.requestDate, "yyyy-MM-dd'T'HH:mm:ss", "M/d HH:mm", Locale.KOREA)
 
             binding.imgMenu.setOnClickListener {
                 listener.onMenuClick(item.memberId)
