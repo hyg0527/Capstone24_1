@@ -107,7 +107,7 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
                     binding.cardDefault.visibility = View.INVISIBLE
                     binding.cardDDay.visibility = View.VISIBLE
                     binding.txtGoal.text = "${data.day.title}까지"
-                    binding.txtDDay.text = calculateDDay(data.day.day).toString()
+                    binding.txtDDay.text = calculateDDay(data.day.day)
                 } else {
                     binding.progressIndicatorDDay.hide()
                     binding.cardDefault.visibility = View.VISIBLE
@@ -146,9 +146,9 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
         val dDay = ChronoUnit.DAYS.between(currentDate, targetDate)
 
         binding.txtLeft.visibility = if (dDay > 0L) View.VISIBLE else View.GONE
+        binding.DDay.text = if (dDay >= 0L) "D-" else "D+"
 
-
-        return if (dDay == 0L) "Day" else dDay.toString()
+        return if (dDay == 0L) "Day " else dDay.toString().replace("-", "")
     }
 }
 

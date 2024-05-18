@@ -245,7 +245,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/digikyonb"
                 android:letterSpacing="-0.1"
-                android:text="D-"
                 android:textColor="@color/white"
                 android:textSize="90dp"
                 app:layout_constraintBottom_toBottomOf="@+id/guidelineHorizontal2"
