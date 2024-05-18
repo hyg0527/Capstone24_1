@@ -138,12 +138,17 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
         }
     }
 
-    private fun calculateDDay(targetDateString: String): Long {
+    private fun calculateDDay(targetDateString: String): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val targetDate = LocalDate.parse(targetDateString, formatter)
         val currentDate = LocalDate.now()
 
-        return ChronoUnit.DAYS.between(currentDate, targetDate)
+        val dDay = ChronoUnit.DAYS.between(currentDate, targetDate)
+
+        binding.txtLeft.visibility = if (dDay > 0L) View.VISIBLE else View.GONE
+
+
+        return if (dDay == 0L) "Day" else dDay.toString()
     }
 }
 
