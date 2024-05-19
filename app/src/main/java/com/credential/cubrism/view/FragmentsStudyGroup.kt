@@ -103,15 +103,20 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
                 val myEmail = myApplication.getUserData().getEmail()
 
                 if (data.day.title != null && data.day.day != null) {
+                    val dDay = calculateDDay(data.day.day)
+
                     binding.progressIndicatorDDay.hide()
-                    binding.cardDefault.visibility = View.INVISIBLE
-                    binding.cardDDay.visibility = View.VISIBLE
-                    binding.txtGoal.text = "${data.day.title}까지"
-                    binding.txtDDay.text = calculateDDay(data.day.day)
+                    binding.cardDefault.visibility = View.GONE
+                    binding.cardDDay.visibility = if (dDay >= 0) View.VISIBLE else View.GONE
+                    binding.cardAfterDDay.visibility = if (dDay < 0) View.VISIBLE else View.GONE
+                    binding.txtGoal.text = if (dDay > 0) "${data.day.title}까지" else "${data.day.title}"
+                    binding.txtDDay.text = if (dDay == 0) "Day " else dDay.toString().replace("-", "")
+                    binding.txtLeft.visibility = if (dDay > 0) View.VISIBLE else View.GONE
                 } else {
                     binding.progressIndicatorDDay.hide()
                     binding.cardDefault.visibility = View.VISIBLE
-                    binding.cardDDay.visibility = View.INVISIBLE
+                    binding.cardDDay.visibility = View.GONE
+                    binding.cardAfterDDay.visibility = View.GONE
                 }
 
                 data.members.find { it.email == myEmail }?.userGoal?.goals?.let { list ->
@@ -138,17 +143,12 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
         }
     }
 
-    private fun calculateDDay(targetDateString: String): String {
+    private fun calculateDDay(targetDateString: String): Int {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val targetDate = LocalDate.parse(targetDateString, formatter)
         val currentDate = LocalDate.now()
 
-        val dDay = ChronoUnit.DAYS.between(currentDate, targetDate)
-
-        binding.txtLeft.visibility = if (dDay > 0L) View.VISIBLE else View.GONE
-        binding.DDay.text = if (dDay >= 0L) "D-" else "D+"
-
-        return if (dDay == 0L) "Day " else dDay.toString().replace("-", "")
+        return ChronoUnit.DAYS.between(currentDate, targetDate).toInt()
     }
 }
 
