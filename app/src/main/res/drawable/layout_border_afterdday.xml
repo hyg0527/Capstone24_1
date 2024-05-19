@@ -3,6 +3,6 @@
     <solid android:color="#00000000"/> <!-- 투명 배경 -->
     <stroke
         android:width="8dp"
-        android:color="#80687598"/>
+        android:color="#807C8CB5"/>
     <corners android:radius="10dp"/>
 </shape>
