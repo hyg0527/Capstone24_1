@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -45,6 +46,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var bottomProfileDialog: BottomSheetDialog
 
+    private var currentProfileImage: String? = null
     private var profileImage: String? = null
     private var preSignedUrl: String? = null
     private var filePath: String? = null
@@ -93,8 +95,10 @@ class EditProfileActivity : AppCompatActivity() {
                         // 2. PreSignedUrl 요청
                         if (fileName != null)
                             s3ViewModel.getPresignedUrl(listOf(PresignedUrlRequestDto("profile_images", fileName!!)))
+                        else if (profileImage != currentProfileImage)
+                            authViewModel.editUserInfo(UserEditDto(binding.editNickname.text.toString(), profileImage, true))
                         else
-                            authViewModel.editUserInfo(UserEditDto(binding.editNickname.text.toString(), profileImage, false))
+                            authViewModel.editUserInfo(UserEditDto(binding.editNickname.text.toString(), currentProfileImage, false))
                     }
                 }
                 return false
@@ -116,6 +120,7 @@ class EditProfileActivity : AppCompatActivity() {
             binding.editEmail.setText(it.getEmail())
             binding.editNickname.setText(it.getNickname())
 
+            currentProfileImage = it.getProfileImage()
             profileImage = it.getProfileImage()
         }
 
@@ -132,7 +137,8 @@ class EditProfileActivity : AppCompatActivity() {
                             fixAspectRatio = true, // 이미지 비율 고정 (1:1)
                             autoZoomEnabled = true,
                             cropShape = CropImageView.CropShape.OVAL,
-                            activityBackgroundColor = ResourcesCompat.getColor(resources, R.color.black, theme)
+                            activityBackgroundColor = ResourcesCompat.getColor(resources, R.color.black, theme),
+                            outputCompressFormat = Bitmap.CompressFormat.PNG // PNG로 추출
                         )
                     )
                 )
@@ -198,6 +204,7 @@ class EditProfileActivity : AppCompatActivity() {
             // 5. 유저 정보 수정 성공
             editUserInfo.observe(this@EditProfileActivity) {
                 myApplication.getUserData().setUserData(it.email, it.nickname, it.profileImage)
+                Toast.makeText(this@EditProfileActivity, "회원 정보를 수정했습니다.", Toast.LENGTH_SHORT).show()
                 finish()
             }
 
@@ -211,6 +218,7 @@ class EditProfileActivity : AppCompatActivity() {
                         deleteUserData()
                     }
 
+                    Toast.makeText(this@EditProfileActivity, "탈퇴되었습니다.", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
