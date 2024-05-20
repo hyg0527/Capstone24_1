@@ -9,6 +9,8 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
+import com.credential.cubrism.model.dto.StudyGroupGoalSubmitDto
+import com.credential.cubrism.model.dto.StudyGroupGoalSubmitListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -76,6 +78,22 @@ class StudyGroupRepository {
 
     fun goalList(groupId: Int, callback: (ResultUtil<List<GoalsDto>>) -> Unit) {
         handleResponse(studyGroupApiAuth.getGoalList(groupId), callback)
+    }
+
+    fun submitGoal(studyGroupGoalSubmitDto: StudyGroupGoalSubmitDto, callback: (ResultUtil<MessageDto>) -> Unit) {
+        handleResponse(studyGroupApiAuth.submitGoal(studyGroupGoalSubmitDto), callback)
+    }
+
+    fun acceptGoalSubmit(goalId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
+        handleResponse(studyGroupApiAuth.acceptGoalSubmit(goalId), callback)
+    }
+
+    fun denyGoalSubmit(goalId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
+        handleResponse(studyGroupApiAuth.denyGoalSubmit(goalId), callback)
+    }
+
+    fun goalSubmitList(groupId: Int, callback: (ResultUtil<List<StudyGroupGoalSubmitListDto>>) -> Unit) {
+        handleResponse(studyGroupApiAuth.getGoalSubmitList(groupId), callback)
     }
 
     fun setDday(dDayDto: DDayDto, callback: (ResultUtil<MessageDto>) -> Unit) {

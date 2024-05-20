@@ -12,6 +12,8 @@ import com.credential.cubrism.model.dto.PageDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
+import com.credential.cubrism.model.dto.StudyGroupGoalSubmitDto
+import com.credential.cubrism.model.dto.StudyGroupGoalSubmitListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -71,6 +73,18 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _goalList = MutableLiveData<List<GoalsDto>>()
     val goalList: LiveData<List<GoalsDto>> = _goalList
+
+    private val _submitGoal = MutableLiveData<MessageDto>()
+    val submitGoal: LiveData<MessageDto> = _submitGoal
+
+    private val _acceptGoalSubmit = MutableLiveData<MessageDto>()
+    val acceptGoalSubmit: LiveData<MessageDto> = _acceptGoalSubmit
+
+    private val _denyGoalSubmit = MutableLiveData<MessageDto>()
+    val denyGoalSubmit: LiveData<MessageDto> = _denyGoalSubmit
+
+    private val _goalSubmitList = MutableLiveData<List<StudyGroupGoalSubmitListDto>>()
+    val goalSubmitList: LiveData<List<StudyGroupGoalSubmitListDto>> = _goalSubmitList
 
     private val _setDday = MutableLiveData<MessageDto>()
     val setDday: LiveData<MessageDto> = _setDday
@@ -188,6 +202,30 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun getGoalList(groupId: Int) {
         repository.goalList(groupId) { result ->
             handleResult(result, _goalList, _errorMessage)
+        }
+    }
+
+    fun submitGoal(studyGroupGoalSubmitDto: StudyGroupGoalSubmitDto) {
+        repository.submitGoal(studyGroupGoalSubmitDto) { result ->
+            handleResult(result, _submitGoal, _errorMessage)
+        }
+    }
+
+    fun acceptGoalSubmit(userGoalId: Int) {
+        repository.acceptGoalSubmit(userGoalId) { result ->
+            handleResult(result, _acceptGoalSubmit, _errorMessage)
+        }
+    }
+
+    fun denyGoalSubmit(userGoalId: Int) {
+        repository.denyGoalSubmit(userGoalId) { result ->
+            handleResult(result, _denyGoalSubmit, _errorMessage)
+        }
+    }
+
+    fun getGoalSubmitList(groupId: Int) {
+        repository.goalSubmitList(groupId) { result ->
+            handleResult(result, _goalSubmitList, _errorMessage)
         }
     }
 

@@ -8,6 +8,8 @@ import com.credential.cubrism.model.dto.MessageDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.dto.StudyGroupEnterDto
+import com.credential.cubrism.model.dto.StudyGroupGoalSubmitDto
+import com.credential.cubrism.model.dto.StudyGroupGoalSubmitListDto
 import com.credential.cubrism.model.dto.StudyGroupInfoDto
 import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
@@ -82,6 +84,22 @@ interface StudyGroupApi {
     // 스터디 그룹 목표 목록
     @GET("/studygroup/{groupId}/goals")
     fun getGoalList(@Path("groupId") groupId: Int): Call<List<GoalsDto>>
+
+    // 스터디 그룹 목표 완료 제출
+    @POST("/studygroup/goal/submit")
+    fun submitGoal(@Body studyGroupGoalSubmitDto: StudyGroupGoalSubmitDto): Call<MessageDto>
+
+    // 스터디 그룹 목표 완료 승인
+    @PUT("/studygroup/goal/submit/{userGoalId}")
+    fun acceptGoalSubmit(@Path("userGoalId") userGoalId: Int): Call<MessageDto>
+
+    // 스터디 그룹 목표 완료 거절
+    @DELETE("/studygroup/goal/submit/{userGoalId}")
+    fun denyGoalSubmit(@Path("userGoalId") userGoalId: Int): Call<MessageDto>
+
+    // 스터디 그룹 목표 완료 목록
+    @GET("/studygroup/goal/submits/{groupId}")
+    fun getGoalSubmitList(@Path("groupId") groupId: Int): Call<List<StudyGroupGoalSubmitListDto>>
 
     // 스터디 그룹 D-Day 설정
     @POST("/studygroup/dday")
