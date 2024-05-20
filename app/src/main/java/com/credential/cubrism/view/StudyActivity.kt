@@ -144,6 +144,7 @@ class StudyActivity : AppCompatActivity() {
                 if (studyViewModel.currentFragmentType.value != StudyFragmentType.CHAT) {
                     val badge = binding.tabLayout.getTabAt(2)?.orCreateBadge
                     badge?.number = (badge?.number ?: 0) + 1
+                    badge?.backgroundColor = ContextCompat.getColor(this@StudyActivity, R.color.blue)
                 }
             }
         }
