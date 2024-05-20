@@ -1,13 +1,18 @@
 package com.credential.cubrism.view
 
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.credential.cubrism.MyApplication
@@ -249,6 +254,7 @@ class StudyGroupFunc3Fragment : Fragment() {
 
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
+    private val imm by lazy { requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager }
 
     private var myEmail = MyApplication.getInstance().getUserData().getEmail()
 
@@ -269,6 +275,13 @@ class StudyGroupFunc3Fragment : Fragment() {
         super.onDestroyView()
         _binding = null
         keyboardVisibilityUtils.detachKeyboardListeners()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            imm.hideSoftInputFromWindow(binding.editMessage.windowToken, 0)
+        }
     }
 
     private fun setupView() {
