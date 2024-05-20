@@ -113,6 +113,11 @@ class StudyActivity : AppCompatActivity() {
                 binding.toolbar.collapseActionView()
 
                 studyViewModel.setCurrentFragment(tab?.position ?: 0)
+
+                if (tab?.position == 2) {
+                    tab.badge?.number = 0
+                    tab.removeBadge()
+                }
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -136,6 +141,10 @@ class StudyActivity : AppCompatActivity() {
             connect()
             subscribe(studyGroupId) { chat ->
                 studyGroupViewModel.addChat(chat)
+                if (studyViewModel.currentFragmentType.value != StudyFragmentType.CHAT) {
+                    val badge = binding.tabLayout.getTabAt(2)?.orCreateBadge
+                    badge?.number = (badge?.number ?: 0) + 1
+                }
             }
         }
     }
