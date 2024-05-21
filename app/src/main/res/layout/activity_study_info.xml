@@ -155,7 +155,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:outlineColor="#86CCFF"
-                app:outlineWidth="16" />
+                app:outlineWidth="4dp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:outlineColor="@color/white"
-                    app:outlineWidth="8" />
+                    app:outlineWidth="2dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
