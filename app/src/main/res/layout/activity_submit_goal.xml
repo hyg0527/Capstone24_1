@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/godom"
+            android:text="목표 인증하기"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edittext_rounded_corner"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="8dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:minLines="8"
+        android:padding="10dp"
+        android:hint="내용 입력"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/lightblue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/submitButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/button_rounded_corner"
+        android:text="제출하기"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

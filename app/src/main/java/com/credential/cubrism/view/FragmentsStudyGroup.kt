@@ -1,6 +1,5 @@
 package com.credential.cubrism.view
 
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.net.Uri
@@ -11,8 +10,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.credential.cubrism.MyApplication
@@ -68,15 +65,17 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
     }
 
     override fun onGoalClick(item: GoalsDto) {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle(item.goalName)
-            setMessage("목표를 완료하시겠습니까?")
-            setNegativeButton("취소", null)
-            setPositiveButton("확인") { _, _ ->
-                studyGroupViewModel.completeGoal(item.goalId)
-            }
-            show()
-        }
+//        AlertDialog.Builder(requireContext()).apply {
+//            setTitle(item.goalName)
+//            setMessage("목표를 완료하시겠습니까?")
+//            setNegativeButton("취소", null)
+//            setPositiveButton("확인") { _, _ ->
+//                studyGroupViewModel.completeGoal(item.goalId)
+//            }
+//            show()
+//        }
+        val intent = Intent(requireContext(), StudyGroupSubmitGoalActivity::class.java)
+        startActivity(intent)
     }
 
     private fun setupView() {

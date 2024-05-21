@@ -154,6 +154,12 @@
         <activity
             android:name=".view.StudyManageAcceptActivity"
             android:exported="true" />
+        <activity
+            android:name=".view.StudyManageGoalAcceptActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyGroupSubmitGoalActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
