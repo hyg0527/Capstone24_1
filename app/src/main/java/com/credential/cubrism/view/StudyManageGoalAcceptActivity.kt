@@ -60,6 +60,7 @@ class StudyManageGoalAcceptActivity : AppCompatActivity(), StudyGroupGoalAcceptA
             R.id.imgPhoto -> {
                 val intent = Intent(this, PhotoViewActivity::class.java)
                 intent.putStringArrayListExtra("url", arrayListOf(item.imageUrl))
+                intent.putExtra("count", false)
                 startActivity(intent)
             }
         }
