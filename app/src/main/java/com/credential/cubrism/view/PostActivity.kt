@@ -184,10 +184,7 @@ class PostActivity : AppCompatActivity() {
         }
 
         binding.txtAll.setOnClickListener {
-            updateTabColor(true)
-            favorites = false
-            postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
-            binding.swipeRefreshLayout.isRefreshing = true
+            postViewModel.setIsAll(true)
         }
 
         binding.txtFavorite.setOnClickListener {
@@ -196,10 +193,7 @@ class PostActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            updateTabColor(false)
-            favorites = true
-            postViewModel.getFavoritePostList(boardId, 0, 10, true)
-            binding.swipeRefreshLayout.isRefreshing = true
+            postViewModel.setIsAll(false)
         }
     }
 
@@ -228,6 +222,10 @@ class PostActivity : AppCompatActivity() {
                     Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
+
+            isAll.observe(this@PostActivity) {
+                changeTab(it)
+            }
         }
 
         favoriteViewModel.favoriteList.observe(this@PostActivity) { list ->
@@ -235,17 +233,23 @@ class PostActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateTabColor(isAllSelected: Boolean) {
+    private fun changeTab(isAllSelected: Boolean) {
+        binding.swipeRefreshLayout.isRefreshing = true
+
         if (isAllSelected) {
             binding.txtAll.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
             binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
             binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
             binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
+            postViewModel.getPostList(boardId, 0, 10, searchQuery, true)
+            favorites = false
         } else {
             binding.txtAll.setTextColor(ResourcesCompat.getColor(resources, R.color.lightblue, null))
             binding.txtFavorite.setTextColor(ResourcesCompat.getColor(resources, R.color.blue, null))
             binding.viewAll.background = ResourcesCompat.getDrawable(resources, R.color.lightblue, null)
             binding.viewFavorite.background = ResourcesCompat.getDrawable(resources, R.color.blue, null)
+            postViewModel.getFavoritePostList(boardId, 0, 10, true)
+            favorites = true
         }
     }
 }

@@ -60,6 +60,9 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
+    private val _isAll = MutableLiveData<Boolean>()
+    val isAll: LiveData<Boolean> = _isAll
+
     fun addPost(postAddDto: PostAddDto) {
         postRepository.addPost(postAddDto) { result ->
             handleResult(result, _addPost, _errorMessage)
@@ -173,6 +176,10 @@ class PostViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     fun setLoading(isLoading: Boolean) {
         _isLoading.value = isLoading
+    }
+
+    fun setIsAll(isAll: Boolean) {
+        _isAll.value = isAll
     }
 
     private fun handleResult(result: ResultUtil<MessageDto>, successLiveData: MutableLiveData<MessageDto>, errorLiveData: MutableLiveData<Event<String>>) {
