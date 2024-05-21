@@ -35,6 +35,7 @@ class StudyManageActivity : AppCompatActivity() {
         }
         binding.manageAcceptGoal.setOnClickListener {
             val intent = Intent(this, StudyManageGoalAcceptActivity::class.java)
+            intent.putExtra("groupId", groupId)
             startActivity(intent)
         }
     }

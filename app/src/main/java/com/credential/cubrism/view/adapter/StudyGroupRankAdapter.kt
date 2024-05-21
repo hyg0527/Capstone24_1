@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ItemStudygroupRankBinding
 import com.credential.cubrism.model.dto.MembersDto
-import com.credential.cubrism.view.diff.StudyGroupRankDiffUtilUtil
+import com.credential.cubrism.view.diff.StudyGroupRankDiffUtil
 
 class StudyGroupRankAdapter : RecyclerView.Adapter<StudyGroupRankAdapter.ViewHolder>() {
     private var itemList = mutableListOf<MembersDto>()
@@ -49,7 +49,7 @@ class StudyGroupRankAdapter : RecyclerView.Adapter<StudyGroupRankAdapter.ViewHol
     }
 
     fun setItemList(list: List<MembersDto>) {
-        val diffCallback = StudyGroupRankDiffUtilUtil(itemList, list)
+        val diffCallback = StudyGroupRankDiffUtil(itemList, list)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         itemList.clear()
