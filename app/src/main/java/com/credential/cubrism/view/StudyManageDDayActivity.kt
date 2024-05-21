@@ -77,7 +77,10 @@ class StudyManageDDayActivity : AppCompatActivity() {
             }
         } else {
             binding.editTitle.isEnabled = false
-            binding.btnSet.isEnabled = false
+            binding.btnSet.apply {
+                isEnabled = false
+                text = "설정 완료"
+            }
         }
     }
 

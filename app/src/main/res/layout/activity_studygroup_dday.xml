@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/godom"
-            android:text="D-day 설정"
+            android:text="D-Day 설정"
             android:textSize="24dp"
             android:textStyle="bold" />
 
