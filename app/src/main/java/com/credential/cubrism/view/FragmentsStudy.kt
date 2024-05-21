@@ -60,7 +60,7 @@ class StudyFragment : Fragment() {
                 if (!loadingState) {
                     studyGroupViewModel.page.value?.let { page ->
                         // 다음 페이지가 존재하면 다음 페이지 데이터를 가져옴
-                        page.nextPage?.let { studyGroupViewModel.getStudyGroupList(it, 5, isRecruiting) }
+                        page.nextPage?.let { studyGroupViewModel.getStudyGroupList(it, 10, isRecruiting) }
                     }
                 }
             }
@@ -86,7 +86,7 @@ class StudyFragment : Fragment() {
 
         binding.switchRecruiting.setOnCheckedChangeListener { _, isChecked ->
             isRecruiting = isChecked
-            studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting, true)
+            studyGroupViewModel.getStudyGroupList(0, 10, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
             binding.scrollView.scrollTo(0, 0)
         }
