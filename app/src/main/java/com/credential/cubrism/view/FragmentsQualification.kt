@@ -83,7 +83,7 @@ class QualificationFragment : Fragment() {
         binding.recyclerView.apply {
             layoutManager = gridLayoutmanager
             adapter = majorFieldAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 48, 48, 48, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(requireContext(), 0, 12, 12, 12, 0, 0, null))
             setHasFixedSize(true)
         }
 

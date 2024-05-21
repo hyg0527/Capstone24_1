@@ -67,7 +67,7 @@ class PostMyAdapter(private val listener: OnViewClickListener) : RecyclerView.Ad
                 adapter = postImageAdapter
                 setHasFixedSize(true)
                 setRecycledViewPool(viewPool)
-                addItemDecoration(ItemDecoratorDivider(0, 0, 0, 28, 0, 0, null))
+                addItemDecoration(ItemDecoratorDivider(context, 0, 0, 0, 12, 0, 0, null))
             }
         }
 

@@ -78,7 +78,7 @@ class StudyManageAcceptActivity : AppCompatActivity(), JoinAcceptAdapter.OnViewC
         binding.recyclerView.apply {
             adapter = joinAcceptAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
+            addItemDecoration(ItemDecoratorDivider(this@StudyManageAcceptActivity, 0, 0, 0, 0, 1, 0, Color.parseColor("#E0E0E0")))
             setHasFixedSize(true)
         }
     }

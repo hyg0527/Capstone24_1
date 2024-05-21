@@ -61,7 +61,7 @@ class StudyGroupAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.recyclerView.apply {
                 adapter = tagAdapter
                 setRecycledViewPool(viewPool)
-                addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+                addItemDecoration(ItemDecoratorDivider(context, 0, 8, 0, 8, 0, 0, null))
             }
         }
 

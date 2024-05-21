@@ -37,8 +37,8 @@ class StudyCreateActivity : AppCompatActivity(), StudyGroupTagAdapter2.OnViewCli
     }
 
     private fun setupToolbar() {
-        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
@@ -48,7 +48,7 @@ class StudyCreateActivity : AppCompatActivity(), StudyGroupTagAdapter2.OnViewCli
 
         binding.recyclerView.apply {
             adapter = studyGroupTagAdapter2
-            addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+            addItemDecoration(ItemDecoratorDivider(this@StudyCreateActivity, 0, 8, 0, 8, 0, 0, 0))
         }
     }
 

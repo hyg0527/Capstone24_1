@@ -79,7 +79,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalAdapter.OnVie
 
         binding.recyclerView.apply {
             adapter = studyGroupGoalAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 60, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@StudyManageGoalActivity, 0, 16, 0, 0, 0, 0, null))
         }
     }
 

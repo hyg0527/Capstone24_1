@@ -6,7 +6,7 @@
     android:layout_height="72dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
+    app:cardElevation="3dp"
     app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,9 +31,9 @@
             android:layout_height="0dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
-            android:fontFamily="@font/nanum_square_round_bold"
+            android:fontFamily="@font/kopubdotummedium"
             android:gravity="center_vertical"
-            android:lineSpacingExtra="4dp"
+            android:lineSpacingExtra="2dp"
             android:maxLines="2"
             android:paddingStart="0dp"
             android:paddingEnd="12dp"

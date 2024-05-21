@@ -57,7 +57,7 @@ class MyStudyListActivity : AppCompatActivity(), StudyGroupMyAdapter.OnViewClick
         binding.recyclerView.apply {
             adapter = studyGroupMyAdapter
             setHasFixedSize(true)
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
+            addItemDecoration(ItemDecoratorDivider(this@MyStudyListActivity, 0, 0, 0, 0, 1, 0, Color.parseColor("#E0E0E0")))
         }
     }
 

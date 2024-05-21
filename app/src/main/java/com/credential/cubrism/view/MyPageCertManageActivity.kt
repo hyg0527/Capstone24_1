@@ -55,7 +55,7 @@ class MyPageCertManageActivity : AppCompatActivity(), FavoriteAdapter.OnViewClic
         binding.recyclerView.apply {
             adapter = favoriteAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 80, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@MyPageCertManageActivity, 0, 20, 0, 0, 0, 0, null))
             setHasFixedSize(true)
         }
     }

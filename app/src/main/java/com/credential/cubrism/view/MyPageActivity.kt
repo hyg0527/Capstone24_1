@@ -86,7 +86,7 @@ class MyPageActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             adapter = myPageAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 48, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@MyPageActivity, 0, 16, 0, 0, 0, 0, null))
             setHasFixedSize(true)
         }
 

@@ -143,7 +143,7 @@ class QualificationDetailsActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             adapter = qualificationDetailsAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@QualificationDetailsActivity, 0, 16, 0, 0, 0, 0, null))
         }
 
         qualificationDetailsAdapter.setOnItemClickListener { item, _ ->

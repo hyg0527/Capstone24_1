@@ -116,7 +116,7 @@ class MyPagePostActivity : AppCompatActivity(), PostMyAdapter.OnViewClickListene
         binding.recyclerView.apply {
             adapter = postMyAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
+            addItemDecoration(ItemDecoratorDivider(this@MyPagePostActivity, 0, 0, 0, 0, 1, 0, Color.parseColor("#E0E0E0")))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)

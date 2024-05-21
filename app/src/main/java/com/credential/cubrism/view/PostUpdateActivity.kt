@@ -98,10 +98,19 @@ class PostUpdateActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickList
     }
 
     private fun setupToolbar() {
-        binding.toolbar.title = ""
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener {
+            AlertDialog.Builder(this@PostUpdateActivity).apply {
+                setMessage("게시글 수정을 취소하시겠습니까?")
+                setNegativeButton("취소", null)
+                setPositiveButton("확인") { _, _ ->
+                    finish()
+                }
+                show()
+            }
+        }
     }
 
     private fun setupBottomSheetDialog() {
@@ -112,7 +121,7 @@ class PostUpdateActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickList
         bottomSheetBinding.recyclerView.apply {
             adapter = qualificationAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.GRAY))
+            addItemDecoration(ItemDecoratorDivider(this@PostUpdateActivity, 0, 0, 0, 0, 2, 0, Color.GRAY))
             setHasFixedSize(true)
         }
 
@@ -132,7 +141,7 @@ class PostUpdateActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickList
         binding.recyclerView.apply {
             adapter = postPhotoAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 28, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@PostUpdateActivity, 0, 0, 0, 6, 0, 0, null))
             setHasFixedSize(true)
         }
 

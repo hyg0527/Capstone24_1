@@ -169,7 +169,7 @@ class HomeFragment : Fragment(), BannerAdapter.OnViewClickListener {
         binding.recyclerSchedule.apply {
             adapter = todoAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(requireContext(), 0, 12, 0, 0, 0, 0, null))
         }
     }
 

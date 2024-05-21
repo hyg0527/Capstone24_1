@@ -53,7 +53,7 @@ class QualificationSearchActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             adapter = qualificationAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#D3D3D3")))
+            addItemDecoration(ItemDecoratorDivider(this@QualificationSearchActivity, 0, 0, 0, 0, 1, 0, Color.parseColor("#D3D3D3")))
             setHasFixedSize(true)
         }
 

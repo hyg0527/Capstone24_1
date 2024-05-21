@@ -77,7 +77,7 @@ class StudyManageGoalAcceptActivity : AppCompatActivity(), StudyGroupGoalAcceptA
 
         binding.recyclerView.apply {
             adapter = goalAcceptAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 60, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@StudyManageGoalAcceptActivity, 0, 16, 0, 0, 0, 0, null))
         }
     }
 

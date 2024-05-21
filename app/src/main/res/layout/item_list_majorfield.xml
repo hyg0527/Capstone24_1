@@ -26,7 +26,7 @@
         android:maxLines="2"
         android:minLines="2"
         android:textSize="14dp"
-        android:fontFamily="@font/nanum_square_round_bold"
+        android:fontFamily="@font/kopubdotumbold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/icon" />

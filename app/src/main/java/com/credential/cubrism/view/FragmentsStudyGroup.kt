@@ -88,7 +88,7 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalAdapter.OnViewClickList
         binding.recyclerView.apply {
             adapter = studyGroupGoalAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(requireContext(), 0, 12, 0, 0, 0, 0, null))
             setHasFixedSize(true)
         }
     }
@@ -206,7 +206,7 @@ class StudyGroupFunc2Fragment : Fragment() {
         binding.recyclerView.apply {
             adapter = studyGroupRankAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(requireContext(), 0, 12, 0, 0, 0, 0, null))
             setHasFixedSize(true)
         }
     }
@@ -301,7 +301,7 @@ class StudyGroupFunc3Fragment : Fragment() {
         binding.recyclerView.apply {
             adapter = chatAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 20, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(requireContext(), 0, 4, 0, 0, 0, 0, null))
         }
     }
 

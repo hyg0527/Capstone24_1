@@ -51,7 +51,7 @@ class StudyFragment : Fragment() {
         binding.recyclerView.apply {
             adapter = studyGroupAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 80, Color.parseColor("#E0E0E0")))
+            addItemDecoration(ItemDecoratorDivider(requireContext(), 0, 0, 0, 0, 1, 20, Color.parseColor("#E0E0E0")))
         }
 
         binding.scrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->

@@ -187,13 +187,13 @@ class PostViewActivity : AppCompatActivity(), PostCommentAdapter.OnViewClickList
         binding.recyclerComment.apply {
             adapter = postCommentAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 40, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@PostViewActivity, 0, 4, 0, 0, 0, 0, null))
         }
 
         binding.recyclerImage.apply {
             adapter = postImageAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 28, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@PostViewActivity, 0, 0, 0, 12, 0, 0, null))
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {

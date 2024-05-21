@@ -98,7 +98,7 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), StudyGroupJoinAdapter
         binding.recyclerView.apply {
             adapter = studyGroupJoinAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 0, 0, 0, 2, 0, Color.parseColor("#E0E0E0")))
+            addItemDecoration(ItemDecoratorDivider(this@MyPageStudyGroupApplyActivity, 0, 0, 0, 0, 1, 0, Color.parseColor("#E0E0E0")))
         }
     }
 

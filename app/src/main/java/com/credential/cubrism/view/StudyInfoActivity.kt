@@ -72,7 +72,7 @@ class StudyInfoActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             adapter = studyGroupTagAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(0, 20, 0, 20, 0, 0, 0))
+            addItemDecoration(ItemDecoratorDivider(this@StudyInfoActivity, 0, 8, 0, 8, 0, 0, 0))
         }
     }
 

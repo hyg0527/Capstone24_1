@@ -42,7 +42,7 @@ class QualificationMiddleActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         binding.recyclerView.apply {
             adapter = middleFieldAdapter
-            addItemDecoration(ItemDecoratorDivider(0, 64, 0, 0, 0, 0, null))
+            addItemDecoration(ItemDecoratorDivider(this@QualificationMiddleActivity, 0, 16, 0, 0, 0, 0, null))
             setHasFixedSize(true)
         }
 
