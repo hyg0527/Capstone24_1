@@ -298,7 +298,7 @@
                             android:layout_height="20dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:src="@drawable/openai"
+                            android:src="@drawable/openai_white"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
