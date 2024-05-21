@@ -26,7 +26,11 @@ interface GroupSubmitDenyClickListener {
     fun onDenyClick(item: StudyGroupGoalSubmitListDto)
 }
 
-class StudyGroupGoalAcceptAdapter(private val listenerAccept: GroupSubmitAcceptClickListener, private val listenerDeny: GroupSubmitDenyClickListener) : RecyclerView.Adapter<StudyGroupGoalAcceptAdapter.ViewHolder>() {
+interface GroupSubmitImageClickListener {
+    fun onImageClick(item: StudyGroupGoalSubmitListDto)
+}
+
+class StudyGroupGoalAcceptAdapter(private val listenerAccept: GroupSubmitAcceptClickListener, private val listenerDeny: GroupSubmitDenyClickListener, private val listenerImage: GroupSubmitImageClickListener) : RecyclerView.Adapter<StudyGroupGoalAcceptAdapter.ViewHolder>() {
     private var itemList = mutableListOf<StudyGroupGoalSubmitListDto>()
 
     override fun getItemCount(): Int = itemList.size
@@ -79,6 +83,10 @@ class StudyGroupGoalAcceptAdapter(private val listenerAccept: GroupSubmitAcceptC
 
             binding.btnDeny.setOnClickListener {
                 listenerDeny.onDenyClick(item)
+            }
+
+            binding.imgPhoto.setOnClickListener {
+                listenerImage.onImageClick(item)
             }
         }
     }

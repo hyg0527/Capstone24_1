@@ -11,6 +11,7 @@ import android.os.Environment
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -33,6 +34,7 @@ class PhotoViewActivity : AppCompatActivity() {
     private val url by lazy { intent.getStringArrayListExtra("url") }
     private val position by lazy { intent.getIntExtra("position", 0) }
     private val download by lazy { intent.getBooleanExtra("download", false) }
+    private val count by lazy { intent.getBooleanExtra("count", true) }
 
     private var imageUrl: String? = null
 
@@ -67,6 +69,11 @@ class PhotoViewActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
+
+        if (count)
+            binding.txtCount.visibility = View.VISIBLE
+        else
+            binding.txtCount.visibility = View.GONE
 
         if (download) {
             addMenuProvider(object : MenuProvider {

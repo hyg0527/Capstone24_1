@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:ellipsize="end"
-            android:fontFamily="@font/kopubdotummedium"
+            android:fontFamily="@font/kopubdotumbold"
             android:maxLines="1"
             android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@+id/imgProfile"

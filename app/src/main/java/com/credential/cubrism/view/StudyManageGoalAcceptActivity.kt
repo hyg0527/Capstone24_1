@@ -1,5 +1,6 @@
 package com.credential.cubrism.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -11,12 +12,13 @@ import com.credential.cubrism.model.dto.StudyGroupGoalSubmitListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.GroupSubmitAcceptClickListener
 import com.credential.cubrism.view.adapter.GroupSubmitDenyClickListener
+import com.credential.cubrism.view.adapter.GroupSubmitImageClickListener
 import com.credential.cubrism.view.adapter.StudyGroupGoalAcceptAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class StudyManageGoalAcceptActivity : AppCompatActivity(), GroupSubmitAcceptClickListener, GroupSubmitDenyClickListener {
+class StudyManageGoalAcceptActivity : AppCompatActivity(), GroupSubmitAcceptClickListener, GroupSubmitDenyClickListener, GroupSubmitImageClickListener {
     private val binding by lazy { ActivityStudygroupManagegoalacceptBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
@@ -57,6 +59,12 @@ class StudyManageGoalAcceptActivity : AppCompatActivity(), GroupSubmitAcceptClic
         }
     }
 
+    override fun onImageClick(item: StudyGroupGoalSubmitListDto) {
+        val intent = Intent(this, PhotoViewActivity::class.java)
+        intent.putStringArrayListExtra("url", arrayListOf(item.imageUrl))
+        startActivity(intent)
+    }
+
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -65,7 +73,7 @@ class StudyManageGoalAcceptActivity : AppCompatActivity(), GroupSubmitAcceptClic
     }
 
     private fun setupRecyclerView() {
-        goalAcceptAdapter = StudyGroupGoalAcceptAdapter(this, this)
+        goalAcceptAdapter = StudyGroupGoalAcceptAdapter(this, this, this)
 
         binding.recyclerView.apply {
             adapter = goalAcceptAdapter
