@@ -73,7 +73,7 @@ class StudyFragment : Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting, true)
+            studyGroupViewModel.getStudyGroupList(0, 10, isRecruiting, true)
             binding.swipeRefreshLayout.isRefreshing = true
         }
     }
@@ -81,7 +81,7 @@ class StudyFragment : Fragment() {
     private fun setupView() {
         Glide.with(this).load(R.drawable.teamwork_amico).into(binding.imgBanner)
 
-        studyGroupViewModel.getStudyGroupList(0, 5, isRecruiting)
+        studyGroupViewModel.getStudyGroupList(0, 10, isRecruiting)
         binding.swipeRefreshLayout.isRefreshing = true
 
         binding.switchRecruiting.setOnCheckedChangeListener { _, isChecked ->

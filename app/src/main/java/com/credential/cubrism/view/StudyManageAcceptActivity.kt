@@ -7,17 +7,16 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityStudygroupManageacceptBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
-import com.credential.cubrism.view.adapter.GroupAcceptButtonClickListener
-import com.credential.cubrism.view.adapter.GroupDenyButtonClickListener
 import com.credential.cubrism.view.adapter.JoinAcceptAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickListener, GroupDenyButtonClickListener {
+class StudyManageAcceptActivity : AppCompatActivity(), JoinAcceptAdapter.OnViewClickListener {
     private val binding by lazy { ActivityStudygroupManageacceptBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
@@ -39,28 +38,32 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
         }
     }
 
-    override fun onAcceptButtonClick(item: StudyGroupJoinReceiveListDto) {
-        AlertDialog.Builder(this).apply {
-            setTitle(item.userName)
-            setMessage("가입 신청을 수락하시겠습니까?")
-            setNegativeButton("취소", null)
-            setPositiveButton("수락") { _, _ ->
-                studyGroupViewModel.acceptJoinRequest(item.memberId)
+    override fun setOnViewClick(viewId: Int, item: StudyGroupJoinReceiveListDto) {
+        when (viewId) {
+            R.id.btnAccept -> {
+                AlertDialog.Builder(this).apply {
+                    setTitle(item.userName)
+                    setMessage("가입 신청을 수락하시겠습니까?")
+                    setNegativeButton("취소", null)
+                    setPositiveButton("수락") { _, _ ->
+                        studyGroupViewModel.acceptJoinRequest(item.memberId)
+                    }
+                    show()
+                }
             }
-            show()
+            R.id.btnDeny -> {
+                AlertDialog.Builder(this).apply {
+                    setTitle(item.userName)
+                    setMessage("가입 신청을 거절하시겠습니까?")
+                    setNegativeButton("취소", null)
+                    setPositiveButton("거절") { _, _ ->
+                        studyGroupViewModel.denyJoinRequest(item.memberId)
+                    }
+                    show()
+                }
+            }
         }
-    }
 
-    override fun onDenyButtonClick(item: StudyGroupJoinReceiveListDto) {
-        AlertDialog.Builder(this).apply {
-            setTitle(item.userName)
-            setMessage("가입 신청을 거절하시겠습니까?")
-            setNegativeButton("취소", null)
-            setPositiveButton("거절") { _, _ ->
-                studyGroupViewModel.denyJoinRequest(item.memberId)
-            }
-            show()
-        }
     }
 
     private fun setupToolbar() {
@@ -71,7 +74,7 @@ class StudyManageAcceptActivity : AppCompatActivity(), GroupAcceptButtonClickLis
     }
 
     private fun setupRecyclerView() {
-        joinAcceptAdapter = JoinAcceptAdapter(this, this)
+        joinAcceptAdapter = JoinAcceptAdapter(this)
         binding.recyclerView.apply {
             adapter = joinAcceptAdapter
             itemAnimator = null

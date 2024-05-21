@@ -11,8 +11,8 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMypageApplyhistoryBinding
 import com.credential.cubrism.databinding.DialogMenuBinding
 import com.credential.cubrism.model.dto.MenuDto
+import com.credential.cubrism.model.dto.StudyGroupJoinListDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
-import com.credential.cubrism.view.adapter.GroupJoinMenuClickListener
 import com.credential.cubrism.view.adapter.MenuAdapter
 import com.credential.cubrism.view.adapter.StudyGroupJoinAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -20,7 +20,7 @@ import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickListener {
+class MyPageStudyGroupApplyActivity : AppCompatActivity(), StudyGroupJoinAdapter.OnViewClickListener {
     private val binding by lazy { ActivityMypageApplyhistoryBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
@@ -44,8 +44,8 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), GroupJoinMenuClickLis
         studyGroupViewModel.getStudyGroupJoinRequestList()
     }
 
-    override fun onMenuClick(memberId: String) {
-        this.memberId = memberId
+    override fun setOnViewClick(item: StudyGroupJoinListDto) {
+        memberId = item.memberId
         bottomSheetDialog.show()
     }
 

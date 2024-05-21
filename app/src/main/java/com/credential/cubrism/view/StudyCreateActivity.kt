@@ -11,12 +11,11 @@ import com.credential.cubrism.databinding.ActivityAddstudyBinding
 import com.credential.cubrism.model.dto.StudyGroupCreateDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.StudyGroupTagAdapter2
-import com.credential.cubrism.view.adapter.TagDeleteClickListener
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class StudyCreateActivity : AppCompatActivity(), TagDeleteClickListener {
+class StudyCreateActivity : AppCompatActivity(), StudyGroupTagAdapter2.OnViewClickListener {
     private val binding by lazy { ActivityAddstudyBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
@@ -33,7 +32,7 @@ class StudyCreateActivity : AppCompatActivity(), TagDeleteClickListener {
         observeViewModel()
     }
 
-    override fun onDeleteClick(position: Int) {
+    override fun setOnViewClick(position: Int) {
         studyGroupTagAdapter2.deleteItem(position)
     }
 

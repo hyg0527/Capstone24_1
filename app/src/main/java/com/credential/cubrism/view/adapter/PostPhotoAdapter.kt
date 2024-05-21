@@ -8,11 +8,11 @@ import com.bumptech.glide.Glide
 import com.credential.cubrism.databinding.ItemListPostPhotoBinding
 import com.credential.cubrism.view.diff.StringListDiffUtil
 
-interface OnDeleteClickListener {
-    fun onDeleteClick(position: Int)
-}
+class PostPhotoAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<PostPhotoAdapter.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(position: Int)
+    }
 
-class PostPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerView.Adapter<PostPhotoAdapter.ViewHolder>() {
     private var itemList = mutableListOf<String>()
     private var onItemClickListener: ((String, Int) -> Unit)? = null
 
@@ -42,7 +42,7 @@ class PostPhotoAdapter(private val listener: OnDeleteClickListener) : RecyclerVi
             Glide.with(binding.root).load(item).into(binding.imgPhoto)
 
             binding.btnDelete.setOnClickListener {
-                listener.onDeleteClick(adapterPosition)
+                listener.setOnViewClick(adapterPosition)
             }
         }
     }

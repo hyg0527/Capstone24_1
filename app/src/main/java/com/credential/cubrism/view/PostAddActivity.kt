@@ -18,7 +18,6 @@ import com.credential.cubrism.model.dto.PresignedUrlRequestDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.model.repository.S3Repository
-import com.credential.cubrism.view.adapter.OnDeleteClickListener
 import com.credential.cubrism.view.adapter.PostPhotoAdapter
 import com.credential.cubrism.view.adapter.QualificationAdapter
 import com.credential.cubrism.view.utils.FileNameFromUri.getFileNameFromUri
@@ -38,7 +37,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.atomic.AtomicInteger
 
-class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
+class PostAddActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickListener {
     private val binding by lazy { ActivityPostingBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
@@ -80,7 +79,7 @@ class PostAddActivity : AppCompatActivity(), OnDeleteClickListener {
         observeViewModel()
     }
 
-    override fun onDeleteClick(position: Int) {
+    override fun setOnViewClick(position: Int) {
         addImageList.removeAt(position)
         postPhotoAdapter.removeItem(position)
         binding.txtPhotoCount.text = "${postPhotoAdapter.itemCount}/10"

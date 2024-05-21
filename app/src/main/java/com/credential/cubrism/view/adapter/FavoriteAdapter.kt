@@ -8,11 +8,11 @@ import com.credential.cubrism.databinding.ItemListMypageCertBinding
 import com.credential.cubrism.model.dto.FavoriteListDto
 import com.credential.cubrism.view.diff.FavoriteDiffUtil
 
-interface FavoriteDeleteButtonClickListener {
-    fun onButtonClick(item: FavoriteListDto)
-}
+class FavoriteAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(item: FavoriteListDto)
+    }
 
-class FavoriteAdapter(private val listener: FavoriteDeleteButtonClickListener) : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
     private var itemList = mutableListOf<FavoriteListDto>()
 
     override fun getItemCount(): Int = itemList.size
@@ -33,7 +33,7 @@ class FavoriteAdapter(private val listener: FavoriteDeleteButtonClickListener) :
             binding.txtName.text = item.name
 
             binding.btnDelete.setOnClickListener {
-                listener.onButtonClick(item)
+                listener.setOnViewClick(item)
             }
         }
     }

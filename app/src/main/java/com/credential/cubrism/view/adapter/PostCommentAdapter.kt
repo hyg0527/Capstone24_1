@@ -14,15 +14,11 @@ import com.credential.cubrism.view.diff.PostCommentDiffUtil
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-interface PostCommentReplyClickListener {
-    fun onReplyClick(nickname: String?, commentId: Int)
-}
+class PostCommentAdapter(private val myEmail: String?, private val listener: OnViewClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(viewId: Int, item: Comments)
+    }
 
-interface PostCommentLongClickListener {
-    fun onLongClick(item: Comments)
-}
-
-class PostCommentAdapter(private val myEmail: String?, private val replyListener: PostCommentReplyClickListener, private val commentListener: PostCommentLongClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<Comments>()
 
     companion object {
@@ -66,7 +62,7 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
             }
 
             binding.layout.setOnLongClickListener {
-                commentListener.onLongClick(item)
+                listener.setOnViewClick(it.id, item)
                 true
             }
         }
@@ -92,7 +88,7 @@ class PostCommentAdapter(private val myEmail: String?, private val replyListener
             binding.imgReplyTo.apply {
                 visibility = if (item.email == null) View.GONE else View.VISIBLE
                 setOnClickListener {
-                    replyListener.onReplyClick(item.nickname, item.commentId)
+                    listener.setOnViewClick(it.id, item)
                 }
             }
         }

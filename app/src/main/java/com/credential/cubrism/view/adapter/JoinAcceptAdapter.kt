@@ -10,15 +10,11 @@ import com.credential.cubrism.databinding.ItemListJoinacceptBinding
 import com.credential.cubrism.model.dto.StudyGroupJoinReceiveListDto
 import com.credential.cubrism.view.diff.StudyGroupJoinReceiveDiffUtil
 
-interface GroupAcceptButtonClickListener {
-    fun onAcceptButtonClick(item: StudyGroupJoinReceiveListDto)
-}
+class JoinAcceptAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<JoinAcceptAdapter.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(viewId: Int, item: StudyGroupJoinReceiveListDto)
+    }
 
-interface GroupDenyButtonClickListener {
-    fun onDenyButtonClick(item: StudyGroupJoinReceiveListDto)
-}
-
-class JoinAcceptAdapter(private val listenerAccept: GroupAcceptButtonClickListener, private val listenerDeny: GroupDenyButtonClickListener) : RecyclerView.Adapter<JoinAcceptAdapter.ViewHolder>() {
     private var itemList = mutableListOf<StudyGroupJoinReceiveListDto>()
 
     override fun getItemCount(): Int = itemList.size
@@ -45,11 +41,11 @@ class JoinAcceptAdapter(private val listenerAccept: GroupAcceptButtonClickListen
             binding.txtName.text = item.userName
 
             binding.btnAccept.setOnClickListener {
-                listenerAccept.onAcceptButtonClick(item)
+                listener.setOnViewClick(it.id, item)
             }
 
             binding.btnDeny.setOnClickListener {
-                listenerDeny.onDenyButtonClick(item)
+                listener.setOnViewClick(it.id, item)
             }
         }
     }

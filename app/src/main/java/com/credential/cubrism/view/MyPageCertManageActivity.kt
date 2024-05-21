@@ -9,12 +9,11 @@ import com.credential.cubrism.databinding.ActivityMypageCertmanageBinding
 import com.credential.cubrism.model.dto.FavoriteListDto
 import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.view.adapter.FavoriteAdapter
-import com.credential.cubrism.view.adapter.FavoriteDeleteButtonClickListener
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.FavoriteViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class MyPageCertManageActivity : AppCompatActivity(), FavoriteDeleteButtonClickListener {
+class MyPageCertManageActivity : AppCompatActivity(), FavoriteAdapter.OnViewClickListener {
     private val binding by lazy { ActivityMypageCertmanageBinding.inflate(layoutInflater) }
     private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory(FavoriteRepository()) }
 
@@ -31,7 +30,7 @@ class MyPageCertManageActivity : AppCompatActivity(), FavoriteDeleteButtonClickL
         favoriteViewModel.getFavoriteList()
     }
 
-    override fun onButtonClick(item: FavoriteListDto) {
+    override fun setOnViewClick(item: FavoriteListDto) {
         AlertDialog.Builder(this).apply {
             setTitle(item.name)
             setMessage("관심 자격증을 삭제하시겠습니까?")

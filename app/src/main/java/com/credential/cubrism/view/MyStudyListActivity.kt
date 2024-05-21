@@ -10,13 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.credential.cubrism.databinding.ActivityMystudyBinding
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.model.repository.StudyGroupRepository
-import com.credential.cubrism.view.adapter.GroupEnterButtonClickListener
 import com.credential.cubrism.view.adapter.StudyGroupMyAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class MyStudyListActivity : AppCompatActivity(), GroupEnterButtonClickListener {
+class MyStudyListActivity : AppCompatActivity(), StudyGroupMyAdapter.OnViewClickListener {
     private val binding by lazy { ActivityMystudyBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
@@ -33,7 +32,7 @@ class MyStudyListActivity : AppCompatActivity(), GroupEnterButtonClickListener {
         observeViewModel()
     }
 
-    override fun onButtonClick(item: GroupList) {
+    override fun setOnViewClick(item: GroupList) {
         val intent = Intent(this, StudyActivity::class.java)
         intent.putExtra("studyGroupId", item.studyGroupId)
         startActivity(intent)

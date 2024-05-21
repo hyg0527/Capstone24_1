@@ -16,16 +16,16 @@ import com.credential.cubrism.R
 import com.credential.cubrism.databinding.ActivityMypageMypostBinding
 import com.credential.cubrism.databinding.DialogMenuBinding
 import com.credential.cubrism.model.dto.MenuDto
+import com.credential.cubrism.model.dto.PostMyList
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.MenuAdapter
-import com.credential.cubrism.view.adapter.PostMenuClickListener
 import com.credential.cubrism.view.adapter.PostMyAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.PostViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
+class MyPagePostActivity : AppCompatActivity(), PostMyAdapter.OnViewClickListener {
     private val binding by lazy { ActivityMypageMypostBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
@@ -56,8 +56,8 @@ class MyPagePostActivity : AppCompatActivity(), PostMenuClickListener {
         postViewModel.getMyPostList(0, 10, true)
     }
 
-    override fun onMenuClick(postId: Int) {
-        this.postId = postId
+    override fun setOnViewClick(item: PostMyList) {
+        postId = item.postId
         bottomSheetDialog.show()
     }
 

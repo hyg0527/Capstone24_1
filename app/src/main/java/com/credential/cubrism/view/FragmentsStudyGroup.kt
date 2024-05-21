@@ -22,7 +22,6 @@ import com.credential.cubrism.model.dto.MembersDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.ChatAdapter
 import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
-import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
 import com.credential.cubrism.view.adapter.StudyGroupGoalType
 import com.credential.cubrism.view.adapter.StudyGroupRankAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
@@ -33,7 +32,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
+class StudyGroupHomeFragment : Fragment(), StudyGroupGoalAdapter.OnViewClickListener {
     private var _binding: FragmentStudygroupHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -64,17 +63,10 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalClickListener {
         _binding = null
     }
 
-    override fun onGoalClick(item: GoalsDto) {
-//        AlertDialog.Builder(requireContext()).apply {
-//            setTitle(item.goalName)
-//            setMessage("목표를 완료하시겠습니까?")
-//            setNegativeButton("취소", null)
-//            setPositiveButton("확인") { _, _ ->
-//                studyGroupViewModel.completeGoal(item.goalId)
-//            }
-//            show()
-//        }
+    override fun setOnViewClick(item: GoalsDto) {
         val intent = Intent(requireContext(), StudyGroupSubmitGoalActivity::class.java)
+        intent.putExtra("groupId", studyGroupId)
+        intent.putExtra("goalId", item.goalId)
         startActivity(intent)
     }
 

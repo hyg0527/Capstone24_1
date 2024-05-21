@@ -8,11 +8,11 @@ import com.credential.cubrism.databinding.ItemListMystudyBinding
 import com.credential.cubrism.model.dto.GroupList
 import com.credential.cubrism.view.diff.StudyGroupDiffUtil
 
-interface GroupEnterButtonClickListener {
-    fun onButtonClick(item: GroupList)
-}
+class StudyGroupMyAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<StudyGroupMyAdapter.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(item: GroupList)
+    }
 
-class StudyGroupMyAdapter(private val listener: GroupEnterButtonClickListener) : RecyclerView.Adapter<StudyGroupMyAdapter.ViewHolder>() {
     private var itemList = mutableListOf<GroupList>()
 
     override fun getItemCount(): Int = itemList.size
@@ -32,7 +32,7 @@ class StudyGroupMyAdapter(private val listener: GroupEnterButtonClickListener) :
             binding.txtTitle.text = item.groupName
 
             binding.btnEnter.setOnClickListener {
-                listener.onButtonClick(item)
+                listener.setOnViewClick(item)
             }
         }
     }

@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.credential.cubrism.databinding.ItemListStudyTag3Binding
 
-interface TagDeleteClickListener {
-    fun onDeleteClick(position: Int)
-}
+class StudyGroupTagAdapter2(private val listener: OnViewClickListener) : RecyclerView.Adapter<StudyGroupTagAdapter2.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(position: Int)
+    }
 
-class StudyGroupTagAdapter2(private val listener: TagDeleteClickListener) : RecyclerView.Adapter<StudyGroupTagAdapter2.ViewHolder>() {
     private var itemList = mutableListOf<String>()
 
     override fun getItemCount(): Int = itemList.size
@@ -28,7 +28,7 @@ class StudyGroupTagAdapter2(private val listener: TagDeleteClickListener) : Recy
         fun bind(item: String) {
             binding.txtTag.text = item
             binding.imgDelete.setOnClickListener {
-                listener.onDeleteClick(adapterPosition)
+                listener.setOnViewClick(adapterPosition)
             }
         }
     }

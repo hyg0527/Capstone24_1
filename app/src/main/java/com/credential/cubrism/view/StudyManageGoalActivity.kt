@@ -11,13 +11,12 @@ import com.credential.cubrism.model.dto.GoalsDto
 import com.credential.cubrism.model.dto.StudyGroupAddGoalDto
 import com.credential.cubrism.model.repository.StudyGroupRepository
 import com.credential.cubrism.view.adapter.StudyGroupGoalAdapter
-import com.credential.cubrism.view.adapter.StudyGroupGoalClickListener
 import com.credential.cubrism.view.adapter.StudyGroupGoalType
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.viewmodel.StudyGroupViewModel
 import com.credential.cubrism.viewmodel.ViewModelFactory
 
-class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener {
+class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalAdapter.OnViewClickListener {
     private val binding by lazy { ActivityStudygroupGoalBinding.inflate(layoutInflater) }
 
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
@@ -36,7 +35,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalClickListener
         observeViewModel()
     }
 
-    override fun onGoalClick(item: GoalsDto) {
+    override fun setOnViewClick(item: GoalsDto) {
         AlertDialog.Builder(this).apply {
             setTitle(item.goalName)
             setMessage("목표를 삭제하시겠습니까?")

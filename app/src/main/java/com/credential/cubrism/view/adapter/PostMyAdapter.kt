@@ -13,11 +13,11 @@ import com.credential.cubrism.model.dto.PostMyList
 import com.credential.cubrism.view.diff.PostMyDiffUtil
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 
-interface PostMenuClickListener {
-    fun onMenuClick(postId: Int)
-}
+class PostMyAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(item: PostMyList)
+    }
 
-class PostMyAdapter(private val listener: PostMenuClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<PostMyList>()
     private var onItemClickListener: ((PostMyList, Int) -> Unit)? = null
 
@@ -92,7 +92,7 @@ class PostMyAdapter(private val listener: PostMenuClickListener) : RecyclerView.
             postImageAdapter.setItemList(item.images)
 
             binding.imgMenu.setOnClickListener {
-                listener.onMenuClick(item.postId)
+                listener.setOnViewClick(item)
             }
         }
     }

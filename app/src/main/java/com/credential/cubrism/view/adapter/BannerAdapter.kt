@@ -11,11 +11,10 @@ enum class BannerType {
     QNA, STUDYGROUP
 }
 
-interface BannerEnterListener {
-    fun onBannerClicked(type: BannerType)
-}
-
-class BannerAdapter(private val listener: BannerEnterListener) : RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
+class BannerAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(type: BannerType)
+    }
 
     override fun getItemCount(): Int = Int.MAX_VALUE // 무한 스크롤 되도록 최댓값으로 설정
 
@@ -40,7 +39,7 @@ class BannerAdapter(private val listener: BannerEnterListener) : RecyclerView.Ad
                 binding.btnGo.apply{
                     setBackgroundResource(R.drawable.button_rounded_corner_red)
                     setOnClickListener {
-                        listener.onBannerClicked(BannerType.QNA)
+                        listener.setOnViewClick(BannerType.QNA)
                     }
                 }
             } else { // studygroup
@@ -50,7 +49,7 @@ class BannerAdapter(private val listener: BannerEnterListener) : RecyclerView.Ad
                 binding.btnGo.apply{
                     setBackgroundResource(R.drawable.button_rounded_corner_bannerpurple)
                     setOnClickListener {
-                        listener.onBannerClicked(BannerType.STUDYGROUP)
+                        listener.setOnViewClick(BannerType.STUDYGROUP)
                     }
                 }
             }

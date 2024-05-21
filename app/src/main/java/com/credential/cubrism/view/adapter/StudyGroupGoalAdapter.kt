@@ -17,11 +17,11 @@ enum class StudyGroupGoalType {
     GOAL_MANAGE
 }
 
-interface StudyGroupGoalClickListener {
-    fun onGoalClick(item: GoalsDto)
-}
+class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private val listener: OnViewClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(item: GoalsDto)
+    }
 
-class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private val listener: StudyGroupGoalClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemList = mutableListOf<GoalsDto>()
 
     companion object {
@@ -68,7 +68,7 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
                     isEnabled = !it
                 }
                 setOnClickListener {
-                    listener.onGoalClick(item)
+                    listener.setOnViewClick(item)
                 }
             }
         }
@@ -79,7 +79,7 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
             binding.txtCount.text = "목표 ${item.index}"
             binding.txtTitle.text = item.goalName
             binding.btnDelete.setOnClickListener {
-                listener.onGoalClick(item)
+                listener.setOnViewClick(item)
             }
         }
     }

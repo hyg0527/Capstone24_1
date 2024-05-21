@@ -18,7 +18,6 @@ import com.credential.cubrism.model.dto.PresignedUrlRequestDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.model.repository.QualificationRepository
 import com.credential.cubrism.model.repository.S3Repository
-import com.credential.cubrism.view.adapter.OnDeleteClickListener
 import com.credential.cubrism.view.adapter.PostPhotoAdapter
 import com.credential.cubrism.view.adapter.QualificationAdapter
 import com.credential.cubrism.view.utils.FileNameFromUri
@@ -38,7 +37,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.atomic.AtomicInteger
 
-class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
+class PostUpdateActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickListener {
     private val binding by lazy { ActivityPostingBinding.inflate(layoutInflater) }
 
     private val postViewModel: PostViewModel by viewModels { ViewModelFactory(PostRepository()) }
@@ -83,7 +82,7 @@ class PostUpdateActivity : AppCompatActivity(), OnDeleteClickListener {
         observeViewModel()
     }
 
-    override fun onDeleteClick(position: Int) {
+    override fun setOnViewClick(position: Int) {
         // previousList에 있는 이미지를 삭제할 경우 deleteImageList에 추가, 없을 경우 addImageList에서 삭제
         val item = postPhotoAdapter.getItemList()[position]
         val itemName = FileNameFromUri.getFileNameFromUri(this, Uri.parse(item)).toString()

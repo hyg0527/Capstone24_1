@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -27,8 +26,6 @@ import com.credential.cubrism.model.dto.ReplyAddDto
 import com.credential.cubrism.model.repository.PostRepository
 import com.credential.cubrism.view.adapter.MenuAdapter
 import com.credential.cubrism.view.adapter.PostCommentAdapter
-import com.credential.cubrism.view.adapter.PostCommentLongClickListener
-import com.credential.cubrism.view.adapter.PostCommentReplyClickListener
 import com.credential.cubrism.view.adapter.PostImageAdapter
 import com.credential.cubrism.view.utils.ItemDecoratorDivider
 import com.credential.cubrism.view.utils.KeyboardVisibilityUtils
@@ -44,7 +41,7 @@ enum class CommentState {
     ADD, UPDATE, REPLY
 }
 
-class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, PostCommentLongClickListener {
+class PostViewActivity : AppCompatActivity(), PostCommentAdapter.OnViewClickListener {
     private val binding by lazy { ActivityPostViewBinding.inflate(layoutInflater) }
 
     private val myApplication = MyApplication.getInstance()
@@ -102,27 +99,30 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
         keyboardVisibilityUtils.detachKeyboardListeners()
     }
 
-    override fun onReplyClick(nickname: String?, commentId: Int) {
-        if (isLoggedIn) {
-            nickname?.let {
-                commentState = CommentState.REPLY
-                this.commentId = commentId
+    override fun setOnViewClick(viewId: Int, item: Comments) {
+        when (viewId) {
+            R.id.layout -> {
+                commentId = item.commentId
+                comment = item.content
+                if (isLoggedIn)
+                    bottomSheetDialog.show()
+            }
+            R.id.imgReplyTo -> {
+                if (isLoggedIn) {
+                    item.nickname?.let {
+                        commentState = CommentState.REPLY
+                        commentId = item.commentId
 
-                binding.layoutReply.visibility = View.VISIBLE
-                binding.txtReply.text = it
-                binding.editComment.hint = "답글 입력"
+                        binding.layoutReply.visibility = View.VISIBLE
+                        binding.txtReply.text = it
+                        binding.editComment.hint = "답글 입력"
 
-                binding.editComment.requestFocus()
-                imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
+                        binding.editComment.requestFocus()
+                        imm.showSoftInput(binding.editComment, InputMethodManager.SHOW_IMPLICIT)
+                    }
+                }
             }
         }
-    }
-
-    override fun onLongClick(item: Comments) {
-        commentId = item.commentId
-        comment = item.content
-        if (isLoggedIn)
-            bottomSheetDialog.show()
     }
 
     private fun setupToolbar() {
@@ -183,7 +183,7 @@ class PostViewActivity : AppCompatActivity(), PostCommentReplyClickListener, Pos
     }
 
     private fun setupRecyclerView() {
-        postCommentAdapter = PostCommentAdapter(myEmail, this, this)
+        postCommentAdapter = PostCommentAdapter(myEmail, this)
         binding.recyclerComment.apply {
             adapter = postCommentAdapter
             itemAnimator = null

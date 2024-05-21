@@ -18,23 +18,14 @@ import com.credential.cubrism.view.diff.StudyGroupGoalSubmitDiffUtil
 import com.credential.cubrism.view.utils.ConvertDateTimeFormat
 import java.util.Locale
 
-interface GroupSubmitAcceptClickListener {
-    fun onAcceptClick(item: StudyGroupGoalSubmitListDto)
-}
+class StudyGroupGoalAcceptAdapter(private val listener: OnViewClickListener) : RecyclerView.Adapter<StudyGroupGoalAcceptAdapter.ViewHolder>() {
+    interface OnViewClickListener {
+        fun setOnViewClick(viewId: Int, item: StudyGroupGoalSubmitListDto)
+    }
 
-interface GroupSubmitDenyClickListener {
-    fun onDenyClick(item: StudyGroupGoalSubmitListDto)
-}
-
-interface GroupSubmitImageClickListener {
-    fun onImageClick(item: StudyGroupGoalSubmitListDto)
-}
-
-class StudyGroupGoalAcceptAdapter(private val listenerAccept: GroupSubmitAcceptClickListener, private val listenerDeny: GroupSubmitDenyClickListener, private val listenerImage: GroupSubmitImageClickListener) : RecyclerView.Adapter<StudyGroupGoalAcceptAdapter.ViewHolder>() {
     private var itemList = mutableListOf<StudyGroupGoalSubmitListDto>()
 
     override fun getItemCount(): Int = itemList.size
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListGoalManageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -78,15 +69,15 @@ class StudyGroupGoalAcceptAdapter(private val listenerAccept: GroupSubmitAcceptC
             binding.txtContent.text = item.content
 
             binding.btnAccept.setOnClickListener {
-                listenerAccept.onAcceptClick(item)
+                listener.setOnViewClick(it.id, item)
             }
 
             binding.btnDeny.setOnClickListener {
-                listenerDeny.onDenyClick(item)
+                listener.setOnViewClick(it.id, item)
             }
 
             binding.imgPhoto.setOnClickListener {
-                listenerImage.onImageClick(item)
+                listener.setOnViewClick(it.id, item)
             }
         }
     }

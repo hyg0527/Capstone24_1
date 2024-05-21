@@ -21,7 +21,6 @@ import com.credential.cubrism.model.dto.FavoriteListDto
 import com.credential.cubrism.model.repository.FavoriteRepository
 import com.credential.cubrism.model.repository.ScheduleRepository
 import com.credential.cubrism.view.adapter.BannerAdapter
-import com.credential.cubrism.view.adapter.BannerEnterListener
 import com.credential.cubrism.view.adapter.BannerType
 import com.credential.cubrism.view.adapter.FavType
 import com.credential.cubrism.view.adapter.FavoriteAdapter2
@@ -35,7 +34,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), BannerEnterListener {
+class HomeFragment : Fragment(), BannerAdapter.OnViewClickListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -75,7 +74,7 @@ class HomeFragment : Fragment(), BannerEnterListener {
         setupViewWithLoginStatus()
     }
 
-    override fun onBannerClicked(type: BannerType) {
+    override fun setOnViewClick(type: BannerType) {
         when (type) {
             BannerType.QNA -> startActivity(Intent(requireActivity(), PostActivity::class.java))
             BannerType.STUDYGROUP -> {
