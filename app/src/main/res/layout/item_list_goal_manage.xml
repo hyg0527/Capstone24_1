@@ -102,7 +102,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-        <TextView
+        <kr.co.prnd.readmore.ReadMoreTextView
             android:id="@+id/txtContent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -113,7 +113,10 @@
             android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtGoal" />
+            app:layout_constraintTop_toBottomOf="@+id/txtGoal"
+            app:readMoreColor="@color/blue"
+            app:readMoreMaxLine="3"
+            app:readMoreText=" …더보기" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnDeny"
