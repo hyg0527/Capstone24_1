@@ -56,29 +56,30 @@
                 android:id="@+id/layoutPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imgPhoto"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="8dp"
+                    android:adjustViewBounds="true"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/RoundedShapeAppearanceOverlay" />
+                    app:shapeAppearanceOverlay="@style/RoundedShapeAppearanceOverlay.12dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layoutAddPhoto"
                     android:layout_width="0dp"
-                    android:layout_height="240dp"
+                    android:layout_height="0dp"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="8dp"
                     android:background="@drawable/layout_rounded_corner_withdash_blue"
+                    app:layout_constraintDimensionRatio="H,4:3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">

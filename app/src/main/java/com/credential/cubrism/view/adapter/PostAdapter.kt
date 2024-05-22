@@ -59,13 +59,14 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(item: PostList) {
             if (item.imageUrl.isNullOrEmpty()) {
-                binding.cardView.visibility = View.GONE
+                binding.imgThumbnail.visibility = View.GONE
             } else {
-                binding.cardView.visibility = View.VISIBLE
+                binding.imgThumbnail.visibility = View.VISIBLE
                 Glide.with(binding.root).load(item.imageUrl)
                     .placeholder(ColorDrawable(Color.TRANSPARENT))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .sizeMultiplier(0.5f)
+                    .centerCrop()
                     .into(binding.imgThumbnail)
             }
 

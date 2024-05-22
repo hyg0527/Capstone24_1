@@ -69,9 +69,14 @@
         <item name="android:textColorPrimaryInverse">@color/white</item>
     </style>
 
-    <style name="RoundedShapeAppearanceOverlay" parent="">
+    <style name="RoundedShapeAppearanceOverlay.12dp" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="RoundedShapeAppearanceOverlay.16dp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
 
 </resources>

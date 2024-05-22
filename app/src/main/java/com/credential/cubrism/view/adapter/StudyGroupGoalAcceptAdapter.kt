@@ -48,6 +48,7 @@ class StudyGroupGoalAcceptAdapter(private val listener: OnViewClickListener) : R
 
             Glide.with(binding.root)
                 .load(item.imageUrl)
+                .sizeMultiplier(0.5f)
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .listener(object : RequestListener<Drawable> {

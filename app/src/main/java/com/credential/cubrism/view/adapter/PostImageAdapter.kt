@@ -42,7 +42,8 @@ class PostImageAdapter : RecyclerView.Adapter<PostImageAdapter.ViewHolder>() {
                 .load(item)
                 .placeholder(ColorDrawable(Color.TRANSPARENT))
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .sizeMultiplier(0.7f)
+                .sizeMultiplier(0.5f)
+                .centerCrop()
                 .into(binding.imgPhoto)
         }
     }
