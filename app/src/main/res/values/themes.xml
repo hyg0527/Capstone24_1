@@ -21,8 +21,10 @@
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
 
-    <style name="Theme.CropImage" parent="Base.Theme.AppCompat">
+    <style name="Theme.CropImage" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/blue</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="homeAsUpIndicator">@drawable/arrow_left_white</item>
     </style>
 
     <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
@@ -62,13 +64,14 @@
         <item name="android:paddingEnd">8dp</item>
     </style>
 
-    <style name="testtt" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/button_rounded_corner_lightblue</item>
-    </style>
-
     <style name="CalenderViewCustom" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorControlActivated">@color/blue</item>
         <item name="android:textColorPrimaryInverse">@color/white</item>
+    </style>
+
+    <style name="RoundedShapeAppearanceOverlay" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
     </style>
 
 </resources>
