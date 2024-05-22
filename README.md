@@ -5,7 +5,7 @@
 + [개요](#pushpin-개요)
 + [주요 기능](#keyboard-주요-기능)
 + [적용 기술](#screwdriver-적용-기술)
-+ [시스템 구조도](#keyboard-시스템 구조도)
++ [시스템 구조도](#gear-시스템-구조도)
 + [실행 화면](#camera_flash-실행-화면)
 + [팀](#family_man_woman_boy_boy-팀)
 
