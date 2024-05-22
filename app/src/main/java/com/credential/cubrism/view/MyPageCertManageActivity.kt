@@ -1,6 +1,7 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -63,11 +64,11 @@ class MyPageCertManageActivity : AppCompatActivity(), FavoriteAdapter.OnViewClic
     private fun observeViewModel() {
         favoriteViewModel.apply {
             favoriteList.observe(this@MyPageCertManageActivity) {
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 if (it.isEmpty())
-                    binding.txtNoFavorite.visibility = android.view.View.VISIBLE
+                    binding.txtNoFavorite.visibility = View.VISIBLE
                 else
-                    binding.txtNoFavorite.visibility = android.view.View.GONE
+                    binding.txtNoFavorite.visibility = View.GONE
                 favoriteAdapter.setItemList(it)
             }
 
@@ -78,7 +79,8 @@ class MyPageCertManageActivity : AppCompatActivity(), FavoriteAdapter.OnViewClic
 
             errorMessage.observe(this@MyPageCertManageActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@MyPageCertManageActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@MyPageCertManageActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -219,7 +219,8 @@ class PostActivity : AppCompatActivity() {
 
             errorMessage.observe(this@PostActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@PostActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
 

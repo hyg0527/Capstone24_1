@@ -69,7 +69,7 @@ class SignUpActivity : AppCompatActivity() {
                     background = ResourcesCompat.getDrawable(resources, R.drawable.button_rounded_corner, null)
                 }
                 binding.btnRequest.text = "재요청"
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
             }
 
             emailVerify.observe(this@SignUpActivity) { result ->
@@ -91,11 +91,11 @@ class SignUpActivity : AppCompatActivity() {
                     }
                     is ResultUtil.Error -> {
                         Toast.makeText(this@SignUpActivity, result.error, Toast.LENGTH_SHORT).show()
-                        binding.progressIndicator.hide()
+                        binding.progressIndicator.visibility = View.GONE
                     }
                     is ResultUtil.NetworkError -> {
                         Toast.makeText(this@SignUpActivity, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                        binding.progressIndicator.hide()
+                        binding.progressIndicator.visibility = View.GONE
                     }
                 }
             }

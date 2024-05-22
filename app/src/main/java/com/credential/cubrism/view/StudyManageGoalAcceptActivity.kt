@@ -88,7 +88,7 @@ class StudyManageGoalAcceptActivity : AppCompatActivity(), StudyGroupGoalAcceptA
                 if (it.isEmpty())
                     binding.txtNoSubmit.visibility = View.VISIBLE
 
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 goalAcceptAdapter.setItemList(it)
             }
 
@@ -104,7 +104,8 @@ class StudyManageGoalAcceptActivity : AppCompatActivity(), StudyGroupGoalAcceptA
 
             errorMessage.observe(this@StudyManageGoalAcceptActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@StudyManageGoalAcceptActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyManageGoalAcceptActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

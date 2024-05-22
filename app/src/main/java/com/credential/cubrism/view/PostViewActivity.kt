@@ -344,9 +344,10 @@ class PostViewActivity : AppCompatActivity(), PostCommentAdapter.OnViewClickList
                 getPostView()
             }
 
-            errorMessage.observe(this@PostViewActivity) {
-                it.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@PostViewActivity, message, Toast.LENGTH_SHORT).show()
+            errorMessage.observe(this@PostViewActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@PostViewActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

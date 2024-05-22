@@ -150,7 +150,7 @@ class MyPagePostActivity : AppCompatActivity(), PostMyAdapter.OnViewClickListene
                 if (it.isEmpty())
                     binding.txtNoPost.visibility = View.VISIBLE
 
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 postMyAdapter.setItemList(it)
                 setLoading(false)
             }
@@ -166,7 +166,8 @@ class MyPagePostActivity : AppCompatActivity(), PostMyAdapter.OnViewClickListene
 
             errorMessage.observe(this@MyPagePostActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@MyPagePostActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@MyPagePostActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

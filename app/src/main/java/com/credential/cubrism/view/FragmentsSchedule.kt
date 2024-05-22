@@ -154,7 +154,7 @@ class ScheduleFragment : Fragment() {
     private fun observeViewModel() {
         scheduleViewModel.apply {
             scheduleList.observe(viewLifecycleOwner) { list ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 schedules = list.toMutableList()
                 calendarAdapter.clearScheduledItem()
                 calendarAdapter.setScheduledItem(schedules)
@@ -177,9 +177,9 @@ class ScheduleFragment : Fragment() {
             }
 
             errorMessage.observe(viewLifecycleOwner) { event ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 event.getContentIfNotHandled()?.let { message ->
-                    if (message != "JWT 토큰이 잘못되었습니다.") {
+                    if (!message.lowercase().contains("jwt")) {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     } else {
                         schedules.clear()

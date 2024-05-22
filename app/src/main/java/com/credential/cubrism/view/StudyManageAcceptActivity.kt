@@ -86,7 +86,7 @@ class StudyManageAcceptActivity : AppCompatActivity(), JoinAcceptAdapter.OnViewC
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             joinReceiveList.observe(this@StudyManageAcceptActivity) { list ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 joinAcceptAdapter.setItemList(list)
 
                 binding.txtNoJoin.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
@@ -103,8 +103,10 @@ class StudyManageAcceptActivity : AppCompatActivity(), JoinAcceptAdapter.OnViewC
             }
 
             errorMessage.observe(this@StudyManageAcceptActivity) { event ->
-                event.getContentIfNotHandled()?.let {
-                    binding.progressIndicator.hide()
+                event.getContentIfNotHandled()?.let { message ->
+                    binding.progressIndicator.visibility = View.GONE
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyManageAcceptActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

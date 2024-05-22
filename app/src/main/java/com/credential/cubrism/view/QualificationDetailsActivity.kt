@@ -220,7 +220,8 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
             errorMessage.observe(this@QualificationDetailsActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -232,7 +233,8 @@ class QualificationDetailsActivity : AppCompatActivity() {
 
             errorMessage.observe(this@QualificationDetailsActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@QualificationDetailsActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -116,8 +116,9 @@ class StudyInfoActivity : AppCompatActivity() {
 
             errorMessage.observe(this@StudyInfoActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@StudyInfoActivity, message, Toast.LENGTH_SHORT).show()
                     binding.progressIndicator.visibility = View.GONE
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyInfoActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

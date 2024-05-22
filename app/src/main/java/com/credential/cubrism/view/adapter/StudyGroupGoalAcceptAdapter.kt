@@ -2,6 +2,7 @@ package com.credential.cubrism.view.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -53,12 +54,12 @@ class StudyGroupGoalAcceptAdapter(private val listener: OnViewClickListener) : R
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                        binding.progressIndicator.hide()
+                        binding.progressIndicator.visibility = View.GONE
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                        binding.progressIndicator.hide()
+                        binding.progressIndicator.visibility = View.GONE
                         return false
                     }
                 })

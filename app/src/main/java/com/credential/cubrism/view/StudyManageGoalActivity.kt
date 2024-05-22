@@ -86,7 +86,7 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalAdapter.OnVie
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             goalList.observe(this@StudyManageGoalActivity) { list ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 studyGroupGoalAdapter.setItemList(list)
 
                 binding.txtNoGoal.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
@@ -105,7 +105,8 @@ class StudyManageGoalActivity : AppCompatActivity(), StudyGroupGoalAdapter.OnVie
 
             errorMessage.observe(this@StudyManageGoalActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@StudyManageGoalActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyManageGoalActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

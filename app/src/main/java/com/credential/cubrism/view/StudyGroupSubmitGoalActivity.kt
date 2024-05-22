@@ -161,7 +161,8 @@ class StudyGroupSubmitGoalActivity : AppCompatActivity() {
             errorMessage.observe(this@StudyGroupSubmitGoalActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     binding.progressIndicator.visibility = View.GONE
-                    Toast.makeText(this@StudyGroupSubmitGoalActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyGroupSubmitGoalActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -175,7 +176,8 @@ class StudyGroupSubmitGoalActivity : AppCompatActivity() {
             errorMessage.observe(this@StudyGroupSubmitGoalActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
                     binding.progressIndicator.visibility = View.GONE
-                    Toast.makeText(this@StudyGroupSubmitGoalActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyGroupSubmitGoalActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

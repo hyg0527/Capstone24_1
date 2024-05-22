@@ -105,7 +105,7 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), StudyGroupJoinAdapter
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             joinRequestList.observe(this@MyPageStudyGroupApplyActivity) {
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 studyGroupJoinAdapter.setItemList(it)
 
                 binding.txtNoJoin.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
@@ -118,7 +118,8 @@ class MyPageStudyGroupApplyActivity : AppCompatActivity(), StudyGroupJoinAdapter
 
             errorMessage.observe(this@MyPageStudyGroupApplyActivity) {
                 it.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@MyPageStudyGroupApplyActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@MyPageStudyGroupApplyActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

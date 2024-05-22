@@ -64,14 +64,15 @@ class MyStudyListActivity : AppCompatActivity(), StudyGroupMyAdapter.OnViewClick
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             studyGroupMyList.observe(this@MyStudyListActivity) {
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 studyGroupMyAdapter.setItemList(it)
                 binding.txtNoJoin.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             }
 
             errorMessage.observe(this@MyStudyListActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@MyStudyListActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@MyStudyListActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

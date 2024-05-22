@@ -128,7 +128,7 @@ class MyPageActivity : AppCompatActivity() {
 
             errorMessage.observe(this@MyPageActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    if (message == "JWT 토큰이 잘못되었습니다.")
+                    if (message.lowercase().contains("jwt"))
                         finish()
                     else
                         Toast.makeText(this@MyPageActivity, message, Toast.LENGTH_SHORT).show()

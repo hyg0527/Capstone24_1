@@ -107,9 +107,10 @@ class QualificationSearchActivity : AppCompatActivity() {
                 qualificationAdapter.setItemList(result)
             }
 
-            errorMessage.observe(this@QualificationSearchActivity) {
-                it.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@QualificationSearchActivity, message, Toast.LENGTH_SHORT).show()
+            errorMessage.observe(this@QualificationSearchActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@QualificationSearchActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -120,9 +121,10 @@ class QualificationSearchActivity : AppCompatActivity() {
                 finish()
             }
 
-            errorMessage.observe(this@QualificationSearchActivity) {
-                it.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@QualificationSearchActivity, message, Toast.LENGTH_SHORT).show()
+            errorMessage.observe(this@QualificationSearchActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@QualificationSearchActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

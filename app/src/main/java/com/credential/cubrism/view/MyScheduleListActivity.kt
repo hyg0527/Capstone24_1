@@ -1,6 +1,7 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -70,11 +71,11 @@ class MyScheduleListActivity : AppCompatActivity() {
     private fun observeViewModel() {
         scheduleViewModel.apply {
             scheduleList.observe(this@MyScheduleListActivity) { list ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 if (list.isEmpty())
-                    binding.txtNoSchedule.visibility = android.view.View.VISIBLE
+                    binding.txtNoSchedule.visibility = View.VISIBLE
                 else
-                    binding.txtNoSchedule.visibility = android.view.View.GONE
+                    binding.txtNoSchedule.visibility = View.GONE
                 scheduleAdapter.setItemList(list)
             }
 
@@ -88,7 +89,8 @@ class MyScheduleListActivity : AppCompatActivity() {
 
             errorMessage.observe(this@MyScheduleListActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@MyScheduleListActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@MyScheduleListActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -206,7 +206,8 @@ class StudyActivity : AppCompatActivity() {
 
             errorMessage.observe(this@StudyActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@StudyActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

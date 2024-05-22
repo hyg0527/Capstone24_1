@@ -97,13 +97,14 @@ class QualificationFragment : Fragment() {
     private fun observeViewModel() {
         qualificationViewModel.apply {
             majorFieldList.observe(viewLifecycleOwner) { result ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 majorFieldAdapter.setItemList(result)
             }
 
-            errorMessage.observe(viewLifecycleOwner) { message ->
-                message.getContentIfNotHandled()?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            errorMessage.observe(viewLifecycleOwner) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

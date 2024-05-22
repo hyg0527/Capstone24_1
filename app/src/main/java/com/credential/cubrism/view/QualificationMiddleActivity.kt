@@ -2,6 +2,7 @@ package com.credential.cubrism.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -64,12 +65,15 @@ class QualificationMiddleActivity : AppCompatActivity() {
     private fun observeViewModel() {
         qualificationViewModel.apply {
             middleFieldList.observe(this@QualificationMiddleActivity) { result ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 middleFieldAdapter.setItemList(result)
             }
 
-            errorMessage.observe(this@QualificationMiddleActivity) { message ->
-                message.getContentIfNotHandled()?.let { Toast.makeText(this@QualificationMiddleActivity, it, Toast.LENGTH_SHORT).show() }
+            errorMessage.observe(this@QualificationMiddleActivity) { event ->
+                event.getContentIfNotHandled()?.let {  message ->
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@QualificationMiddleActivity, message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

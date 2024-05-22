@@ -214,7 +214,7 @@ class StudyGroupFunc2Fragment : Fragment() {
     private fun observeViewModel() {
         studyGroupViewModel.apply {
             studyGroupEnterData.observe(viewLifecycleOwner) {
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
 
                 it.members.sortedWith(compareByDescending<MembersDto> { member-> member.userGoal.completionPercentage }.thenBy { member -> member.nickname }).let { list ->
                     studyGroupRankAdapter.setItemList(list)
@@ -314,7 +314,8 @@ class StudyGroupFunc3Fragment : Fragment() {
 
             errorMessage.observe(viewLifecycleOwner) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

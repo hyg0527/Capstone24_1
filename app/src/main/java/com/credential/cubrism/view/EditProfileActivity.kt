@@ -225,7 +225,8 @@ class EditProfileActivity : AppCompatActivity() {
 
             errorMessage.observe(this@EditProfileActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@EditProfileActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

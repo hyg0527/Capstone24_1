@@ -106,7 +106,10 @@ class StudyFragment : Fragment() {
             }
 
             errorMessage.observe(viewLifecycleOwner) {
-                it.getContentIfNotHandled()?.let { message -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
+                it.getContentIfNotHandled()?.let { message ->
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

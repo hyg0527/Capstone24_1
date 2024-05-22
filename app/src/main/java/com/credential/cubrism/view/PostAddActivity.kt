@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -213,9 +214,10 @@ class PostAddActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickListene
             }
 
             errorMessage.observe(this@PostAddActivity) { event ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@PostAddActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@PostAddActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -228,7 +230,8 @@ class PostAddActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickListene
 
             errorMessage.observe(this@PostAddActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@PostAddActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@PostAddActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -265,9 +268,10 @@ class PostAddActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickListene
             }
 
             errorMessage.observe(this@PostAddActivity) { event ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@PostAddActivity, message, Toast.LENGTH_SHORT).show()
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@PostAddActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

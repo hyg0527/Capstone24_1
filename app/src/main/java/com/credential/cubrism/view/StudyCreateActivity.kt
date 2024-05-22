@@ -115,8 +115,9 @@ class StudyCreateActivity : AppCompatActivity(), StudyGroupTagAdapter2.OnViewCli
 
             errorMessage.observe(this@StudyCreateActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(this@StudyCreateActivity, message, Toast.LENGTH_SHORT).show()
                     binding.progressIndicator.visibility = View.GONE
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@StudyCreateActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.credential.cubrism.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -41,15 +42,16 @@ class PWFindActivity : AppCompatActivity() {
     private fun observeViewModel() {
         authViewModel.apply {
             resetPassword.observe(this@PWFindActivity) { messageDto ->
-                binding.progressIndicator.hide()
+                binding.progressIndicator.visibility = View.GONE
                 binding.btnEmail.text = "이메일 재전송"
                 Toast.makeText(this@PWFindActivity, messageDto.message, Toast.LENGTH_SHORT).show()
             }
 
             errorMessage.observe(this@PWFindActivity) { event ->
                 event.getContentIfNotHandled()?.let { message ->
-                    binding.progressIndicator.hide()
-                    Toast.makeText(this@PWFindActivity, message, Toast.LENGTH_SHORT).show()
+                    binding.progressIndicator.visibility = View.GONE
+                    if (!message.lowercase().contains("jwt"))
+                        Toast.makeText(this@PWFindActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
