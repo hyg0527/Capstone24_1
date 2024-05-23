@@ -42,8 +42,6 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
             holder.bind(itemList[position])
-        } else if (holder is LoadingViewHolder) {
-            holder.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 
@@ -84,9 +82,7 @@ class PostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class LoadingViewHolder(binding: ItemListProgresBinding) : RecyclerView.ViewHolder(binding.root) {
-        val progressIndicator: View = binding.progressIndicator
-    }
+    inner class LoadingViewHolder(binding: ItemListProgresBinding) : RecyclerView.ViewHolder(binding.root)
 
     fun setOnItemClickListener(listener: (PostList, Int) -> Unit) {
         onItemClickListener = listener
