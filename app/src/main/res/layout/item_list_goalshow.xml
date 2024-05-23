@@ -55,7 +55,6 @@
             android:backgroundTint="#B49FF0"
             android:fontFamily="@font/kopubdotumbold"
             android:minWidth="0dp"
-            android:text="학습완료"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -60,13 +60,23 @@ class StudyGroupGoalAdapter(private val goalType: StudyGroupGoalType, private va
         fun bind(item: GoalsDto) {
             binding.txtTitle.text = item.goalName
             binding.btnFinish.apply {
-                item.completed?.let {
-                    if (it) {
-                        setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
-                        setTextColor(Color.parseColor("#989898"))
-                    }
-                    isEnabled = !it
+                if (item.completed) {
+                    text = "학습완료"
+                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                    setTextColor(Color.parseColor("#989898"))
+                    isEnabled = false
+                } else if (item.submitted) {
+                    text = "제출완료"
+                    setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                    setTextColor(Color.parseColor("#989898"))
+                    isEnabled = false
+                } else {
+                    text = "학습완료"
+                    setBackgroundColor(Color.parseColor("#B49FF0"))
+                    setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                    isEnabled = true
                 }
+
                 setOnClickListener {
                     listener.setOnViewClick(item)
                 }

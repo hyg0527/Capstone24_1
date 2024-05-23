@@ -23,7 +23,8 @@ data class GoalsDto(
     val index: Int?,
     val goalId: Int,
     val goalName: String,
-    val completed: Boolean?
+    val completed: Boolean,
+    val submitted: Boolean
 )
 
 data class DDayDto(
