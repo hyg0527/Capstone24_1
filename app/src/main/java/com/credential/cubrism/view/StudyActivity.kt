@@ -35,9 +35,6 @@ class StudyActivity : AppCompatActivity() {
     private val stompClient = StompClient()
 
     private val studyGroupId by lazy { intent.getIntExtra("studyGroupId", -1) }
-    private var ddayTitle: String? = null
-    private var dday: String? = null
-    private var firstLoad = true
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -93,10 +90,7 @@ class StudyActivity : AppCompatActivity() {
 
         binding.txtManage.setOnClickListener {
             val intent = Intent(this@StudyActivity, StudyManageActivity::class.java)
-            intent.putExtra("titleName", binding.txtTitle.text.toString())
             intent.putExtra("groupId", studyGroupId)
-            intent.putExtra("ddayTitle", ddayTitle)
-            intent.putExtra("dday", dday)
             startActivity(intent)
         }
     }
@@ -167,41 +161,36 @@ class StudyActivity : AppCompatActivity() {
 
         studyGroupViewModel.apply {
             studyGroupEnterData.observe(this@StudyActivity) { group ->
-                if (firstLoad) {
-                    val myEmail = myApplication.getUserData().getEmail()
+                val myEmail = myApplication.getUserData().getEmail()
 
-                    binding.txtTitle.text = group.groupName
+                binding.txtTitle.text = group.groupName
 
-                    // 그룹의 관리자인 경우 관리 텍스트 표시
-                    if (group.members.any { it.email == myEmail && it.admin }) {
-                        binding.txtManage.visibility = View.VISIBLE
-                        setIsAdmin(true)
-                    } else {
-                        binding.txtManage.visibility = View.GONE
-                        setIsAdmin(false)
-                    }
-
-                    // 관리자를 가장 위에 놓고 나머지는 닉네임 순으로 정렬
-                    group.members.sortedWith(compareByDescending<MembersDto> { it.admin }.thenBy { it.nickname }).forEach { member ->
-                        // Navigation Drawer에 멤버 목록 추가
-                        if (member.email == myEmail) {
-                            // 내 닉네임에 색상 적용
-                            val spannable = SpannableString(member.nickname)
-                            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@StudyActivity, R.color.blue)), 0, spannable.length, 0)
-                            binding.navigation.menu.add(spannable)
-                        } else {
-                            binding.navigation.menu.add(member.nickname)
-                        }.apply {
-                            isEnabled = false // 클릭 비활성화
-                            if (member.admin) setIcon(R.drawable.crown) // 관리자인 경우 아이콘 추가
-                        }
-                    }
-
-                    firstLoad = false
+                // 그룹의 관리자인 경우 관리 텍스트 표시
+                if (group.members.any { it.email == myEmail && it.admin }) {
+                    binding.txtManage.visibility = View.VISIBLE
+                    setIsAdmin(true)
+                } else {
+                    binding.txtManage.visibility = View.GONE
+                    setIsAdmin(false)
                 }
+                
+                binding.navigation.menu.clear()
 
-                ddayTitle = group.day.title
-                dday = group.day.day
+                // 관리자를 가장 위에 놓고 나머지는 닉네임 순으로 정렬
+                group.members.sortedWith(compareByDescending<MembersDto> { it.admin }.thenBy { it.nickname }).forEach { member ->
+                    // Navigation Drawer에 멤버 목록 추가
+                    if (member.email == myEmail) {
+                        // 내 닉네임에 색상 적용
+                        val spannable = SpannableString(member.nickname)
+                        spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(this@StudyActivity, R.color.blue)), 0, spannable.length, 0)
+                        binding.navigation.menu.add(spannable)
+                    } else {
+                        binding.navigation.menu.add(member.nickname)
+                    }.apply {
+                        isEnabled = false // 클릭 비활성화
+                        if (member.admin) setIcon(R.drawable.crown) // 관리자인 경우 아이콘 추가
+                    }
+                }
             }
 
             errorMessage.observe(this@StudyActivity) { event ->

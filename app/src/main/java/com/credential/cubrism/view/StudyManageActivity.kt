@@ -9,8 +9,6 @@ class StudyManageActivity : AppCompatActivity() {
     private val binding by lazy { ActivityStudyManageBinding.inflate(layoutInflater) }
 
     private val groupId by lazy { intent.getIntExtra("groupId", -1) }
-    private val dday by lazy { intent.getStringExtra("dday") }
-    private val ddayTitle by lazy { intent.getStringExtra("ddayTitle") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +22,6 @@ class StudyManageActivity : AppCompatActivity() {
         binding.manageDday.setOnClickListener {
             val intent = Intent(this, StudyManageDDayActivity::class.java)
             intent.putExtra("groupId", groupId)
-            intent.putExtra("ddayTitle", ddayTitle)
-            intent.putExtra("dday", dday)
             startActivity(intent)
         }
         binding.manageAccept.setOnClickListener {

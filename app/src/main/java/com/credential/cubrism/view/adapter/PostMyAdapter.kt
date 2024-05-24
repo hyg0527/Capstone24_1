@@ -114,10 +114,6 @@ class PostMyAdapter(private val listener: OnViewClickListener) : RecyclerView.Ad
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun getItemList(): List<PostMyList> {
-        return itemList
-    }
-
     fun setLoading(isLoading: Boolean) {
         if (this.isLoading == isLoading)
             return

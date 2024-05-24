@@ -70,11 +70,4 @@ class DataStoreModule(private val context: Context) {
             prefs[fcmTokenKey]
         }
     }
-
-    // FCM Token 삭제
-    suspend fun deleteFcmToken() {
-        context.dataStore.edit { preferences ->
-            preferences.remove(fcmTokenKey)
-        }
-    }
 }

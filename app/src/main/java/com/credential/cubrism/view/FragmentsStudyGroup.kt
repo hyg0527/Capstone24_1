@@ -123,12 +123,6 @@ class StudyGroupHomeFragment : Fragment(), StudyGroupGoalAdapter.OnViewClickList
                 }
             }
 
-            completeGoal.observe(viewLifecycleOwner) {
-                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                if (studyGroupId != -1)
-                    getStudyGroupEnterData(studyGroupId)
-            }
-
             groupId.observe(viewLifecycleOwner) {
                 studyGroupId = it
             }

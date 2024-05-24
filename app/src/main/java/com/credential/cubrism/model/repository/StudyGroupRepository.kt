@@ -72,10 +72,6 @@ class StudyGroupRepository {
         handleResponse(studyGroupApiAuth.deleteGoal(goalId), callback)
     }
 
-    fun completeGoal(goalId: Int, callback: (ResultUtil<MessageDto>) -> Unit) {
-        handleResponse(studyGroupApiAuth.completeGoal(goalId), callback)
-    }
-
     fun goalList(groupId: Int, callback: (ResultUtil<List<GoalsDto>>) -> Unit) {
         handleResponse(studyGroupApiAuth.getGoalList(groupId), callback)
     }
@@ -98,6 +94,10 @@ class StudyGroupRepository {
 
     fun setDday(dDayDto: DDayDto, callback: (ResultUtil<MessageDto>) -> Unit) {
         handleResponse(studyGroupApiAuth.setDday(dDayDto), callback)
+    }
+
+    fun getDday(groupId: Int, callback: (ResultUtil<DDayDto>) -> Unit) {
+        handleResponse(studyGroupApiAuth.getDday(groupId), callback)
     }
 
     fun studyGroupEnterData(groupId: Int, callback: (ResultUtil<StudyGroupEnterDto>) -> Unit) {

@@ -68,9 +68,6 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     private val _deleteGoal = MutableLiveData<MessageDto>()
     val deleteGoal: LiveData<MessageDto> = _deleteGoal
 
-    private val _completeGoal = MutableLiveData<MessageDto>()
-    val completeGoal: LiveData<MessageDto> = _completeGoal
-
     private val _goalList = MutableLiveData<List<GoalsDto>>()
     val goalList: LiveData<List<GoalsDto>> = _goalList
 
@@ -88,6 +85,9 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
 
     private val _setDday = MutableLiveData<MessageDto>()
     val setDday: LiveData<MessageDto> = _setDday
+
+    private val _getDday = MutableLiveData<DDayDto>()
+    val getDday: LiveData<DDayDto> = _getDday
 
     private val _studyGroupEnterData = MutableLiveData<StudyGroupEnterDto>()
     val studyGroupEnterData: LiveData<StudyGroupEnterDto> = _studyGroupEnterData
@@ -193,12 +193,6 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
         }
     }
 
-    fun completeGoal(goalId: Int) {
-        repository.completeGoal(goalId) { result ->
-            handleResult(result, _completeGoal, _errorMessage)
-        }
-    }
-
     fun getGoalList(groupId: Int) {
         repository.goalList(groupId) { result ->
             handleResult(result, _goalList, _errorMessage)
@@ -232,6 +226,12 @@ class StudyGroupViewModel(private val repository: StudyGroupRepository) : ViewMo
     fun setDday(dDayDto: DDayDto) {
         repository.setDday(dDayDto) { result ->
             handleResult(result, _setDday, _errorMessage)
+        }
+    }
+
+    fun getDday(groupId: Int) {
+        repository.getDday(groupId) { result ->
+            handleResult(result, _getDday, _errorMessage)
         }
     }
 

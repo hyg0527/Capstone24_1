@@ -77,10 +77,6 @@ interface StudyGroupApi {
     @DELETE("/studygroup/goal/{goalId}")
     fun deleteGoal(@Path("goalId") goalId: Int): Call<MessageDto>
 
-    // 스터디 그룹 목표 완료
-    @PUT("/studygroup/goal/{goalId}")
-    fun completeGoal(@Path("goalId") goalId: Int): Call<MessageDto>
-
     // 스터디 그룹 목표 목록
     @GET("/studygroup/{groupId}/goals")
     fun getGoalList(@Path("groupId") groupId: Int): Call<List<GoalsDto>>
@@ -104,6 +100,10 @@ interface StudyGroupApi {
     // 스터디 그룹 D-Day 설정
     @POST("/studygroup/dday")
     fun setDday(@Body dDayDto: DDayDto): Call<MessageDto>
+
+    // 스터디 그룹 D-Day 정보
+    @GET("/studygroup/{groupId}/dday")
+    fun getDday(@Path("groupId") groupId: Int): Call<DDayDto>
 
     // 스터디 그룹 입장 데이터
     @GET("/studygroup/{groupId}/enter")

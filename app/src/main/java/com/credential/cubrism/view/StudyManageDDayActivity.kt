@@ -20,8 +20,6 @@ class StudyManageDDayActivity : AppCompatActivity() {
     private val studyGroupViewModel: StudyGroupViewModel by viewModels { ViewModelFactory(StudyGroupRepository()) }
 
     private val groupId by lazy { intent.getIntExtra("groupId", -1) }
-    private val ddayTitle by lazy { intent.getStringExtra("ddayTitle") }
-    private val dday by lazy { intent.getStringExtra("dday") }
 
     private lateinit var dialog: AlertDialog
 
@@ -43,43 +41,34 @@ class StudyManageDDayActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        binding.editTitle.setText(ddayTitle)
-        binding.txtDate.text = dday
+        studyGroupViewModel.getDday(groupId)
 
-        // D-Day가 설정되어있지 않은 경우에만 설정 가능
-        if (dday.isNullOrEmpty() && ddayTitle.isNullOrEmpty()) {
-            binding.txtDate.setOnClickListener {
+        binding.txtDate.setOnClickListener {
+            if (binding.editTitle.isEnabled && binding.btnSet.isEnabled)
                 dialog.show()
+        }
+
+        binding.btnSet.setOnClickListener {
+            val title = binding.editTitle.text.toString()
+            val date = binding.txtDate.text.toString()
+
+            if (title.isEmpty()) {
+                Toast.makeText(this, "제목을 입력하세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-            binding.btnSet.setOnClickListener {
-                val title = binding.editTitle.text.toString()
-                val date = binding.txtDate.text.toString()
-
-                if (title.isEmpty()) {
-                    Toast.makeText(this, "제목을 입력하세요.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                if (date.isEmpty()) {
-                    Toast.makeText(this, "날짜를 선택하세요.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                AlertDialog.Builder(this).apply {
-                    setMessage("D-Day를 설정하면 수정이 불가능합니다.")
-                    setNegativeButton("취소", null)
-                    setPositiveButton("확인") { _, _ ->
-                        studyGroupViewModel.setDday(DDayDto(groupId, title, date))
-                    }
-                    show()
-                }
+            if (date.isEmpty()) {
+                Toast.makeText(this, "날짜를 선택하세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-        } else {
-            binding.editTitle.isEnabled = false
-            binding.btnSet.apply {
-                isEnabled = false
-                text = "설정 완료"
+
+            AlertDialog.Builder(this).apply {
+                setMessage("D-Day를 설정하면 수정이 불가능합니다.")
+                setNegativeButton("취소", null)
+                setPositiveButton("확인") { _, _ ->
+                    studyGroupViewModel.setDday(DDayDto(groupId, title, date))
+                }
+                show()
             }
         }
     }
@@ -103,9 +92,32 @@ class StudyManageDDayActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        studyGroupViewModel.setDday.observe(this) {
-            Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-            finish()
+        studyGroupViewModel.apply {
+            getDday.observe(this@StudyManageDDayActivity) { dDayDto ->
+                binding.editTitle.setText(dDayDto.title)
+                binding.txtDate.text = dDayDto.day
+                binding.editTitle.isEnabled = false
+                binding.btnSet.apply {
+                    isEnabled = false
+                    text = "설정 완료"
+                }
+            }
+
+            setDday.observe(this@StudyManageDDayActivity) {
+                Toast.makeText(this@StudyManageDDayActivity, it.message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            errorMessage.observe(this@StudyManageDDayActivity) { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    if (message == "스터디 그룹 D-Day가 존재하지 않습니다.") {
+                        binding.editTitle.isEnabled = true
+                        binding.btnSet.isEnabled = true
+                    } else if (!message.lowercase().contains("jwt")) {
+                        Toast.makeText(this@StudyManageDDayActivity, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 }
