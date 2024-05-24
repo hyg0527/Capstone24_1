@@ -106,7 +106,7 @@ class PostActivity : AppCompatActivity() {
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                         postViewModel.getPostList(boardId, 0, 10, null, true)
                         binding.swipeRefreshLayout.isRefreshing = true
-                        binding.layoutTab.visibility = View.VISIBLE
+                        binding.layoutTab.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
                         searchQuery = null
                         return true
                     }

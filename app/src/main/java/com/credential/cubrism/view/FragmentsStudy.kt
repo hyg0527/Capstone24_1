@@ -94,8 +94,9 @@ class StudyFragment : Fragment() {
 
     private fun observeViewModel() {
         studyGroupViewModel.apply {
-            studyGroupList.observe(viewLifecycleOwner) {
-                studyGroupAdapter.setItemList(it ?: emptyList())
+            studyGroupList.observe(viewLifecycleOwner) { list ->
+                binding.txtNoStudy.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                studyGroupAdapter.setItemList(list)
                 binding.swipeRefreshLayout.isRefreshing = false
                 setLoading(false)
             }
