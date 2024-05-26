@@ -64,3 +64,37 @@
 </br>
 
 ## :family_man_woman_boy_boy: 팀
+<table>
+  <tr>
+    <th colspan="2">프론트엔드</th>
+    <th colspan="2">백엔드</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/149460377?v=4" alt="황윤구" style="width:150px;height:150px;">
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/149464663?v=4" alt="안해연" style="width:150px;height:150px;">
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/10990331?v=4" alt="반명우" style="width:150px;height:150px;">
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/74907427?v=4" alt="김승상" style="width:150px;height:150px;">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/hyg0527">황윤구</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/haeyeon623">안해연</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/caadiq">반명우</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/seungsang2000">김승상</a>
+    </td>
+  </tr>
+</table>
