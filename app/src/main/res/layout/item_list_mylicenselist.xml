@@ -1,85 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgPin"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/yellow_pin" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="10dp"
+        android:shadowColor="@color/blue"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeWidth="0dp">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="110dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="25dp"
-                android:shadowColor="@color/blue"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/myLCSimage"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:src="@drawable/button_rounded_corner_blue3" />
-
-                    <TextView
-                        android:id="@+id/myLCStxt"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:fontFamily="@font/godom"
-                        android:gravity="center"
-                        android:text="정보처리기사"
-                        android:textColor="@color/blue"
-                        android:textSize="15dp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
-
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/yellowpin"
-                android:layout_marginLeft="3dp"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/yellow_pin" />
-
-            <ImageView
-                android:id="@+id/license_theme"
-                android:layout_width="100dp"
-                android:layout_height="55dp"
-                android:layout_marginLeft="20dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/license_theme" />
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:background="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/studyingtxt"
+                android:id="@+id/txtStudying"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"
                 android:fontFamily="@font/hcmalangbold"
+                android:text="STUDYING"
                 android:textColor="@color/white"
                 android:textSize="17dp"
-                android:layout_marginLeft="8dp"
-                android:layout_gravity="center_horizontal"
-                android:text="STUDYING" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgTheme"
+                android:layout_width="100dp"
+                android:layout_height="55dp"
+                app:layout_constraintBottom_toTopOf="@+id/txtname"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtStudying"
+                app:layout_constraintVertical_bias="0.3"
+                app:srcCompat="@drawable/license_theme" />
 
-        </FrameLayout>
-    </FrameLayout>
+            <TextView
+                android:id="@+id/txtname"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/godom"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingHorizontal="8dp"
+                android:textColor="@color/blue"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

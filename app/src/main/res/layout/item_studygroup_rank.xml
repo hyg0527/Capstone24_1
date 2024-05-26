@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp">
-
-    <TextView
-        android:id="@+id/txtUserNameRank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="User"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profileImageRank"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="70dp"
+    android:background="@drawable/layout_rounded_corner_rank">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profileImageRank"
+        android:id="@+id/imgProfile"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/account_circle"
+        app:civ_border_color="@color/blue"
+        app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtPercentageRank"
+        android:id="@+id/txtNickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/godom"
+        android:maxLines="1"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/progressBar"
+        app:layout_constraintStart_toEndOf="@+id/imgProfile"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtPercentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="60dp"
-        android:text="100%"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,13 +47,13 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_marginTop="-10dp"
-        android:layout_marginEnd="30dp"
         android:max="100"
         android:min="0"
-        android:progressTint="@color/blue"
         android:progressBackgroundTint="#96BAFF"
+        android:progressTint="@color/blue"
+        app:layout_constraintStart_toStartOf="@+id/txtPercentage"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPercentageRank" />
+        app:layout_constraintEnd_toEndOf="@+id/txtPercentage"
+        app:layout_constraintTop_toBottomOf="@+id/txtPercentage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

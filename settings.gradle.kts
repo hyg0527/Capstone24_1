@@ -11,6 +11,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter()
+        maven("https://devrepo.kakao.com/nexus/content/groups/public/")
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://jitpack.io")
     }
 }
 

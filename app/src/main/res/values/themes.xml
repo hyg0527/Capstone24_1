@@ -1,15 +1,82 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.Capstone24_1" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="colorAccent">@color/lightblue</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOutlineVariant">@color/lightblue</item>
+
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:textColorHighlight">@color/lightblue</item>
+
         <item name="itemIconTint">@color/lightblue</item>
         <item name="itemBackground">@color/lightblue</item>
-
-        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
         <item name="colorControlHighlight">@color/lightblue</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="homeAsUpIndicator">@drawable/arrow_left</item>
+
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialogTheme</item>
     </style>
 
     <style name="Theme.Capstone24_1" parent="Base.Theme.Capstone24_1" />
+
+    <style name="Theme.CropImage" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="homeAsUpIndicator">@drawable/arrow_left_white</item>
+    </style>
+
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomRoundedBackgroundBottomSheet</item>
+    </style>
+
+    <style name="CustomRoundedBackgroundBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottomsheet_rounded_corner</item>
+    </style>
+
+    <style name="StyleToolbar.EditProfile" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/lightblue</item>
+        <item name="actionMenuTextAppearance">@style/StyleMenu.EditProfile</item>
+        <item name="actionMenuTextColor">@color/blue</item>
+    </style>
+
+    <style name="StyleMenu.EditProfile" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/godom</item>
+    </style>
+
+    <style name="StyleToolbar.Photo" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/blue</item>
+        <item name="homeAsUpIndicator">@drawable/icon_close_white</item>
+    </style>
+
+    <style name="StyleTabLayout" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/kopubdotumbold</item>
+        <item name="android:letterSpacing">-0.03</item>
+    </style>
+
+    <style name="NoUnderlineEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@null</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+    </style>
+
+    <style name="CalenderViewCustom" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorControlActivated">@color/blue</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+    </style>
+
+    <style name="RoundedShapeAppearanceOverlay.12dp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="RoundedShapeAppearanceOverlay.16dp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>

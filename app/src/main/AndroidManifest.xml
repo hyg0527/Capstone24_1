@@ -1,21 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher_cubrism"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_cubrism_round"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Capstone24_1"
-        tools:targetApi="31" >
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <service
+            android:name="com.google.android.gms.metadata.ModuleDependencies"
+            android:enabled="false"
+            android:exported="false"
+            tools:ignore="MissingClass">
+            <intent-filter>
+                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+            </intent-filter>
+            <meta-data
+                android:name="photopicker_activity:0:required"
+                android:value="" />
+        </service>
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="true" >
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
+                <data
+                    android:host="oauth"
+                    android:scheme="kakao${KAKAO_NATIVE_APP_KEY}" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,41 +65,101 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SplashActivity"
-            android:exported="true" >
-        </activity>
+            android:name="com.canhub.cropper.CropImageActivity"
+            android:theme="@style/Theme.CropImage" />
         <activity
-            android:name=".LoginActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".RegisterActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.SignInActivity"
+            android:exported="true" />
         <activity
-            android:name=".ProfileFixActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.SignUpActivity"
+            android:exported="true" />
         <activity
-            android:name=".StudyActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.EditProfileActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".StudyManageActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.PostActivity"
+            android:exported="true" />
         <activity
-            android:name=".ChattingActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.PostViewActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".PWFindActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.PostAddActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".PWResetActivity"
-            android:exported="true" >
-        </activity>
+            android:name=".view.PostUpdateActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".view.StudyInfoActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".view.PWFindActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyStudyListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyCreateActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyScheduleListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.NotiActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPageActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.QualificationMiddleActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.QualificationDetailsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.QualificationSearchActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPageCertManageActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPagePostActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MyPageStudyGroupApplyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.PhotoViewActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageGoalActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageDDayActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageAcceptActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyManageGoalAcceptActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.StudyGroupSubmitGoalActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/godom"
+            android:text="D-Day 설정"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:background="@drawable/button_rounded_corner_blue_radius"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/internet_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="8dp"
+                app:srcCompat="@drawable/internet_design" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:background="@drawable/edittext_rounded_corner_radius"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/title_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/button_rounded_corner_blue7"
+                    android:fontFamily="@font/godom"
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:text="제목"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="30dp"
+                    android:backgroundTint="@color/blue"
+                    android:enabled="false"
+                    android:fontFamily="@font/godom"
+                    android:gravity="center_horizontal"
+                    android:inputType="text"
+                    android:maxLength="20"
+                    android:textColor="#453C3C"
+                    android:textSize="16dp">
+
+                </androidx.appcompat.widget.AppCompatEditText>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/button_rounded_corner_blue7"
+                    android:fontFamily="@font/godom"
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:text="목표 날짜"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="35dp"
+                    app:srcCompat="@drawable/triangle_left" />
+
+                <TextView
+                    android:id="@+id/txtDate"
+                    android:layout_width="130dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:fontFamily="@font/godom"
+                    android:gravity="center"
+                    android:text="날짜 선택"
+                    android:textColor="@color/blue"
+                    android:textSize="16dp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginEnd="10dp"
+                    app:srcCompat="@drawable/triangle_right" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSet"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/button_rounded_corner_stroke"
+                android:enabled="false"
+                android:fontFamily="@font/kopubdotumbold"
+                android:text="설정하기"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
