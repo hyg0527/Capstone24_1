@@ -110,7 +110,7 @@ class PostAddActivity : AppCompatActivity(), PostPhotoAdapter.OnViewClickListene
         bottomSheetBinding.recyclerView.apply {
             adapter = qualificationAdapter
             itemAnimator = null
-            addItemDecoration(ItemDecoratorDivider(this@PostAddActivity, 0, 0, 0, 0, 2, 0, Color.GRAY))
+            addItemDecoration(ItemDecoratorDivider(this@PostAddActivity, 0, 0, 0, 0, 1, 0, Color.GRAY))
             setHasFixedSize(true)
         }
 
