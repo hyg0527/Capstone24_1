@@ -32,6 +32,11 @@ class MyStudyListActivity : AppCompatActivity(), StudyGroupMyAdapter.OnViewClick
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        studyGroupViewModel.getMyStudyGroupList()
+    }
+
     override fun setOnViewClick(item: GroupList) {
         val intent = Intent(this, StudyActivity::class.java)
         intent.putExtra("studyGroupId", item.studyGroupId)
@@ -44,8 +49,6 @@ class MyStudyListActivity : AppCompatActivity(), StudyGroupMyAdapter.OnViewClick
     }
 
     private fun setupView() {
-        studyGroupViewModel.getMyStudyGroupList()
-
         binding.btnAdd.setOnClickListener { // 스터디 그룹 만들기 화면 으로 이동
             startActivity(Intent(this, StudyCreateActivity::class.java))
         }
